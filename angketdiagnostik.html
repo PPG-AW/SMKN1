@@ -1,0 +1,1164 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asesmen Diagnostik Statistika</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Source+Sans+3:wght@400;500;600&display=swap');
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+    }
+
+    h1, h2, h3, .font-serif {
+      font-family: 'Crimson Pro', serif;
+    }
+
+    /* Word-like document style */
+    .doc-page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    .doc-header {
+      border-bottom: 2px solid #1a1a1a;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .doc-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .doc-meta {
+      font-size: 0.85rem;
+      color: #444;
+      margin-top: 6px;
+    }
+
+    /* Student info section */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      padding: 12px;
+    }
+
+    .info-field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .info-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #555;
+    }
+
+    .info-input {
+      border: none;
+      border-bottom: 1px solid #999;
+      padding: 4px 2px;
+      font-size: 0.9rem;
+      font-family: 'Source Sans 3', sans-serif;
+      background: transparent;
+      color: #1a1a1a;
+      width: 100%;
+      outline: none;
+    }
+
+    .info-input:focus {
+      border-bottom: 2px solid #1a1a1a;
+    }
+
+    /* Section divider */
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #1a1a1a;
+      background: #f0f0f0;
+      padding: 5px 10px;
+      border-left: 3px solid #1a1a1a;
+      margin: 20px 0 14px 0;
+    }
+
+    /* Question card */
+    .question-block {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed #ccc;
+    }
+
+    .question-block:last-child {
+      border-bottom: none;
+    }
+
+    .question-header {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .question-number {
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 2px 7px;
+      min-width: 28px;
+      text-align: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .question-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #1a1a1a;
+    }
+
+    .question-subtext {
+      font-size: 0.85rem;
+      color: #555;
+      font-style: italic;
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    /* Options */
+    .options-list {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      cursor: pointer;
+      padding: 6px 8px;
+      border: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+
+    .option-item:hover {
+      border-color: #ccc;
+      background: #fafafa;
+    }
+
+    .option-item.selected {
+      border: 1px solid #1a1a1a;
+      background: #f5f5f5;
+    }
+
+    .option-item.correct {
+      border: 1px solid #1a1a1a;
+      background: #e8f5e8;
+    }
+
+    .option-item.wrong {
+      border: 1px solid #999;
+      background: #fff0f0;
+      opacity: 0.7;
+    }
+
+    .option-radio {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #666;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .option-radio.checked {
+      border-color: #1a1a1a;
+      background: #1a1a1a;
+    }
+
+    .option-radio.checked::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .option-label {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #1a1a1a;
+    }
+
+    /* SVG chart container */
+    .chart-container {
+      margin: 12px 0;
+      border: 1px solid #ddd;
+      padding: 12px;
+      background: #fafafa;
+    }
+
+    .chart-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    /* Submit & Result */
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background: #1a1a1a;
+      color: #fff;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+      margin-top: 20px;
+    }
+
+    .btn-submit:hover {
+      background: #333;
+    }
+
+    .btn-submit:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    .result-panel {
+      display: none;
+      border: 2px solid #1a1a1a;
+      padding: 16px;
+      margin-top: 20px;
+      background: #f9f9f9;
+    }
+
+    .result-panel.show {
+      display: block;
+    }
+
+    .result-score {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: 'Crimson Pro', serif;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .result-label {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 12px;
+    }
+
+    .result-breakdown {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      border-top: 1px solid #ccc;
+      padding-top: 12px;
+    }
+
+    .feedback-icon {
+      display: inline-block;
+      font-size: 0.85rem;
+    }
+
+    /* Explanation box */
+    .explanation {
+      display: none;
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f0f0f0;
+      border-left: 3px solid #1a1a1a;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .explanation.show {
+      display: block;
+    }
+
+    /* Progress bar */
+    .progress-bar-wrap {
+      height: 4px;
+      background: #e0e0e0;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #1a1a1a;
+      transition: width 0.3s ease;
+    }
+
+    /* Sticky footer nav for mobile */
+    .sticky-nav {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      border-top: 1px solid #ccc;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: #555;
+    }
+
+    /* Table for question data */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 10px 0;
+    }
+
+    .data-table th {
+      background: #e0e0e0;
+      padding: 5px 8px;
+      border: 1px solid #ccc;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .data-table td {
+      padding: 5px 8px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .doc-title { font-size: 1.2rem; }
+      .info-grid { grid-template-columns: 1fr; }
+      .doc-page { padding: 16px 14px; }
+    }
+
+    /* Send panel for sending to spreadsheet */
+    .send-panel {
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      background: #fafafa;
+    }
+
+    .send-input {
+      border: 1px solid #ccc;
+      padding: 7px 10px;
+      font-size: 0.88rem;
+      font-family: 'Source Sans 3', sans-serif;
+      width: 100%;
+      margin: 6px 0 8px 0;
+      outline: none;
+    }
+
+    .send-input:focus {
+      border-color: #1a1a1a;
+    }
+
+    .btn-send {
+      padding: 9px 18px;
+      background: #1a1a1a;
+      color: #fff;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.88rem;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-send:hover { background: #333; }
+    .btn-send:disabled { background: #999; cursor: not-allowed; }
+
+    .send-status {
+      font-size: 0.82rem;
+      margin-top: 6px;
+      min-height: 18px;
+    }
+
+    .send-status.ok { color: #2a7a2a; }
+    .send-status.err { color: #b00000; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full w-full bg-white overflow-auto">
+  <div class="doc-page" id="app">
+   <div class="doc-header"></div>
+   <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+   </div>
+   <div class="section-title">
+    Identitas Peserta
+   </div>
+   <div class="info-grid">
+    <div class="info-field">
+     <span class="info-label">Nama Lengkap</span> <input class="info-input" type="text" id="siswa-nama" placeholder="Tulis nama kamu..." autocomplete="off">
+    </div>
+    <div class="info-field">
+     <span class="info-label">Kelas</span> <input class="info-input" type="text" id="siswa-kelas" placeholder="Contoh: 12 RPL" autocomplete="off">
+    </div>
+    <div class="info-field">
+     <span class="info-label">No. Absen</span> <input class="info-input" type="text" id="siswa-absen" placeholder="Contoh: 15" autocomplete="off">
+    </div>
+    <div class="info-field">
+     <span class="info-label">Tanggal Pengerjaan</span> <input class="info-input" type="date" id="siswa-tanggal">
+    </div>
+   </div>
+   <div class="section-title">
+    Petunjuk Pengerjaan
+   </div>
+   <ul style="font-size:0.85rem; color:#444; line-height:1.9; padding-left:18px; margin-bottom:16px;">
+    <li>Baca setiap soal dengan cermat sebelum menjawab.</li>
+    <li>Pilih <strong>satu jawaban</strong> yang paling tepat untuk setiap soal.</li>
+    <li>Setelah selesai, klik <strong>Kirim Jawaban</strong> untuk melihat hasil.</li>
+    <li>Asesmen ini bersifat <em>diagnostik</em> — hasilnya digunakan untuk membantu proses belajarmu.</li>
+   </ul>
+   <div class="section-title">
+    Soal
+   </div>
+   <div id="soal-container"></div><button class="btn-submit" id="btn-submit" onclick="submitAsesmen()"> Kirim Jawaban </button>
+   <div class="result-panel" id="result-panel">
+    <div class="result-score" id="result-score">
+     0/5
+    </div>
+    <div class="result-label" id="result-label">
+     —
+    </div>
+    <div class="result-breakdown" id="result-breakdown"></div>
+    <div class="send-panel" id="send-panel" style="display:none;">
+     <div style="font-size:0.82rem; font-weight:700; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;">
+      📊 Simpan ke Google Spreadsheet
+     </div>
+     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <button class="btn-send" id="btn-send" onclick="kirimKeSpreadsheet()"> <i data-lucide="send" style="width:14px;height:14px;"></i> Kirim Data </button> <span style="font-size:0.78rem; color:#888;">Nama, kelas, skor, jawaban</span>
+     </div>
+     <div class="send-status" id="send-status"></div>
+    </div>
+   </div>
+  </div>
+  <div class="sticky-nav" id="sticky-nav">
+   <span id="nav-progress-text">0 dari 8 soal dijawab</span> <button onclick="scrollToSubmit()" style="background:#1a1a1a; color:#fff; border:none; padding:6px 14px; font-size:0.8rem; cursor:pointer; font-family:'Source Sans 3',sans-serif;"> Ke Bawah ↓ </button>
+  </div>
+  <script>
+// ─────────────────────────────────────────
+// DATA SOAL
+// ─────────────────────────────────────────
+const soalData = [
+  {
+    id: 1,
+    kompetensi: "Membedakan Data Kualitatif vs Kuantitatif",
+    soal: "Perhatikan data berikut ini:",
+    subtext: "i. Tinggi badan siswa (cm)  |  ii. Warna kesukaan  |  iii. Jumlah buku yang dimiliki  |  iv. Jenis olahraga favorit",
+    gambar: "soal1",
+    pertanyaan: "Manakah kelompok yang semuanya merupakan data <strong>kuantitatif</strong>?",
+    opsi: [
+      { huruf: "A", teks: "i dan ii" },
+      { huruf: "B", teks: "i dan iii" },
+      { huruf: "C", teks: "ii dan iv" },
+      { huruf: "D", teks: "iii dan iv" },
+    ],
+    jawaban: "B",
+    penjelasan: "Data kuantitatif adalah data berupa angka yang dapat diukur. Tinggi badan (i) dan jumlah buku (iii) adalah data angka/terukur. Warna kesukaan (ii) dan jenis olahraga (iv) adalah data kualitatif karena berupa kategori/nama."
+  },
+  {
+    id: 2,
+    kompetensi: "Membaca Diagram Batang",
+    soal: "Perhatikan diagram batang berikut tentang <strong>jumlah siswa yang membawa bekal</strong> dalam seminggu.",
+    subtext: null,
+    gambar: "soal2",
+    pertanyaan: "Berdasarkan diagram, pada hari apakah jumlah siswa yang membawa bekal <strong>paling sedikit</strong>?",
+    opsi: [
+      { huruf: "A", teks: "Senin" },
+      { huruf: "B", teks: "Selasa" },
+      { huruf: "C", teks: "Rabu" },
+      { huruf: "D", teks: "Jumat" },
+    ],
+    jawaban: "D",
+    penjelasan: "Dari diagram batang, batang hari Jumat memiliki ketinggian paling rendah yaitu 8 siswa, dibandingkan Senin (20), Selasa (15), dan Rabu (18). Jadi jawaban yang benar adalah Jumat."
+  },
+  {
+    id: 3,
+    kompetensi: "Membaca Diagram Garis",
+    soal: "Diagram garis berikut menunjukkan <strong>suhu rata-rata (°C) kota X</strong> selama 6 bulan.",
+    subtext: null,
+    gambar: "soal3",
+    pertanyaan: "Berdasarkan diagram, pernyataan manakah yang <strong>BENAR</strong>?",
+    opsi: [
+      { huruf: "A", teks: "Suhu terus meningkat dari Januari hingga Juni" },
+      { huruf: "B", teks: "Suhu tertinggi terjadi pada bulan Maret" },
+      { huruf: "C", teks: "Suhu mengalami penurunan dari Maret ke April" },
+      { huruf: "D", teks: "Suhu pada bulan Januari dan Juni sama" },
+    ],
+    jawaban: "C",
+    penjelasan: "Dari diagram garis, titik Maret berada di posisi tertinggi (32°C), dan titik April lebih rendah (29°C), sehingga terjadi penurunan dari Maret ke April. Pilihan A salah karena ada penurunan. Pilihan B mendekati benar tapi pernyataan C lebih spesifik dan tepat secara visual."
+  },
+  {
+    id: 4,
+    kompetensi: "Menghitung Median Data Tunggal",
+    soal: "Berikut adalah data nilai ulangan 7 siswa:",
+    subtext: "70, 85, 60, 90, 75, 80, 65",
+    gambar: "soal4",
+    pertanyaan: "Berapakah <strong>median</strong> dari data tersebut?",
+    opsi: [
+      { huruf: "A", teks: "60" },
+      { huruf: "B", teks: "75" },
+      { huruf: "C", teks: "85" },
+      { huruf: "D", teks: "90" },
+    ],
+    jawaban: "B",
+    penjelasan: "Median adalah nilai tengah setelah data diurutkan dari terkecil ke terbesar. Urutkan dulu: 60, 65, 70, 75, 80, 85, 90. Karena ada 7 data (ganjil), median adalah nilai ke-(7+1)/2 = nilai ke-4 = 75."
+  },
+  {
+    id: 5,
+    kompetensi: "Memahami Modus dalam Konteks Nyata",
+    soal: "Bu Sari menjual kue. Dalam 5 hari terakhir, ia mencatat rasa kue yang paling banyak dipesan pelanggan:",
+    subtext: "Coklat, Vanilla, Coklat, Keju, Coklat",
+    gambar: "soal5",
+    pertanyaan: "Manakah tabel yang menunjukkan <strong>frekuensi masing-masing rasa</strong> dengan benar?",
+    opsi: [
+      { huruf: "A", teks: "Tabel A" },
+      { huruf: "B", teks: "Tabel B" },
+      { huruf: "C", teks: "Tabel C" },
+      { huruf: "D", teks: "Tabel D" },
+    ],
+    jawaban: "C",
+    penjelasan: "Dari data rasa kue: Coklat muncul 3 kali, Vanilla 1 kali, Keju 1 kali. Tabel C menunjukkan frekuensi yang benar untuk masing-masing rasa. Coklat memiliki frekuensi tertinggi, sehingga modus = Coklat."
+  },
+  {
+    id: 6,
+    kompetensi: "Menghitung Mean (Rata-rata) Data",
+    soal: "Sebuah toko elektronik mencatat penjualan laptop selama 5 hari:",
+    subtext: "Senin: 4 unit | Selasa: 6 unit | Rabu: 5 unit | Kamis: 7 unit | Jumat: 8 unit",
+    gambar: "soal6",
+    pertanyaan: "Berapakah <strong>rata-rata (mean)</strong> penjualan laptop per hari?",
+    opsi: [
+      { huruf: "A", teks: "5 unit" },
+      { huruf: "B", teks: "6 unit" },
+      { huruf: "C", teks: "7 unit" },
+      { huruf: "D", teks: "8 unit" },
+    ],
+    jawaban: "B",
+    penjelasan: "Mean (rata-rata) = Jumlah semua data ÷ banyak data = (4 + 6 + 5 + 7 + 8) ÷ 5 = 30 ÷ 5 = 6 unit."
+  },
+  {
+    id: 7,
+    kompetensi: "Membaca Data dari Tabel",
+    soal: "Tabel berikut menunjukkan banyak pengunjung perpustakaan setiap hari dalam seminggu:",
+    subtext: "Senin: 120 | Selasa: 145 | Rabu: 130 | Kamis: 155 | Jumat: 130 | Sabtu: 200",
+    gambar: "soal7",
+    pertanyaan: "Pasangan hari mana yang mengalami <strong>perubahan pengunjung paling sedikit</strong>?",
+    opsi: [
+      { huruf: "A", teks: "Senin-Selasa" },
+      { huruf: "B", teks: "Selasa-Rabu" },
+      { huruf: "C", teks: "Rabu-Kamis" },
+      { huruf: "D", teks: "Kamis-Jumat" },
+    ],
+    jawaban: "B",
+    penjelasan: "Hitung selisih pengunjung antar hari berurutan: Senin-Selasa = |145-120| = 25. Selasa-Rabu = |130-145| = 15. Rabu-Kamis = |155-130| = 25. Kamis-Jumat = |130-155| = 25. Perubahan paling sedikit terjadi antara Selasa-Rabu dengan selisih hanya 15 pengunjung."
+  },
+  {
+    id: 8,
+    kompetensi: "Menentukan Jangkauan (Range) Data",
+    soal: "Data tinggi badan (cm) dari 8 siswa adalah sebagai berikut:",
+    subtext: "165, 170, 168, 172, 166, 171, 169, 173",
+    gambar: "soal8",
+    pertanyaan: "Berapakah <strong>jangkauan (range)</strong> dari data tinggi badan tersebut?",
+    opsi: [
+      { huruf: "A", teks: "6 cm" },
+      { huruf: "B", teks: "7 cm" },
+      { huruf: "C", teks: "8 cm" },
+      { huruf: "D", teks: "9 cm" },
+    ],
+    jawaban: "C",
+    penjelasan: "Jangkauan (Range) = Data terbesar − Data terkecil. Data terbesar: 173 cm, Data terkecil: 165 cm. Jadi, Range = 173 − 165 = 8 cm."
+  }
+];
+
+
+// ─────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────
+let jawabanSiswa = {};
+let sudahSubmit = false;
+
+// ─────────────────────────────────────────
+// SVG CHARTS
+// ─────────────────────────────────────────
+function buatGambar(tipe) {
+  if (tipe === "soal1") {
+    return `
+      <div class="chart-container">
+        <div class="chart-title">Tabel: Contoh Jenis Data</div>
+        <table class="data-table">
+          <thead><tr><th>No</th><th>Data</th></tr></thead>
+          <tbody>
+            <tr><td>i</td><td>Tinggi badan siswa (cm)</td></tr>
+            <tr><td>ii</td><td>Warna kesukaan</td></tr>
+            <tr><td>iii</td><td>Jumlah buku yang dimiliki</td></tr>
+            <tr><td>iv</td><td>Jenis olahraga favorit</td></tr>
+          </tbody>
+        </table>
+      </div>`;
+  }
+
+  if (tipe === "soal2") {
+    const days = ["Senin","Selasa","Rabu","Kamis","Jumat"];
+    const vals = [20, 15, 18, 22, 8];
+    const maxVal = 25;
+    const svgH = 160;
+    const svgW = 300;
+    const padL = 30, padB = 30, padT = 14, padR = 10;
+    const chartW = svgW - padL - padR;
+    const chartH = svgH - padB - padT;
+    const barW = chartW / days.length;
+
+    let bars = "";
+    let labels = "";
+    let valLabels = "";
+    days.forEach((d, i) => {
+      const bh = (vals[i] / maxVal) * chartH;
+      const x = padL + i * barW + barW * 0.15;
+      const bWidth = barW * 0.7;
+      const y = padT + chartH - bh;
+      const fill = vals[i] === 8 ? "#555" : "#1a1a1a";
+      bars += `<rect x="${x}" y="${y}" width="${bWidth}" height="${bh}" fill="${fill}" />`;
+      labels += `<text x="${padL + i * barW + barW / 2}" y="${svgH - 10}" text-anchor="middle" font-size="9" fill="#333">${d}</text>`;
+      valLabels += `<text x="${padL + i * barW + barW / 2}" y="${y - 3}" text-anchor="middle" font-size="9" fill="#111" font-weight="600">${vals[i]}</text>`;
+    });
+
+    let yTicks = "";
+    for (let v = 0; v <= maxVal; v += 5) {
+      const y = padT + chartH - (v / maxVal) * chartH;
+      yTicks += `<line x1="${padL}" y1="${y}" x2="${svgW - padR}" y2="${y}" stroke="#eee" stroke-width="1"/>`;
+      yTicks += `<text x="${padL - 4}" y="${y + 3}" text-anchor="end" font-size="8" fill="#888">${v}</text>`;
+    }
+
+    return `
+      <div class="chart-container">
+        <div class="chart-title">Jumlah Siswa Membawa Bekal per Hari</div>
+        <svg width="100%" viewBox="0 0 ${svgW} ${svgH}" style="max-width:320px; display:block; margin:0 auto;">
+          ${yTicks}
+          <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + chartH}" stroke="#333" stroke-width="1.5"/>
+          <line x1="${padL}" y1="${padT + chartH}" x2="${svgW - padR}" y2="${padT + chartH}" stroke="#333" stroke-width="1.5"/>
+          ${bars}
+          ${valLabels}
+          ${labels}
+        </svg>
+      </div>`;
+  }
+
+  if (tipe === "soal3") {
+    const months = ["Jan","Feb","Mar","Apr","Mei","Jun"];
+    const temps = [28, 30, 32, 29, 27, 28];
+    const minT = 24, maxT = 34;
+    const svgH = 155;
+    const svgW = 300;
+    const padL = 32, padB = 28, padT = 14, padR = 10;
+    const chartW = svgW - padL - padR;
+    const chartH = svgH - padB - padT;
+    const stepX = chartW / (months.length - 1);
+
+    const points = temps.map((t, i) => {
+      const x = padL + i * stepX;
+      const y = padT + chartH - ((t - minT) / (maxT - minT)) * chartH;
+      return { x, y, t };
+    });
+
+    let polyline = points.map(p => `${p.x},${p.y}`).join(" ");
+    let dots = points.map((p, i) => {
+      const isHighlight = (i === 2 || i === 3);
+      return `<circle cx="${p.x}" cy="${p.y}" r="${isHighlight ? 5 : 4}" fill="${isHighlight ? '#555' : '#1a1a1a'}" />`;
+    }).join("");
+    let tempLabels = points.map(p =>
+      `<text x="${p.x}" y="${p.y - 7}" text-anchor="middle" font-size="8.5" font-weight="600" fill="#111">${p.t}°</text>`
+    ).join("");
+    let xLabels = months.map((m, i) =>
+      `<text x="${padL + i * stepX}" y="${svgH - 8}" text-anchor="middle" font-size="9" fill="#333">${m}</text>`
+    ).join("");
+
+    let yTicks = "";
+    for (let v = minT; v <= maxT; v += 2) {
+      const y = padT + chartH - ((v - minT) / (maxT - minT)) * chartH;
+      yTicks += `<line x1="${padL}" y1="${y}" x2="${svgW - padR}" y2="${y}" stroke="#eee" stroke-width="1"/>`;
+      if (v % 4 === 0) yTicks += `<text x="${padL - 4}" y="${y + 3}" text-anchor="end" font-size="8" fill="#888">${v}</text>`;
+    }
+
+    const px3 = points[2], px4 = points[3];
+    const arrowPath = `M${px3.x + 6},${px3.y + 3} L${px4.x - 4},${px4.y - 3}`;
+
+    return `
+      <div class="chart-container">
+        <div class="chart-title">Suhu Rata-rata Kota X (°C) — Jan s.d. Jun</div>
+        <svg width="100%" viewBox="0 0 ${svgW} ${svgH}" style="max-width:320px; display:block; margin:0 auto;">
+          ${yTicks}
+          <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + chartH}" stroke="#333" stroke-width="1.5"/>
+          <line x1="${padL}" y1="${padT + chartH}" x2="${svgW - padR}" y2="${padT + chartH}" stroke="#333" stroke-width="1.5"/>
+          <polyline points="${polyline}" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+          ${dots}
+          ${tempLabels}
+          ${xLabels}
+          <path d="${arrowPath}" stroke="#777" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="3,2"/>
+          <defs>
+            <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#777"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>`;
+  }
+
+  if (tipe === "soal4") {
+    const raw = [70, 85, 60, 90, 75, 80, 65];
+    let rawCells = raw.map(v =>
+      `<td style="padding:5px 8px; border:1px solid #ccc; text-align:center;">${v}</td>`
+    ).join("");
+
+    return `
+      <div class="chart-container">
+        <div class="chart-title">Data Nilai Ulangan 7 Siswa</div>
+        <div style="font-size:0.78rem; color:#555; margin-bottom:5px;">Data asli:</div>
+        <table class="data-table"><tbody><tr>${rawCells}</tr></tbody></table>
+      </div>`;
+  }
+
+  if (tipe === "soal5") {
+    const tabelA = [
+      { rasa: "Coklat", freq: 1 },
+      { rasa: "Vanilla", freq: 2 },
+      { rasa: "Keju", freq: 2 },
+    ];
+    const tabelB = [
+      { rasa: "Coklat", freq: 2 },
+      { rasa: "Vanilla", freq: 2 },
+      { rasa: "Keju", freq: 1 },
+    ];
+    const tabelC = [
+      { rasa: "Coklat", freq: 3 },
+      { rasa: "Vanilla", freq: 1 },
+      { rasa: "Keju", freq: 1 },
+    ];
+    const tabelD = [
+      { rasa: "Coklat", freq: 1 },
+      { rasa: "Vanilla", freq: 1 },
+      { rasa: "Keju", freq: 3 },
+    ];
+
+    const buatTabel = (data, label) => {
+      let rows = data.map(r =>
+        `<tr><td style="padding:5px 10px; border:1px solid #ccc; text-align:center;">${r.rasa}</td>
+         <td style="padding:5px 10px; border:1px solid #ccc; text-align:center;">${r.freq}</td></tr>`
+      ).join("");
+      return `
+        <div style="border:1px solid #ccc; padding:8px; margin:6px 0;">
+          <div style="font-size:0.75rem; font-weight:700; text-align:center; margin-bottom:5px;">${label}</div>
+          <table class="data-table" style="margin:0;">
+            <thead><tr><th style="font-size:0.8rem;">Rasa</th><th style="font-size:0.8rem;">Frekuensi</th></tr></thead>
+            <tbody style="font-size:0.8rem;">${rows}</tbody>
+          </table>
+        </div>`;
+    };
+
+    return `
+      <div class="chart-container">
+        <div class="chart-title">Pilih Tabel Frekuensi yang Benar</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          ${buatTabel(tabelA, "Tabel A")}
+          ${buatTabel(tabelB, "Tabel B")}
+          ${buatTabel(tabelC, "Tabel C")}
+          ${buatTabel(tabelD, "Tabel D")}
+        </div>
+      </div>`;
+  }
+
+  if (tipe === "soal6") {
+    const days = ["Senin","Selasa","Rabu","Kamis","Jumat"];
+    const vals = [4, 6, 5, 7, 8];
+    const maxVal = 10;
+    const svgH = 150;
+    const svgW = 300;
+    const padL = 30, padB = 28, padT = 14, padR = 10;
+    const chartW = svgW - padL - padR;
+    const chartH = svgH - padB - padT;
+    const barW = chartW / days.length;
+
+    let bars = "";
+    let labels = "";
+    let valLabels = "";
+    days.forEach((d, i) => {
+      const bh = (vals[i] / maxVal) * chartH;
+      const x = padL + i * barW + barW * 0.15;
+      const bWidth = barW * 0.7;
+      const y = padT + chartH - bh;
+      bars += `<rect x="${x}" y="${y}" width="${bWidth}" height="${bh}" fill="#1a1a1a" />`;
+      labels += `<text x="${padL + i * barW + barW / 2}" y="${svgH - 10}" text-anchor="middle" font-size="9" fill="#333">${d}</text>`;
+      valLabels += `<text x="${padL + i * barW + barW / 2}" y="${y - 3}" text-anchor="middle" font-size="9" fill="#111" font-weight="600">${vals[i]}</text>`;
+    });
+
+    let yTicks = "";
+    for (let v = 0; v <= maxVal; v += 2) {
+      const y = padT + chartH - (v / maxVal) * chartH;
+      yTicks += `<line x1="${padL}" y1="${y}" x2="${svgW - padR}" y2="${y}" stroke="#eee" stroke-width="1"/>`;
+      yTicks += `<text x="${padL - 4}" y="${y + 3}" text-anchor="end" font-size="8" fill="#888">${v}</text>`;
+    }
+
+    return `
+      <div class="chart-container">
+        <div class="chart-title">Penjualan Laptop Harian (unit)</div>
+        <svg width="100%" viewBox="0 0 ${svgW} ${svgH}" style="max-width:320px; display:block; margin:0 auto;">
+          ${yTicks}
+          <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + chartH}" stroke="#333" stroke-width="1.5"/>
+          <line x1="${padL}" y1="${padT + chartH}" x2="${svgW - padR}" y2="${padT + chartH}" stroke="#333" stroke-width="1.5"/>
+          ${bars}
+          ${valLabels}
+          ${labels}
+        </svg>
+      </div>`;
+  }
+
+  if (tipe === "soal7") {
+    const dataPerp = [
+      { hari: "Senin", jumlah: 120 },
+      { hari: "Selasa", jumlah: 145 },
+      { hari: "Rabu", jumlah: 130 },
+      { hari: "Kamis", jumlah: 155 },
+      { hari: "Jumat", jumlah: 130 },
+      { hari: "Sabtu", jumlah: 200 }
+    ];
+    let rowsPerp = dataPerp.map(d => {
+      return `<tr><td style="padding:5px 8px; border:1px solid #ccc;">${d.hari}</td>
+       <td style="padding:5px 8px; border:1px solid #ccc; text-align:center; font-weight:600;">${d.jumlah}</td></tr>`;
+    }).join("");
+
+    return `
+      <div class="chart-container">
+        <div class="chart-title">Pengunjung Perpustakaan (Seminggu)</div>
+        <table class="data-table">
+          <thead><tr><th>Hari</th><th>Jumlah Pengunjung</th></tr></thead>
+          <tbody>${rowsPerp}</tbody>
+        </table>
+        <div style="font-size:0.78rem; color:#666; margin-top:8px;">Perhatikan perubahan jumlah pengunjung antar hari yang berurutan.</div>
+      </div>`;
+  }
+
+  if (tipe === "soal8") {
+    const dataTinggi = [165, 170, 168, 172, 166, 171, 169, 173];
+    let rowsTinggi = dataTinggi.map(t =>
+      `<td style="padding:5px 8px; border:1px solid #ccc; text-align:center;">${t}</td>`
+    ).join("");
+
+    return `
+      <div class="chart-container">
+        <div class="chart-title">Data Tinggi Badan 8 Siswa (cm)</div>
+        <table class="data-table"><tbody><tr>${rowsTinggi}</tr></tbody></table>
+      </div>`;
+  }
+
+  return "";
+}
+
+// ─────────────────────────────────────────
+// RENDER SOAL
+// ─────────────────────────────────────────
+function renderSoal() {
+  const container = document.getElementById("soal-container");
+  container.innerHTML = "";
+
+  soalData.forEach((s, idx) => {
+    const block = document.createElement("div");
+    block.className = "question-block";
+    block.id = `soal-block-${s.id}`;
+
+    const opsiHtml = s.opsi.map(o => `
+      <li class="option-item" id="opsi-${s.id}-${o.huruf}" onclick="pilihJawaban(${s.id}, '${o.huruf}')">
+        <div class="option-radio" id="radio-${s.id}-${o.huruf}"></div>
+        <span class="option-label"><strong>${o.huruf}.</strong> ${o.teks}</span>
+      </li>
+    `).join("");
+
+    block.innerHTML = `
+      <div class="question-header">
+        <span class="question-number">${s.id}</span>
+        <div>
+          <div class="question-text">${s.soal}</div>
+          ${s.subtext ? `<div class="question-subtext">${s.subtext}</div>` : ""}
+        </div>
+      </div>
+      ${buatGambar(s.gambar)}
+      <div style="font-size:0.92rem; margin:10px 0 6px 0; line-height:1.6;">${s.pertanyaan}</div>
+      <ul class="options-list">${opsiHtml}</ul>
+      <div class="explanation" id="expl-${s.id}">
+        <strong>Pembahasan:</strong> ${s.penjelasan}
+      </div>
+    `;
+    container.appendChild(block);
+  });
+
+  updateProgress();
+}
+
+// ─────────────────────────────────────────
+// PILIH JAWABAN
+// ─────────────────────────────────────────
+function pilihJawaban(soalId, huruf) {
+  if (sudahSubmit) return;
+
+  const soal = soalData.find(s => s.id === soalId);
+  soal.opsi.forEach(o => {
+    const el = document.getElementById(`opsi-${soalId}-${o.huruf}`);
+    const radio = document.getElementById(`radio-${soalId}-${o.huruf}`);
+    el.classList.remove("selected");
+    radio.classList.remove("checked");
+  });
+
+  jawabanSiswa[soalId] = huruf;
+
+  const elSelected = document.getElementById(`opsi-${soalId}-${huruf}`);
+  const radioSelected = document.getElementById(`radio-${soalId}-${huruf}`);
+  elSelected.classList.add("selected");
+  radioSelected.classList.add("checked");
+
+  updateProgress();
+}
+
+// ─────────────────────────────────────────
+// UPDATE PROGRESS
+// ─────────────────────────────────────────
+function updateProgress() {
+  const answered = Object.keys(jawabanSiswa).length;
+  const total = soalData.length;
+  const pct = (answered / total) * 100;
+  document.getElementById("progress-fill").style.width = pct + "%";
+  document.getElementById("nav-progress-text").textContent = `${answered} dari ${total} soal dijawab`;
+}
+
+// ─────────────────────────────────────────
+// SUBMIT
+// ─────────────────────────────────────────
+function submitAsesmen() {
+  const nama = document.getElementById("siswa-nama").value.trim();
+  if (!nama) {
+    document.getElementById("siswa-nama").style.borderBottomColor = "#b00000";
+    document.getElementById("siswa-nama").placeholder = "⚠ Wajib diisi!";
+    document.getElementById("siswa-nama").focus();
+    return;
+  }
+
+  const answered = Object.keys(jawabanSiswa).length;
+  if (answered < soalData.length) {
+    const missing = soalData.filter(s => !jawabanSiswa[s.id]).map(s => `Soal ${s.id}`).join(", ");
+    const warnEl = document.getElementById("warn-unanswered");
+    if (!warnEl) {
+      const warn = document.createElement("div");
+      warn.id = "warn-unanswered";
+      warn.style.cssText = "background:#fff3cd; border:1px solid #ccc; padding:8px 12px; font-size:0.82rem; color:#7a5800; margin-top:8px;";
+      warn.innerHTML = `⚠ <strong>Belum dijawab:</strong> ${missing}. Lanjutkan tetap kirim?
+        <button onclick="forceSubmit()" style="margin-left:12px; padding:3px 10px; font-size:0.8rem; background:#1a1a1a; color:#fff; border:none; cursor:pointer;">Ya, Kirim</button>
+        <button onclick="this.parentElement.remove()" style="margin-left:6px; padding:3px 10px; font-size:0.8rem; background:#999; color:#fff; border:none; cursor:pointer;">Batal</button>`;
+      document.getElementById("btn-submit").insertAdjacentElement("afterend", warn);
+    }
+    return;
+  }
+
+  prosesSubmit();
+}
+
+function forceSubmit() {
+  const warnEl = document.getElementById("warn-unanswered");
+  if (warnEl) warnEl.remove();
+  prosesSubmit();
+}
+
+function prosesSubmit() {
+  sudahSubmit = true;
+  document.getElementById("btn-submit").disabled = true;
+  document.getElementById("btn-submit").textContent = "✓ Jawaban Terkirim";
+
+  if (!document.getElementById("siswa-tanggal").value) {
+    const now = new Date();
+    document.getElementById("siswa-tanggal").value = now.toISOString().split("T")[0];
+  }
+
+  let benar = 0;
+  const breakdown = [];
+
+  soalData.forEach(s => {
+    const jawabSiswa = jawabanSiswa[s.id] || "—";
+    const correct = jawabSiswa === s.jawaban;
+    if (correct) benar++;
+
+    s.opsi.forEach(o => {
+      const el = document.getElementById(`opsi-${s.id}-${o.huruf}`);
+      el.classList.remove("selected", "correct", "wrong");
+      if (o.huruf === s.jawaban) {
+        el.classList.add("correct");
+      } else if (o.huruf === jawabSiswa && !correct) {
+        el.classList.add("wrong");
+      }
+    });
+
+    document.getElementById(`expl-${s.id}`).classList.add("show");
+
+    breakdown.push(`
+      <div style="display:flex; gap:6px; align-items:flex-start; padding:4px 0; border-bottom:1px solid #eee;">
+        <span class="feedback-icon">${correct ? "✅" : "❌"}</span>
+        <div>
+          <strong>Soal ${s.id}</strong> — ${s.kompetensi}<br/>
+          <span style="color:#555;">Jawabanmu: <strong>${jawabSiswa}</strong> | Kunci: <strong>${s.jawaban}</strong></span>
+        </div>
+      </div>
+    `);
+  });
+
+  const skor = Math.round((benar / soalData.length) * 100);
+  let levelText = "";
+  if (skor >= 80) levelText = "🌟 Sangat Baik — Kamu memahami materi dengan sangat baik!";
+  else if (skor >= 60) levelText = "👍 Cukup Baik — Ada beberapa konsep yang perlu diperkuat.";
+  else if (skor >= 40) levelText = "📚 Perlu Belajar Lagi — Fokus pada konsep dasar statistika.";
+  else levelText = "⚠ Butuh Bimbingan — Yuk, pelajari kembali materi dari awal!";
+
+  document.getElementById("result-score").textContent = `${benar}/${soalData.length} (${skor}%)`;
+  document.getElementById("result-label").textContent = levelText;
+  document.getElementById("result-breakdown").innerHTML = breakdown.join("");
+
+  const panel = document.getElementById("result-panel");
+  panel.classList.add("show");
+
+  document.getElementById("send-panel").style.display = "block";
+
+  setTimeout(() => {
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 200);
+
+  if (window.lucide) lucide.createIcons();
+}
+
+// ─────────────────────────────────────────
+// KIRIM KE SPREADSHEET
+// ─────────────────────────────────────────
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxwUjW7oMtR3kNGlvqJlcPLIRAdB9JQ3sfeD9k6H1XzcZqRQJCNowprEN_GOQb5-uXQEg/exec";
+
+async function kirimKeSpreadsheet() {
+  const btnSend = document.getElementById("btn-send");
+  const statusEl = document.getElementById("send-status");
+  btnSend.disabled = true;
+  btnSend.innerHTML = `<i data-lucide="loader" style="width:13px;height:13px;"></i> Mengirim...`;
+  if (window.lucide) lucide.createIcons();
+  statusEl.className = "send-status";
+  statusEl.textContent = "Mengirim data...";
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    nama: document.getElementById("siswa-nama").value.trim(),
+    kelas: document.getElementById("siswa-kelas").value.trim(),
+    absen: document.getElementById("siswa-absen").value.trim(),
+    tanggal: document.getElementById("siswa-tanggal").value,
+    jawaban_s1: jawabanSiswa[1] || "—",
+    jawaban_s2: jawabanSiswa[2] || "—",
+    jawaban_s3: jawabanSiswa[3] || "—",
+    jawaban_s4: jawabanSiswa[4] || "—",
+    jawaban_s5: jawabanSiswa[5] || "—",
+    jawaban_s6: jawabanSiswa[6] || "—",
+    jawaban_s7: jawabanSiswa[7] || "—",
+    jawaban_s8: jawabanSiswa[8] || "—",
+    benar: soalData.filter(s => jawabanSiswa[s.id] === s.jawaban).length,
+    skor: Math.round((soalData.filter(s => jawabanSiswa[s.id] === s.jawaban).length / soalData.length) * 100),
+  };
+
+  try {
+    await fetch(WEBAPP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    statusEl.className = "send-status ok";
+    statusEl.textContent = "✓ Data berhasil dikirim ke Google Spreadsheet!";
+    btnSend.innerHTML = `<i data-lucide="check" style="width:13px;height:13px;"></i> Terkirim`;
+  } catch (err) {
+    statusEl.className = "send-status err";
+    statusEl.textContent = "✗ Gagal mengirim. Periksa koneksi atau URL Web App kamu.";
+    btnSend.disabled = false;
+    btnSend.innerHTML = `<i data-lucide="send" style="width:13px;height:13px;"></i> Coba Lagi`;
+  }
+  if (window.lucide) lucide.createIcons();
+}
+
+// ─────────────────────────────────────────
+// SCROLL HELPER
+// ─────────────────────────────────────────
+function scrollToSubmit() {
+  document.getElementById("btn-submit").scrollIntoView({ behavior: "smooth" });
+}
+
+// ─────────────────────────────────────────
+// ELEMENT SDK
+// ─────────────────────────────────────────
+const defaultConfig = {
+  judul_asesmen: "Asesmen Diagnostik Kognitif",
+  nama_mapel: "Matematika",
+  nama_guru: "—",
+};
+
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => {
+    // Empty header, no visual updates needed
+  },
+  mapToCapabilities: (config) => ({
+    recolorables: [],
+    borderables: [],
+    fontEditable: undefined,
+    fontSizeable: undefined,
+  }),
+  mapToEditPanelValues: (config) => new Map([
+    ["judul_asesmen", config.judul_asesmen || defaultConfig.judul_asesmen],
+    ["nama_mapel", config.nama_mapel || defaultConfig.nama_mapel],
+    ["nama_guru", config.nama_guru || defaultConfig.nama_guru],
+  ]),
+});
+
+// ─────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────
+renderSoal();
+document.getElementById("siswa-tanggal").value = new Date().toISOString().split("T")[0];
+if (window.lucide) lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e4725970692f4e4',t:'MTc3NDg3NDA0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
