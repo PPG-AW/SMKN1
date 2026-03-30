@@ -214,25 +214,33 @@
       document.getElementById('loadingIndicator').classList.add('show');
 
       try {
+        console.log('Sending data to:', WEB_APP_URL);
+        
+        // Kirim tanpa header Content-Type untuk menghindari CORS preflight
         const response = await fetch(WEB_APP_URL, {
-  method: 'POST',
-  mode: 'no-cors', // TAMBAHKAN BARIS INI
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(data)
-});
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
 
-// Karena mode 'no-cors', kita tidak bisa membaca isi JSON-nya.
-// Cukup asumsikan jika tidak ada error 'catch', maka data terkirim.
-showNotification('Data sedang dikirim...', 'success');
-        const result = await response.json();
-        if (result.success) {
-          showNotification('Data berhasil disimpan!', 'success');
-          resetForm();
+        console.log('Response status:', response.status);
+        
+        // Cek apakah response berhasil
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Result:', result);
+          
+          if (result.success) {
+            showNotification('✓ Data berhasil disimpan ke Google Sheet!', 'success');
+            resetForm();
+          } else {
+            showNotification('Error: ' + (result.error || 'Terjadi kesalahan'), 'error');
+          }
         } else {
-          showNotification('Error: ' + (result.error || 'Unknown error'), 'error');
+          showNotification('Error: Server mengembalikan status ' + response.status, 'error');
         }
       } catch (error) {
-        showNotification('Error: ' + error.message, 'error');
+        console.error('Fetch error details:', error);
+        showNotification('Gagal menghubungi server. Pastikan URL Web App sudah benar.', 'error');
       } finally {
         document.getElementById('loadingIndicator').classList.remove('show');
       }
@@ -244,5 +252,5 @@ showNotification('Data sedang dikirim...', 'success');
 
     initializeForm();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e4754b16497b882',t:'MTc3NDg3NTk3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e476f69667eb5b7',t:'MTc3NDg3NzA3My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
