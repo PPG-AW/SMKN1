@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&amp;family=Source+Sans+3:wght@400;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+html, body { height: 100%; margin: 0; }
+body { font-family: 'Source Sans 3', sans-serif; color: #1a1a1a; background: #f0f0f0; line-height: 1.7; }
+.doc-page { background: #fff; max-width: 800px; margin: 0 auto; padding: 60px 65px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+h1 { font-family: 'Crimson Pro', serif; font-size: 26px; font-weight: 700; text-align: center; margin-bottom: 4px; color: #111; }
+h2 { font-family: 'Crimson Pro', serif; font-size: 20px; font-weight: 700; margin-top: 32px; margin-bottom: 12px; padding-bottom: 4px; border-bottom: 1.5px solid #111; color: #111; }
+h3 { font-family: 'Crimson Pro', serif; font-size: 17px; font-weight: 600; margin-top: 20px; margin-bottom: 8px; color: #222; }
+p, li { font-size: 14.5px; margin-bottom: 6px; }
+ul, ol { padding-left: 22px; margin-bottom: 10px; }
+ol { list-style: decimal; }
+ul { list-style: disc; }
+.frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 3px; line-height: 1.1; }
+.frac .num { border-bottom: 1px solid #1a1a1a; padding: 0 4px 1px; font-size: 13.5px; }
+.frac .den { padding: 1px 4px 0; font-size: 13.5px; }
+.formula-box { background: #f8f8f8; border: 1px solid #ddd; border-radius: 4px; padding: 14px 18px; margin: 12px 0; font-size: 14px; }
+.example-box { background: #fafafa; border-left: 3px solid #444; padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+.example-box .ex-title { font-weight: 700; margin-bottom: 6px; font-size: 14px; }
+table.trig-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13.5px; }
+table.trig-table th, table.trig-table td { border: 1px solid #aaa; padding: 6px 8px; text-align: center; }
+table.trig-table th { background: #eee; font-weight: 700; }
+canvas { display: block; margin: 10px auto; max-width: 100%; height: auto; }
+.subtitle { text-align: center; font-size: 14px; color: #555; margin-bottom: 24px; }
+.step { margin-left: 12px; margin-bottom: 4px; }
+.sqrt { white-space: nowrap; }
+.sqrt::before { content: "\221A"; }
+sup { font-size: 0.75em; vertical-align: super; }
+
+@media (max-width: 768px) {
+  .doc-page { padding: 40px 20px; }
+  h1 { font-size: 22px; }
+  h2 { font-size: 17px; margin-top: 24px; margin-bottom: 10px; }
+  h3 { font-size: 15px; margin-top: 16px; margin-bottom: 6px; }
+  p, li { font-size: 13px; }
+  .formula-box { padding: 12px 14px; font-size: 13px; }
+  .example-box { padding: 12px 14px; font-size: 13px; }
+  .example-box .ex-title { font-size: 13px; }
+  table.trig-table { font-size: 12px; }
+  table.trig-table th, table.trig-table td { padding: 4px 6px; }
+  .subtitle { font-size: 12px; margin-bottom: 16px; }
+  .step { margin-left: 10px; margin-bottom: 3px; font-size: 13px; }
+}
+
+@media (max-width: 480px) {
+  .doc-page { padding: 30px 16px; }
+  h1 { font-size: 18px; margin-bottom: 2px; }
+  h2 { font-size: 14px; margin-top: 18px; margin-bottom: 8px; }
+  h3 { font-size: 13px; margin-top: 12px; margin-bottom: 4px; }
+  p, li { font-size: 12px; margin-bottom: 4px; }
+  ul, ol { padding-left: 18px; margin-bottom: 8px; }
+  .formula-box { padding: 10px 12px; font-size: 12px; margin: 10px 0; }
+  .example-box { padding: 10px 12px; font-size: 12px; margin: 10px 0; border-left: 2px solid #444; }
+  .example-box .ex-title { font-size: 12px; margin-bottom: 4px; }
+  table.trig-table { font-size: 11px; margin: 10px 0; }
+  table.trig-table th, table.trig-table td { padding: 3px 4px; }
+  .subtitle { font-size: 11px; margin-bottom: 12px; }
+  .step { margin-left: 8px; margin-bottom: 2px; font-size: 12px; }
+  .frac .num, .frac .den { font-size: 12px; }
+}
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full" style="overflow-y:auto;">
+  <div class="doc-page" id="doc">
+   <h1 id="docTitle">HANDOUT MATERI TRIGONOMETRI</h1>
+   <p class="subtitle">Kelas X - Semester 2</p><!-- BAB 1 -->
+   <h2>1. Sisi-Sisi Segitiga Siku-Siku Berdasarkan Sudut Acuan</h2>
+   <p>Pada segitiga siku-siku, penamaan sisi bergantung pada <b>sudut acuan</b> yang dipilih (sudut selain sudut siku-siku):</p>
+   <ul>
+    <li><b>Sisi miring (hipotenusa)</b>: sisi di hadapan sudut siku-siku, selalu merupakan sisi terpanjang.</li>
+    <li><b>Sisi depan</b>: sisi yang berhadapan langsung dengan sudut acuan.</li>
+    <li><b>Sisi samping</b>: sisi yang mengapit sudut acuan (selain hipotenusa).</li>
+   </ul>
+   <p><b>Kasus 1:</b> Siku-siku di titik C, sudut acuan di titik A.</p>
+   <canvas id="c1a" width="300" height="160"></canvas>
+   <p><b>Kasus 2:</b> Siku-siku di titik C, sudut acuan di titik B.</p>
+   <canvas id="c1b" width="300" height="160"></canvas>
+   <p><b>Kasus 3:</b> Siku-siku di titik A, sudut acuan di titik B.</p>
+   <canvas id="c1c" width="300" height="160"></canvas>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 1</p>
+    <p>Pada segitiga ABC siku-siku di C dengan sudut acuan A. Tentukan sisi depan, sisi samping, dan sisi miring.</p>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">Siku-siku di C, maka sisi miring (hipotenusa) = AB (sisi di hadapan sudut siku-siku).</p>
+    <p class="step">Sudut acuan di A, maka:</p>
+    <p class="step">- Sisi depan = BC (berhadapan dengan sudut A)</p>
+    <p class="step">- Sisi samping = AC (mengapit sudut A, bukan hipotenusa)</p>
+   </div><!-- BAB 2 -->
+   <h2>2. Teorema Pythagoras</h2>
+   <p>Pada segitiga siku-siku, berlaku hubungan:</p>
+   <div class="formula-box" style="text-align:center;">
+    <b>(hipotenusa)<sup>2</sup> = (sisi 1)<sup>2</sup> + (sisi 2)<sup>2</sup></b><br><br>
+     Jika segitiga ABC siku-siku di C, maka: &nbsp; <b>AB<sup>2</sup> = AC<sup>2</sup> + BC<sup>2</sup></b>
+   </div>
+   <canvas id="c2" width="300" height="200"></canvas>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 2</p>
+    <p>Segitiga ABC siku-siku di C dengan AC = 3 cm dan BC = 4 cm. Tentukan panjang AB.</p>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">AB<sup>2</sup> = AC<sup>2</sup> + BC<sup>2</sup></p>
+    <p class="step">AB<sup>2</sup> = 3<sup>2</sup> + 4<sup>2</sup> = 9 + 16 = 25</p>
+    <p class="step">AB = <span class="sqrt">25</span> = 5 cm</p>
+   </div>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 3</p>
+    <p>Segitiga PQR siku-siku di R dengan PQ = 13 cm dan PR = 5 cm. Tentukan panjang QR.</p>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">PQ<sup>2</sup> = PR<sup>2</sup> + QR<sup>2</sup></p>
+    <p class="step">13<sup>2</sup> = 5<sup>2</sup> + QR<sup>2</sup></p>
+    <p class="step">169 = 25 + QR<sup>2</sup></p>
+    <p class="step">QR<sup>2</sup> = 144</p>
+    <p class="step">QR = <span class="sqrt">144</span> = 12 cm</p>
+   </div><!-- BAB 3 -->
+   <h2>3. Perbandingan Trigonometri</h2>
+   <p>Enam perbandingan trigonometri pada sudut acuan α dalam segitiga siku-siku:</p>
+   <canvas id="c3" width="300" height="210"></canvas>
+   <div class="formula-box">
+    <table style="width:100%; border:none; border-collapse:collapse;">
+     <tbody>
+      <tr>
+       <td style="padding:6px; border:none; width:50%;">sin α = <span class="frac"><span class="num">sisi depan</span><span class="den">sisi miring</span></span></td>
+       <td style="padding:6px; border:none;">cosec α = <span class="frac"><span class="num">sisi miring</span><span class="den">sisi depan</span></span></td>
+      </tr>
+      <tr>
+       <td style="padding:6px; border:none;">cos α = <span class="frac"><span class="num">sisi samping</span><span class="den">sisi miring</span></span></td>
+       <td style="padding:6px; border:none;">sec α = <span class="frac"><span class="num">sisi miring</span><span class="den">sisi samping</span></span></td>
+      </tr>
+      <tr>
+       <td style="padding:6px; border:none;">tan α = <span class="frac"><span class="num">sisi depan</span><span class="den">sisi samping</span></span></td>
+       <td style="padding:6px; border:none;">cot α = <span class="frac"><span class="num">sisi samping</span><span class="den">sisi depan</span></span></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 4</p>
+    <p>Segitiga ABC siku-siku di C dengan AC = 4 cm, BC = 3 cm, dan AB = 5 cm. Tentukan nilai keenam perbandingan trigonometri untuk sudut A.</p>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">Sudut acuan = A. Sisi depan = BC = 3, sisi samping = AC = 4, sisi miring = AB = 5.</p>
+    <p class="step">sin A = <span class="frac"><span class="num">3</span><span class="den">5</span></span>   cos A = <span class="frac"><span class="num">4</span><span class="den">5</span></span>   tan A = <span class="frac"><span class="num">3</span><span class="den">4</span></span></p>
+    <p class="step">cosec A = <span class="frac"><span class="num">5</span><span class="den">3</span></span>   sec A = <span class="frac"><span class="num">5</span><span class="den">4</span></span>   cot A = <span class="frac"><span class="num">4</span><span class="den">3</span></span></p>
+   </div><!-- BAB 4 -->
+   <h2>4. Nilai Trigonometri Sudut Istimewa</h2>
+   <canvas id="c4a" width="260" height="200"></canvas>
+   <canvas id="c4b" width="260" height="200"></canvas>
+   <table class="trig-table">
+    <thead>
+     <tr>
+      <th>θ</th>
+      <th>0°</th>
+      <th>30°</th>
+      <th>45°</th>
+      <th>60°</th>
+      <th>90°</th>
+     </tr>
+    </thead>
+    <tbody id="trigTable"></tbody>
+   </table><!-- BAB 5 -->
+   <h2>5. Tanda Nilai Trigonometri di Setiap Kuadran</h2>
+   <canvas id="c5" width="340" height="340"></canvas>
+   <table class="trig-table">
+    <thead>
+     <tr>
+      <th>Fungsi</th>
+      <th>Kuadran I<br>
+        (0°–90°)</th>
+      <th>Kuadran II<br>
+        (90°–180°)</th>
+      <th>Kuadran III<br>
+        (180°–270°)</th>
+      <th>Kuadran IV<br>
+        (270°–360°)</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <td><b>sin</b></td>
+      <td>+</td>
+      <td>+</td>
+      <td>−</td>
+      <td>−</td>
+     </tr>
+     <tr>
+      <td><b>cos</b></td>
+      <td>+</td>
+      <td>−</td>
+      <td>−</td>
+      <td>+</td>
+     </tr>
+     <tr>
+      <td><b>tan</b></td>
+      <td>+</td>
+      <td>−</td>
+      <td>+</td>
+      <td>−</td>
+     </tr>
+     <tr>
+      <td><b>cosec</b></td>
+      <td>+</td>
+      <td>+</td>
+      <td>−</td>
+      <td>−</td>
+     </tr>
+     <tr>
+      <td><b>sec</b></td>
+      <td>+</td>
+      <td>−</td>
+      <td>−</td>
+      <td>+</td>
+     </tr>
+     <tr>
+      <td><b>cot</b></td>
+      <td>+</td>
+      <td>−</td>
+      <td>+</td>
+      <td>−</td>
+     </tr>
+    </tbody>
+   </table>
+   <p><b>Cara mengingat:</b> KoTaSiAll, dibaca dari kuadran IV ke atas berlawanan arah jarum jam: <b>Ko</b>sin (IV), <b>Ta</b>ngen (III), <b>Si</b>nus (II), <b>All</b> (semua positif di I).</p><!-- BAB 6 -->
+   <h2>6. Menentukan Nilai Trigonometri di Berbagai Kuadran</h2>
+   <p>Langkah-langkah:</p>
+   <ol>
+    <li>Tentukan sudut tersebut berada di <b>kuadran</b> berapa.</li>
+    <li>Tentukan <b>sudut acuan</b> (α), yaitu sudut lancip yang dibentuk dengan sumbu-x terdekat.</li>
+    <li>Tentukan <b>tanda</b> (+/−) berdasarkan kuadran.</li>
+    <li>Hitung nilai trigonometri menggunakan sudut acuan.</li>
+   </ol>
+   <div class="formula-box">
+    <b>Rumus sudut acuan:</b><br>
+     Kuadran II: α = 180° − θ    Kuadran III: α = θ − 180°    Kuadran IV: α = 360° − θ
+   </div>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 5</p>
+    <p>Tentukan nilai sin 150°.</p>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">150° berada di kuadran II (antara 90° dan 180°).</p>
+    <p class="step">Sudut acuan: α = 180° − 150° = 30°.</p>
+    <p class="step">Di kuadran II, sin bernilai positif (+).</p>
+    <p class="step">sin 150° = +sin 30° = <span class="frac"><span class="num">1</span><span class="den">2</span></span></p>
+   </div>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 6</p>
+    <p>Tentukan nilai cos 240°.</p>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">240° berada di kuadran III (antara 180° dan 270°).</p>
+    <p class="step">Sudut acuan: α = 240° − 180° = 60°.</p>
+    <p class="step">Di kuadran III, cos bernilai negatif (−).</p>
+    <p class="step">cos 240° = −cos 60° = −<span class="frac"><span class="num">1</span><span class="den">2</span></span></p>
+   </div>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 7</p>
+    <p>Tentukan nilai tan 315°.</p>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">315° berada di kuadran IV (antara 270° dan 360°).</p>
+    <p class="step">Sudut acuan: α = 360° − 315° = 45°.</p>
+    <p class="step">Di kuadran IV, tan bernilai negatif (−).</p>
+    <p class="step">tan 315° = −tan 45° = −1</p>
+   </div><!-- BAB 7 -->
+   <h2>7. Operasi Campuran Trigonometri</h2>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 8 (Sudut Istimewa)</p>
+    <p>Hitunglah nilai dari: &nbsp; sin<sup>2</sup> 30° + cos<sup>2</sup> 30°</p>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">sin 30° = <span class="frac"><span class="num">1</span><span class="den">2</span></span>   cos 30° = <span class="frac"><span class="num"><span class="sqrt">3</span></span><span class="den">2</span></span></p>
+    <p class="step">sin<sup>2</sup> 30° + cos<sup>2</sup> 30° = <span class="frac"><span class="num">1</span><span class="den">4</span></span> + <span class="frac"><span class="num">3</span><span class="den">4</span></span> = <span class="frac"><span class="num">4</span><span class="den">4</span></span> = 1</p>
+   </div>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 9 (Operasi Campuran dengan Berbagai Kuadran)</p>
+    <p>Hitunglah nilai dari: &nbsp; 2 sin 150° × cos 300° + tan 225°</p>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">sin 150°: kuadran II, α = 30°, sin (+) → sin 150° = <span class="frac"><span class="num">1</span><span class="den">2</span></span></p>
+    <p class="step">cos 300°: kuadran IV, α = 60°, cos (+) → cos 300° = <span class="frac"><span class="num">1</span><span class="den">2</span></span></p>
+    <p class="step">tan 225°: kuadran III, α = 45°, tan (+) → tan 225° = 1</p>
+    <p class="step">= 2 × <span class="frac"><span class="num">1</span><span class="den">2</span></span> × <span class="frac"><span class="num">1</span><span class="den">2</span></span> + 1</p>
+    <p class="step">= <span class="frac"><span class="num">2</span><span class="den">4</span></span> + 1 = <span class="frac"><span class="num">1</span><span class="den">2</span></span> + 1 = <span class="frac"><span class="num">3</span><span class="den">2</span></span></p>
+   </div>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 10</p>
+    <p>Hitunglah nilai dari: &nbsp; <span class="frac"><span class="num">tan 60° − tan 30°</span><span class="den">1 + tan 60° × tan 30°</span></span></p>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">tan 60° = <span class="sqrt">3</span>   tan 30° = <span class="frac"><span class="num">1</span><span class="den"><span class="sqrt">3</span></span></span> = <span class="frac"><span class="num"><span class="sqrt">3</span></span><span class="den">3</span></span></p>
+    <p class="step">Pembilang: <span class="sqrt">3</span> − <span class="frac"><span class="num"><span class="sqrt">3</span></span><span class="den">3</span></span> = <span class="frac"><span class="num">3<span class="sqrt">3</span> − <span class="sqrt">3</span></span><span class="den">3</span></span> = <span class="frac"><span class="num">2<span class="sqrt">3</span></span><span class="den">3</span></span></p>
+    <p class="step">Penyebut: 1 + <span class="sqrt">3</span> × <span class="frac"><span class="num"><span class="sqrt">3</span></span><span class="den">3</span></span> = 1 + <span class="frac"><span class="num">3</span><span class="den">3</span></span> = 1 + 1 = 2</p>
+    <p class="step">Hasil: <span class="frac"><span class="num"><span style="display:inline"><span class="frac"><span class="num">2<span class="sqrt">3</span></span><span class="den">3</span></span></span></span><span class="den">2</span></span> = <span class="frac"><span class="num">2<span class="sqrt">3</span></span><span class="den">6</span></span> = <span class="frac"><span class="num"><span class="sqrt">3</span></span><span class="den">3</span></span></p>
+   </div><!-- BAB 8 -->
+   <h2>8. Sudut Elevasi dan Sudut Depresi</h2>
+   <canvas id="c8" width="500" height="260"></canvas>
+   <ul>
+    <li><b>Sudut elevasi</b> adalah sudut yang dibentuk antara garis pandang <b>ke atas</b> (menuju objek yang lebih tinggi) dengan garis horizontal (garis datar dari mata pengamat).</li>
+    <li><b>Sudut depresi</b> adalah sudut yang dibentuk antara garis pandang <b>ke bawah</b> (menuju objek yang lebih rendah) dengan garis horizontal (garis datar dari mata pengamat).</li>
+   </ul><!-- BAB 9 -->
+   <h2>9. Penerapan Trigonometri dalam Kehidupan Nyata</h2>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 11 (Sudut Elevasi)</p>
+    <p>Seorang anak berdiri sejauh 12 m dari kaki sebuah tiang bendera. Sudut elevasi dari mata anak ke puncak tiang adalah 60°. Jika tinggi mata anak dari tanah 1,5 m, tentukan tinggi tiang bendera.</p>
+    <canvas id="c9a" width="380" height="230"></canvas>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">Misalkan tinggi tiang di atas mata anak = h.</p>
+    <p class="step">tan 60° = <span class="frac"><span class="num">h</span><span class="den">12</span></span></p>
+    <p class="step"><span class="sqrt">3</span> = <span class="frac"><span class="num">h</span><span class="den">12</span></span></p>
+    <p class="step">h = 12<span class="sqrt">3</span> m</p>
+    <p class="step">Tinggi tiang bendera = h + 1,5 = 12<span class="sqrt">3</span> + 1,5 = (12<span class="sqrt">3</span> + 1,5) m</p>
+   </div>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 12 (Sudut Depresi)</p>
+    <p>Dari puncak mercusuar setinggi 30 m di tepi pantai, seorang pengamat melihat sebuah perahu di laut dengan sudut depresi 30°. Tentukan jarak horizontal perahu dari kaki mercusuar.</p>
+    <canvas id="c9b" width="420" height="230"></canvas>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">Misalkan jarak horizontal perahu dari kaki mercusuar = d.</p>
+    <p class="step">tan 30° = <span class="frac"><span class="num">30</span><span class="den">d</span></span></p>
+    <p class="step"><span class="frac"><span class="num">1</span><span class="den"><span class="sqrt">3</span></span></span> = <span class="frac"><span class="num">30</span><span class="den">d</span></span></p>
+    <p class="step">d = 30<span class="sqrt">3</span> m</p>
+   </div>
+   <div class="example-box">
+    <p class="ex-title">Contoh Soal 13 (Aplikasi Gabungan)</p>
+    <p>Sebuah tangga bersandar pada dinding dan membentuk sudut 60° terhadap lantai. Jika kaki tangga berjarak 2 m dari dinding, tentukan:</p>
+    <p>(a) panjang tangga, dan (b) tinggi dinding yang dicapai tangga.</p>
+    <canvas id="c9c" width="260" height="250"></canvas>
+    <p><b>Penyelesaian:</b></p>
+    <p class="step">(a) cos 60° = <span class="frac"><span class="num">2</span><span class="den">panjang tangga</span></span></p>
+    <p class="step"><span class="frac"><span class="num">1</span><span class="den">2</span></span> = <span class="frac"><span class="num">2</span><span class="den">panjang tangga</span></span></p>
+    <p class="step">Panjang tangga = 4 m</p>
+    <p class="step">(b) tan 60° = <span class="frac"><span class="num">tinggi</span><span class="den">2</span></span></p>
+    <p class="step"><span class="sqrt">3</span> = <span class="frac"><span class="num">tinggi</span><span class="den">2</span></span></p>
+    <p class="step">Tinggi = 2<span class="sqrt">3</span> m</p>
+   </div>
+  </div><!-- end doc-page -->
+  <script>
+// Helper drawing functions
+function drawLine(ctx,x1,y1,x2,y2,color,w){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=color||'#111';ctx.lineWidth=w||1.5;ctx.stroke();}
+function drawText(ctx,t,x,y,font,color,align){ctx.font=font||'13px Source Sans 3';ctx.fillStyle=color||'#111';ctx.textAlign=align||'center';ctx.textBaseline='middle';ctx.fillText(t,x,y);}
+function drawAngleArc(ctx,cx,cy,r,startDeg,endDeg){
+  const s=startDeg*Math.PI/180, e=endDeg*Math.PI/180;
+  ctx.beginPath();ctx.arc(cx,cy,r,s,e,false);ctx.strokeStyle='#444';ctx.lineWidth=1;ctx.stroke();
+}
+function drawRightAngle(ctx,x,y,size,dir){
+  // dir: 'bl','br','tl','tr' corner direction
+  const s=size||10;
+  ctx.beginPath();ctx.strokeStyle='#111';ctx.lineWidth=1.2;
+  if(dir==='bl'){ctx.moveTo(x+s,y);ctx.lineTo(x+s,y-s);ctx.lineTo(x,y-s);}
+  else if(dir==='br'){ctx.moveTo(x-s,y);ctx.lineTo(x-s,y-s);ctx.lineTo(x,y-s);}
+  else if(dir==='tl'){ctx.moveTo(x+s,y);ctx.lineTo(x+s,y+s);ctx.lineTo(x,y+s);}
+  else if(dir==='tr'){ctx.moveTo(x-s,y);ctx.lineTo(x-s,y+s);ctx.lineTo(x,y+s);}
+  ctx.stroke();
+}
+
+// Canvas 1a: right angle at C, reference angle at A
+(function(){
+  const c=document.getElementById('c1a');const ctx=c.getContext('2d');
+  const Ax=20,Ay=135,Bx=210,By=30,Cx=210,Cy=135;
+  drawLine(ctx,Ax,Ay,Bx,By); drawLine(ctx,Bx,By,Cx,Cy); drawLine(ctx,Cx,Cy,Ax,Ay);
+  drawRightAngle(ctx,Cx,Cy,'br');
+  drawAngleArc(ctx,Ax,Ay,28,-Math.atan2(Ay-By,Bx-Ax)*180/Math.PI,0);
+  drawText(ctx,'A',Ax-14,Ay+12,'bold 12px Crimson Pro');
+  drawText(ctx,'B',Bx+10,By-6,'bold 12px Crimson Pro');
+  drawText(ctx,'C',Cx+10,Cy+12,'bold 12px Crimson Pro');
+  drawText(ctx,'\u03B1',Ax+32,Ay-12,'12px Source Sans 3','#333');
+  drawText(ctx,'sisi miring AB',125,70,'11px Source Sans 3','#555');
+  drawText(ctx,'(hipotenusa)',125,82,'11px Source Sans 3','#555');
+  drawText(ctx,'sisi depan',Bx+12,80,'10px Source Sans 3','#555','left');
+  drawText(ctx,'(BC)',Bx+12,92,'10px Source Sans 3','#555','left');
+  drawText(ctx,'sisi samping (AC)',140,Cy+16,'11px Source Sans 3','#555');
+})();
+
+// Canvas 1b: right angle at C, reference angle at B
+(function(){
+  const c=document.getElementById('c1b');const ctx=c.getContext('2d');
+  const Ax=20,Ay=135,Bx=210,By=30,Cx=210,Cy=135;
+  drawLine(ctx,Ax,Ay,Bx,By); drawLine(ctx,Bx,By,Cx,Cy); drawLine(ctx,Cx,Cy,Ax,Ay);
+  drawRightAngle(ctx,Cx,Cy,'br');
+  drawAngleArc(ctx,Bx,By,24,90,90+Math.atan2(Bx-Ax,Ay-By)*180/Math.PI+2);
+  drawText(ctx,'A',Ax-14,Ay+12,'bold 12px Crimson Pro');
+  drawText(ctx,'B',Bx+10,By-6,'bold 12px Crimson Pro');
+  drawText(ctx,'C',Cx+10,Cy+12,'bold 12px Crimson Pro');
+  drawText(ctx,'\u03B2',Bx-18,By+26,'12px Source Sans 3','#333');
+  drawText(ctx,'sisi miring AB',125,70,'11px Source Sans 3','#555');
+  drawText(ctx,'(hipotenusa)',125,82,'11px Source Sans 3','#555');
+  drawText(ctx,'sisi samping',Bx+12,80,'10px Source Sans 3','#555','left');
+  drawText(ctx,'(BC)',Bx+12,92,'10px Source Sans 3','#555','left');
+  drawText(ctx,'sisi depan (AC)',140,Cy+16,'11px Source Sans 3','#555');
+})();
+
+// Canvas 1c: right angle at A, reference angle at B
+(function(){
+  const c=document.getElementById('c1c');const ctx=c.getContext('2d');
+  const Ax=20,Ay=135,Bx=210,By=135,Cx=20,Cy=32;
+  drawLine(ctx,Ax,Ay,Bx,By); drawLine(ctx,Bx,By,Cx,Cy); drawLine(ctx,Cx,Cy,Ax,Ay);
+  drawRightAngle(ctx,Ax,Ay,'tl');
+  drawAngleArc(ctx,Bx,By,25,180,180+Math.atan2(By-Cy,Bx-Cx)*180/Math.PI);
+  drawText(ctx,'A',Ax-14,Ay+12,'bold 12px Crimson Pro');
+  drawText(ctx,'B',Bx+10,By+12,'bold 12px Crimson Pro');
+  drawText(ctx,'C',Cx-14,Cy-6,'bold 12px Crimson Pro');
+  drawText(ctx,'\u03B2',Bx-32,By-12,'12px Source Sans 3','#333');
+  drawText(ctx,'sisi miring BC',140,70,'11px Source Sans 3','#555');
+  drawText(ctx,'(hipotenusa)',140,82,'11px Source Sans 3','#555');
+  drawText(ctx,'sisi samping (AB)',120,Ay+16,'11px Source Sans 3','#555');
+  drawText(ctx,'sisi depan (AC)',Ax-40,80,'10px Source Sans 3','#555','left');
+})();
+
+// Canvas 2: Pythagoras
+(function(){
+  const c=document.getElementById('c2');const ctx=c.getContext('2d');
+  const Ax=30,Ay=160,Bx=260,By=30,Cx=260,Cy=160;
+  drawLine(ctx,Ax,Ay,Bx,By,'#111',2);drawLine(ctx,Bx,By,Cx,Cy,'#111',2);drawLine(ctx,Cx,Cy,Ax,Ay,'#111',2);
+  drawRightAngle(ctx,Cx,Cy,'br',12);
+  drawText(ctx,'A',Ax-14,Ay+10,'bold 14px Crimson Pro');
+  drawText(ctx,'B',Bx+14,By-4,'bold 14px Crimson Pro');
+  drawText(ctx,'C',Cx+14,Cy+10,'bold 14px Crimson Pro');
+  drawText(ctx,'c (hipotenusa)',130,82,'13px Source Sans 3','#333');
+  drawText(ctx,'a',Bx+6,100,'13px Source Sans 3','#333','left');
+  drawText(ctx,'b',145,Cy+16,'13px Source Sans 3','#333');
+})();
+
+// Canvas 3: trig ratios reference
+(function(){
+  const c=document.getElementById('c3');const ctx=c.getContext('2d');
+  const Ax=40,Ay=170,Bx=260,By=40,Cx=260,Cy=170;
+  drawLine(ctx,Ax,Ay,Bx,By,'#111',2);drawLine(ctx,Bx,By,Cx,Cy,'#111',2);drawLine(ctx,Cx,Cy,Ax,Ay,'#111',2);
+  drawRightAngle(ctx,Cx,Cy,'br',12);
+  drawAngleArc(ctx,Ax,Ay,35,-Math.atan2(Ay-By,Bx-Ax)*180/Math.PI,0);
+  drawText(ctx,'\u03B1',Ax+42,Ay-14,'14px Source Sans 3','#333');
+  drawText(ctx,'sisi miring',135,90,'13px Source Sans 3','#555');
+  drawText(ctx,'sisi depan',Cx+4,110,'13px Source Sans 3','#555','left');
+  drawText(ctx,'sisi samping',150,Cy+16,'13px Source Sans 3','#555');
+})();
+
+// Canvas 4a: 45-45-90 triangle
+(function(){
+  const c=document.getElementById('c4a');const ctx=c.getContext('2d');
+  const x0=40,y0=170,x1=210,y1=170,x2=210,y2=30;
+  drawLine(ctx,x0,y0,x1,y1,'#111',2);drawLine(ctx,x1,y1,x2,y2,'#111',2);drawLine(ctx,x0,y0,x2,y2,'#111',2);
+  drawRightAngle(ctx,x1,y1,'br',10);
+  drawAngleArc(ctx,x0,y0,28,-Math.atan2(y0-y2,x2-x0)*180/Math.PI,0);
+  drawText(ctx,'45\u00B0',x0+36,y0-14,'12px Source Sans 3','#333');
+  drawText(ctx,'45\u00B0',x2-16,y2+26,'12px Source Sans 3','#333');
+  drawText(ctx,'1',125,y0+16,'13px Source Sans 3','#333');
+  drawText(ctx,'1',x1+16,100,'13px Source Sans 3','#333');
+  drawText(ctx,'\u221A2',110,90,'13px Source Sans 3','#333');
+})();
+
+// Canvas 4b: 30-60-90 triangle
+(function(){
+  const c=document.getElementById('c4b');const ctx=c.getContext('2d');
+  const x0=30,y0=170,x1=230,y1=170,x2=230,y2=55;
+  drawLine(ctx,x0,y0,x1,y1,'#111',2);drawLine(ctx,x1,y1,x2,y2,'#111',2);drawLine(ctx,x0,y0,x2,y2,'#111',2);
+  drawRightAngle(ctx,x1,y1,'br',10);
+  drawAngleArc(ctx,x0,y0,32,-Math.atan2(y0-y2,x2-x0)*180/Math.PI,0);
+  drawText(ctx,'30\u00B0',x0+40,y0-12,'12px Source Sans 3','#333');
+  drawText(ctx,'60\u00B0',x2-16,y2+24,'12px Source Sans 3','#333');
+  drawText(ctx,'\u221A3',130,y0+16,'13px Source Sans 3','#333');
+  drawText(ctx,'1',x1+14,115,'13px Source Sans 3','#333');
+  drawText(ctx,'2',120,100,'13px Source Sans 3','#333');
+})();
+
+// Trig table
+(function(){
+  const tbody=document.getElementById('trigTable');
+  const s3='<span class="sqrt">3</span>';
+  const s2='<span class="sqrt">2</span>';
+  const f=(n,d)=>`<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`;
+  const rows=[
+    ['sin',  '0', f('1','2'), f('1',s2), f(s3,'2'), '1'],
+    ['cos',  '1', f(s3,'2'), f('1',s2), f('1','2'), '0'],
+    ['tan',  '0', f('1',s3), '1', s3, '&mdash;'],
+    ['cosec','&mdash;', '2', s2, f('2',s3), '1'],
+    ['sec',  '1', f('2',s3), s2, '2', '&mdash;'],
+    ['cot',  '&mdash;', s3, '1', f('1',s3), '0'],
+  ];
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td>`;
+    tbody.appendChild(tr);
+  });
+})();
+
+// Canvas 5: Quadrant diagram
+(function(){
+  const c=document.getElementById('c5');const ctx=c.getContext('2d');
+  const cx=170,cy=170,r=130;
+  drawLine(ctx,cx-r-15,cy,cx+r+15,cy,'#999',1);
+  drawLine(ctx,cx,cy-r-15,cx,cy+r+15,'#999',1);
+  ctx.beginPath();ctx.arc(cx,cy,r,0,2*Math.PI);ctx.strokeStyle='#bbb';ctx.lineWidth=1;ctx.stroke();
+  // arrows
+  drawText(ctx,'x',cx+r+22,cy+4,'13px Source Sans 3','#777');
+  drawText(ctx,'y',cx+4,cy-r-20,'13px Source Sans 3','#777');
+  drawText(ctx,'Kuadran I','bold 13px Source Sans 3','#222');
+  const bfont='bold 13px Source Sans 3';
+  drawText(ctx,'Kuadran I',cx+60,cy-60,bfont,'#222');
+  drawText(ctx,'Kuadran II',cx-60,cy-60,bfont,'#222');
+  drawText(ctx,'Kuadran III',cx-60,cy+60,bfont,'#222');
+  drawText(ctx,'Kuadran IV',cx+60,cy+60,bfont,'#222');
+  const sfont='12px Source Sans 3';
+  drawText(ctx,'sin +, cos +, tan +',cx+60,cy-42,sfont,'#555');
+  drawText(ctx,'sin +, cos \u2212, tan \u2212',cx-60,cy-42,sfont,'#555');
+  drawText(ctx,'sin \u2212, cos \u2212, tan +',cx-60,cy+78,sfont,'#555');
+  drawText(ctx,'sin \u2212, cos +, tan \u2212',cx+60,cy+78,sfont,'#555');
+  drawText(ctx,'0\u00B0/360\u00B0',cx+r+8,cy+14,'11px Source Sans 3','#888');
+  drawText(ctx,'90\u00B0',cx+10,cy-r-6,'11px Source Sans 3','#888');
+  drawText(ctx,'180\u00B0',cx-r-18,cy+14,'11px Source Sans 3','#888');
+  drawText(ctx,'270\u00B0',cx+10,cy+r+14,'11px Source Sans 3','#888');
+})();
+
+// Canvas 8: Elevation and depression
+(function(){
+  const c=document.getElementById('c8');const ctx=c.getContext('2d');
+  // ground
+  drawLine(ctx,20,200,480,200,'#888',1);
+  // person
+  const px=100,py=200,eyeY=130;
+  drawLine(ctx,px,py,px,eyeY,'#111',2);
+  ctx.beginPath();ctx.arc(px,eyeY-10,8,0,2*Math.PI);ctx.strokeStyle='#111';ctx.lineWidth=2;ctx.stroke();
+  // horizontal from eye
+  drawLine(ctx,px,eyeY,400,eyeY,'#aaa',1);
+  // elevation: object above
+  const topX=350,topY=30;
+  ctx.fillStyle='#666';ctx.fillRect(topX-8,topY,16,170);
+  drawLine(ctx,px,eyeY,topX,topY,'#111',1.5);
+  drawAngleArc(ctx,px,eyeY,50,-Math.atan2(eyeY-topY,topX-px)*180/Math.PI,0);
+  drawText(ctx,'sudut elevasi',px+80,eyeY-18,'13px Source Sans 3','#333');
+  // depression: object below
+  const bx=400,by=200;
+  drawLine(ctx,px,eyeY,bx,by,'#111',1.5);
+  drawAngleArc(ctx,px,eyeY,60,0,Math.atan2(by-eyeY,bx-px)*180/Math.PI);
+  drawText(ctx,'sudut depresi',px+85,eyeY+22,'13px Source Sans 3','#333');
+  drawText(ctx,'garis horizontal',250,eyeY-8,'11px Source Sans 3','#aaa');
+  drawText(ctx,'pengamat',px,py+14,'12px Source Sans 3','#555');
+})();
+
+// Canvas 9a: flag pole
+(function(){
+  const c=document.getElementById('c9a');const ctx=c.getContext('2d');
+  const px=50,py=190,eyeY=150;
+  // person
+  drawLine(ctx,px,py,px,eyeY,'#111',2);
+  ctx.beginPath();ctx.arc(px,eyeY-8,7,0,2*Math.PI);ctx.strokeStyle='#111';ctx.lineWidth=1.5;ctx.stroke();
+  // ground
+  drawLine(ctx,20,py,360,py,'#999',1);
+  // pole
+  const poleX=300,poleTop=20;
+  drawLine(ctx,poleX,py,poleX,poleTop,'#111',2.5);
+  // horizontal
+  drawLine(ctx,px,eyeY,poleX+20,eyeY,'#bbb',1);
+  // line of sight
+  drawLine(ctx,px,eyeY,poleX,poleTop,'#444',1.5);
+  drawAngleArc(ctx,px,eyeY,45,-Math.atan2(eyeY-poleTop,poleX-px)*180/Math.PI,0);
+  drawText(ctx,'60\u00B0',px+52,eyeY-14,'13px Source Sans 3');
+  drawText(ctx,'12 m',175,py+14,'13px Source Sans 3');
+  drawText(ctx,'h',poleX+14,85,'13px Source Sans 3');
+  drawText(ctx,'1,5 m',px+2,170,'11px Source Sans 3','#777','left');
+})();
+
+// Canvas 9b: lighthouse
+(function(){
+  const c=document.getElementById('c9b');const ctx=c.getContext('2d');
+  // lighthouse
+  const lx=60,ly=200,ltop=40;
+  ctx.fillStyle='#ddd';ctx.fillRect(lx-12,ltop,24,ly-ltop);ctx.strokeStyle='#111';ctx.lineWidth=1.5;ctx.strokeRect(lx-12,ltop,24,ly-ltop);
+  // sea level
+  drawLine(ctx,lx+12,ly,400,ly,'#aac',1.5);
+  // horizontal from top
+  drawLine(ctx,lx,ltop,380,ltop,'#bbb',1);
+  // boat
+  const boatX=350,boatY=ly;
+  ctx.beginPath();ctx.moveTo(boatX-15,boatY-5);ctx.lineTo(boatX+15,boatY-5);ctx.lineTo(boatX+10,boatY+5);ctx.lineTo(boatX-10,boatY+5);ctx.closePath();ctx.fillStyle='#888';ctx.fill();
+  // line of sight
+  drawLine(ctx,lx,ltop,boatX,boatY,'#444',1.5);
+  drawAngleArc(ctx,lx,ltop,45,0,Math.atan2(boatY-ltop,boatX-lx)*180/Math.PI);
+  drawText(ctx,'30\u00B0',lx+55,ltop+18,'13px Source Sans 3');
+  drawText(ctx,'30 m',lx-30,120,'13px Source Sans 3');
+  drawText(ctx,'d',210,ly+16,'13px Source Sans 3');
+  drawText(ctx,'garis horizontal',220,ltop-8,'11px Source Sans 3','#aaa');
+})();
+
+// Canvas 9c: ladder
+(function(){
+  const c=document.getElementById('c9c');const ctx=c.getContext('2d');
+  const wx=40,wy=20,wbx=40,wby=220;
+  // wall
+  drawLine(ctx,wx,wy,wbx,wby,'#111',2.5);
+  // floor
+  drawLine(ctx,wbx,wby,240,wby,'#999',1);
+  // ladder
+  const lx=160,ly=wby;
+  drawLine(ctx,wx,60,lx,ly,'#444',2);
+  drawRightAngle(ctx,wbx,wby,'tl',10);
+  drawAngleArc(ctx,lx,ly,35,180,180+Math.atan2(ly-60,lx-wx)*180/Math.PI);
+  drawText(ctx,'60\u00B0',lx-44,ly-14,'13px Source Sans 3');
+  drawText(ctx,'2 m',105,ly+14,'13px Source Sans 3');
+  drawText(ctx,'tangga',110,125,'13px Source Sans 3','#555');
+  drawText(ctx,'dinding',wx-8,130,'13px Source Sans 3','#555','right');
+})();
+
+// Element SDK
+const defaultConfig = {
+  document_title: 'HANDOUT MATERI TRIGONOMETRI',
+  background_color: '#ffffff',
+  text_color: '#1a1a1a',
+  accent_color: '#f8f8f8',
+  heading_color: '#111111',
+  border_color: '#dddddd',
+  font_family: 'Source Sans 3',
+  font_size: 14.5
+};
+
+function applyConfig(config) {
+  const t = config.document_title || defaultConfig.document_title;
+  document.getElementById('docTitle').textContent = t;
+  
+  const doc = document.querySelector('.doc-page');
+  doc.style.backgroundColor = config.background_color || defaultConfig.background_color;
+  doc.style.color = config.text_color || defaultConfig.text_color;
+  
+  const ff = config.font_family || defaultConfig.font_family;
+  const bs = config.font_size || defaultConfig.font_size;
+  doc.style.fontFamily = `${ff}, sans-serif`;
+  
+  document.querySelectorAll('p, li').forEach(el => { el.style.fontSize = bs + 'px'; });
+  document.querySelectorAll('h1').forEach(el => { el.style.color = config.heading_color || defaultConfig.heading_color; el.style.fontFamily = `Crimson Pro, ${ff}, serif`; el.style.fontSize = (bs * 1.8) + 'px'; });
+  document.querySelectorAll('h2').forEach(el => { el.style.color = config.heading_color || defaultConfig.heading_color; el.style.borderColor = config.heading_color || defaultConfig.heading_color; el.style.fontFamily = `Crimson Pro, ${ff}, serif`; el.style.fontSize = (bs * 1.4) + 'px'; });
+  document.querySelectorAll('h3').forEach(el => { el.style.color = config.heading_color || defaultConfig.heading_color; el.style.fontSize = (bs * 1.17) + 'px'; });
+  document.querySelectorAll('.formula-box').forEach(el => { el.style.backgroundColor = config.accent_color || defaultConfig.accent_color; el.style.borderColor = config.border_color || defaultConfig.border_color; });
+  document.querySelectorAll('.example-box').forEach(el => { el.style.backgroundColor = config.accent_color || defaultConfig.accent_color; el.style.borderLeftColor = config.heading_color || defaultConfig.heading_color; });
+  document.querySelectorAll('.trig-table th').forEach(el => { el.style.backgroundColor = config.accent_color || defaultConfig.accent_color; });
+}
+
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => { applyConfig(config); },
+  mapToCapabilities: (config) => ({
+    recolorables: [
+      { get: () => config.background_color || defaultConfig.background_color, set: v => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+      { get: () => config.accent_color || defaultConfig.accent_color, set: v => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } },
+      { get: () => config.text_color || defaultConfig.text_color, set: v => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+      { get: () => config.heading_color || defaultConfig.heading_color, set: v => { config.heading_color = v; window.elementSdk.setConfig({ heading_color: v }); } },
+      { get: () => config.border_color || defaultConfig.border_color, set: v => { config.border_color = v; window.elementSdk.setConfig({ border_color: v }); } },
+    ],
+    borderables: [],
+    fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: v => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+    fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: v => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } },
+  }),
+  mapToEditPanelValues: (config) => new Map([
+    ['document_title', config.document_title || defaultConfig.document_title],
+  ])
+});
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e433d4ec52a582b',t:'MTc3NDgzMzA3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
