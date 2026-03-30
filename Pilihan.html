@@ -35,11 +35,14 @@
       <div class="slide-up" style="animation-delay:0.1s">
        <h2 class="text-xl font-bold text-gray-900 mb-4">Data Siswa</h2>
        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div><label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label> <input id="nama" type="text" placeholder="Nama lengkap" class="w-full px-4 py-2.5 input-field rounded-lg text-gray-900 focus:outline-none" required>
+        <div>
+         <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label> <input id="nama" type="text" placeholder="Nama lengkap" class="w-full px-4 py-2.5 input-field rounded-lg text-gray-900 focus:outline-none" required>
         </div>
-        <div><label for="absen" class="block text-sm font-medium text-gray-700 mb-1">Nomor Absen</label> <input id="absen" type="text" placeholder="12" class="w-full px-4 py-2.5 input-field rounded-lg text-gray-900 focus:outline-none" required>
+        <div>
+         <label for="absen" class="block text-sm font-medium text-gray-700 mb-1">Nomor Absen</label> <input id="absen" type="text" placeholder="12" class="w-full px-4 py-2.5 input-field rounded-lg text-gray-900 focus:outline-none" required>
         </div>
-        <div><label for="kelas" class="block text-sm font-medium text-gray-700 mb-1">Kelas</label> <input id="kelas" type="text" placeholder="8A" class="w-full px-4 py-2.5 input-field rounded-lg text-gray-900 focus:outline-none" required>
+        <div>
+         <label for="kelas" class="block text-sm font-medium text-gray-700 mb-1">Kelas</label> <input id="kelas" type="text" placeholder="8A" class="w-full px-4 py-2.5 input-field rounded-lg text-gray-900 focus:outline-none" required>
         </div>
        </div>
       </div>
@@ -79,7 +82,8 @@
        </div>
       </div>
       <div id="errorMsg" class="text-red-600 text-sm font-medium hidden bg-red-50 p-3 rounded-lg"></div>
-      <div class="slide-up" style="animation-delay:0.3s"><button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition"> <span id="submitText">Kirim Pilihan</span> </button>
+      <div class="slide-up" style="animation-delay:0.3s">
+       <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition"> <span id="submitText">Kirim Pilihan</span> </button>
       </div>
      </form>
     </div>
@@ -180,9 +184,7 @@
     document.getElementById('errorMsg').classList.add('hidden');
   }
 
-  document.getElementById('dataForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
+  async function kirimDataSiswa() {
     const nama = document.getElementById('nama').value.trim();
     const absen = document.getElementById('absen').value.trim();
     const kelas = document.getElementById('kelas').value.trim();
@@ -194,6 +196,13 @@
       return;
     }
 
+    const dataSiswa = {
+      nama: nama,
+      absen: absen,
+      kelas: kelas,
+      opsi: selectedOption
+    };
+
     const btn = document.querySelector('button[type="submit"]');
     const txt = document.getElementById('submitText');
     btn.disabled = true;
@@ -202,44 +211,44 @@
     try {
       const response = await fetch(scriptURL, {
         method: 'POST',
-        body: JSON.stringify({
-          nama,
-          absen,
-          kelas,
-          opsi: selectedOption
-        })
+        body: JSON.stringify(dataSiswa),
       });
-
-      if (response.ok) {
+      
+      const result = await response.json();
+      if (result.result === 'success') {
         document.getElementById('dataForm').reset();
         selectedOption = null;
         selectOption(null);
-        showToast('✅ Pilihan berhasil disimpan!');
+        showToast('✅ Data berhasil terkirim ke Spreadsheet!');
       } else {
-        throw new Error('Response tidak OK');
+        throw new Error('Response gagal');
       }
     } catch (error) {
       console.error('Error:', error);
-      errEl.textContent = '❌ Gagal menyimpan. Coba lagi.';
+      errEl.textContent = '❌ Gagal mengirim data, coba cek koneksi atau URL Web App.';
       errEl.classList.remove('hidden');
     } finally {
       btn.disabled = false;
       txt.textContent = 'Kirim Pilihan';
     }
+  }
+
+  document.getElementById('dataForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    kirimDataSiswa();
   });
 
   function showToast(msg) {
-    const t = document.getElementById('toast');
+    const t = document.createElement('div');
+    t.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg toast-in z-50';
     t.textContent = msg;
-    t.classList.remove('hidden', 'toast-out');
-    t.classList.add('toast-in');
+    document.body.appendChild(t);
     setTimeout(() => {
-      t.classList.add('toast-out');
-      setTimeout(() => t.classList.add('hidden'), 300);
+      t.remove();
     }, 3000);
   }
 
   lucide.createIcons();
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e43c0c3221ac0de',t:'MTc3NDgzODQ2Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e43dda702f04ac7',t:'MTc3NDgzOTY0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
