@@ -30,50 +30,58 @@
         .header {
             background-color: #fff;
             border-bottom: 1px solid #e0e0e0;
-            padding: 1.5rem;
+            padding: 1rem 0.8rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
             font-weight: 600;
         }
 
-        .bagian-tabs {
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
+        .bagian-selector-wrapper {
             padding: 1rem;
             background-color: #f8f9fa;
-            flex-wrap: wrap;
         }
 
-        .bagian-btn {
-            padding: 0.6rem 1.2rem;
-            border: 1px solid #ddd;
+        .bagian-selector {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #ddd;
             background-color: #fff;
-            cursor: pointer;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: #333;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 35px;
+            min-height: 44px;
             transition: all 0.3s;
-            white-space: nowrap;
         }
 
-        .bagian-btn:hover {
-            background-color: #f0f0f0;
-        }
-
-        .bagian-btn.active {
-            background-color: #2c3e50;
-            color: #fff;
+        .bagian-selector:active, .bagian-selector:focus {
             border-color: #2c3e50;
+            outline: none;
+            background-color: #f8f9fa;
+        }
+
+        .bagian-tabs {
+            display: none;
+        }
+
+        .bagian-tabs-toggle {
+            display: none;
         }
 
         .content {
             flex: 1;
             overflow-y: auto;
-            padding: 2rem 1.5rem;
+            padding: 1.5rem 1rem;
             max-width: 900px;
             margin: 0 auto;
             width: 100%;
@@ -81,37 +89,42 @@
 
         .soal-container {
             background-color: #fff;
-            padding: 2rem;
+            padding: 1.5rem 1rem;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
         .soal-judul {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
             color: #2c3e50;
+            line-height: 1.4;
         }
 
         .soal-teks {
-            font-size: 1rem;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.7;
             margin-bottom: 1.5rem;
-            color: #555;
+            color: #444;
+            font-weight: 500;
         }
 
         .gambar-container {
-            display: flex;
-            justify-content: center;
-            margin: 1.5rem 0;
-            background-color: #fafafa;
-            padding: 1rem;
-            border-radius: 6px;
+            display: ;
+            justify-content: stretch;
+            align-items: center;
+            margin: 0.5rem 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 0rem;
+            border-radius: 8px;
+            overflow-x: auto;
         }
 
         canvas {
             max-width: 100%;
             height: auto;
+            display: block;
         }
 
         .opsi-container {
@@ -120,34 +133,37 @@
 
         .opsi-label {
             display: block;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-            font-weight: 500;
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+            font-weight: 600;
             color: #2c3e50;
         }
 
         .opsi {
             display: flex;
             align-items: center;
-            padding: 1rem;
-            margin-bottom: 0.8rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 2.5px solid #e0e0e0;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             background-color: #fff;
+            min-height: 56px;
         }
 
-        .opsi:hover {
-            border-color: #bbb;
-            background-color: #f9f9f9;
+        .opsi:active {
+            background-color: #f5f5f5;
+            border-color: #999;
         }
 
         .opsi input[type="radio"] {
             margin-right: 1rem;
             cursor: pointer;
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            accent-color: #0066cc;
         }
 
         .opsi.selected {
@@ -167,15 +183,17 @@
 
         .opsi-text {
             flex: 1;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.5;
         }
 
         .feedback {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            line-height: 1.7;
             display: none;
         }
 
@@ -185,65 +203,80 @@
 
         .feedback.petunjuk {
             background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
+            border-left: 5px solid #ffc107;
             color: #856404;
         }
 
         .feedback.jawaban {
             background-color: #d1ecf1;
-            border-left: 4px solid #17a2b8;
+            border-left: 5px solid #17a2b8;
             color: #0c5460;
         }
 
         .feedback.benar {
             background-color: #d4edda;
-            border-left: 4px solid #28a745;
+            border-left: 5px solid #28a745;
             color: #155724;
         }
 
         .feedback.salah {
             background-color: #f8d7da;
-            border-left: 4px solid #dc3545;
+            border-left: 5px solid #dc3545;
             color: #721c24;
+        }
+
+        .btn-jawab, .btn-soal-baru {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-jawab {
             background-color: #2c3e50;
             color: #fff;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
-        .btn-jawab:hover:not(:disabled) {
+        .btn-jawab:active:not(:disabled) {
             background-color: #1a252f;
         }
 
         .btn-jawab:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
         }
 
         .btn-soal-baru {
             background-color: #0066cc;
             color: #fff;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
-        .btn-soal-baru:hover {
+        .btn-soal-baru:active {
             background-color: #0052a3;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .button-group .btn-jawab,
+        .button-group .btn-soal-baru {
+            margin-top: 0;
+            flex: 1;
+            min-width: 150px;
         }
 
         .footer {
@@ -254,35 +287,198 @@
             border-top: 1px solid #e0e0e0;
         }
 
-        @media (max-width: 600px) {
-            .header h1 {
-                font-size: 1.4rem;
-            }
-
-            .bagian-tabs {
-                padding: 0.8rem;
-                gap: 0.3rem;
-            }
-
-            .bagian-btn {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.8rem;
-            }
-
-            .content {
+        @media (max-width: 768px) {
+            .header {
                 padding: 1rem;
             }
 
+            .header h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .bagian-tabs {
+                padding: 0.5rem 0;
+            }
+
+            .bagian-tabs-toggle {
+                display: block;
+            }
+
+            .content {
+                padding: 1rem 0.8rem;
+            }
+
             .soal-container {
-                padding: 1.5rem;
+                padding: 1rem 0.8rem;
             }
 
             .soal-judul {
                 font-size: 1.1rem;
+                margin-bottom: 1rem;
             }
 
             .soal-teks {
                 font-size: 0.95rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .gambar-container {
+                margin: 1rem 0;
+                padding: 0.8rem;
+            }
+
+            canvas {
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            .opsi {
+                padding: 1rem;
+                margin-bottom: 0.8rem;
+                min-height: 50px;
+            }
+
+            .opsi input[type="radio"] {
+                width: 20px;
+                height: 20px;
+            }
+
+            .opsi-text {
+                font-size: 0.95rem;
+            }
+
+            .btn-jawab, .btn-soal-baru {
+                padding: 0.9rem 1.2rem;
+                font-size: 0.95rem;
+                min-height: 44px;
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group .btn-jawab,
+            .button-group .btn-soal-baru {
+                flex: 0 1 auto;
+                width: 100%;
+            }
+
+            .feedback {
+                margin-top: 1.5rem;
+                padding: 1rem;
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0.8rem;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .footer {
+                padding: 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .content {
+                padding: 0.8rem 0.6rem;
+            }
+
+            .soal-container {
+                padding: 0.8rem 0.6rem;
+            }
+
+            .soal-judul {
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.8rem;
+            }
+
+            .soal-teks {
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+                line-height: 1.5;
+            }
+
+            .gambar-container {
+                margin: 0.8rem 0;
+                padding: 0.6rem;
+                border-radius: 6px;
+            }
+
+            canvas {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .opsi-container {
+                margin: 0.5rem 0;
+            }
+
+            .opsi-label {
+                margin-bottom: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .opsi {
+                padding: 0.9rem;
+                margin-bottom: 0.7rem;
+                border-radius: 6px;
+                min-height: 20px;
+            }
+
+            .opsi input[type="radio"] {
+                width: 18px;
+                height: 18px;
+                margin-right: 0.8rem;
+            }
+
+            .opsi-text {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+
+            .btn-jawab, .btn-soal-baru {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+                min-height: 42px;
+                border-radius: 6px;
+            }
+
+            .button-group {
+                gap: 0.8rem;
+                margin-top: 1rem;
+            }
+
+            .feedback {
+                margin-top: 1.2rem;
+                padding: 0.9rem;
+                border-radius: 6px;
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+
+            .mathjax-container {
+                font-size: 0.9rem;
+                margin: 0.4rem 0;
+            }
+
+            .frac {
+                margin: 0 1px;
+            }
+
+            .frac span {
+                padding: 0 2px;
+                font-size: 0.85rem;
             }
         }
 
@@ -322,14 +518,16 @@
  <body>
   <div id="app">
    <div class="header">
-    <h1>Soal Generator Trigonometri</h1>
+    <h1>📐 Soal Generator Trigonometri</h1>
+    <div class="bagian-selector-wrapper"><select class="bagian-selector" id="bagianSelector"> <option value="">📚 Pilih Bagian Soal</option> </select>
+    </div>
     <div class="bagian-tabs" id="bagianTabs"></div>
    </div>
    <div class="content" id="content">
     <div class="soal-container" id="soalContainer"></div>
    </div>
    <div class="footer">
-    Latihan Soal Trigonometri untuk Siswa
+    ✏️ Latihan Soal Trigonometri untuk Siswa | Klik Bagian untuk memilih topik
    </div>
   </div>
   <script>
@@ -396,16 +594,20 @@
         let attemptCount = 0;
         let currentSoal = null;
 
-        // Inisialisasi tabs
+        // Inisialisasi tabs/dropdown
         function initTabs() {
-            const tabsContainer = document.getElementById('bagianTabs');
+            const selector = document.getElementById('bagianSelector');
             Object.entries(BAGIAN_DATA).forEach(([num, data]) => {
-                const btn = document.createElement('button');
-                btn.className = 'bagian-btn';
-                if (num == currentBagian) btn.classList.add('active');
-                btn.textContent = `Bagian ${num}`;
-                btn.onclick = () => pindahBagian(parseInt(num));
-                tabsContainer.appendChild(btn);
+                const option = document.createElement('option');
+                option.value = num;
+                option.textContent = `Bagian ${num}: ${data.nama}`;
+                selector.appendChild(option);
+            });
+            
+            selector.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    pindahBagian(parseInt(e.target.value));
+                }
             });
         }
 
@@ -418,9 +620,8 @@
         }
 
         function updateTabs() {
-            document.querySelectorAll('.bagian-btn').forEach((btn, idx) => {
-                btn.classList.toggle('active', (idx + 1) === currentBagian);
-            });
+            const selector = document.getElementById('bagianSelector');
+            selector.value = currentBagian;
         }
 
         // Generator Soal
@@ -2450,7 +2651,7 @@
                     jawaban: '16√3/3 cm',
                     opsi: ['16√3/3 cm', '8√3 cm', '16 cm', '8 cm'],
                     petunjuk: `Gunakan perbandingan kosinus: cos θ = samping/miring. Atur ulang: miring = samping/cos θ`,
-                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Sudut acuan = 30°</li><li>Sisi samping (AC) = 8 cm</li><li>cos 30° = √3/2</li></ul><br><strong>Ditanya:</strong> Panjang sisi miring (AB) = ?<br><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>cos 30° = samping/miring</li><li>miring = 8/(√3/2) = 8 × (2/√3)</li><li>Rasionalkan: miring = 8 × 2√3/3 = <strong>16√3/3 cm</strong></li></ol><br><strong>Jawaban: Sisi miring AB ≈ 9,24 cm</strong>`
+                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Sudut acuan = 30°</li><li>Sisi samping (AC) = 8 cm</li><li>cos 30° = √3/2</li></ul><br><strong>Ditanya:</strong> Panjang sisi miring (AB) = ?<br><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>cos 30° = samping/miring</li><li>miring = 8/(√3/2) = 8 × (2/√3)</li><li>Rasionalkan: miring = 8 × 2√3/3 = <strong>16√3/3 cm</strong></li></ol><br><strong>Jawaban: Sisi miring AB = 16√3/3 cm</strong>`
                 },
                 5: {
                     sudutAcuan: 'C',
@@ -2459,7 +2660,7 @@
                     jawaban: '4√3 cm',
                     opsi: ['4√3 cm', '4 cm', '8 cm', '2√3 cm'],
                     petunjuk: `Gunakan perbandingan tangen: tan θ = depan/samping. Atur ulang: depan = samping × tan θ`,
-                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Sudut acuan = 60°</li><li>Sisi samping (AC) = 4 cm</li><li>tan 60° = √3</li></ul><br><strong>Ditanya:</strong> Panjang sisi depan (AB) = ?<br><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>tan 60° = depan/samping</li><li>√3 = depan/4</li><li>depan = 4 × √3 = <strong>4√3 cm</strong></li></ol><br><strong>Jawaban: Sisi depan AB ≈ 6,93 cm</strong>`
+                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Sudut acuan = 60°</li><li>Sisi samping (AC) = 4 cm</li><li>tan 60° = √3</li></ul><br><strong>Ditanya:</strong> Panjang sisi depan (AB) = ?<br><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>tan 60° = depan/samping</li><li>√3 = depan/4</li><li>depan = 4 × √3 = <strong>4√3 cm</strong></li></ol><br><strong>Jawaban: Sisi depan AB = 4√3 cm</strong>`
                 },
                 6: {
                     sudutAcuan: 'A',
@@ -2468,7 +2669,7 @@
                     jawaban: 'BC = 6 cm, AC = 6√2 cm',
                     opsi: ['BC = 6 cm, AC = 6√2 cm', 'BC = 6√2 cm, AC = 6 cm', 'BC = 6 cm, AC = 6 cm', 'BC = 3 cm, AC = 6 cm'],
                     petunjuk: `Pada segitiga 45-45-90, kedua sisi tegak selalu sama. Gunakan Pythagoras untuk mencari sisi miring: miring = sisi × √2`,
-                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Segitiga 45-45-90</li><li>Sisi tegak AB = 6 cm</li></ul><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>Kedua sisi tegak sama panjang: BC = 6 cm</li><li>Pythagoras: AC² = 6² + 6² = 72</li><li>AC = √72 = 6√2 cm ≈ 8,49 cm</li></ol><br><strong>Jawaban: BC = 6 cm, AC = 6√2 cm</strong>`
+                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Segitiga 45-45-90</li><li>Sisi tegak AB = 6 cm</li></ul><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>Kedua sisi tegak sama panjang: BC = 6 cm</li><li>Pythagoras: AC² = 6² + 6² = 72</li><li>AC = √72 = 6√2 cm </li></ol><br><strong>Jawaban: BC = 6 cm, AC = 6√2 cm</strong>`
                 },
                 7: {
                     sudutAcuan: 'C',
@@ -2592,20 +2793,18 @@
 
             // Tombol jawab dan soal baru
             const btnDiv = document.createElement('div');
-            btnDiv.style.display = 'flex';
-            btnDiv.style.gap = '1rem';
-            btnDiv.style.marginTop = '1rem';
+            btnDiv.className = 'button-group';
             
             const btnJawab = document.createElement('button');
             btnJawab.className = 'btn-jawab';
             btnJawab.id = 'btnJawab';
-            btnJawab.textContent = 'Jawab';
+            btnJawab.textContent = '✓ Jawab';
             btnJawab.onclick = cekJawaban;
             btnDiv.appendChild(btnJawab);
 
             const btnSoalBaru = document.createElement('button');
             btnSoalBaru.className = 'btn-soal-baru';
-            btnSoalBaru.textContent = 'Soal Baru';
+            btnSoalBaru.textContent = '↻ Soal Baru';
             btnSoalBaru.onclick = () => {
                 currentKasus = Math.floor(Math.random() * BAGIAN_DATA[currentBagian].kasus) + 1;
                 attemptCount = 0;
@@ -2630,8 +2829,8 @@
             
             // Tentukan posisi segitiga berdasarkan sudut siku-siku
             let A, B, C;
-            const baseX = 100;
-            const baseY = 280;
+            const baseX = 70;
+            const baseY = 245;
             
             if (sudutSikuSiku === 'A') {
                 // Siku-siku di A (bottom-left)
@@ -2662,7 +2861,7 @@
 
             // Helper untuk menggambar kotak siku-siku
             const drawRightAngleSquare = (vertex, p1, p2) => {
-                const size = 12;
+                const size = 8;
                 const v1 = { x: p1.x - vertex.x, y: p1.y - vertex.y };
                 const v2 = { x: p2.x - vertex.x, y: p2.y - vertex.y };
                 const len1 = Math.sqrt(v1.x * v1.x + v1.y * v1.y);
@@ -2697,13 +2896,13 @@
             ctx.fillStyle = '#333';
             [A, B, C].forEach(p => {
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
+                ctx.arc(p.x, p.y, 4, 0, 2 * Math.PI);
                 ctx.fill();
             });
 
             // Label titik A, B, C dengan posisi yang fleksibel
             ctx.fillStyle = '#333';
-            ctx.font = 'bold 16px Arial';
+            ctx.font = 'bold 13px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             
@@ -2730,7 +2929,7 @@
 
             // Label sisi dan panjang
             if (showLabels && a && b && c) {
-                ctx.font = 'bold 13px Arial';
+                ctx.font = 'bold 11px Arial';
                 ctx.fillStyle = '#d32f2f';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
@@ -2779,17 +2978,17 @@
                 if (sideValues.AB) {
                     const midX = (A.x + B.x) / 2;
                     const midY = (A.y + B.y) / 2;
-                    ctx.fillText(`${sideValues.AB} cm`, midX, midY + 25);
+                    ctx.fillText(`${sideValues.AB} cm`, midX, midY + 18);
                 }
                 if (sideValues.BC) {
                     const midX = (B.x + C.x) / 2;
                     const midY = (B.y + C.y) / 2;
-                    ctx.fillText(`${sideValues.BC} cm`, midX + 30, midY);
+                    ctx.fillText(`${sideValues.BC} cm`, midX + 22, midY);
                 }
                 if (sideValues.AC) {
                     const midX = (A.x + C.x) / 2;
                     const midY = (A.y + C.y) / 2;
-                    ctx.fillText(`${sideValues.AC} cm`, midX - 30, midY);
+                    ctx.fillText(`${sideValues.AC} cm`, midX - 22, midY);
                 }
             }
 
@@ -2809,17 +3008,17 @@
                 ctx.lineWidth = 2.5;
                 ctx.fillStyle = 'rgba(255, 107, 107, 0.15)';
                 ctx.beginPath();
-                ctx.arc(vertex.x, vertex.y, 35, startAngle, endAngle, endAngle < startAngle);
+                ctx.arc(vertex.x, vertex.y, 25, startAngle, endAngle, endAngle < startAngle);
                 ctx.lineTo(vertex.x, vertex.y);
                 ctx.closePath();
                 ctx.fill();
                 ctx.stroke();
                 
                 const midAngle = (startAngle + endAngle) / 2;
-                const labelX = vertex.x + 50 * Math.cos(midAngle);
-                const labelY = vertex.y + 50 * Math.sin(midAngle);
+                const labelX = vertex.x + 36 * Math.cos(midAngle);
+                const labelY = vertex.y + 36 * Math.sin(midAngle);
                 ctx.fillStyle = '#ff6b6b';
-                ctx.font = 'bold 18px Arial';
+                ctx.font = 'bold 14px Arial';
                 ctx.fillText(label, labelX, labelY);
             };
             
@@ -2924,29 +3123,29 @@
             
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const radius = 100;
+            const radius = 70;
 
             // Gambar sumbu
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(50, centerY);
-            ctx.lineTo(canvas.width - 50, centerY);
+            ctx.moveTo(40, centerY);
+            ctx.lineTo(canvas.width - 40, centerY);
             ctx.stroke();
             
             ctx.beginPath();
-            ctx.moveTo(centerX, 50);
-            ctx.lineTo(centerX, canvas.height - 50);
+            ctx.moveTo(centerX, 40);
+            ctx.lineTo(centerX, canvas.height - 40);
             ctx.stroke();
 
             // Label sumbu
             ctx.fillStyle = '#333';
-            ctx.font = 'bold 14px Arial';
+            ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('+x', canvas.width - 40, centerY - 15);
-            ctx.fillText('+y', centerX + 20, 40);
-            ctx.fillText('-x', 40, centerY - 15);
-            ctx.fillText('-y', centerX + 20, canvas.height - 20);
+            ctx.fillText('+x', canvas.width - 35, centerY - 12);
+            ctx.fillText('+y', centerX + 16, 35);
+            ctx.fillText('-x', 35, centerY - 12);
+            ctx.fillText('-y', centerX + 16, canvas.height - 12);
 
             // Gambar lingkaran satuan
             ctx.strokeStyle = '#ddd';
@@ -2971,11 +3170,11 @@
             // Titik di garis
             ctx.fillStyle = '#ff6b6b';
             ctx.beginPath();
-            ctx.arc(endX, endY, 5, 0, 2 * Math.PI);
+            ctx.arc(endX, endY, 4, 0, 2 * Math.PI);
             ctx.fill();
 
             // Gambar arc untuk sudut utama (dari sumbu +x ke garis sudut) - selalu counterclockwise
-            const arcRadius = 35;
+            const arcRadius = 25;
             ctx.strokeStyle = '#0066cc';
             ctx.lineWidth = 2.5;
             ctx.beginPath();
@@ -2985,10 +3184,10 @@
 
             // Label sudut utama - ditempatkan di tengah arc
             const labelAngle = -angleRad / 2;
-            const labelX = centerX + 50 * Math.cos(labelAngle);
-            const labelY = centerY - 50 * Math.sin(labelAngle);
+            const labelX = centerX + 35 * Math.cos(labelAngle);
+            const labelY = centerY - 35 * Math.sin(labelAngle);
             ctx.fillStyle = '#0066cc';
-            ctx.font = 'bold 14px Arial';
+            ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'center';
             ctx.fillText(`${sudut}°`, labelX, labelY);
         }
@@ -3015,12 +3214,12 @@
 
             // Label sumbu
             ctx.fillStyle = '#333';
-            ctx.font = 'bold 16px Arial';
+            ctx.font = 'bold 13px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('+x', canvas.width - 35, centerY - 20);
-            ctx.fillText('+y', centerX + 25, 40);
-            ctx.fillText('-x', 35, centerY - 20);
-            ctx.fillText('-y', centerX + 25, canvas.height - 15);
+            ctx.fillText('+x', canvas.width - 30, centerY - 15);
+            ctx.fillText('+y', centerX + 18, 35);
+            ctx.fillText('-x', 30, centerY - 15);
+            ctx.fillText('-y', centerX + 18, canvas.height - 12);
 
             // Warna dan isi kuadran
             const quadrants = {
@@ -3042,19 +3241,19 @@
                 ctx.fillRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
 
                 // Label tanda di setiap kuadran
-                const labelX = centerX + (qData.x > 0 ? 60 : -60);
-                const labelY = centerY + (qData.y > 0 ? -50 : 50);
+                const labelX = centerX + (qData.x > 0 ? 43 : -43);
+                const labelY = centerY + (qData.y > 0 ? -36 : 36);
                 ctx.fillStyle = q === kuadran ? '#ff6b6b' : '#999';
-                ctx.font = q === kuadran ? 'bold 20px Arial' : 'bold 16px Arial';
+                ctx.font = q === kuadran ? 'bold 14px Arial' : 'bold 11px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText(`Kuadran ${q}`, labelX, labelY - 20);
+                ctx.fillText(`Kuadran ${q}`, labelX, labelY - 14);
 
                 // Tanda sin, cos, tan
-                ctx.font = q === kuadran ? 'bold 13px Arial' : '12px Arial';
-                if (q === 'I') ctx.fillText('sin: +  cos: +  tan: +', labelX, labelY + 20);
-                else if (q === 'II') ctx.fillText('sin: +  cos: -  tan: -', labelX, labelY + 20);
-                else if (q === 'III') ctx.fillText('sin: -  cos: -  tan: +', labelX, labelY + 20);
-                else if (q === 'IV') ctx.fillText('sin: -  cos: +  tan: -', labelX, labelY + 20);
+                ctx.font = q === kuadran ? 'bold 10px Arial' : '9px Arial';
+                if (q === 'I') ctx.fillText('sin: +  cos: +  tan: +', labelX, labelY + 14);
+                else if (q === 'II') ctx.fillText('sin: +  cos: -  tan: -', labelX, labelY + 14);
+                else if (q === 'III') ctx.fillText('sin: -  cos: -  tan: +', labelX, labelY + 14);
+                else if (q === 'IV') ctx.fillText('sin: -  cos: +  tan: -', labelX, labelY + 14);
             });
         }
 
@@ -3072,5 +3271,5 @@
         muatSoal();
         lucide.createIcons();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e4467d5752dea8a',t:'MTc3NDg0NTMwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e463d4ea18bd8da',t:'MTc3NDg2NDUzNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
