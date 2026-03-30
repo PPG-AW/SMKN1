@@ -174,14 +174,14 @@
     }
 
     .option-item.correct {
-      border: 1px solid #1a1a1a;
-      background: #e8f5e8;
+      border: 1px solid transparent;
+      background: transparent;
     }
 
     .option-item.wrong {
-      border: 1px solid #999;
-      background: #fff0f0;
-      opacity: 0.7;
+      border: 1px solid transparent;
+      background: transparent;
+      opacity: 1;
     }
 
     .option-radio {
@@ -257,7 +257,7 @@
     }
 
     .result-panel {
-      display: none;
+      display: none !important;
       border: 2px solid #1a1a1a;
       padding: 16px;
       margin-top: 20px;
@@ -265,7 +265,7 @@
     }
 
     .result-panel.show {
-      display: block;
+      display: none !important;
     }
 
     .result-score {
@@ -427,17 +427,13 @@
     Identitas Peserta
    </div>
    <div class="info-grid">
-    <div class="info-field">
-     <span class="info-label">Nama Lengkap</span> <input class="info-input" type="text" id="siswa-nama" placeholder="Tulis nama kamu..." autocomplete="off">
+    <div class="info-field"><span class="info-label">Nama Lengkap</span> <input class="info-input" type="text" id="siswa-nama" placeholder="Tulis nama kamu..." autocomplete="off">
     </div>
-    <div class="info-field">
-     <span class="info-label">Kelas</span> <input class="info-input" type="text" id="siswa-kelas" placeholder="Contoh: 12 RPL" autocomplete="off">
+    <div class="info-field"><span class="info-label">Kelas</span> <input class="info-input" type="text" id="siswa-kelas" placeholder="Contoh: 12 RPL" autocomplete="off">
     </div>
-    <div class="info-field">
-     <span class="info-label">No. Absen</span> <input class="info-input" type="text" id="siswa-absen" placeholder="Contoh: 15" autocomplete="off">
+    <div class="info-field"><span class="info-label">No. Absen</span> <input class="info-input" type="text" id="siswa-absen" placeholder="Contoh: 15" autocomplete="off">
     </div>
-    <div class="info-field">
-     <span class="info-label">Tanggal Pengerjaan</span> <input class="info-input" type="date" id="siswa-tanggal">
+    <div class="info-field"><span class="info-label">Tanggal Pengerjaan</span> <input class="info-input" type="date" id="siswa-tanggal">
     </div>
    </div>
    <div class="section-title">
@@ -455,25 +451,23 @@
    <div id="soal-container" style="min-height: 200px;"></div><button class="btn-submit" id="btn-submit" onclick="submitAsesmen()"> Kirim Jawaban </button>
    <div class="result-panel" id="result-panel">
     <div class="result-score" id="result-score">
-     0/5
+     0/8
     </div>
     <div class="result-label" id="result-label">
      —
     </div>
     <div class="result-breakdown" id="result-breakdown"></div>
-    <div class="send-panel" id="send-panel" style="display:none;">
+    <div class="send-panel" id="send-panel" style="display:block;">
      <div style="font-size:0.82rem; font-weight:700; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;">
       📊 Simpan ke Google Spreadsheet
      </div>
-     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-      <button class="btn-send" id="btn-send" onclick="kirimKeSpreadsheet()"> <i data-lucide="send" style="width:14px;height:14px;"></i> Kirim Data </button> <span style="font-size:0.78rem; color:#888;">Nama, kelas, skor, jawaban</span>
+     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;"><button class="btn-send" id="btn-send" onclick="kirimKeSpreadsheet()"> <i data-lucide="send" style="width:14px;height:14px;"></i> Kirim Data </button> <span style="font-size:0.78rem; color:#888;">Nama, kelas, skor, jawaban</span>
      </div>
      <div class="send-status" id="send-status"></div>
     </div>
    </div>
   </div>
-  <div class="sticky-nav" id="sticky-nav">
-   <span id="nav-progress-text">0 dari 8 soal dijawab</span> <button onclick="scrollToSubmit()" style="background:#1a1a1a; color:#fff; border:none; padding:6px 14px; font-size:0.8rem; cursor:pointer; font-family:'Source Sans 3',sans-serif;"> Ke Bawah ↓ </button>
+  <div class="sticky-nav" id="sticky-nav"><span id="nav-progress-text">0 dari 8 soal dijawab</span> <button onclick="scrollToSubmit()" style="background:#1a1a1a; color:#fff; border:none; padding:6px 14px; font-size:0.8rem; cursor:pointer; font-family:'Source Sans 3',sans-serif;"> Ke Bawah ↓ </button>
   </div>
   <script>
 // ─────────────────────────────────────────
@@ -1170,5 +1164,5 @@ renderSoal();
 document.getElementById("siswa-tanggal").value = new Date().toISOString().split("T")[0];
 if (window.lucide) lucide.createIcons();
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e47855b752314a6',t:'MTc3NDg3Nzk3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e478cc4b69c14a6',t:'MTc3NDg3ODI3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
