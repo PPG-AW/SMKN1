@@ -155,6 +155,29 @@
       font-size: 13px;
       font-weight: 400;
       user-select: none;
+      position: relative;
+    }
+
+    .radio-option label::after {
+      content: attr(data-full);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 100;
+    }
+
+    .radio-option label:hover::after {
+      opacity: 1;
     }
 
     .button-group {
@@ -199,6 +222,17 @@
 
     .btn-reset:hover {
       background-color: #cccccc;
+    }
+
+    .btn-draft {
+      background-color: #666666;
+      color: #ffffff;
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .btn-draft:hover {
+      background-color: #777777;
     }
 
     .btn-search {
@@ -379,24 +413,30 @@
     <h1>Angket Pembelajaran Siswa</h1>
     <p>Isilah angket ini dengan jujur dan teliti</p>
    </div>
-   <div class="container"><!-- Search Section -->
+   <div class="container">
+    <!-- Search Section -->
     <div class="search-section">
      <div class="search-title">
       Cari Data Sebelumnya
      </div>
-     <div class="search-form"><input type="text" id="searchNoAbsen" placeholder="Masukkan No. Absen (opsional)"> <input type="text" id="searchNamaSiswa" placeholder="Masukkan Nama Lengkap" required> <button type="button" class="btn-search" onclick="searchData()">Cari</button>
+     <div class="search-form">
+      <input type="text" id="searchNoAbsen" placeholder="Masukkan No. Absen (opsional)"> <input type="text" id="searchNamaSiswa" placeholder="Masukkan Nama Lengkap" required> <button type="button" class="btn-search" onclick="loadDraft()">Cari Draft</button>
      </div>
     </div><!-- Form Section -->
-    <form id="angketForm"><!-- Identitas Section -->
+    <form id="angketForm">
+     <!-- Identitas Section -->
      <div class="section">
       <div class="section-title">
        Data Diri
       </div>
-      <div class="form-group"><label for="noAbsen">No. Absen *</label> <input type="text" id="noAbsen" name="noAbsen" required>
+      <div class="form-group">
+       <label for="noAbsen">No. Absen *</label> <input type="text" id="noAbsen" name="noAbsen" required>
       </div>
-      <div class="form-group"><label for="namaSiswa">Nama Siswa *</label> <input type="text" id="namaSiswa" name="namaSiswa" required>
+      <div class="form-group">
+       <label for="namaSiswa">Nama Siswa *</label> <input type="text" id="namaSiswa" name="namaSiswa" required>
       </div>
-      <div class="form-group"><label for="kelas">Kelas *</label> <input type="text" id="kelas" name="kelas" placeholder="Contoh: XI A" required>
+      <div class="form-group">
+       <label for="kelas">Kelas *</label> <input type="text" id="kelas" name="kelas" placeholder="Contoh: XI A" required>
       </div>
      </div><!-- Questions Section -->
      <div class="section" id="questionsSection">
@@ -405,7 +445,8 @@
       </div>
       <div id="questionsContainer"></div>
      </div><!-- Buttons -->
-     <div class="button-group"><button type="button" class="btn-reset" onclick="resetForm()">Reset</button> <button type="submit" class="btn-save">Simpan Jawaban</button>
+     <div class="button-group">
+      <button type="button" class="btn-reset" onclick="resetForm()">Reset</button> <button type="button" class="btn-draft" onclick="saveDraft()">Simpan Draft</button> <button type="submit" class="btn-save">Simpan Jawaban</button>
      </div>
     </form><!-- Loading Indicator -->
     <div class="loading" id="loadingIndicator">
@@ -492,7 +533,7 @@
             ${OPTIONS.map(opt => `
               <div class="radio-option">
                 <input type="radio" name="p${q.no}" id="p${q.no}_${opt.value}" value="${opt.value}" data-timestamp="">
-                <label for="p${q.no}_${opt.value}" title="${opt.fullText}">${opt.label}</label>
+                <label for="p${q.no}_${opt.value}" data-full="${opt.fullText}">${opt.label}</label>
               </div>
             `).join('')}
           </div>
@@ -529,7 +570,36 @@
       document.getElementById('noAbsen').focus();
     }
 
-    function searchData() {
+    function saveDraft() {
+      const noAbsen = document.getElementById('noAbsen').value.trim();
+      const namaSiswa = document.getElementById('namaSiswa').value.trim();
+      const kelas = document.getElementById('kelas').value.trim();
+
+      if (!noAbsen || !namaSiswa || !kelas) {
+        showNotification('Mohon lengkapi data diri (No. Absen, Nama, Kelas)', 'error');
+        return;
+      }
+
+      const draftData = {
+        noAbsen,
+        namaSiswa,
+        kelas,
+        timestamp: getCurrentTimestamp(),
+        answers: {}
+      };
+
+      QUESTIONS.forEach(q => {
+        const selectedRadio = document.querySelector(`input[name="p${q.no}"]:checked`);
+        if (selectedRadio) {
+          draftData.answers[`p${q.no}`] = selectedRadio.value;
+        }
+      });
+
+      localStorage.setItem('angketDraft', JSON.stringify(draftData));
+      showNotification('Draft berhasil disimpan! Anda bisa kembali lagi nanti.', 'success');
+    }
+
+    function loadDraft() {
       const noAbsen = document.getElementById('searchNoAbsen').value.trim();
       const namaSiswa = document.getElementById('searchNamaSiswa').value.trim();
 
@@ -538,7 +608,27 @@
         return;
       }
 
-      showNotification('Fitur pencarian sedang dikembangkan. Silakan isi form baru atau perbarui data dengan nama yang sama.', 'info');
+      const draftData = JSON.parse(localStorage.getItem('angketDraft') || 'null');
+
+      if (draftData && (draftData.noAbsen === noAbsen || noAbsen === '') && draftData.namaSiswa === namaSiswa) {
+        document.getElementById('noAbsen').value = draftData.noAbsen;
+        document.getElementById('namaSiswa').value = draftData.namaSiswa;
+        document.getElementById('kelas').value = draftData.kelas;
+
+        QUESTIONS.forEach(q => {
+          if (draftData.answers[`p${q.no}`]) {
+            const radioButton = document.getElementById(`p${q.no}_${draftData.answers[`p${q.no}`]}`);
+            if (radioButton) {
+              radioButton.checked = true;
+            }
+          }
+        });
+
+        showNotification('Data draft berhasil dimuat! Silakan lanjutkan pengisian.', 'info');
+        document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        showNotification('Data tidak ditemukan. Silakan mulai isi form baru.', 'error');
+      }
     }
 
     document.getElementById('angketForm').addEventListener('submit', async (e) => {
@@ -629,5 +719,5 @@
 
     initializeForm();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e46c35933efea82',t:'MTc3NDg3MDAyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e46c9ffd41fea82',t:'MTc3NDg3MDI5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
