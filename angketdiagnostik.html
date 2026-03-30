@@ -427,13 +427,17 @@
     Identitas Peserta
    </div>
    <div class="info-grid">
-    <div class="info-field"><span class="info-label">Nama Lengkap</span> <input class="info-input" type="text" id="siswa-nama" placeholder="Tulis nama kamu..." autocomplete="off">
+    <div class="info-field">
+     <span class="info-label">Nama Lengkap</span> <input class="info-input" type="text" id="siswa-nama" placeholder="Tulis nama kamu..." autocomplete="off">
     </div>
-    <div class="info-field"><span class="info-label">Kelas</span> <input class="info-input" type="text" id="siswa-kelas" placeholder="Contoh: 12 RPL" autocomplete="off">
+    <div class="info-field">
+     <span class="info-label">Kelas</span> <input class="info-input" type="text" id="siswa-kelas" placeholder="Contoh: 12 RPL" autocomplete="off">
     </div>
-    <div class="info-field"><span class="info-label">No. Absen</span> <input class="info-input" type="text" id="siswa-absen" placeholder="Contoh: 15" autocomplete="off">
+    <div class="info-field">
+     <span class="info-label">No. Absen</span> <input class="info-input" type="text" id="siswa-absen" placeholder="Contoh: 15" autocomplete="off">
     </div>
-    <div class="info-field"><span class="info-label">Tanggal Pengerjaan</span> <input class="info-input" type="date" id="siswa-tanggal">
+    <div class="info-field">
+     <span class="info-label">Tanggal Pengerjaan</span> <input class="info-input" type="date" id="siswa-tanggal">
     </div>
    </div>
    <div class="section-title">
@@ -461,13 +465,15 @@
      <div style="font-size:0.82rem; font-weight:700; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;">
       📊 Simpan ke Google Spreadsheet
      </div>
-     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;"><button class="btn-send" id="btn-send" onclick="kirimKeSpreadsheet()"> <i data-lucide="send" style="width:14px;height:14px;"></i> Kirim Data </button> <span style="font-size:0.78rem; color:#888;">Nama, kelas, skor, jawaban</span>
+     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <button class="btn-send" id="btn-send" onclick="kirimKeSpreadsheet()"> <i data-lucide="send" style="width:14px;height:14px;"></i> Kirim Data </button> <span style="font-size:0.78rem; color:#888;">Nama, kelas, skor, jawaban</span>
      </div>
      <div class="send-status" id="send-status"></div>
     </div>
    </div>
   </div>
-  <div class="sticky-nav" id="sticky-nav"><span id="nav-progress-text">0 dari 8 soal dijawab</span> <button onclick="scrollToSubmit()" style="background:#1a1a1a; color:#fff; border:none; padding:6px 14px; font-size:0.8rem; cursor:pointer; font-family:'Source Sans 3',sans-serif;"> Ke Bawah ↓ </button>
+  <div class="sticky-nav" id="sticky-nav">
+   <span id="nav-progress-text">0 dari 8 soal dijawab</span> <button onclick="scrollToSubmit()" style="background:#1a1a1a; color:#fff; border:none; padding:6px 14px; font-size:0.8rem; cursor:pointer; font-family:'Source Sans 3',sans-serif;"> Ke Bawah ↓ </button>
   </div>
   <script>
 // ─────────────────────────────────────────
@@ -512,15 +518,15 @@ const soalData = [
     soal: "Diagram garis berikut menunjukkan <strong>suhu rata-rata (°C) kota X</strong> selama 6 bulan.",
     subtext: null,
     gambar: "soal3",
-    pertanyaan: "Berdasarkan diagram, pernyataan manakah yang <strong>BENAR</strong>?",
+    pertanyaan: "Berdasarkan diagram, pernyataan manakah yang <strong>SALAH</strong>?",
     opsi: [
       { huruf: "A", teks: "Suhu terus meningkat dari Januari hingga Juni" },
       { huruf: "B", teks: "Suhu tertinggi terjadi pada bulan Maret" },
       { huruf: "C", teks: "Suhu mengalami penurunan dari Maret ke April" },
       { huruf: "D", teks: "Suhu pada bulan Januari dan Juni sama" },
     ],
-    jawaban: "C",
-    penjelasan: "Dari diagram garis, titik Maret berada di posisi tertinggi (32°C), dan titik April lebih rendah (29°C), sehingga terjadi penurunan dari Maret ke April. Pilihan A salah karena ada penurunan. Pilihan B mendekati benar tapi pernyataan C lebih spesifik dan tepat secara visual."
+    jawaban: "A",
+    penjelasan: "Pernyataan yang SALAH adalah A, karena suhu tidak terus meningkat dari Januari hingga Juni. Dari grafik terlihat suhu naik dari Jan ke Mar (28→32°C), tapi kemudian turun dari Mar ke Apr (32→29°C). Pernyataan B, C, dan D semua benar sesuai grafik."
   },
   {
     id: 4,
@@ -1164,5 +1170,5 @@ renderSoal();
 document.getElementById("siswa-tanggal").value = new Date().toISOString().split("T")[0];
 if (window.lucide) lucide.createIcons();
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e478cc4b69c14a6',t:'MTc3NDg3ODI3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e479648b38f14a6',t:'MTc3NDg3ODY2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
