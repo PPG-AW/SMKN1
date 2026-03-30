@@ -733,12 +733,11 @@
       try {
         // Kirim sebagai JSON dengan CORS yang sesuai
         const response = await fetch(WEB_APP_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
-        });
+  method: 'POST',
+  body: new URLSearchParams({
+    data: JSON.stringify(formData)
+  })
+});
 
         const result = await response.json();
         
