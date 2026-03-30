@@ -464,34 +464,27 @@
      <h1>Angket Pembelajaran Siswa</h1>
      <p>Isilah angket ini dengan jujur dan teliti</p>
     </div><button type="button" class="header-icon-btn" onclick="saveDraft()" data-tooltip="Simpan Draft">
-     <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path> <polyline points="17 21 17 13 7 13 7 21"></polyline> <polyline points="7 3 7 8 15 8"></polyline>
+     <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path> <polyline points="17 21 17 13 7 13 7 21"></polyline> <polyline points="7 3 7 8 15 8"></polyline>
      </svg></button>
    </div>
-   <div class="container">
-    <!-- Search Section -->
+   <div class="container"><!-- Search Section -->
     <div class="search-section">
      <div class="search-title">
       Cari Data Sebelumnya
      </div>
-     <div class="search-form">
-      <input type="text" id="searchNoAbsen" placeholder="Masukkan No. Absen (opsional)"> <input type="text" id="searchNamaSiswa" placeholder="Masukkan Nama Lengkap" required> <button type="button" class="btn-search" onclick="loadDraft()">Cari Draft</button>
+     <div class="search-form"><input type="text" id="searchNoAbsen" placeholder="Masukkan No. Absen (opsional)"> <input type="text" id="searchNamaSiswa" placeholder="Masukkan Nama Lengkap" required> <button type="button" class="btn-search" onclick="loadDraft()">Cari Draft</button>
      </div>
     </div><!-- Form Section -->
-    <form id="angketForm">
-     <!-- Identitas Section -->
+    <form id="angketForm"><!-- Identitas Section -->
      <div class="section">
       <div class="section-title">
        Data Diri
       </div>
-      <div class="form-group">
-       <label for="noAbsen">No. Absen *</label> <input type="text" id="noAbsen" name="noAbsen" required>
+      <div class="form-group"><label for="noAbsen">No. Absen *</label> <input type="text" id="noAbsen" name="noAbsen" required>
       </div>
-      <div class="form-group">
-       <label for="namaSiswa">Nama Siswa *</label> <input type="text" id="namaSiswa" name="namaSiswa" required>
+      <div class="form-group"><label for="namaSiswa">Nama Siswa *</label> <input type="text" id="namaSiswa" name="namaSiswa" required>
       </div>
-      <div class="form-group">
-       <label for="kelas">Kelas *</label> <input type="text" id="kelas" name="kelas" placeholder="Contoh: XI A" required>
+      <div class="form-group"><label for="kelas">Kelas *</label> <input type="text" id="kelas" name="kelas" placeholder="Contoh: XI A" required>
       </div>
      </div><!-- Questions Section -->
      <div class="section" id="questionsSection">
@@ -500,8 +493,7 @@
       </div>
       <div id="questionsContainer"></div>
      </div><!-- Buttons -->
-     <div class="button-group">
-      <button type="button" class="btn-reset" onclick="resetForm()">Reset</button> <button type="submit" class="btn-save">Simpan Jawaban</button>
+     <div class="button-group"><button type="button" class="btn-reset" onclick="resetForm()">Reset</button> <button type="submit" class="btn-save">Simpan Jawaban</button>
      </div>
     </form><!-- Loading Indicator -->
     <div class="loading" id="loadingIndicator">
@@ -706,10 +698,7 @@
       const formData = {
         noAbsen,
         namaSiswa,
-        kelas,
-        noAb: timestamp,
-        namaSi: timestamp,
-        kel: timestamp
+        kelas
       };
 
       let allAnswered = true;
@@ -742,26 +731,29 @@
       loading.classList.add('show');
 
       try {
-        // Gunakan FormData untuk kompatibilitas CORS dengan Google Apps Script
-        const payload = new URLSearchParams();
-        Object.keys(formData).forEach(key => {
-          payload.append(key, formData[key]);
-        });
-
+        // Kirim sebagai JSON dengan CORS yang sesuai
         const response = await fetch(WEB_APP_URL, {
           method: 'POST',
-          body: payload,
-          mode: 'no-cors'
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
         });
 
-        // Dengan mode no-cors, response type akan opaque
-        // Asumsikan sukses jika tidak ada error jaringan
-        showNotification('Data berhasil disimpan!', 'success');
-        resetForm();
-        document.getElementById('searchNoAbsen').value = '';
-        document.getElementById('searchNamaSiswa').value = '';
+        const result = await response.json();
+        
+        if (result.success) {
+          showNotification('Data berhasil disimpan ke spreadsheet!', 'success');
+          resetForm();
+          document.getElementById('searchNoAbsen').value = '';
+          document.getElementById('searchNamaSiswa').value = '';
+          // Hapus draft setelah berhasil
+          localStorage.removeItem('angketDraft');
+        } else {
+          showNotification('Error: ' + result.error, 'error');
+        }
       } catch (error) {
-        showNotification('Terjadi kesalahan jaringan: ' + error.message, 'error');
+        showNotification('Terjadi kesalahan: ' + error.message, 'error');
       } finally {
         loading.classList.remove('show');
       }
@@ -788,5 +780,5 @@
 
     initializeForm();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e470ad1129fd8ca',t:'MTc3NDg3Mjk1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e47117005e7d8ca',t:'MTc3NDg3MzIyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
