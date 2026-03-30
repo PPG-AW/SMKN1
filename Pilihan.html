@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pemilihan Konsekuensi</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Segoe UI', sans-serif; }
+    .slide-up { animation: slideUp 0.5s ease forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+    .toast-in { animation: toastIn 0.3s ease forwards; }
+    @keyframes toastIn { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
+    .option-card { transition: all 0.2s ease; border: 2px solid #e5e7eb; }
+    .option-card:hover { border-color: #3b82f6; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1); }
+    .option-card.selected { border-color: #1e40af; background-color: #eff6ff; }
+    .input-field { border: 1px solid #d1d5db; transition: all 0.2s ease; }
+    .input-field:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app" class="w-full h-full bg-white overflow-auto">
+   <div class="max-w-4xl mx-auto px-6 py-8">
+    <div class="mb-8 slide-up" style="animation-delay:0s">
+     <h1 id="pageTitle" class="text-4xl font-bold text-gray-900 mb-2">Pemilihan Konsekuensi</h1>
+     <p id="pageSubtitle" class="text-gray-600 text-lg">Pilih salah satu paket konsekuensi di bawah ini</p>
+    </div>
+    <div id="formSection" class="pb-8">
+     <form id="dataForm" class="space-y-6">
+      <div class="slide-up" style="animation-delay:0.1s">
+       <h2 class="text-xl font-bold text-gray-900 mb-4">Data Siswa</h2>
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div><label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label> <input id="nama" type="text" placeholder="Nama lengkap" class="w-full px-4 py-2.5 input-field rounded-lg text-gray-900 focus:outline-none" required>
+        </div>
+        <div><label for="absen" class="block text-sm font-medium text-gray-700 mb-1">Nomor Absen</label> <input id="absen" type="text" placeholder="12" class="w-full px-4 py-2.5 input-field rounded-lg text-gray-900 focus:outline-none" required>
+        </div>
+        <div><label for="kelas" class="block text-sm font-medium text-gray-700 mb-1">Kelas</label> <input id="kelas" type="text" placeholder="8A" class="w-full px-4 py-2.5 input-field rounded-lg text-gray-900 focus:outline-none" required>
+        </div>
+       </div>
+      </div>
+      <div class="slide-up" style="animation-delay:0.2s">
+       <h2 class="text-xl font-bold text-gray-900 mb-4">Pilih Opsi Konsekuensi</h2>
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="option-card rounded-lg p-5 cursor-pointer" data-option="A" onclick="selectOption('A')">
+         <div class="flex items-center mb-3">
+          <div class="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center mr-3" id="radioA"></div>
+          <h3 id="titleA" class="font-bold text-gray-900">Drilling Beruntun</h3>
+         </div>
+         <div class="text-xs font-medium text-red-600 bg-red-50 px-2.5 py-1 rounded inline-block mb-3">
+          Fokus Kecepatan
+         </div>
+         <p class="text-sm text-gray-700 leading-relaxed">Menjawab <strong>15 soal BENAR SECARA BERUNTUN</strong>. Jika ada satu jawaban salah, hitungan kembali ke <strong>0 (Nol)</strong>. Harus mencoba sampai berhasil 15 kali benar tanpa terputus.</p>
+        </div>
+        <div class="option-card rounded-lg p-5 cursor-pointer" data-option="B" onclick="selectOption('B')">
+         <div class="flex items-center mb-3">
+          <div class="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center mr-3" id="radioB"></div>
+          <h3 id="titleB" class="font-bold text-gray-900">Langkah Rinci</h3>
+         </div>
+         <div class="text-xs font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded inline-block mb-3">
+          Fokus Logika
+         </div>
+         <p class="text-sm text-gray-700 leading-relaxed">Mengerjakan <strong>10 soal variasi</strong> di buku tulis secara sistematis (Diketahui, Ditanya, Dijawab). Jika langkah logika melompat, diberikan <strong>5 soal tambahan</strong>.</p>
+        </div>
+        <div class="option-card rounded-lg p-5 cursor-pointer" data-option="C" onclick="selectOption('C')">
+         <div class="flex items-center mb-3">
+          <div class="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center mr-3" id="radioC"></div>
+          <h3 id="titleC" class="font-bold text-gray-900">Detektif Matematika</h3>
+         </div>
+         <div class="text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded inline-block mb-3">
+          Fokus Analisis
+         </div>
+         <p class="text-sm text-gray-700 leading-relaxed">Menganalisis <strong>5 lembar jawaban salah</strong>. Wajib menemukan letak kesalahan, menjelaskan alasan, dan memberikan <strong>perbaikan jawaban yang benar</strong>.</p>
+        </div>
+       </div>
+      </div>
+      <div id="errorMsg" class="text-red-600 text-sm font-medium hidden bg-red-50 p-3 rounded-lg"></div>
+      <div class="slide-up" style="animation-delay:0.3s"><button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition"> <span id="submitText">Kirim Pilihan</span> </button>
+      </div>
+     </form>
+    </div>
+   </div>
+  </div>
+  <script>
+  let selectedOption = null;
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbyH91B1sDIMrOi0zg6sYsq0O5t5n-7FKWlkRkZUJcsll9SujPm0nd3OS6irKM_voLCGBA/exec';
+
+  const defaultConfig = {
+    page_title: 'Pemilihan Konsekuensi',
+    subtitle: 'Pilih salah satu paket konsekuensi di bawah ini',
+    option_a_title: 'Drilling Beruntun',
+    option_b_title: 'Langkah Rinci',
+    option_c_title: 'Detektif Matematika',
+    text_color: '#111827',
+    accent_color: '#1e40af'
+  };
+
+  // Element SDK
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => {
+      document.getElementById('pageTitle').textContent = config.page_title || defaultConfig.page_title;
+      document.getElementById('pageTitle').style.color = config.text_color || defaultConfig.text_color;
+      document.getElementById('pageSubtitle').textContent = config.subtitle || defaultConfig.subtitle;
+      document.getElementById('pageSubtitle').style.color = '#6b7280';
+      
+      if (document.getElementById('titleA')) {
+        document.getElementById('titleA').textContent = config.option_a_title || defaultConfig.option_a_title;
+      }
+      if (document.getElementById('titleB')) {
+        document.getElementById('titleB').textContent = config.option_b_title || defaultConfig.option_b_title;
+      }
+      if (document.getElementById('titleC')) {
+        document.getElementById('titleC').textContent = config.option_c_title || defaultConfig.option_c_title;
+      }
+
+      const font = config.font_family || 'Segoe UI';
+      const baseSize = config.font_size || 16;
+      document.getElementById('pageTitle').style.fontFamily = `${font}, sans-serif`;
+      document.getElementById('pageTitle').style.fontSize = `${baseSize * 2.25}px`;
+      document.getElementById('pageSubtitle').style.fontFamily = `${font}, sans-serif`;
+      document.getElementById('pageSubtitle').style.fontSize = `${baseSize * 1.125}px`;
+    },
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        { 
+          get: () => config.text_color || defaultConfig.text_color, 
+          set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } 
+        },
+        { 
+          get: () => config.accent_color || defaultConfig.accent_color, 
+          set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } 
+        }
+      ],
+      borderables: [],
+      fontEditable: {
+        get: () => config.font_family || 'Segoe UI',
+        set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+      },
+      fontSizeable: {
+        get: () => config.font_size || 16,
+        set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+      }
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ['page_title', config.page_title || defaultConfig.page_title],
+      ['subtitle', config.subtitle || defaultConfig.subtitle],
+      ['option_a_title', config.option_a_title || defaultConfig.option_a_title],
+      ['option_b_title', config.option_b_title || defaultConfig.option_b_title],
+      ['option_c_title', config.option_c_title || defaultConfig.option_c_title]
+    ])
+  });
+
+  function selectOption(opt) {
+    selectedOption = opt;
+    document.querySelectorAll('.option-card').forEach(card => {
+      const cardOpt = card.dataset.option;
+      if (cardOpt === opt) {
+        card.classList.add('selected');
+      } else {
+        card.classList.remove('selected');
+      }
+    });
+
+    ['A', 'B', 'C'].forEach(o => {
+      const radio = document.getElementById('radio' + o);
+      if (o === opt) {
+        radio.innerHTML = '<div class="w-3 h-3 rounded-full bg-blue-600"></div>';
+        radio.className = 'w-5 h-5 rounded border-2 border-blue-600 flex items-center justify-center';
+      } else {
+        radio.innerHTML = '';
+        radio.className = 'w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center';
+      }
+    });
+
+    document.getElementById('errorMsg').classList.add('hidden');
+  }
+
+  document.getElementById('dataForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nama = document.getElementById('nama').value.trim();
+    const absen = document.getElementById('absen').value.trim();
+    const kelas = document.getElementById('kelas').value.trim();
+    const errEl = document.getElementById('errorMsg');
+
+    if (!nama || !absen || !kelas || !selectedOption) {
+      errEl.textContent = '⚠️ Lengkapi semua data dan pilih salah satu opsi!';
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    const btn = document.querySelector('button[type="submit"]');
+    const txt = document.getElementById('submitText');
+    btn.disabled = true;
+    txt.textContent = 'Mengirim...';
+
+    try {
+      const response = await fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify({
+          nama,
+          absen,
+          kelas,
+          opsi: selectedOption
+        })
+      });
+
+      if (response.ok) {
+        document.getElementById('dataForm').reset();
+        selectedOption = null;
+        selectOption(null);
+        showToast('✅ Pilihan berhasil disimpan!');
+      } else {
+        throw new Error('Response tidak OK');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      errEl.textContent = '❌ Gagal menyimpan. Coba lagi.';
+      errEl.classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+      txt.textContent = 'Kirim Pilihan';
+    }
+  });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.remove('hidden', 'toast-out');
+    t.classList.add('toast-in');
+    setTimeout(() => {
+      t.classList.add('toast-out');
+      setTimeout(() => t.classList.add('hidden'), 300);
+    }, 3000);
+  }
+
+  lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e43c0c3221ac0de',t:'MTc3NDgzODQ2Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
