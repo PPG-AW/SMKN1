@@ -1004,10 +1004,10 @@ function forceSubmit() {
   prosesSubmit();
 }
 
-function prosesSubmit() {
+async function prosesSubmit() {
   sudahSubmit = true;
   document.getElementById("btn-submit").disabled = true;
-  document.getElementById("btn-submit").textContent = "✓ Jawaban Terkirim";
+  document.getElementById("btn-submit").textContent = "⏳ Memproses...";
 
   if (!document.getElementById("siswa-tanggal").value) {
     const now = new Date();
@@ -1031,8 +1031,6 @@ function prosesSubmit() {
         el.classList.add("wrong");
       }
     });
-
-    document.getElementById(`expl-${s.id}`).classList.add("show");
 
     breakdown.push(`
       <div style="display:flex; gap:6px; align-items:flex-start; padding:4px 0; border-bottom:1px solid #eee;">
@@ -1059,13 +1057,47 @@ function prosesSubmit() {
   const panel = document.getElementById("result-panel");
   panel.classList.add("show");
 
-  document.getElementById("send-panel").style.display = "block";
+  document.getElementById("send-panel").style.display = "none";
 
   setTimeout(() => {
     panel.scrollIntoView({ behavior: "smooth", block: "start" });
   }, 200);
 
   if (window.lucide) lucide.createIcons();
+
+  // Automatically send to spreadsheet
+  await kirimKeSpreadsheetOtomatis(benar, skor);
+}
+
+async function kirimKeSpreadsheetOtomatis(benar, skor) {
+  const payload = {
+    timestamp: new Date().toISOString(),
+    nama: document.getElementById("siswa-nama").value.trim(),
+    kelas: document.getElementById("siswa-kelas").value.trim(),
+    absen: document.getElementById("siswa-absen").value.trim(),
+    tanggal: document.getElementById("siswa-tanggal").value,
+    jawaban_s1: jawabanSiswa[1] || "—",
+    jawaban_s2: jawabanSiswa[2] || "—",
+    jawaban_s3: jawabanSiswa[3] || "—",
+    jawaban_s4: jawabanSiswa[4] || "—",
+    jawaban_s5: jawabanSiswa[5] || "—",
+    jawaban_s6: jawabanSiswa[6] || "—",
+    jawaban_s7: jawabanSiswa[7] || "—",
+    jawaban_s8: jawabanSiswa[8] || "—",
+    benar: benar,
+    skor: skor,
+  };
+
+  try {
+    await fetch(WEBAPP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    console.error("Auto-save error:", err);
+  }
 }
 
 // ─────────────────────────────────────────
@@ -1138,5 +1170,5 @@ renderSoal();
 document.getElementById("siswa-tanggal").value = new Date().toISOString().split("T")[0];
 if (window.lucide) lucide.createIcons();
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e477f66569b14a6',t:'MTc3NDg3NzcyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e47855b752314a6',t:'MTc3NDg3Nzk3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
