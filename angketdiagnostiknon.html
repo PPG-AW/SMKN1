@@ -30,8 +30,15 @@
       background-color: #000000;
       color: #ffffff;
       padding: 20px;
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+      flex: 1;
+      text-align: center;
     }
 
     .header h1 {
@@ -43,6 +50,49 @@
     .header p {
       font-size: 14px;
       opacity: 0.9;
+    }
+
+    .header-icon-btn {
+      background: none;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: opacity 0.2s;
+    }
+
+    .header-icon-btn:hover {
+      opacity: 0.7;
+    }
+
+    .header-icon-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .header-icon-btn::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: -35px;
+      right: 0;
+      background-color: #333;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 100;
+    }
+
+    .header-icon-btn:hover::after {
+      opacity: 1;
     }
 
     .container {
@@ -410,8 +460,13 @@
  <body>
   <div class="app-wrapper">
    <div class="header">
-    <h1>Angket Pembelajaran Siswa</h1>
-    <p>Isilah angket ini dengan jujur dan teliti</p>
+    <div class="header-content">
+     <h1>Angket Pembelajaran Siswa</h1>
+     <p>Isilah angket ini dengan jujur dan teliti</p>
+    </div><button type="button" class="header-icon-btn" onclick="saveDraft()" data-tooltip="Simpan Draft">
+     <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path> <polyline points="17 21 17 13 7 13 7 21"></polyline> <polyline points="7 3 7 8 15 8"></polyline>
+     </svg></button>
    </div>
    <div class="container">
     <!-- Search Section -->
@@ -446,7 +501,7 @@
       <div id="questionsContainer"></div>
      </div><!-- Buttons -->
      <div class="button-group">
-      <button type="button" class="btn-reset" onclick="resetForm()">Reset</button> <button type="button" class="btn-draft" onclick="saveDraft()">Simpan Draft</button> <button type="submit" class="btn-save">Simpan Jawaban</button>
+      <button type="button" class="btn-reset" onclick="resetForm()">Reset</button> <button type="submit" class="btn-save">Simpan Jawaban</button>
      </div>
     </form><!-- Loading Indicator -->
     <div class="loading" id="loadingIndicator">
@@ -526,6 +581,10 @@
       QUESTIONS.forEach(q => {
         const questionGroup = document.createElement('div');
         questionGroup.className = 'question-group';
+        // Hide questions 41-50
+        if (q.no > 40) {
+          questionGroup.style.display = 'none';
+        }
         questionGroup.innerHTML = `
           <div class="question-number">No. ${q.no}</div>
           <div class="question-text">${q.text}</div>
@@ -719,5 +778,5 @@
 
     initializeForm();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e46c9ffd41fea82',t:'MTc3NDg3MDI5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e46d20f43d4ea82',t:'MTc3NDg3MDYyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
