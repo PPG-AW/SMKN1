@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Asesmen Diagnostik Statistika</title>
-  <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <style>
@@ -416,6 +415,7 @@
   </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
  </head>
  <body class="h-full w-full bg-white overflow-auto">
   <div class="doc-page" id="app">
@@ -427,13 +427,17 @@
     Identitas Peserta
    </div>
    <div class="info-grid">
-    <div class="info-field"><span class="info-label">Nama Lengkap</span> <input class="info-input" type="text" id="siswa-nama" placeholder="Tulis nama kamu..." autocomplete="off">
+    <div class="info-field">
+     <span class="info-label">Nama Lengkap</span> <input class="info-input" type="text" id="siswa-nama" placeholder="Tulis nama kamu..." autocomplete="off">
     </div>
-    <div class="info-field"><span class="info-label">Kelas</span> <input class="info-input" type="text" id="siswa-kelas" placeholder="Contoh: 12 RPL" autocomplete="off">
+    <div class="info-field">
+     <span class="info-label">Kelas</span> <input class="info-input" type="text" id="siswa-kelas" placeholder="Contoh: 12 RPL" autocomplete="off">
     </div>
-    <div class="info-field"><span class="info-label">No. Absen</span> <input class="info-input" type="text" id="siswa-absen" placeholder="Contoh: 15" autocomplete="off">
+    <div class="info-field">
+     <span class="info-label">No. Absen</span> <input class="info-input" type="text" id="siswa-absen" placeholder="Contoh: 15" autocomplete="off">
     </div>
-    <div class="info-field"><span class="info-label">Tanggal Pengerjaan</span> <input class="info-input" type="date" id="siswa-tanggal">
+    <div class="info-field">
+     <span class="info-label">Tanggal Pengerjaan</span> <input class="info-input" type="date" id="siswa-tanggal">
     </div>
    </div>
    <div class="section-title">
@@ -461,13 +465,15 @@
      <div style="font-size:0.82rem; font-weight:700; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;">
       📊 Simpan ke Google Spreadsheet
      </div>
-     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;"><button class="btn-send" id="btn-send" onclick="kirimKeSpreadsheet()"> <i data-lucide="send" style="width:14px;height:14px;"></i> Kirim Data </button> <span style="font-size:0.78rem; color:#888;">Nama, kelas, skor, jawaban</span>
+     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <button class="btn-send" id="btn-send" onclick="kirimKeSpreadsheet()"> <i data-lucide="send" style="width:14px;height:14px;"></i> Kirim Data </button> <span style="font-size:0.78rem; color:#888;">Nama, kelas, skor, jawaban</span>
      </div>
      <div class="send-status" id="send-status"></div>
     </div>
    </div>
   </div>
-  <div class="sticky-nav" id="sticky-nav"><span id="nav-progress-text">0 dari 8 soal dijawab</span> <button onclick="scrollToSubmit()" style="background:#1a1a1a; color:#fff; border:none; padding:6px 14px; font-size:0.8rem; cursor:pointer; font-family:'Source Sans 3',sans-serif;"> Ke Bawah ↓ </button>
+  <div class="sticky-nav" id="sticky-nav">
+   <span id="nav-progress-text">0 dari 8 soal dijawab</span> <button onclick="scrollToSubmit()" style="background:#1a1a1a; color:#fff; border:none; padding:6px 14px; font-size:0.8rem; cursor:pointer; font-family:'Source Sans 3',sans-serif;"> Ke Bawah ↓ </button>
   </div>
   <script>
 // ─────────────────────────────────────────
@@ -1121,31 +1127,9 @@ function scrollToSubmit() {
 }
 
 // ─────────────────────────────────────────
-// ELEMENT SDK
+// ELEMENT SDK (Disabled - not needed for this app)
 // ─────────────────────────────────────────
-const defaultConfig = {
-  judul_asesmen: "Asesmen Diagnostik Kognitif",
-  nama_mapel: "Matematika",
-  nama_guru: "—",
-};
-
-window.elementSdk.init({
-  defaultConfig,
-  onConfigChange: async (config) => {
-    // Empty header, no visual updates needed
-  },
-  mapToCapabilities: (config) => ({
-    recolorables: [],
-    borderables: [],
-    fontEditable: undefined,
-    fontSizeable: undefined,
-  }),
-  mapToEditPanelValues: (config) => new Map([
-    ["judul_asesmen", config.judul_asesmen || defaultConfig.judul_asesmen],
-    ["nama_mapel", config.nama_mapel || defaultConfig.nama_mapel],
-    ["nama_guru", config.nama_guru || defaultConfig.nama_guru],
-  ]),
-});
+// SDK removed since app doesn't use editable features
 
 // ─────────────────────────────────────────
 // INIT
@@ -1154,5 +1138,5 @@ renderSoal();
 document.getElementById("siswa-tanggal").value = new Date().toISOString().split("T")[0];
 if (window.lucide) lucide.createIcons();
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e474ba7f246b882',t:'MTc3NDg3NTYwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e477f66569b14a6',t:'MTc3NDg3NzcyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
