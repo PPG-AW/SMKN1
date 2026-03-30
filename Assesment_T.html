@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LKPD: Master Trigonometri SMK</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .container-wrapper {
+      height: 100%;
+      overflow-y: auto;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .section-header {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 2rem 0 1.25rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      border-left: 5px solid;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-header.blue-section { border-left-color: #3b82f6; background: linear-gradient(90deg, #eff6ff 0%, #f0f9ff 100%); color: #1e40af; }
+    .section-header.green-section { border-left-color: #10b981; background: linear-gradient(90deg, #ecfdf5 0%, #f0fdf4 100%); color: #065f46; }
+    .section-header.orange-section { border-left-color: #f97316; background: linear-gradient(90deg, #fff7ed 0%, #fef3c7 100%); color: #92400e; }
+
+    .soal-card {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .soal-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      border-color: #d1d5db;
+    }
+
+    .soal-nomor {
+      display: inline-block;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      padding: 0.375rem 0.875rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .soal-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .soal-narasi {
+      font-size: 0.95rem;
+      color: #4b5563;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+      padding: 0.75rem;
+      background: #f9fafb;
+      border-radius: 0.5rem;
+      border-left: 3px solid #d1d5db;
+    }
+
+    .input-field, .select-field, .textarea-field {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      margin-top: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus, .select-field:focus, .textarea-field:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .scaffolding-box {
+      background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+      border-left: 3px solid #3b82f6;
+      padding: 0.875rem 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #1e40af;
+      line-height: 1.5;
+    }
+
+    .biodata-section {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      border: 2px solid #dbeafe;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    }
+
+    .biodata-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 0.25rem;
+    }
+
+    .biodata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .refleksi-section {
+      background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      color: white;
+      border-radius: 0.75rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border-left: 5px solid #fbbf24;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .refleksi-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .refleksi-item {
+      margin-bottom: 1.5rem;
+    }
+
+    .refleksi-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .header-banner {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0369a1 100%);
+      color: white;
+      padding: 2.5rem 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      box-shadow: 0 8px 16px rgba(30, 58, 138, 0.3);
+    }
+
+    .header-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+    }
+
+    .header-subtitle {
+      font-size: 1rem;
+      opacity: 0.95;
+      margin: 0;
+      line-height: 1.5;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container-wrapper">
+   <div class="max-w-4xl mx-auto px-4 py-6 md:px-6 md:py-8">
+    <!-- HEADER BANNER -->
+    <div class="header-banner">
+     <h1 class="header-title">LKPD MASTER TRIGONOMETRI</h1>
+     <p class="header-subtitle">Selesaikan semua soal dengan cermat dan teliti. Sukses menguasai trigonometri dimulai dari sini!</p>
+    </div>
+    <form id="lkpdForm">
+     <!-- BIODATA SISWA -->
+     <div class="biodata-section">
+      <div class="biodata-title">
+       IDENTITAS SISWA
+      </div>
+      <div class="biodata-grid">
+       <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label> <input type="text" name="nama" class="input-field" placeholder="Masukkan nama Anda..." required>
+       </div>
+       <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Nomor Absen</label> <input type="number" name="absen" class="input-field" placeholder="00" min="0" required>
+       </div>
+       <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Kelas</label> <input type="text" name="kelas" class="input-field" placeholder="Contoh: X-A" required>
+       </div>
+      </div>
+     </div><!-- AKTIVITAS 1 -->
+     <div class="section-header blue-section">
+      Aktivitas 1: Operasi Campuran Lintas Kuadran
+     </div>
+     <div class="soal-card">
+      <span class="soal-nomor">SOAL 1</span>
+      <div class="soal-title">
+       sin 150° + cos 120° - tan 315°
+      </div><input type="text" name="akt1_k1" class="input-field tracker" data-time="t_1" placeholder="Contoh: 0 atau 1/2" required> <input type="hidden" name="t_1" id="t_1">
+      <div class="scaffolding-box"><strong>Langkah-langkah:</strong> Identifikasi kuadran masing-masing sudut → Tentukan nilai referensi sudut → Gunakan tanda positif/negatif sesuai kuadran → Jumlahkan hasil akhir
+      </div>
+     </div>
+     <div class="soal-card">
+      <span class="soal-nomor">SOAL 2</span>
+      <div class="soal-title">
+       (sin 210° × cos 300°) / tan 225°
+      </div><input type="text" name="akt1_k2" class="input-field tracker" data-time="t_2" placeholder="Contoh: -1/4 atau -0.25" required> <input type="hidden" name="t_2" id="t_2">
+      <div class="scaffolding-box"><strong>Langkah-langkah:</strong> Tentukan nilai sin 210° dan cos 300° → Kalikan kedua hasil → Tentukan nilai tan 225° → Bagi hasil perkalian dengan tan 225°
+      </div>
+     </div>
+     <div class="soal-card">
+      <span class="soal-nomor">SOAL 3</span>
+      <div class="soal-title">
+       (sin 45°)² + (cos 135°)²
+      </div><input type="text" name="akt1_k3" class="input-field tracker" data-time="t_3" placeholder="Contoh: 1" required> <input type="hidden" name="t_3" id="t_3">
+      <div class="scaffolding-box"><strong>Langkah-langkah:</strong> Tentukan nilai sin 45° → Kuadratkan → Tentukan nilai cos 135° → Kuadratkan → Jumlahkan kedua hasil
+      </div>
+     </div>
+     <div class="soal-card">
+      <span class="soal-nomor">SOAL 4</span>
+      <div class="soal-title">
+       2 × cos 330° + tan 120°
+      </div><input type="text" name="akt1_k4" class="input-field tracker" data-time="t_4" placeholder="Contoh: 0 atau √3" required> <input type="hidden" name="t_4" id="t_4">
+      <div class="scaffolding-box"><strong>Langkah-langkah:</strong> Tentukan nilai cos 330° → Kalikan dengan 2 → Tentukan nilai tan 120° → Jumlahkan kedua hasil
+      </div>
+     </div><!-- AKTIVITAS 2 -->
+     <div class="section-header green-section">
+      Aktivitas 2: Analisis Sudut Pandang
+     </div>
+     <div class="soal-card">
+      <span class="soal-nomor">SOAL 5</span>
+      <div class="soal-title">
+       Pemeliharaan Plafon (Mendongak)
+      </div>
+      <div class="soal-narasi">
+       Seorang siswa berdiri di lantai kelas dan melihat ke arah lampu plafon dengan posisi kepala mendongak sebesar 35°.
+      </div><label class="block text-sm font-semibold text-gray-700 mb-2">Apakah ini sudut Elevasi atau Depresi?</label> <select name="akt2_k5" class="select-field tracker" data-time="t_5" required> <option value="">-- Pilih Jawaban --</option> <option value="Elevasi">Sudut Elevasi</option> <option value="Depresi">Sudut Depresi</option> </select> <input type="hidden" name="t_5" id="t_5">
+      <div class="scaffolding-box"><strong>Langkah-langkah:</strong> Identifikasi arah pandang (ke atas/mendongak) → Tentukan sudut terhadap garis horizontal → Klasifikasikan jenis sudut
+      </div>
+     </div>
+     <div class="soal-card">
+      <span class="soal-nomor">SOAL 6</span>
+      <div class="soal-title">
+       Monitoring Drone (Melihat ke Bawah)
+      </div>
+      <div class="soal-narasi">
+       Sebuah drone terbang di atas lapangan. Kamera drone diarahkan miring ke bawah dengan sudut 20° untuk memantau barisan siswa.
+      </div><label class="block text-sm font-semibold text-gray-700 mb-2">Apakah ini sudut Elevasi atau Depresi?</label> <select name="akt2_k6" class="select-field tracker" data-time="t_6" required> <option value="">-- Pilih Jawaban --</option> <option value="Elevasi">Sudut Elevasi</option> <option value="Depresi">Sudut Depresi</option> </select> <input type="hidden" name="t_6" id="t_6">
+      <div class="scaffolding-box"><strong>Langkah-langkah:</strong> Identifikasi arah pandang (ke bawah/menunduk) → Tentukan sudut terhadap garis horizontal → Klasifikasikan jenis sudut
+      </div>
+     </div>
+     <div class="soal-card">
+      <span class="soal-nomor">SOAL 7</span>
+      <div class="soal-title">
+       Pengawasan dari Menara (Menunduk)
+      </div>
+      <div class="soal-narasi">
+       Dari atas menara air yang tinggi, seorang petugas kebersihan melihat benda jatuh di area parkir dengan posisi mata menunduk sebesar 15°.
+      </div><label class="block text-sm font-semibold text-gray-700 mb-2">Apakah ini sudut Elevasi atau Depresi?</label> <select name="akt2_k7" class="select-field tracker" data-time="t_7" required> <option value="">-- Pilih Jawaban --</option> <option value="Elevasi">Sudut Elevasi</option> <option value="Depresi">Sudut Depresi</option> </select> <input type="hidden" name="t_7" id="t_7">
+      <div class="scaffolding-box"><strong>Langkah-langkah:</strong> Dari ketinggian, melihat ke bawah membentuk sudut Depresi → Identifikasi arah pandang → Klasifikasikan jenis sudut
+      </div>
+     </div><!-- AKTIVITAS 3 -->
+     <div class="section-header orange-section">
+      Aktivitas 3: Masalah Nyata (Aplikasi)
+     </div>
+     <div class="soal-card">
+      <span class="soal-nomor">SOAL 8</span>
+      <div class="soal-title">
+       Pengukuran Tinggi Gerbang Utama
+      </div>
+      <div class="soal-narasi">
+       Jarak horizontal dari posisi berdiri Anda ke gerbang sekolah adalah 5 meter. Anda melihat puncak gerbang dengan sudut elevasi 45°. Jika tinggi mata diabaikan, berapakah tinggi gerbang tersebut?
+      </div><label class="block text-sm font-semibold text-gray-700 mb-2">Jawaban (dalam meter)</label> <input type="text" name="akt3_k8" class="input-field tracker" data-time="t_8" placeholder="Contoh: 5" required> <input type="hidden" name="t_8" id="t_8">
+      <div class="scaffolding-box"><strong>Langkah-langkah:</strong> Identifikasi nilai tan 45° → Gunakan rumus: tan θ = Tinggi / Jarak → Substitusikan nilai yang diketahui → Hitung tinggi gerbang
+      </div>
+     </div>
+     <div class="soal-card">
+      <span class="soal-nomor">SOAL 9</span>
+      <div class="soal-title">
+       Perhitungan Panjang Kabel Tiang Listrik
+      </div>
+      <div class="soal-narasi">
+       Sebuah kabel penahan ditarik lurus dari puncak tiang listrik setinggi 12 meter menuju sebuah pasak di tanah. Jika sudut antara kabel dan tanah adalah 30°, berapakah panjang kabel tersebut?
+      </div><label class="block text-sm font-semibold text-gray-700 mb-2">Jawaban (dalam meter)</label> <input type="text" name="akt3_k9" class="input-field tracker" data-time="t_9" placeholder="Contoh: 24" required> <input type="hidden" name="t_9" id="t_9">
+      <div class="scaffolding-box"><strong>Langkah-langkah:</strong> Identifikasi nilai sin 30° → Tentukan sisi depan (tinggi tiang) dan sisi miring (kabel) → Gunakan rumus: sin θ = Depan / Miring → Hitung panjang kabel
+      </div>
+     </div>
+     <div class="soal-card">
+      <span class="soal-nomor">SOAL 10</span>
+      <div class="soal-title">
+       Jarak Kapal ke Menara Dermaga
+      </div>
+      <div class="soal-narasi">
+       Dari puncak menara dermaga setinggi 60 meter, seorang petugas melihat kapal dengan sudut depresi 60°. Berapakah jarak horizontal dari kaki menara menuju kapal tersebut?
+      </div><label class="block text-sm font-semibold text-gray-700 mb-2">Jawaban (dalam meter)</label> <input type="text" name="akt3_k10" class="input-field tracker" data-time="t_10" placeholder="Contoh: 20√3 atau 34.64" required> <input type="hidden" name="t_10" id="t_10">
+      <div class="scaffolding-box"><strong>Langkah-langkah:</strong> Identifikasi nilai tan 60° → Tentukan tinggi menara dan jarak horizontal → Gunakan rumus: tan θ = Tinggi / Jarak → Hitung jarak kapal (nyatakan dalam bentuk akar jika diperlukan)
+      </div>
+     </div><!-- REFLEKSI MANDIRI -->
+     <div class="refleksi-section">
+      <div class="refleksi-title">
+       <span>🔍</span> REFLEKSI MANDIRI
+      </div>
+      <div class="refleksi-item">
+       <label class="refleksi-label">📊 Seberapa yakin kamu dengan jawabanmu? (Skala 1-100)</label> <input type="number" name="ref_persen" class="input-field" style="color: #111827;" min="1" max="100" placeholder="Contoh: 75" required>
+      </div>
+      <div class="refleksi-item">
+       <label class="refleksi-label">🤔 Materi apa yang menurutmu paling sulit? Jelaskan alasannya.</label> <textarea name="ref_kendala" class="textarea-field" style="color: #111827; resize: vertical;" rows="4" placeholder="Contoh: Operasi Kuadran karena sulit mengingat tanda di setiap kuadran..." required></textarea>
+      </div>
+     </div><!-- SUBMIT BUTTON --> <button type="submit" id="btnSubmit" class="submit-btn"> ✅ KIRIM JAWABAN LKPD </button>
+    </form>
+   </div>
+  </div>
+  <script>
+    // Konfigurasi Google Apps Script URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwS527ounr8qJPANqvQi_KSlxo6qTSuXJ_qGVxSfvhuuSSDsoVaeHx-OlGHwczEwNO7oQ/exec';
+    const form = document.getElementById('lkpdForm');
+
+    // Auto-timestamp untuk setiap field yang diubah
+    document.querySelectorAll('.tracker').forEach(item => {
+      item.addEventListener('change', function() {
+        const targetId = this.getAttribute('data-time');
+        const now = new Date();
+        const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                        now.getMinutes().toString().padStart(2, '0') + ':' + 
+                        now.getSeconds().toString().padStart(2, '0');
+        document.getElementById(targetId).value = timeStr;
+      });
+    });
+
+    // Form submission handler
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.innerText = '⏳ Sedang Mengirim...';
+
+      const formData = new URLSearchParams(new FormData(form));
+
+      fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: formData })
+        .then(() => {
+          alert('✅ Selamat! Jawaban Anda telah tersimpan ke Google Sheets.\n\nTerima kasih telah mengerjakan LKPD ini dengan serius!');
+          form.reset();
+        })
+        .catch(error => {
+          alert('❌ Terjadi kesalahan: ' + error.message);
+        })
+        .finally(() => {
+          btn.disabled = false;
+          btn.innerText = '✅ KIRIM JAWABAN LKPD';
+        });
+    });
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e44baeff711e8df',t:'MTc3NDg0ODcwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
