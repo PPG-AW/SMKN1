@@ -56,14 +56,7 @@
     <h1>Angket Pembelajaran Siswa</h1>
     <p>Isilah angket ini dengan jujur dan teliti</p>
    </div>
-   <div class="container"><!-- Search Section -->
-    <div class="section">
-     <div class="section-title">
-      Cari Data Sebelumnya
-     </div>
-     <div style="display: flex; gap: 10px; margin-bottom: 10px;"><input type="text" id="searchNoAbsen" placeholder="No. Absen (opsional)" style="flex: 1; padding: 10px; border: 1px solid #999; border-radius: 3px;"> <input type="text" id="searchNamaSiswa" placeholder="Nama Lengkap" required style="flex: 1; padding: 10px; border: 1px solid #999; border-radius: 3px;"> <button class="btn-search" onclick="loadData()">Cari</button>
-     </div>
-    </div><!-- Form Section -->
+   <div class="container"><!-- Form Section -->
     <form id="angketForm">
      <div class="section">
       <div class="section-title">
@@ -73,7 +66,7 @@
        <label for="noAbsen">No. Absen *</label><input type="text" id="noAbsen" name="noAbsen" required>
       </div>
       <div class="form-group">
-       <label for="namaSiswa">Nama Siswa *</label><input type="text" id="namaSiswa" name="namaSiswa" required>
+       <label for="namaSiswa">Nama Lengkap *</label><input type="text" id="namaSiswa" name="namaSiswa" required>
       </div>
       <div class="form-group">
        <label for="kelas">Kelas *</label><input type="text" id="kelas" name="kelas" placeholder="Contoh: XI A" required>
@@ -194,18 +187,19 @@
         return null;
       }
 
-      let allAnswered = true;
+      const unansweredQuestions = [];
       QUESTIONS.forEach(q => {
         const checked = document.querySelector(`input[name="p${q.no}"]:checked`);
         if (checked) {
           data[`p${q.no}`] = parseInt(checked.value);
         } else {
-          allAnswered = false;
+          unansweredQuestions.push(q.no);
         }
       });
 
-      if (!allAnswered) {
-        showNotification('Jawab semua 40 pertanyaan', 'error');
+      if (unansweredQuestions.length > 0) {
+        const questionList = unansweredQuestions.join(', ');
+        showNotification(`Pertanyaan belum terjawab: P${questionList}`, 'error');
         return null;
       }
 
@@ -241,45 +235,10 @@
     });
 
     async function loadData() {
-      const noAbsen = document.getElementById('searchNoAbsen').value.trim();
-      const namaSiswa = document.getElementById('searchNamaSiswa').value.trim();
-
-      if (!namaSiswa) {
-        showNotification('Masukkan nama untuk pencarian', 'error');
-        return;
-      }
-
-      document.getElementById('loadingIndicator').classList.add('show');
-
-      try {
-        const response = await fetch(WEB_APP_URL + '?action=get&noAbsen=' + encodeURIComponent(noAbsen) + '&namaSiswa=' + encodeURIComponent(namaSiswa));
-        const result = await response.json();
-
-        if (result.success && result.data) {
-          const data = result.data;
-          document.getElementById('noAbsen').value = data.noAbsen;
-          document.getElementById('namaSiswa').value = data.namaSiswa;
-          document.getElementById('kelas').value = data.kelas;
-
-          QUESTIONS.forEach(q => {
-            if (data[`p${q.no}`]) {
-              const radio = document.querySelector(`input[name="p${q.no}"][value="${data[`p${q.no}`]}"]`);
-              if (radio) radio.checked = true;
-            }
-          });
-
-          showNotification('Data ditemukan dan dimuat!', 'success');
-        } else {
-          showNotification('Data tidak ditemukan', 'error');
-        }
-      } catch (error) {
-        showNotification('Error: ' + error.message, 'error');
-      } finally {
-        document.getElementById('loadingIndicator').classList.remove('show');
-      }
+      // Fungsi dihapus
     }
 
     initializeForm();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e474be40448b882',t:'MTc3NDg3NTYxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e4754b16497b882',t:'MTc3NDg3NTk3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
