@@ -1,0 +1,3076 @@
+<!doctype html>
+<html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soal Generator Trigonometri</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        #app {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .bagian-tabs {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            flex-wrap: wrap;
+        }
+
+        .bagian-btn {
+            padding: 0.6rem 1.2rem;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .bagian-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .bagian-btn.active {
+            background-color: #2c3e50;
+            color: #fff;
+            border-color: #2c3e50;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .soal-container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .soal-judul {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .soal-teks {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        .gambar-container {
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem 0;
+            background-color: #fafafa;
+            padding: 1rem;
+            border-radius: 6px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .opsi-container {
+            margin: 2rem 0;
+        }
+
+        .opsi-label {
+            display: block;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .opsi {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: #fff;
+        }
+
+        .opsi:hover {
+            border-color: #bbb;
+            background-color: #f9f9f9;
+        }
+
+        .opsi input[type="radio"] {
+            margin-right: 1rem;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .opsi.selected {
+            background-color: #e8f4f8;
+            border-color: #0066cc;
+        }
+
+        .opsi.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        .opsi.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .opsi-text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.petunjuk {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+
+        .feedback.jawaban {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .feedback.benar {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .feedback.salah {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        .btn-jawab {
+            background-color: #2c3e50;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-jawab:hover:not(:disabled) {
+            background-color: #1a252f;
+        }
+
+        .btn-jawab:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-soal-baru {
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-soal-baru:hover {
+            background-color: #0052a3;
+        }
+
+        .footer {
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #999;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.4rem;
+            }
+
+            .bagian-tabs {
+                padding: 0.8rem;
+                gap: 0.3rem;
+            }
+
+            .bagian-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .soal-container {
+                padding: 1.5rem;
+            }
+
+            .soal-judul {
+                font-size: 1.1rem;
+            }
+
+            .soal-teks {
+                font-size: 0.95rem;
+            }
+        }
+
+        .mathjax-container {
+            display: flex;
+            justify-content: center;
+            margin: 0.5rem 0;
+        }
+
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+
+        .frac span {
+            display: block;
+            padding: 0 4px;
+        }
+
+        .frac span:first-child {
+            border-bottom: 1px solid #333;
+            padding-bottom: 4px;
+        }
+
+        .frac span:last-child {
+            padding-top: 4px;
+        }
+    </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body>
+  <div id="app">
+   <div class="header">
+    <h1>Soal Generator Trigonometri</h1>
+    <div class="bagian-tabs" id="bagianTabs"></div>
+   </div>
+   <div class="content" id="content">
+    <div class="soal-container" id="soalContainer"></div>
+   </div>
+   <div class="footer">
+    Latihan Soal Trigonometri untuk Siswa
+   </div>
+  </div>
+  <script>
+        const BAGIAN_DATA = {
+            1: {
+                nama: "Identifikasi Komponen",
+                deskripsi: "Menentukan sisi depan, samping, dan miring",
+                kasus: 18
+            },
+            2: {
+                nama: "Teorema Pythagoras",
+                deskripsi: "Menghitung panjang sisi yang hilang",
+                kasus: 3
+            },
+            3: {
+                nama: "Perbandingan Dasar",
+                deskripsi: "Nilai sin, cos, tan, sec, csc, cot",
+                kasus: 6
+            },
+            4: {
+                nama: "Perbandingan Belum Lengkap",
+                deskripsi: "Cari sisi dulu, lalu hitung perbandingan",
+                kasus: 12
+            },
+            5: {
+                nama: "Sudut Istimewa",
+                deskripsi: "Nilai pada 0°, 30°, 45°, 60°, 90°",
+                kasus: 5
+            },
+            6: {
+                nama: "Sudut Berelasi",
+                deskripsi: "Sudut acuan di berbagai kuadran",
+                kasus: 9
+            },
+            7: {
+                nama: "Nilai di Kuadran",
+                deskripsi: "Nilai trig di kuadran II, III, IV",
+                kasus: 3
+            },
+            8: {
+                nama: "Operasi Campuran",
+                deskripsi: "Operasi hitung melibatkan nilai trig",
+                kasus: 10
+            },
+            9: {
+                nama: "Sudut Elevasi & Depresi",
+                deskripsi: "Identifikasi sudut dalam narasi",
+                kasus: 2
+            },
+            10: {
+                nama: "Masalah Nyata",
+                deskripsi: "Aplikasi trigonometri dalam kehidupan",
+                kasus: 5
+            },
+            11: {
+                nama: "Panjang Sisi dengan Sudut Istimewa",
+                deskripsi: "Hitung sisi menggunakan perbandingan trigonometri",
+                kasus: 7
+            }
+        };
+
+        let currentBagian = 1;
+        let currentKasus = 1;
+        let attemptCount = 0;
+        let currentSoal = null;
+
+        // Inisialisasi tabs
+        function initTabs() {
+            const tabsContainer = document.getElementById('bagianTabs');
+            Object.entries(BAGIAN_DATA).forEach(([num, data]) => {
+                const btn = document.createElement('button');
+                btn.className = 'bagian-btn';
+                if (num == currentBagian) btn.classList.add('active');
+                btn.textContent = `Bagian ${num}`;
+                btn.onclick = () => pindahBagian(parseInt(num));
+                tabsContainer.appendChild(btn);
+            });
+        }
+
+        function pindahBagian(bagian) {
+            currentBagian = bagian;
+            currentKasus = Math.floor(Math.random() * BAGIAN_DATA[bagian].kasus) + 1;
+            attemptCount = 0;
+            updateTabs();
+            muatSoal();
+        }
+
+        function updateTabs() {
+            document.querySelectorAll('.bagian-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', (idx + 1) === currentBagian);
+            });
+        }
+
+        // Generator Soal
+        function generateSoal(bagian, kasus) {
+            if (bagian === 1) return generateBagian1(kasus);
+            if (bagian === 2) return generateBagian2(kasus);
+            if (bagian === 3) return generateBagian3(kasus);
+            if (bagian === 4) return generateBagian4(kasus);
+            if (bagian === 5) return generateBagian5(kasus);
+            if (bagian === 6) return generateBagian6(kasus);
+            if (bagian === 7) return generateBagian7(kasus);
+            if (bagian === 8) return generateBagian8(kasus);
+            if (bagian === 9) return generateBagian9(kasus);
+            if (bagian === 10) return generateBagian10(kasus);
+            if (bagian === 11) return generateBagian11(kasus);
+        }
+
+        function generateBagian1(kasus) {
+            let sudutAcuan, sudutSikuSiku, soalTeks, jawaban, opsi, petunjuk, pembahasan;
+
+            // Mapping 18 kasus = 6 kombinasi × 3 jenis sisi
+            // Kombinasi: A-B, C-B, B-A, C-A, B-C, A-C
+            // Jenis: depan, samping, miring
+            
+            const mapping = {
+                // === Kombinasi 1: Acuan A, Siku B ===
+                1: { acuan: 'A', siku: 'B', jenis: 'depan' },
+                2: { acuan: 'A', siku: 'B', jenis: 'samping' },
+                3: { acuan: 'A', siku: 'B', jenis: 'miring' },
+                
+                // === Kombinasi 2: Acuan C, Siku B ===
+                4: { acuan: 'C', siku: 'B', jenis: 'depan' },
+                5: { acuan: 'C', siku: 'B', jenis: 'samping' },
+                6: { acuan: 'C', siku: 'B', jenis: 'miring' },
+                
+                // === Kombinasi 3: Acuan B, Siku A ===
+                7: { acuan: 'B', siku: 'A', jenis: 'depan' },
+                8: { acuan: 'B', siku: 'A', jenis: 'samping' },
+                9: { acuan: 'B', siku: 'A', jenis: 'miring' },
+                
+                // === Kombinasi 4: Acuan C, Siku A ===
+                10: { acuan: 'C', siku: 'A', jenis: 'depan' },
+                11: { acuan: 'C', siku: 'A', jenis: 'samping' },
+                12: { acuan: 'C', siku: 'A', jenis: 'miring' },
+                
+                // === Kombinasi 5: Acuan B, Siku C ===
+                13: { acuan: 'B', siku: 'C', jenis: 'depan' },
+                14: { acuan: 'B', siku: 'C', jenis: 'samping' },
+                15: { acuan: 'B', siku: 'C', jenis: 'miring' },
+                
+                // === Kombinasi 6: Acuan A, Siku C ===
+                16: { acuan: 'A', siku: 'C', jenis: 'depan' },
+                17: { acuan: 'A', siku: 'C', jenis: 'samping' },
+                18: { acuan: 'A', siku: 'C', jenis: 'miring' }
+            };
+
+            const kasusInfo = mapping[kasus];
+            sudutAcuan = kasusInfo.acuan;
+            sudutSikuSiku = kasusInfo.siku;
+            const jenis = kasusInfo.jenis;
+
+            // Fungsi helper untuk menentukan sisi
+            const getSisi = (acuan, siku, jenis) => {
+                const allSides = ['AB', 'BC', 'AC'];
+                
+                // Tentukan sisi miring (berhadapan dengan siku-siku)
+                let miringSisi;
+                if (siku === 'A') miringSisi = 'BC';
+                else if (siku === 'B') miringSisi = 'AC';
+                else miringSisi = 'AB';
+                
+                // Tentukan sisi yang tidak menyentuh acuan (depan)
+                const depan = allSides.find(s => !s.includes(acuan));
+                
+                // Tentukan sisi yang menyentuh acuan tapi bukan miring (samping)
+                const touchingAcuan = allSides.filter(s => s.includes(acuan));
+                const samping = touchingAcuan.find(s => s !== miringSisi);
+                
+                if (jenis === 'depan') return { jawaban: depan, opsi: [depan, samping, miringSisi] };
+                if (jenis === 'samping') return { jawaban: samping, opsi: [samping, depan, miringSisi] };
+                if (jenis === 'miring') return { jawaban: miringSisi, opsi: [miringSisi, depan, samping] };
+            };
+
+            const sisiInfo = getSisi(sudutAcuan, sudutSikuSiku, jenis);
+            jawaban = sisiInfo.jawaban;
+            opsi = sisiInfo.opsi;
+
+            // Tentukan soal teks berdasarkan jenis
+            if (jenis === 'depan') {
+                soalTeks = `Jika sudut acuan berada di titik <strong>${sudutAcuan}</strong> dan sudut siku-siku di titik <strong>${sudutSikuSiku}</strong>, maka sisi depan adalah ...`;
+                petunjuk = `
+                    <strong>📍 Langkah-Langkah Menyelesaikan:</strong><br><br>
+                    <strong style="color: #0066cc;">Langkah 1: Identifikasi Sudut Acuan dan Sudut Siku-Siku</strong>
+                    <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                    <li>🔴 Arc merah di titik <strong>${sudutAcuan}</strong> = Sudut acuan (α)</li>
+                    <li>📦 Kotak kecil di titik <strong>${sudutSikuSiku}</strong> = Sudut siku-siku (90°)</li>
+                    </ul>
+                    <br>
+                    <strong style="color: #0066cc;">Langkah 2: Pahami Definisi Sisi Depan</strong>
+                    <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                    <li><strong>Sisi Depan (Opposite):</strong> Sisi yang TIDAK menyentuh sudut acuan</li>
+                    <li>Lihat dari sudut ${sudutAcuan}, sisi mana yang berada di seberangnya (jauh dari ${sudutAcuan})?</li>
+                    </ul>
+                    <br>
+                    <strong style="color: #0066cc;">Langkah 3: Identifikasi Semua Sisi pada Gambar</strong>
+                    <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                    <li>Ada 3 sisi: AB, BC, dan AC</li>
+                    <li>Dari titik ${sudutAcuan}, ada berapa sisi yang menyentuh ${sudutAcuan}? Yang mana?</li>
+                    <li>Sisi yang tersisa adalah sisi depan!</li>
+                    </ul>
+                `;
+                pembahasan = `
+                    <strong>✅ PEMBAHASAN LENGKAP</strong><br><br>
+                    <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Informasi Soal:</strong>
+                    <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                    <li>✓ Sudut acuan (α): Titik <strong>${sudutAcuan}</strong></li>
+                    <li>✓ Sudut siku-siku (90°): Titik <strong>${sudutSikuSiku}</strong></li>
+                    </div>
+                    <br>
+                    <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Cara Menemukan Jawaban:</strong><br><br>
+                    
+                    <strong style="color: #d32f2f;">SISI DEPAN (Opposite) = ${jawaban}</strong>
+                    <div style="background-color: #ffebee; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                    <strong>Definisi:</strong> Sisi depan adalah sisi yang TIDAK menyentuh sudut acuan<br><br>
+                    <strong>Penjelasan:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>Sudut acuan ada di titik ${sudutAcuan}</li>
+                    <li>Identifikasi sisi yang menyentuh ${sudutAcuan}</li>
+                    <li>Identifikasi sisi yang TIDAK menyentuh ${sudutAcuan}: <strong>${jawaban}</strong></li>
+                    <li>Sisi ${jawaban} berada di seberang/depan sudut acuan ${sudutAcuan}</li>
+                    <li>Maka, <strong>Sisi Depan = ${jawaban}</strong></li>
+                    </ul>
+                    </div>
+                    
+                    <strong style="font-size: 1.05rem; color: #2c3e50;">📋 JAWABAN AKHIR:</strong><br>
+                    <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                    <strong>Sisi Depan = ${jawaban}</strong>
+                    </div>
+                `;
+            } else if (jenis === 'samping') {
+                soalTeks = `Jika sudut acuan berada di titik <strong>${sudutAcuan}</strong> dan sudut siku-siku di titik <strong>${sudutSikuSiku}</strong>, maka sisi samping adalah ...`;
+                petunjuk = `
+                    <strong>📍 Langkah-Langkah Menyelesaikan:</strong><br><br>
+                    <strong style="color: #0066cc;">Langkah 1: Identifikasi Sudut Acuan dan Sudut Siku-Siku</strong>
+                    <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                    <li>🔴 Arc merah di titik <strong>${sudutAcuan}</strong> = Sudut acuan (α)</li>
+                    <li>📦 Kotak kecil di titik <strong>${sudutSikuSiku}</strong> = Sudut siku-siku (90°)</li>
+                    </ul>
+                    <br>
+                    <strong style="color: #0066cc;">Langkah 2: Pahami Definisi Sisi Samping</strong>
+                    <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                    <li><strong>Sisi Samping (Adjacent):</strong> Sisi yang MENYENTUH sudut acuan, tapi BUKAN sisi miring</li>
+                    <li>Dari sudut ${sudutAcuan}, ada sisi mana yang menyentuh ${sudutAcuan}?</li>
+                    </ul>
+                    <br>
+                    <strong style="color: #0066cc;">Langkah 3: Identifikasi Sisi Miring Dulu</strong>
+                    <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                    <li><strong>Sisi Miring:</strong> Sisi yang berhadapan dengan sudut siku-siku di ${sudutSikuSiku}</li>
+                    <li>Dari sisi yang menyentuh ${sudutAcuan}, hilangkan sisi miring</li>
+                    <li>Sisi samping adalah sisi yang tersisa!</li>
+                    </ul>
+                `;
+                pembahasan = `
+                    <strong>✅ PEMBAHASAN LENGKAP</strong><br><br>
+                    <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Informasi Soal:</strong>
+                    <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                    <li>✓ Sudut acuan (α): Titik <strong>${sudutAcuan}</strong></li>
+                    <li>✓ Sudut siku-siku (90°): Titik <strong>${sudutSikuSiku}</strong></li>
+                    </div>
+                    <br>
+                    <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Cara Menemukan Jawaban:</strong><br><br>
+                    
+                    <strong style="color: #d32f2f;">SISI SAMPING (Adjacent) = ${jawaban}</strong>
+                    <div style="background-color: #f3e5f5; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                    <strong>Definisi:</strong> Sisi yang menyentuh sudut acuan, tapi BUKAN sisi miring<br><br>
+                    <strong>Penjelasan:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>Sudut acuan berada di titik ${sudutAcuan}</li>
+                    <li>Dari titik ${sudutAcuan}, identifikasi sisi yang menyentuh ${sudutAcuan}</li>
+                    <li>Tentukan mana yang sisi miring dari sudut siku-siku di ${sudutSikuSiku}</li>
+                    <li>Sisi samping adalah sisi lain yang menyentuh ${sudutAcuan} = <strong>${jawaban}</strong></li>
+                    </ul>
+                    </div>
+                    
+                    <strong style="font-size: 1.05rem; color: #2c3e50;">📋 JAWABAN AKHIR:</strong><br>
+                    <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                    <strong>Sisi Samping = ${jawaban}</strong>
+                    </div>
+                `;
+            } else { // miring
+                soalTeks = `Jika sudut acuan berada di titik <strong>${sudutAcuan}</strong> dan sudut siku-siku di titik <strong>${sudutSikuSiku}</strong>, maka sisi miring adalah ...`;
+                petunjuk = `
+                    <strong>📍 Langkah-Langkah Menyelesaikan:</strong><br><br>
+                    <strong style="color: #0066cc;">Langkah 1: Identifikasi Sudut Siku-Siku</strong>
+                    <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                    <li>📦 Kotak kecil di titik <strong>${sudutSikuSiku}</strong> = Sudut siku-siku (90°)</li>
+                    </ul>
+                    <br>
+                    <strong style="color: #0066cc;">Langkah 2: Pahami Definisi Sisi Miring</strong>
+                    <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                    <li><strong>Sisi Miring (Hypotenuse):</strong> Sisi yang berhadapan dengan sudut siku-siku</li>
+                    <li>Sisi yang TIDAK menyentuh titik ${sudutSikuSiku} adalah sisi miring</li>
+                    </ul>
+                    <br>
+                    <strong style="color: #0066cc;">Langkah 3: Temukan Sisi Miring</strong>
+                    <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                    <li>Ada 3 sisi: AB, BC, dan AC</li>
+                    <li>Identifikasi sisi yang menyentuh ${sudutSikuSiku}</li>
+                    <li>Sisi yang tersisa (tidak menyentuh ${sudutSikuSiku}) adalah sisi miring!</li>
+                    </ul>
+                `;
+                pembahasan = `
+                    <strong>✅ PEMBAHASAN LENGKAP</strong><br><br>
+                    <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Informasi Soal:</strong>
+                    <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                    <li>✓ Sudut acuan (α): Titik <strong>${sudutAcuan}</strong></li>
+                    <li>✓ Sudut siku-siku (90°): Titik <strong>${sudutSikuSiku}</strong></li>
+                    </div>
+                    <br>
+                    <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Cara Menemukan Jawaban:</strong><br><br>
+                    
+                    <strong style="color: #d32f2f;">SISI MIRING (Hypotenuse) = ${jawaban}</strong>
+                    <div style="background-color: #e8f5e9; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                    <strong>Definisi:</strong> Sisi yang berhadapan dengan sudut siku-siku<br><br>
+                    <strong>Penjelasan:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>Sudut siku-siku berada di titik ${sudutSikuSiku}</li>
+                    <li>Sisi yang TIDAK menyentuh ${sudutSikuSiku} adalah ${jawaban}</li>
+                    <li>${jawaban} adalah sisi terpanjang yang berhadapan dengan sudut 90°</li>
+                    <li>Maka, <strong>Sisi Miring = ${jawaban}</strong></li>
+                    </ul>
+                    </div>
+                    
+                    <strong style="font-size: 1.05rem; color: #2c3e50;">📋 JAWABAN AKHIR:</strong><br>
+                    <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                    <strong>Sisi Miring = ${jawaban}</strong>
+                    </div>
+                `;
+            }
+
+            return {
+                bagian: 1,
+                kasus: kasus,
+                judul: BAGIAN_DATA[1].nama,
+                teks: soalTeks,
+                gambar: {
+                    tipe: 'segitiga',
+                    sudutAcuan: sudutAcuan,
+                    sudutSikuSiku: sudutSikuSiku
+                },
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: petunjuk,
+                pembahasan: pembahasan
+            };
+        }
+
+        function generateBagian1_old(kasus) {
+            let sudutAcuan, sudutSikuSiku, soalTeks, jawaban, opsi, petunjuk, pembahasan;
+
+            switch (kasus) {
+                case 1: // Sudut acuan di A, cari sisi depan
+                    sudutAcuan = 'A';
+                    sudutSikuSiku = 'B';
+                    soalTeks = "Jika sudut acuan berada di titik <strong>A</strong> dan sudut siku-siku di titik <strong>B</strong>, maka sisi depan adalah ...";
+                    jawaban = "BC";
+                    opsi = [
+                        "BC",
+                        "AB",
+                        "AC"
+                    ];
+                    petunjuk = `
+                        <strong>📍 Langkah-Langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Sudut Acuan dan Sudut Siku-Siku</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li>🔴 Arc merah di titik <strong>A</strong> = Sudut acuan (α)</li>
+                        <li>📦 Kotak kecil di titik <strong>B</strong> = Sudut siku-siku (90°)</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Pahami Definisi Sisi Depan</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sisi Depan (Opposite):</strong> Sisi yang TIDAK menyentuh sudut acuan</li>
+                        <li>Lihat dari sudut A, sisi mana yang berada di seberangnya (jauh dari A)?</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Identifikasi Semua Sisi pada Gambar</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li>Ada 3 sisi: AB, BC, dan AC</li>
+                        <li>Dari titik A, ada berapa sisi yang menyentuh A? Yang mana?</li>
+                        <li>Sisi yang tersisa adalah sisi depan!</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ PEMBAHASAN LENGKAP</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Informasi Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan (α): Titik <strong>A</strong></li>
+                        <li>✓ Sudut siku-siku (90°): Titik <strong>B</strong></li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Cara Menemukan Jawaban:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">SISI DEPAN (Opposite) = BC</strong>
+                        <div style="background-color: #ffebee; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        <strong>Definisi:</strong> Sisi depan adalah sisi yang TIDAK menyentuh sudut acuan<br><br>
+                        <strong>Penjelasan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Sudut acuan ada di titik A</li>
+                        <li>Identifikasi sisi yang menyentuh A: <strong>AB</strong> dan <strong>AC</strong></li>
+                        <li>Identifikasi sisi yang TIDAK menyentuh A: <strong>BC</strong></li>
+                        <li>Sisi BC berada di seberang/depan sudut acuan A</li>
+                        <li>Maka, <strong>Sisi Depan = BC</strong></li>
+                        </ul>
+                        </div>
+                        
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📋 JAWABAN AKHIR:</strong><br>
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong>Sisi Depan = BC</strong>
+                        </div>
+                    `;
+                    break;
+                case 2: // Sudut acuan di A, cari sisi samping
+                    sudutAcuan = 'A';
+                    sudutSikuSiku = 'B';
+                    soalTeks = "Jika sudut acuan berada di titik <strong>A</strong> dan sudut siku-siku di titik <strong>B</strong>, maka sisi samping adalah ...";
+                    jawaban = "AB";
+                    opsi = [
+                        "AB",
+                        "BC",
+                        "AC"
+                    ];
+                    petunjuk = `
+                        <strong>📍 Langkah-Langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Sudut Acuan dan Sudut Siku-Siku</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li>🔴 Arc merah di titik <strong>A</strong> = Sudut acuan (α)</li>
+                        <li>📦 Kotak kecil di titik <strong>B</strong> = Sudut siku-siku (90°)</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Pahami Definisi Sisi Samping</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sisi Samping (Adjacent):</strong> Sisi yang MENYENTUH sudut acuan, tapi BUKAN sisi miring</li>
+                        <li>Dari sudut A, ada sisi mana yang menyentuh A?</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Identifikasi Sisi Miring Dulu</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sisi Miring:</strong> Sisi yang berhadapan dengan sudut siku-siku di B = AC</li>
+                        <li>Dari sisi yang menyentuh A, hilangkan sisi miring AC</li>
+                        <li>Sisi samping adalah sisi yang tersisa!</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ PEMBAHASAN LENGKAP</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Informasi Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan (α): Titik <strong>A</strong></li>
+                        <li>✓ Sudut siku-siku (90°): Titik <strong>B</strong></li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Cara Menemukan Jawaban:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">SISI SAMPING (Adjacent) = AB</strong>
+                        <div style="background-color: #f3e5f5; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        <strong>Definisi:</strong> Sisi yang menyentuh sudut acuan, tapi BUKAN sisi miring<br><br>
+                        <strong>Penjelasan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Sudut acuan berada di titik A</li>
+                        <li>Dari titik A, sisi yang menyentuh A adalah: <strong>AB</strong> dan <strong>AC</strong></li>
+                        <li>Sisi miring adalah AC (berhadapan dengan sudut siku-siku di B)</li>
+                        <li>Maka sisi samping adalah sisi lain yang menyentuh A = <strong>AB</strong></li>
+                        </ul>
+                        </div>
+                        
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📋 JAWABAN AKHIR:</strong><br>
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong>Sisi Samping = AB</strong>
+                        </div>
+                    `;
+                    break;
+                case 3: // Sudut acuan di A, cari sisi miring
+                    sudutAcuan = 'A';
+                    sudutSikuSiku = 'B';
+                    soalTeks = "Jika sudut acuan berada di titik <strong>A</strong> dan sudut siku-siku di titik <strong>B</strong>, maka sisi miring adalah ...";
+                    jawaban = "AC";
+                    opsi = [
+                        "AC",
+                        "AB",
+                        "BC"
+                    ];
+                    petunjuk = `
+                        <strong>📍 Langkah-Langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Sudut Siku-Siku</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li>📦 Kotak kecil di titik <strong>B</strong> = Sudut siku-siku (90°)</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Pahami Definisi Sisi Miring</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sisi Miring (Hypotenuse):</strong> Sisi yang berhadapan dengan sudut siku-siku</li>
+                        <li>Sisi yang TIDAK menyentuh titik B adalah sisi miring</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Temukan Sisi Miring</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li>Ada 3 sisi: AB, BC, dan AC</li>
+                        <li>Sisi yang menyentuh B: AB dan BC</li>
+                        <li>Sisi yang TIDAK menyentuh B: AC (itulah sisi miring!)</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ PEMBAHASAN LENGKAP</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Informasi Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan (α): Titik <strong>A</strong></li>
+                        <li>✓ Sudut siku-siku (90°): Titik <strong>B</strong></li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Cara Menemukan Jawaban:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">SISI MIRING (Hypotenuse) = AC</strong>
+                        <div style="background-color: #e8f5e9; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        <strong>Definisi:</strong> Sisi yang berhadapan dengan sudut siku-siku<br><br>
+                        <strong>Penjelasan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Sudut siku-siku berada di titik B</li>
+                        <li>Sisi yang TIDAK menyentuh B adalah AC</li>
+                        <li>AC adalah sisi terpanjang yang berhadapan dengan sudut 90°</li>
+                        <li>Maka, <strong>Sisi Miring = AC</strong></li>
+                        </ul>
+                        </div>
+                        
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📋 JAWABAN AKHIR:</strong><br>
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong>Sisi Miring = AC</strong>
+                        </div>
+                    `;
+                    break;
+                case 4: // Sudut acuan di C, cari sisi depan
+                    sudutAcuan = 'C';
+                    sudutSikuSiku = 'B';
+                    soalTeks = "Jika sudut acuan berada di titik <strong>C</strong> dan sudut siku-siku di titik <strong>B</strong>, maka sisi depan adalah ...";
+                    jawaban = "AB";
+                    opsi = [
+                        "AB",
+                        "BC",
+                        "AC"
+                    ];
+                    petunjuk = `
+                        <strong>📍 Langkah-Langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Sudut Acuan dan Sudut Siku-Siku</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li>🔴 Arc merah di titik <strong>C</strong> = Sudut acuan (α)</li>
+                        <li>📦 Kotak kecil di titik <strong>B</strong> = Sudut siku-siku (90°)</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Pahami Definisi Sisi Depan</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sisi Depan (Opposite):</strong> Sisi yang TIDAK menyentuh sudut acuan</li>
+                        <li>Dari sudut C, sisi mana yang tidak menyentuh C?</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Temukan Sisi Depan</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li>Sisi yang menyentuh C: BC dan AC</li>
+                        <li>Sisi yang TIDAK menyentuh C: AB (itulah sisi depan!)</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ PEMBAHASAN LENGKAP</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Informasi Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan (α): Titik <strong>C</strong></li>
+                        <li>✓ Sudut siku-siku (90°): Titik <strong>B</strong></li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Cara Menemukan Jawaban:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">SISI DEPAN (Opposite) = AB</strong>
+                        <div style="background-color: #ffebee; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        <strong>Definisi:</strong> Sisi yang TIDAK menyentuh sudut acuan<br><br>
+                        <strong>Penjelasan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Sudut acuan ada di titik C</li>
+                        <li>Sisi yang menyentuh C: <strong>BC</strong> dan <strong>AC</strong></li>
+                        <li>Sisi yang TIDAK menyentuh C: <strong>AB</strong></li>
+                        <li>Maka, <strong>Sisi Depan = AB</strong></li>
+                        </ul>
+                        </div>
+                        
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📋 JAWABAN AKHIR:</strong><br>
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong>Sisi Depan = AB</strong>
+                        </div>
+                    `;
+                    break;
+                case 5: // Sudut acuan di C, cari sisi samping
+                    sudutAcuan = 'C';
+                    sudutSikuSiku = 'B';
+                    soalTeks = "Jika sudut acuan berada di titik <strong>C</strong> dan sudut siku-siku di titik <strong>B</strong>, maka sisi samping adalah ...";
+                    jawaban = "BC";
+                    opsi = [
+                        "BC",
+                        "AB",
+                        "AC"
+                    ];
+                    petunjuk = `
+                        <strong>📍 Langkah-Langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Sudut Acuan dan Sudut Siku-Siku</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li>🔴 Arc merah di titik <strong>C</strong> = Sudut acuan (α)</li>
+                        <li>📦 Kotak kecil di titik <strong>B</strong> = Sudut siku-siku (90°)</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Pahami Definisi Sisi Samping</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sisi Samping (Adjacent):</strong> Sisi yang MENYENTUH sudut acuan, tapi BUKAN sisi miring</li>
+                        <li>Dari sudut C, ada berapa sisi yang menyentuh C?</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Identifikasi Sisi Miring Dulu</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sisi Miring:</strong> Sisi yang berhadapan dengan sudut siku-siku di B = AC</li>
+                        <li>Dari sisi yang menyentuh C, hilangkan sisi miring AC</li>
+                        <li>Sisi samping adalah sisi yang tersisa!</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ PEMBAHASAN LENGKAP</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Informasi Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan (α): Titik <strong>C</strong></li>
+                        <li>✓ Sudut siku-siku (90°): Titik <strong>B</strong></li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Cara Menemukan Jawaban:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">SISI SAMPING (Adjacent) = BC</strong>
+                        <div style="background-color: #f3e5f5; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        <strong>Definisi:</strong> Sisi yang menyentuh sudut acuan, tapi BUKAN sisi miring<br><br>
+                        <strong>Penjelasan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Sudut acuan berada di titik C</li>
+                        <li>Dari titik C, sisi yang menyentuh C adalah: <strong>BC</strong> dan <strong>AC</strong></li>
+                        <li>Sisi miring adalah AC (berhadapan dengan sudut siku-siku di B)</li>
+                        <li>Maka sisi samping adalah sisi lain yang menyentuh C = <strong>BC</strong></li>
+                        </ul>
+                        </div>
+                        
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📋 JAWABAN AKHIR:</strong><br>
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong>Sisi Samping = BC</strong>
+                        </div>
+                    `;
+                    break;
+                case 6: // Sudut acuan di C, cari sisi miring
+                    sudutAcuan = 'C';
+                    sudutSikuSiku = 'B';
+                    soalTeks = "Jika sudut acuan berada di titik <strong>C</strong> dan sudut siku-siku di titik <strong>B</strong>, maka sisi miring adalah ...";
+                    jawaban = "AC";
+                    opsi = [
+                        "AC",
+                        "AB",
+                        "BC"
+                    ];
+                    petunjuk = `
+                        <strong>📍 Langkah-Langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Sudut Siku-Siku</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li>📦 Kotak kecil di titik <strong>B</strong> = Sudut siku-siku (90°)</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Pahami Definisi Sisi Miring</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sisi Miring (Hypotenuse):</strong> Sisi yang berhadapan dengan sudut siku-siku</li>
+                        <li>Sisi yang TIDAK menyentuh titik B adalah sisi miring</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Temukan Sisi Miring</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li>Sisi yang menyentuh B: AB dan BC</li>
+                        <li>Sisi yang TIDAK menyentuh B: AC (itulah sisi miring!)</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ PEMBAHASAN LENGKAP</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Informasi Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan (α): Titik <strong>C</strong></li>
+                        <li>✓ Sudut siku-siku (90°): Titik <strong>B</strong></li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Cara Menemukan Jawaban:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">SISI MIRING (Hypotenuse) = AC</strong>
+                        <div style="background-color: #e8f5e9; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        <strong>Definisi:</strong> Sisi yang berhadapan dengan sudut siku-siku<br><br>
+                        <strong>Penjelasan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Sudut siku-siku berada di titik B</li>
+                        <li>Sisi yang TIDAK menyentuh B adalah AC</li>
+                        <li>AC adalah sisi terpanjang yang berhadapan dengan sudut 90°</li>
+                        <li>Maka, <strong>Sisi Miring = AC</strong></li>
+                        </ul>
+                        </div>
+                        
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📋 JAWABAN AKHIR:</strong><br>
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong>Sisi Miring = AC</strong>
+                        </div>
+                    `;
+                    break;
+                case 3: // Sudut acuan di B, siku-siku di A
+                    sudutAcuan = 'B';
+                    sudutSikuSiku = 'A';
+                    soalTeks = "Jika sudut acuan berada di titik <strong>B</strong> dan sudut siku-siku di titik <strong>A</strong>, maka sisi depan, sisi samping, dan sisi miring secara berurutan adalah ...";
+                    jawaban = "AC (depan), AB (samping), BC (miring)";
+                    opsi = [
+                        "AC (depan), AB (samping), BC (miring)",
+                        "BC (depan), AB (samping), AC (miring)",
+                        "AB (depan), BC (samping), AC (miring)",
+                        "AB (depan), AC (samping), BC (miring)"
+                    ];
+                    petunjuk = `
+                        <strong>📍 Langkah-langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Titik-titik Penting ✓</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sudut acuan (α):</strong> Titik <strong>B</strong> (ditandai dengan arc merah di gambar)</li>
+                        <li><strong>Sudut siku-siku (90°):</strong> Titik <strong>A</strong> (ditandai dengan kotak kecil di gambar)</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Tentukan Sisi Depan (Opposite)</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li>Sisi yang TIDAK menyentuh sudut acuan B</li>
+                        <li><strong>Jawab:</strong> Sisi <strong>AC</strong> ✓</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Tentukan Sisi Samping (Adjacent)</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li>Sisi yang menyentuh sudut acuan B, tapi BUKAN sisi miring</li>
+                        <li>Dari B, ada 2 sisi: AB dan BC</li>
+                        <li>BC akan menjadi sisi miring (berhadapan dengan sudut siku di A)</li>
+                        <li><strong>Jawab:</strong> Sisi <strong>AB</strong> ✓</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 4: Tentukan Sisi Miring (Hypotenuse)</strong>
+                        <ul style="margin-left: 1rem; background-color: #e8f5e9; padding: 0.8rem; border-radius: 4px;">
+                        <li>Sisi yang berhadapan dengan sudut siku-siku di titik A</li>
+                        <li><strong>Jawab:</strong> Sisi <strong>BC</strong> ✓</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ KUNCI JAWABAN LENGKAP - KASUS 3</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Data Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan: Titik <strong>B</strong></li>
+                        <li>✓ Sudut siku-siku: Titik <strong>A</strong> (90°)</li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Proses Identifikasi Sisi-Sisi:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">1️⃣ SISI DEPAN (Opposite) = AC</strong>
+                        <div style="background-color: #ffebee; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        <strong>Analisis:</strong> Dari B, sisi yang tidak menyentuh B = AC ✓<br>
+                        <strong>✓ Kesimpulan: Sisi Depan = AC</strong>
+                        </div>
+                        
+                        <strong style="color: #d32f2f;">2️⃣ SISI SAMPING (Adjacent) = AB</strong>
+                        <div style="background-color: #f3e5f5; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        <strong>Analisis:</strong> Dari B, ada sisi AB dan BC. BC adalah sisi miring, jadi AB adalah sisi samping ✓<br>
+                        <strong>✓ Kesimpulan: Sisi Samping = AB</strong>
+                        </div>
+                        
+                        <strong style="color: #d32f2f;">3️⃣ SISI MIRING (Hypotenuse) = BC</strong>
+                        <div style="background-color: #e8f5e9; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        <strong>Analisis:</strong> Sudut siku-siku di A, sisi yang tidak menyentuh A = BC ✓<br>
+                        <strong>✓ Kesimpulan: Sisi Miring = BC</strong>
+                        </div>
+                        
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📋 RINGKASAN JAWABAN AKHIR:</strong><br>
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong style="font-size: 1.1rem;">Sisi Depan:</strong> <span style="color: #d32f2f; font-size: 1.1rem;">AC</span><br><br>
+                        <strong style="font-size: 1.1rem;">Sisi Samping:</strong> <span style="color: #d32f2f; font-size: 1.1rem;">AB</span><br><br>
+                        <strong style="font-size: 1.1rem;">Sisi Miring:</strong> <span style="color: #d32f2f; font-size: 1.1rem;">BC</span><br><br>
+                        <strong style="font-size: 1rem;">✅ Jawaban Lengkap: AC (depan), AB (samping), BC (miring)</strong>
+                        </div>
+                    `;
+                    break;
+                case 4: // Sudut acuan di C, siku-siku di A
+                    sudutAcuan = 'C';
+                    sudutSikuSiku = 'A';
+                    soalTeks = "Jika sudut acuan berada di titik <strong>C</strong> dan sudut siku-siku di titik <strong>A</strong>, maka sisi depan, sisi samping, dan sisi miring secara berurutan adalah ...";
+                    jawaban = "AB (depan), AC (samping), BC (miring)";
+                    opsi = [
+                        "AB (depan), AC (samping), BC (miring)",
+                        "AC (depan), AB (samping), BC (miring)",
+                        "BC (depan), AB (samping), AC (miring)",
+                        "AC (depan), BC (samping), AB (miring)"
+                    ];
+                    petunjuk = `
+                        <strong>📍 Langkah-langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Titik-titik Penting ✓</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sudut acuan (α):</strong> Titik <strong>C</strong></li>
+                        <li><strong>Sudut siku-siku (90°):</strong> Titik <strong>A</strong></li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Tentukan Sisi Depan</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li>Sisi yang TIDAK menyentuh C = <strong>AB</strong> ✓</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Tentukan Sisi Samping</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li>Dari C ada BC dan AC. AC adalah sisi miring, jadi samping = <strong>BC</strong> ✓</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 4: Tentukan Sisi Miring</strong>
+                        <ul style="margin-left: 1rem; background-color: #e8f5e9; padding: 0.8rem; border-radius: 4px;">
+                        <li>Berhadapan dengan sudut siku di A = <strong>AC</strong> ✓</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ KUNCI JAWABAN LENGKAP - KASUS 4</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Data Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan: Titik <strong>C</strong></li>
+                        <li>✓ Sudut siku-siku: Titik <strong>A</strong> (90°)</li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Proses Identifikasi:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">1️⃣ SISI DEPAN = AB</strong>
+                        <div style="background-color: #ffebee; padding: 1rem; border-radius: 6px; margin-bottom: 0.5rem;">
+                        Sisi yang tidak menyentuh sudut acuan C ✓
+                        </div>
+                        
+                        <strong style="color: #d32f2f;">2️⃣ SISI SAMPING = BC</strong>
+                        <div style="background-color: #f3e5f5; padding: 1rem; border-radius: 6px; margin-bottom: 0.5rem;">
+                        Dari C: sisi samping bukan sisi miring ✓
+                        </div>
+                        
+                        <strong style="color: #d32f2f;">3️⃣ SISI MIRING = AC</strong>
+                        <div style="background-color: #e8f5e9; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        Berhadapan dengan sudut siku-siku di A ✓
+                        </div>
+                        
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong>✅ Jawaban: AB (depan), BC (samping), AC (miring)</strong>
+                        </div>
+                    `;
+                    break;
+                case 5: // Sudut acuan di B, siku-siku di C
+                    sudutAcuan = 'B';
+                    sudutSikuSiku = 'C';
+                    soalTeks = "Jika sudut acuan berada di titik <strong>B</strong> dan sudut siku-siku di titik <strong>C</strong>, maka sisi depan, sisi samping, dan sisi miring secara berurutan adalah ...";
+                    jawaban = "AC (depan), BC (samping), AB (miring)";
+                    opsi = [
+                        "AC (depan), BC (samping), AB (miring)",
+                        "BC (depan), AB (samping), AC (miring)",
+                        "AB (depan), BC (samping), AC (miring)",
+                        "BC (depan), AC (samping), AB (miring)"
+                    ];
+                    petunjuk = `
+                        <strong>📍 Langkah-langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Titik-titik Penting ✓</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sudut acuan (α):</strong> Titik <strong>B</strong></li>
+                        <li><strong>Sudut siku-siku (90°):</strong> Titik <strong>C</strong></li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Tentukan Sisi Depan</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li>Sisi yang TIDAK menyentuh B = <strong>AC</strong> ✓</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Tentukan Sisi Samping</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li>Dari B ada BC dan AB. AB adalah sisi miring, jadi samping = <strong>BC</strong> ✓</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 4: Tentukan Sisi Miring</strong>
+                        <ul style="margin-left: 1rem; background-color: #e8f5e9; padding: 0.8rem; border-radius: 4px;">
+                        <li>Berhadapan dengan sudut siku di C = <strong>AB</strong> ✓</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ KUNCI JAWABAN LENGKAP - KASUS 5</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Data Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan: Titik <strong>B</strong></li>
+                        <li>✓ Sudut siku-siku: Titik <strong>C</strong> (90°)</li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Proses Identifikasi:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">1️⃣ SISI DEPAN = AC</strong>
+                        <div style="background-color: #ffebee; padding: 1rem; border-radius: 6px; margin-bottom: 0.5rem;">
+                        Tidak menyentuh sudut acuan B ✓
+                        </div>
+                        
+                        <strong style="color: #d32f2f;">2️⃣ SISI SAMPING = BC</strong>
+                        <div style="background-color: #f3e5f5; padding: 1rem; border-radius: 6px; margin-bottom: 0.5rem;">
+                        Dari B, bukan sisi miring ✓
+                        </div>
+                        
+                        <strong style="color: #d32f2f;">3️⃣ SISI MIRING = AB</strong>
+                        <div style="background-color: #e8f5e9; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        Berhadapan dengan sudut siku-siku di C ✓
+                        </div>
+                        
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong>✅ Jawaban: AC (depan), BC (samping), AB (miring)</strong>
+                        </div>
+                    `;
+                    petunjuk = `
+                        <strong>📍 Langkah-langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Titik-titik Penting ✓</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sudut acuan (α):</strong> Titik <strong>B</strong></li>
+                        <li><strong>Sudut siku-siku (90°):</strong> Titik <strong>C</strong></li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Tentukan Sisi Depan</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li>Sisi yang TIDAK menyentuh B = <strong>AC</strong> ✓</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Tentukan Sisi Samping</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li>Dari B ada BC dan AB. AB adalah sisi miring, jadi samping = <strong>BC</strong> ✓</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 4: Tentukan Sisi Miring</strong>
+                        <ul style="margin-left: 1rem; background-color: #e8f5e9; padding: 0.8rem; border-radius: 4px;">
+                        <li>Berhadapan dengan sudut siku di C = <strong>AB</strong> ✓</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ KUNCI JAWABAN LENGKAP - KASUS 5</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Data Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan: Titik <strong>B</strong></li>
+                        <li>✓ Sudut siku-siku: Titik <strong>C</strong> (90°)</li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Proses Identifikasi:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">1️⃣ SISI DEPAN = AC</strong>
+                        <div style="background-color: #ffebee; padding: 1rem; border-radius: 6px; margin-bottom: 0.5rem;">
+                        Tidak menyentuh sudut acuan B ✓
+                        </div>
+                        
+                        <strong style="color: #d32f2f;">2️⃣ SISI SAMPING = BC</strong>
+                        <div style="background-color: #f3e5f5; padding: 1rem; border-radius: 6px; margin-bottom: 0.5rem;">
+                        Dari B, bukan sisi miring ✓
+                        </div>
+                        
+                        <strong style="color: #d32f2f;">3️⃣ SISI MIRING = AB</strong>
+                        <div style="background-color: #e8f5e9; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        Berhadapan dengan sudut siku-siku di C ✓
+                        </div>
+                        
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong>✅ Jawaban: AC (depan), BC (samping), AB (miring)</strong>
+                        </div>
+                    `;
+                    break;
+                case 6: // Sudut acuan di A, siku-siku di C
+                    sudutAcuan = 'A';
+                    sudutSikuSiku = 'C';
+                    soalTeks = "Jika sudut acuan berada di titik <strong>A</strong> dan sudut siku-siku di titik <strong>C</strong>, maka sisi depan, sisi samping, dan sisi miring secara berurutan adalah ...";
+                    jawaban = "BC (depan), AC (samping), AB (miring)";
+                    opsi = [
+                        "BC (depan), AC (samping), AB (miring)",
+                        "AB (depan), AC (samping), BC (miring)",
+                        "AC (depan), BC (samping), AB (miring)",
+                        "BC (depan), AB (samping), AC (miring)"
+                    ];
+                    petunjuk = `
+                        <strong>📍 Langkah-langkah Menyelesaikan:</strong><br><br>
+                        <strong style="color: #0066cc;">Langkah 1: Identifikasi Titik-titik Penting ✓</strong>
+                        <ul style="margin-left: 1rem; background-color: #e3f2fd; padding: 0.8rem; border-radius: 4px;">
+                        <li><strong>Sudut acuan (α):</strong> Titik <strong>A</strong></li>
+                        <li><strong>Sudut siku-siku (90°):</strong> Titik <strong>C</strong></li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 2: Tentukan Sisi Depan</strong>
+                        <ul style="margin-left: 1rem; background-color: #fff3e0; padding: 0.8rem; border-radius: 4px;">
+                        <li>Sisi yang TIDAK menyentuh A = <strong>BC</strong> ✓</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 3: Tentukan Sisi Samping</strong>
+                        <ul style="margin-left: 1rem; background-color: #f3e5f5; padding: 0.8rem; border-radius: 4px;">
+                        <li>Dari A ada AB dan AC. AB adalah sisi miring, jadi samping = <strong>AC</strong> ✓</li>
+                        </ul>
+                        <br>
+                        <strong style="color: #0066cc;">Langkah 4: Tentukan Sisi Miring</strong>
+                        <ul style="margin-left: 1rem; background-color: #e8f5e9; padding: 0.8rem; border-radius: 4px;">
+                        <li>Berhadapan dengan sudut siku di C = <strong>AB</strong> ✓</li>
+                        </ul>
+                    `;
+                    pembahasan = `
+                        <strong>✅ KUNCI JAWABAN LENGKAP - KASUS 6</strong><br><br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">📌 Data Soal:</strong>
+                        <div style="background-color: #ecf0f1; padding: 1rem; border-left: 4px solid #3498db; margin: 0.5rem 0;">
+                        <li>✓ Sudut acuan: Titik <strong>A</strong></li>
+                        <li>✓ Sudut siku-siku: Titik <strong>C</strong> (90°)</li>
+                        </div>
+                        <br>
+                        <strong style="font-size: 1.05rem; color: #2c3e50;">🔍 Proses Identifikasi:</strong><br><br>
+                        
+                        <strong style="color: #d32f2f;">1️⃣ SISI DEPAN = BC</strong>
+                        <div style="background-color: #ffebee; padding: 1rem; border-radius: 6px; margin-bottom: 0.5rem;">
+                        Tidak menyentuh sudut acuan A ✓
+                        </div>
+                        
+                        <strong style="color: #d32f2f;">2️⃣ SISI SAMPING = AC</strong>
+                        <div style="background-color: #f3e5f5; padding: 1rem; border-radius: 6px; margin-bottom: 0.5rem;">
+                        Dari A, bukan sisi miring ✓
+                        </div>
+                        
+                        <strong style="color: #d32f2f;">3️⃣ SISI MIRING = AB</strong>
+                        <div style="background-color: #e8f5e9; padding: 1rem; border-radius: 6px; margin-bottom: 0.8rem;">
+                        Berhadapan dengan sudut siku-siku di C ✓
+                        </div>
+                        
+                        <div style="background-color: #d4edda; padding: 1.2rem; border-radius: 6px; border-left: 5px solid #28a745;">
+                        <strong>✅ Jawaban: BC (depan), AC (samping), AB (miring)</strong>
+                        </div>
+                    `;
+                    break;
+            }
+
+            return {
+                bagian: 1,
+                kasus: kasus,
+                judul: BAGIAN_DATA[1].nama,
+                teks: soalTeks,
+                gambar: {
+                    tipe: 'segitiga',
+                    sudutAcuan: sudutAcuan,
+                    sudutSikuSiku: sudutSikuSiku
+                },
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: petunjuk,
+                pembahasan: pembahasan
+            };
+        }
+
+        function generateBagian2(kasus) {
+            let a, b, c, soalTeks, jawaban, opsi, sudutAcuan, sudutSikuSiku, displayA, displayB, displayC;
+
+            // Tripel Pythagoras
+            const triplesPythagorean = [
+                { a: 3, b: 4, c: 5 },
+                { a: 5, b: 12, c: 13 },
+                { a: 8, b: 15, c: 17 },
+                { a: 7, b: 24, c: 25 },
+                { a: 6, b: 8, c: 10 },
+                { a: 9, b: 12, c: 15 }
+            ];
+
+            // Variasi posisi sudut untuk setiap kasus
+            const posisiMap = {
+                1: { sudutAcuan: 'A', sudutSikuSiku: 'B' },
+                2: { sudutAcuan: 'B', sudutSikuSiku: 'A' },
+                3: { sudutAcuan: 'C', sudutSikuSiku: 'B' }
+            };
+
+            const { sudutAcuan: acuan, sudutSikuSiku: siku } = posisiMap[kasus];
+            sudutAcuan = acuan;
+            sudutSikuSiku = siku;
+
+            const triple = triplesPythagorean[Math.floor(Math.random() * triplesPythagorean.length)];
+
+            switch (kasus) {
+                case 1: // Cari sisi miring
+                    a = triple.a;
+                    b = triple.b;
+                    c = triple.c;
+                    displayA = a;
+                    displayB = b;
+                    displayC = '?';
+                    soalTeks = `Diketahui segitiga siku-siku dengan panjang dua sisi yang diketahui adalah ${a} cm dan ${b} cm. Tentukan panjang sisi yang belum diketahui!`;
+                    jawaban = `${c} cm`;
+                    opsi = [
+                        `${c} cm`,
+                        `${a + b} cm`,
+                        `${a + b + 2} cm`,
+                        `${c * 2} cm`
+                    ];
+                    break;
+                case 2: // Cari sisi depan
+                    a = triple.a;
+                    b = triple.b;
+                    c = triple.c;
+                    displayA = '?';
+                    displayB = b;
+                    displayC = c;
+                    soalTeks = `Diketahui segitiga siku-siku dengan panjang dua sisi yang diketahui adalah ${b} cm dan ${c} cm. Tentukan panjang sisi yang belum diketahui!`;
+                    jawaban = `${a} cm`;
+                    opsi = [
+                        `${a} cm`,
+                        `${c - b} cm`,
+                        `${b - a} cm`,
+                        `${c - 2} cm`
+                    ];
+                    break;
+                case 3: // Cari sisi samping
+                    a = triple.a;
+                    b = triple.b;
+                    c = triple.c;
+                    displayA = a;
+                    displayB = '?';
+                    displayC = c;
+                    soalTeks = `Diketahui segitiga siku-siku dengan panjang dua sisi yang diketahui adalah ${a} cm dan ${c} cm. Tentukan panjang sisi yang belum diketahui!`;
+                    jawaban = `${b} cm`;
+                    opsi = [
+                        `${b} cm`,
+                        `${c - a} cm`,
+                        `${a + 2} cm`,
+                        `${c + a} cm`
+                    ];
+                    break;
+            }
+
+            return {
+                bagian: 2,
+                kasus: kasus,
+                judul: BAGIAN_DATA[2].nama,
+                teks: soalTeks,
+                gambar: {
+                    tipe: 'segitiga',
+                    sudutAcuan: sudutAcuan,
+                    sudutSikuSiku: sudutSikuSiku,
+                    a: displayA,
+                    b: displayB,
+                    c: displayC,
+                    showLabels: true
+                },
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: "Gunakan Teorema Pythagoras: depan² + samping² = miring². Lihat gambar untuk menentukan sisi mana yang dicari, kemudian ubah rumus sesuai kebutuhan.",
+                pembahasan: `
+                    <strong>Penjelasan:</strong><br>
+                    Teorema Pythagoras: <span style="display: block; text-align: center; margin: 0.5rem 0;">a² + b² = c²</span>
+                    <br>
+                    Di mana:
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>a = sisi depan</li>
+                    <li>b = sisi samping</li>
+                    <li>c = sisi miring (hipotenusa)</li>
+                    </ul>
+                    <br>
+                    Langkah penyelesaian:<br>
+                    ${kasus === 1 ? `c = √(${a}² + ${b}²) = √(${a*a} + ${b*b}) = √${a*a + b*b} = ${jawaban}` : ''}
+                    ${kasus === 2 ? `a = √(${c}² - ${b}²) = √(${c*c} - ${b*b}) = √${c*c - b*b} = ${jawaban}` : ''}
+                    ${kasus === 3 ? `b = √(${c}² - ${a}²) = √(${c*c} - ${a*a}) = √${c*c - a*a} = ${jawaban}` : ''}
+                `
+            };
+        }
+
+        function generateBagian3(kasus) {
+            let a = 3 + Math.floor(Math.random() * 5);
+            let b = 4 + Math.floor(Math.random() * 5);
+            let c = Math.sqrt(a*a + b*b).toFixed(0);
+
+            // Variasi posisi sudut untuk setiap kasus
+            const posisiMap = {
+                1: { sudutAcuan: 'A', sudutSikuSiku: 'B' },
+                2: { sudutAcuan: 'B', sudutSikuSiku: 'C' },
+                3: { sudutAcuan: 'C', sudutSikuSiku: 'A' },
+                4: { sudutAcuan: 'A', sudutSikuSiku: 'C' },
+                5: { sudutAcuan: 'B', sudutSikuSiku: 'A' },
+                6: { sudutAcuan: 'C', sudutSikuSiku: 'B' }
+            };
+
+            const { sudutAcuan, sudutSikuSiku } = posisiMap[kasus];
+
+            const perbandingan = ['sin', 'cos', 'tan', 'csc', 'sec', 'cot'];
+            const trig = perbandingan[kasus - 1];
+
+            let soalTeks, jawaban, opsi;
+
+            switch (trig) {
+                case 'sin':
+                    soalTeks = `Pada segitiga siku-siku di atas dengan sudut acuan α, tentukan nilai sin α!`;
+                    jawaban = `<span class="frac"><span>${a}</span><span>${c}</span></span>`;
+                    opsi = [
+                        `<span class="frac"><span>${a}</span><span>${c}</span></span>`,
+                        `<span class="frac"><span>${b}</span><span>${c}</span></span>`,
+                        `<span class="frac"><span>${a}</span><span>${b}</span></span>`,
+                        `<span class="frac"><span>${c}</span><span>${a}</span></span>`
+                    ];
+                    break;
+                case 'cos':
+                    soalTeks = `Pada segitiga siku-siku di atas dengan sudut acuan α, tentukan nilai cos α!`;
+                    jawaban = `<span class="frac"><span>${b}</span><span>${c}</span></span>`;
+                    opsi = [
+                        `<span class="frac"><span>${a}</span><span>${c}</span></span>`,
+                        `<span class="frac"><span>${b}</span><span>${c}</span></span>`,
+                        `<span class="frac"><span>${a}</span><span>${b}</span></span>`,
+                        `<span class="frac"><span>${c}</span><span>${b}</span></span>`
+                    ];
+                    break;
+                case 'tan':
+                    soalTeks = `Pada segitiga siku-siku di atas dengan sudut acuan α, tentukan nilai tan α!`;
+                    jawaban = `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+                    opsi = [
+                        `<span class="frac"><span>${a}</span><span>${c}</span></span>`,
+                        `<span class="frac"><span>${b}</span><span>${c}</span></span>`,
+                        `<span class="frac"><span>${a}</span><span>${b}</span></span>`,
+                        `<span class="frac"><span>${c}</span><span>${a}</span></span>`
+                    ];
+                    break;
+                case 'csc':
+                    soalTeks = `Pada segitiga siku-siku di atas dengan sudut acuan α, tentukan nilai csc α!`;
+                    jawaban = `<span class="frac"><span>${c}</span><span>${a}</span></span>`;
+                    opsi = [
+                        `<span class="frac"><span>${a}</span><span>${c}</span></span>`,
+                        `<span class="frac"><span>${c}</span><span>${a}</span></span>`,
+                        `<span class="frac"><span>${c}</span><span>${b}</span></span>`,
+                        `<span class="frac"><span>${a}</span><span>${b}</span></span>`
+                    ];
+                    break;
+                case 'sec':
+                    soalTeks = `Pada segitiga siku-siku di atas dengan sudut acuan α, tentukan nilai sec α!`;
+                    jawaban = `<span class="frac"><span>${c}</span><span>${b}</span></span>`;
+                    opsi = [
+                        `<span class="frac"><span>${a}</span><span>${c}</span></span>`,
+                        `<span class="frac"><span>${b}</span><span>${c}</span></span>`,
+                        `<span class="frac"><span>${c}</span><span>${b}</span></span>`,
+                        `<span class="frac"><span>${c}</span><span>${a}</span></span>`
+                    ];
+                    break;
+                case 'cot':
+                    soalTeks = `Pada segitiga siku-siku di atas dengan sudut acuan α, tentukan nilai cot α!`;
+                    jawaban = `<span class="frac"><span>${b}</span><span>${a}</span></span>`;
+                    opsi = [
+                        `<span class="frac"><span>${a}</span><span>${b}</span></span>`,
+                        `<span class="frac"><span>${b}</span><span>${a}</span></span>`,
+                        `<span class="frac"><span>${c}</span><span>${a}</span></span>`,
+                        `<span class="frac"><span>${c}</span><span>${b}</span></span>`
+                    ];
+                    break;
+            }
+
+            return {
+                bagian: 3,
+                kasus: kasus,
+                judul: BAGIAN_DATA[3].nama,
+                teks: soalTeks,
+                gambar: {
+                    tipe: 'segitiga',
+                    sudutAcuan: sudutAcuan,
+                    sudutSikuSiku: sudutSikuSiku,
+                    a: a,
+                    b: b,
+                    c: c,
+                    showLabels: true
+                },
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: `Identifikasi sisi depan, samping, dan miring berdasarkan gambar. Ingat kembali definisi perbandingan trigonometri untuk ${trig}.`,
+                pembahasan: `
+                    <strong>Penjelasan Perbandingan Trigonometri:</strong><br>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li><strong>sin α</strong> = depan/miring</li>
+                    <li><strong>cos α</strong> = samping/miring</li>
+                    <li><strong>tan α</strong> = depan/samping</li>
+                    <li><strong>csc α</strong> = miring/depan (kebalikan sin)</li>
+                    <li><strong>sec α</strong> = miring/samping (kebalikan cos)</li>
+                    <li><strong>cot α</strong> = samping/depan (kebalikan tan)</li>
+                    </ul>
+                    <br>
+                    Pada soal ini, ${trig} α = ${jawaban}
+                `
+            };
+        }
+
+        function generateBagian4(kasus) {
+            // 12 kasus dengan gambar segitiga di setiap soal
+            const casusMap = {
+                1: { cari: 'miring', trig: 'sin', sudutAcuan: 'A', sudutSikuSiku: 'B', sisiA: true, sisiB: true, sisiC: false },
+                2: { cari: 'miring', trig: 'cos', sudutAcuan: 'B', sudutSikuSiku: 'C', sisiA: false, sisiB: true, sisiC: true },
+                3: { cari: 'miring', trig: 'sec', sudutAcuan: 'C', sudutSikuSiku: 'A', sisiA: true, sisiB: false, sisiC: true },
+                4: { cari: 'miring', trig: 'csc', sudutAcuan: 'A', sudutSikuSiku: 'C', sisiA: false, sisiB: true, sisiC: true },
+                5: { cari: 'depan', trig: 'tan', sudutAcuan: 'B', sudutSikuSiku: 'A', sisiA: false, sisiB: true, sisiC: true },
+                6: { cari: 'depan', trig: 'sin', sudutAcuan: 'C', sudutSikuSiku: 'B', sisiA: true, sisiB: false, sisiC: true },
+                7: { cari: 'depan', trig: 'cot', sudutAcuan: 'A', sudutSikuSiku: 'B', sisiA: false, sisiB: true, sisiC: true },
+                8: { cari: 'depan', trig: 'csc', sudutAcuan: 'B', sudutSikuSiku: 'C', sisiA: true, sisiB: false, sisiC: true },
+                9: { cari: 'samping', trig: 'tan', sudutAcuan: 'C', sudutSikuSiku: 'A', sisiA: true, sisiB: false, sisiC: true },
+                10: { cari: 'samping', trig: 'cos', sudutAcuan: 'A', sudutSikuSiku: 'C', sisiA: false, sisiB: true, sisiC: true },
+                11: { cari: 'samping', trig: 'cot', sudutAcuan: 'B', sudutSikuSiku: 'A', sisiA: true, sisiB: false, sisiC: true },
+                12: { cari: 'samping', trig: 'sec', sudutAcuan: 'C', sudutSikuSiku: 'B', sisiA: false, sisiB: true, sisiC: true }
+            };
+
+            const { cari, trig, sudutAcuan, sudutSikuSiku, sisiA, sisiB, sisiC } = casusMap[kasus];
+
+            // Tripel Pythagoras
+            const triplesPythagorean = [
+                { a: 3, b: 4, c: 5 },
+                { a: 5, b: 12, c: 13 },
+                { a: 8, b: 15, c: 17 },
+                { a: 7, b: 24, c: 25 },
+                { a: 6, b: 8, c: 10 },
+                { a: 9, b: 12, c: 15 }
+            ];
+
+            const triple = triplesPythagorean[Math.floor(Math.random() * triplesPythagorean.length)];
+            let a, b, c, soalTeks, jawaban, opsi, displayA, displayB, displayC;
+
+            a = triple.a;
+            b = triple.b;
+            c = triple.c;
+            
+            displayA = sisiA ? a : '?';
+            displayB = sisiB ? b : '?';
+            displayC = sisiC ? c : '?';
+
+            soalTeks = `Pada segitiga siku-siku di atas dengan sudut acuan α, tentukan nilai ${trig} α!`;
+
+            // Hitung jawaban berdasarkan trig
+            let jawbanText;
+            switch (trig) {
+                case 'sin':
+                    jawbanText = `<span class="frac"><span>${a}</span><span>${c}</span></span>`;
+                    break;
+                case 'cos':
+                    jawbanText = `<span class="frac"><span>${b}</span><span>${c}</span></span>`;
+                    break;
+                case 'tan':
+                    jawbanText = `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+                    break;
+                case 'csc':
+                    jawbanText = `<span class="frac"><span>${c}</span><span>${a}</span></span>`;
+                    break;
+                case 'sec':
+                    jawbanText = `<span class="frac"><span>${c}</span><span>${b}</span></span>`;
+                    break;
+                case 'cot':
+                    jawbanText = `<span class="frac"><span>${b}</span><span>${a}</span></span>`;
+                    break;
+            }
+
+            jawaban = jawbanText;
+            opsi = [
+                jawaban,
+                `<span class="frac"><span>${Math.random() > 0.5 ? a : b}</span><span>${c}</span></span>`,
+                `<span class="frac"><span>${c}</span><span>${Math.random() > 0.5 ? a : b}</span></span>`,
+                `<span class="frac"><span>${a}</span><span>${b}</span></span>`
+            ];
+
+            return {
+                bagian: 4,
+                kasus: kasus,
+                judul: BAGIAN_DATA[4].nama,
+                teks: soalTeks,
+                gambar: {
+                    tipe: 'segitiga',
+                    sudutAcuan: sudutAcuan,
+                    sudutSikuSiku: sudutSikuSiku,
+                    a: displayA,
+                    b: displayB,
+                    c: displayC,
+                    showLabels: true
+                },
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: `Identifikasi sisi depan, samping, dan miring berdasarkan gambar. Gunakan definisi perbandingan trigonometri untuk ${trig}.`,
+                pembahasan: `
+                    <strong>KUNCI JAWABAN LENGKAP</strong><br><br>
+                    <strong>Langkah-langkah:</strong><br>
+                    1. Identifikasi sisi dari gambar berdasarkan sudut acuan α<br>
+                    2. Tentukan sisi depan (opposite), sisi samping (adjacent), dan sisi miring (hypotenuse)<br>
+                    3. Gunakan definisi perbandingan trigonometri untuk ${trig}<br>
+                    4. Jawaban: ${trig} α = ${jawaban}
+                `
+            };
+        }
+
+        function generateBagian5(kasus) {
+            const sudutIstimewa = {
+                0: { sin: '0', cos: '1', tan: '0', csc: '∞', sec: '1', cot: '∞' },
+                30: { sin: '<span class="frac"><span>1</span><span>2</span></span>', cos: '<span class="frac"><span>√3</span><span>2</span></span>', tan: '<span class="frac"><span>1</span><span>√3</span></span>', csc: '2', sec: '<span class="frac"><span>2</span><span>√3</span></span>', cot: '√3' },
+                45: { sin: '<span class="frac"><span>√2</span><span>2</span></span>', cos: '<span class="frac"><span>√2</span><span>2</span></span>', tan: '1', csc: '√2', sec: '√2', cot: '1' },
+                60: { sin: '<span class="frac"><span>√3</span><span>2</span></span>', cos: '<span class="frac"><span>1</span><span>2</span></span>', tan: '√3', csc: '<span class="frac"><span>2</span><span>√3</span></span>', sec: '2', cot: '<span class="frac"><span>1</span><span>√3</span></span>' },
+                90: { sin: '1', cos: '0', tan: '∞', csc: '1', sec: '∞', cot: '0' }
+            };
+
+            const trigsAvail = ['sin', 'cos', 'tan', 'csc', 'sec', 'cot'];
+            const trigRandom = trigsAvail[Math.floor(Math.random() * trigsAvail.length)];
+            
+            const sudut = [0, 30, 45, 60, 90][kasus - 1];
+            const nilaiTrig = sudutIstimewa[sudut][trigRandom];
+
+            let soalTeks = `Tentukan nilai dari ${trigRandom} ${sudut}° ...`;
+
+            let opsi = [];
+            
+            // Generate opsi yang berbeda untuk setiap trigonometri dan sudut
+            if (trigRandom === 'sin') {
+                if (sudut === 0) opsi = ['0', '1', '1/2', '√3/2'];
+                else if (sudut === 30) opsi = ['<span class="frac"><span>1</span><span>2</span></span>', '√3/2', '1', '0'];
+                else if (sudut === 45) opsi = ['<span class="frac"><span>√2</span><span>2</span></span>', '1/2', '√3/2', '1'];
+                else if (sudut === 60) opsi = ['<span class="frac"><span>√3</span><span>2</span></span>', '1/2', '<span class="frac"><span>√2</span><span>2</span></span>', '1'];
+                else opsi = ['1', '0', '1/2', '√3/2'];
+            } else if (trigRandom === 'cos') {
+                if (sudut === 0) opsi = ['1', '0', '1/2', '√3/2'];
+                else if (sudut === 30) opsi = ['<span class="frac"><span>√3</span><span>2</span></span>', '1/2', '√2/2', '0'];
+                else if (sudut === 45) opsi = ['<span class="frac"><span>√2</span><span>2</span></span>', '√3/2', '1/2', '1'];
+                else if (sudut === 60) opsi = ['<span class="frac"><span>1</span><span>2</span></span>', '√3/2', '<span class="frac"><span>√2</span><span>2</span></span>', '0'];
+                else opsi = ['0', '1', '1/2', '√3/2'];
+            } else if (trigRandom === 'tan') {
+                if (sudut === 0) opsi = ['0', '1', '√3', 'tidak terdefinisi'];
+                else if (sudut === 30) opsi = ['<span class="frac"><span>1</span><span>√3</span></span>', '1', '√3', '0'];
+                else if (sudut === 45) opsi = ['1', '√3', '<span class="frac"><span>1</span><span>√3</span></span>', '0'];
+                else if (sudut === 60) opsi = ['√3', '1', '<span class="frac"><span>1</span><span>√3</span></span>', 'tidak terdefinisi'];
+                else opsi = ['tidak terdefinisi', '0', '1', '√3'];
+            } else if (trigRandom === 'sec') {
+                if (sudut === 0) opsi = ['1', '2', '<span class="frac"><span>2</span><span>√3</span></span>', 'tidak terdefinisi'];
+                else if (sudut === 30) opsi = ['<span class="frac"><span>2</span><span>√3</span></span>', '2', '1', '<span class="frac"><span>2</span><span>√2</span></span>'];
+                else if (sudut === 45) opsi = ['√2', '2', '1', '<span class="frac"><span>2</span><span>√3</span></span>'];
+                else if (sudut === 60) opsi = ['2', '1', '√2', '<span class="frac"><span>2</span><span>√3</span></span>'];
+                else opsi = ['tidak terdefinisi', '∞', '1', '2'];
+            } else if (trigRandom === 'csc') {
+                if (sudut === 0) opsi = ['tidak terdefinisi', '1', '2', '√2'];
+                else if (sudut === 30) opsi = ['2', '<span class="frac"><span>2</span><span>√3</span></span>', '1', '√2'];
+                else if (sudut === 45) opsi = ['√2', '1', '2', '<span class="frac"><span>2</span><span>√3</span></span>'];
+                else if (sudut === 60) opsi = ['<span class="frac"><span>2</span><span>√3</span></span>', '1', '√2', '2'];
+                else opsi = ['1', 'tidak terdefinisi', '2', '√2'];
+            } else if (trigRandom === 'cot') {
+                if (sudut === 0) opsi = ['tidak terdefinisi', '0', '1', '√3'];
+                else if (sudut === 30) opsi = ['√3', '<span class="frac"><span>1</span><span>√3</span></span>', '1', '0'];
+                else if (sudut === 45) opsi = ['1', '√3', '<span class="frac"><span>1</span><span>√3</span></span>', '0'];
+                else if (sudut === 60) opsi = ['<span class="frac"><span>1</span><span>√3</span></span>', '√3', '1', 'tidak terdefinisi'];
+                else opsi = ['0', '1', '√3', 'tidak terdefinisi'];
+            }
+
+            return {
+                bagian: 5,
+                kasus: kasus,
+                judul: BAGIAN_DATA[5].nama,
+                teks: soalTeks,
+                gambar: null,
+                opsi: shuffleArray(opsi),
+                jawaban: nilaiTrig,
+                petunjuk: `Hafalkan nilai-nilai trigonometri untuk sudut istimewa. Gunakan tabel sudut istimewa sebagai referensi.`,
+                pembahasan: `
+                    <strong>Tabel Sudut Istimewa:</strong><br>
+                    <table style="margin: 1rem 0; border-collapse: collapse; width: 100%;">
+                    <tr style="background-color: #f0f0f0;">
+                    <th style="border: 1px solid #ddd; padding: 0.5rem;">Sudut</th>
+                    <th style="border: 1px solid #ddd; padding: 0.5rem;">0°</th>
+                    <th style="border: 1px solid #ddd; padding: 0.5rem;">30°</th>
+                    <th style="border: 1px solid #ddd; padding: 0.5rem;">45°</th>
+                    <th style="border: 1px solid #ddd; padding: 0.5rem;">60°</th>
+                    <th style="border: 1px solid #ddd; padding: 0.5rem;">90°</th>
+                    </tr>
+                    <tr>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;"><strong>sin</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">0</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">1/2</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">√2/2</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">√3/2</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">1</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;"><strong>cos</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">1</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">√3/2</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">√2/2</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">1/2</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">0</td>
+                    </tr>
+                    <tr>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;"><strong>tan</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">0</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">1/√3</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">1</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">√3</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">∞</td>
+                    </tr>
+                    </table>
+                    <br>
+                    Jawaban: ${trigRandom} ${sudut}° = ${nilaiTrig}
+                `
+            };
+        }
+
+        function generateBagian6(kasus) {
+            let sudut, soalTeks, jawaban, opsi;
+            
+            // Sudut istimewa di berbagai kuadran - 12 kasus lengkap
+            const sudutIstimewaKuadran = [
+                { sudut: 120, kuadran: 'II', acuan: 60 },
+                { sudut: 135, kuadran: 'II', acuan: 45 },
+                { sudut: 150, kuadran: 'II', acuan: 30 },
+                { sudut: 180, kuadran: 'II-III', acuan: 0 },
+                { sudut: 210, kuadran: 'III', acuan: 30 },
+                { sudut: 225, kuadran: 'III', acuan: 45 },
+                { sudut: 240, kuadran: 'III', acuan: 60 },
+                { sudut: 270, kuadran: 'III-IV', acuan: 0 },
+                { sudut: 300, kuadran: 'IV', acuan: 60 },
+                { sudut: 315, kuadran: 'IV', acuan: 45 },
+                { sudut: 330, kuadran: 'IV', acuan: 30 },
+                { sudut: 360, kuadran: 'I', acuan: 0 }
+            ];
+
+            const selected = sudutIstimewaKuadran[kasus - 1] || sudutIstimewaKuadran[0];
+            sudut = selected.sudut;
+            const kuadran = selected.kuadran;
+            const acuan = selected.acuan;
+
+            soalTeks = `Tentukan sudut acuan untuk sudut ${sudut}° (terletak di kuadran ${kuadran})`;
+            jawaban = `${acuan}°`;
+            
+            // Opsi: 5 pilihan sudut istimewa yang pasti berbeda
+            opsi = [
+                `0°`,
+                `30°`,
+                `45°`,
+                `60°`,
+                `90°`
+            ];
+            
+            // Tidak perlu logic untuk ensure, karena 5 opsi sudah fixed dan selalu berbeda
+            // Jawaban akan selalu ada di dalam opsi
+
+            return {
+                bagian: 6,
+                kasus: kasus,
+                judul: BAGIAN_DATA[6].nama,
+                teks: soalTeks,
+                gambar: {
+                    tipe: 'kuadran',
+                    sudut: sudut,
+                    kuadran: kuadran
+                },
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: `Sudut acuan (reference angle) adalah sudut lancip antara garis terminal dan sumbu horizontal. Gunakan rumus berdasarkan kuadran yang ditentukan.`,
+                pembahasan: `
+                    <strong>Rumus Sudut Acuan:</strong><br>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li><strong>Kuadran I (0°-90°)</strong>: Sudut acuan = sudut itu sendiri</li>
+                    <li><strong>Kuadran II (90°-180°)</strong>: Sudut acuan = 180° - sudut</li>
+                    <li><strong>Kuadran III (180°-270°)</strong>: Sudut acuan = sudut - 180°</li>
+                    <li><strong>Kuadran IV (270°-360°)</strong>: Sudut acuan = 360° - sudut</li>
+                    </ul>
+                    <br>
+                    Untuk sudut ${sudut}° (Kuadran ${kuadran}):<br>
+                    ${kuadran === 'II' ? `Sudut acuan = 180° - ${sudut}° = ${180 - sudut}°` : ''}
+                    ${kuadran === 'III' ? `Sudut acuan = ${sudut}° - 180° = ${sudut - 180}°` : ''}
+                    ${kuadran === 'IV' ? `Sudut acuan = 360° - ${sudut}° = ${360 - sudut}°` : ''}
+                    ${kuadran === 'II-III' ? `Sudut ${sudut}° ada di garis batas antara Kuadran II dan III` : ''}
+                    ${kuadran === 'III-IV' ? `Sudut ${sudut}° ada di garis batas antara Kuadran III dan IV` : ''}
+                    ${kuadran === 'I' ? `Sudut ${sudut}° = 0° (atau 360°)` : ''}
+                    <br>
+                    <strong>Jawaban: ${jawaban}</strong>
+                `
+            };
+        }
+
+        function generateBagian7(kasus) {
+            // Bagian 7: Nilai trigonometri di kuadran II, III, IV dengan sudut acuan
+            const dataKasus = {
+                1: { sudut: 120, kuadran: 'II', acuan: 60, trig: 'sin' },
+                2: { sudut: 120, kuadran: 'II', acuan: 60, trig: 'cos' },
+                3: { sudut: 135, kuadran: 'II', acuan: 45, trig: 'tan' },
+                4: { sudut: 210, kuadran: 'III', acuan: 30, trig: 'sin' },
+                5: { sudut: 225, kuadran: 'III', acuan: 45, trig: 'cos' },
+                6: { sudut: 240, kuadran: 'III', acuan: 60, trig: 'tan' }
+            };
+
+            const caseData = dataKasus[kasus] || dataKasus[1];
+            const { sudut, kuadran, acuan, trig } = caseData;
+
+            let soalTeks = `Tentukan nilai ${trig} ${sudut}°`;
+            let jawaban, opsi, pembahasan;
+
+            // Nilai sudut acuan di kuadran I
+            const nilaiAcuan = {
+                30: { sin: '1/2', cos: '√3/2', tan: '1/√3' },
+                45: { sin: '√2/2', cos: '√2/2', tan: '1' },
+                60: { sin: '√3/2', cos: '1/2', tan: '√3' }
+            };
+
+            const val = nilaiAcuan[acuan][trig];
+
+            // Tentukan jawaban berdasarkan kuadran dan trig
+            if (kuadran === 'II') {
+                if (trig === 'sin') {
+                    jawaban = val; // sin positif di kuadran II
+                    opsi = [val, `-${val}`, `√2/2`, `√3/3`];
+                    pembahasan = `Kuadran II: sin bernilai POSITIF<br>sin 120° = sin (180° - 60°) = sin 60° = <strong>${val}</strong>`;
+                } else if (trig === 'cos') {
+                    jawaban = `-1/2`;
+                    opsi = [`1/2`, `-1/2`, `√3/2`, `-√3/2`];
+                    pembahasan = `Kuadran II: cos bernilai NEGATIF<br>cos 120° = -cos (180° - 120°) = -cos 60° = <strong>-1/2</strong>`;
+                } else if (trig === 'tan') {
+                    jawaban = `-1`; // tan 135° = -1
+                    opsi = [`1`, `-1`, `-√3`, `√3`];
+                    pembahasan = `Kuadran II: tan bernilai NEGATIF<br>tan 135° = -tan (180° - 135°) = -tan 45° = -1 = <strong>-1</strong>`;
+                }
+            } else if (kuadran === 'III') {
+                if (trig === 'sin') {
+                    jawaban = `-1/2`;
+                    opsi = [`1/2`, `-1/2`, `√2/2`, `-√2/2`];
+                    pembahasan = `Kuadran III: sin bernilai NEGATIF<br>sin 210° = -sin (210° - 180°) = -sin 30° = <strong>-1/2</strong>`;
+                } else if (trig === 'cos') {
+                    jawaban = `-√2/2`;
+                    opsi = [`√2/2`, `-√2/2`, `1/2`, `-1/2`];
+                    pembahasan = `Kuadran III: cos bernilai NEGATIF<br>cos 225° = -cos (225° - 180°) = -cos 45° = <strong>-√2/2</strong>`;
+                } else if (trig === 'tan') {
+                    jawaban = `√3`;
+                    opsi = [`√3`, `-√3`, `√3/3`, `-√3/3`];
+                    pembahasan = `Kuadran III: tan bernilai POSITIF<br>tan 240° = tan (240° - 180°) = tan 60° = <strong>√3</strong>`;
+                }
+            } else if (kuadran === 'IV') {
+                if (trig === 'sin') {
+                    jawaban = `-√3/2`;
+                    opsi = [`√3/2`, `-√3/2`, `1/2`, `-1/2`];
+                    pembahasan = `Kuadran IV: sin bernilai NEGATIF<br>sin 300° = -sin (360° - 300°) = -sin 60° = <strong>-√3/2</strong>`;
+                } else if (trig === 'cos') {
+                    jawaban = `√2/2`;
+                    opsi = [`√2/2`, `-√2/2`, `1/2`, `-1/2`];
+                    pembahasan = `Kuadran IV: cos bernilai POSITIF<br>cos 315° = cos (360° - 315°) = cos 45° = <strong>√2/2</strong>`;
+                } else if (trig === 'tan') {
+                    jawaban = `-√3/3`;
+                    opsi = [`√3/3`, `-√3/3`, `√3`, `-√3`];
+                    pembahasan = `Kuadran IV: tan bernilai NEGATIF<br>tan 330° = -tan (360° - 330°) = -tan 30° = <strong>-√3/3</strong>`;
+                }
+            }
+
+            return {
+                bagian: 7,
+                kasus: kasus,
+                judul: BAGIAN_DATA[7].nama,
+                teks: soalTeks,
+                gambar: {
+                    tipe: 'kuadran',
+                    sudut: sudut,
+                    kuadran: kuadran
+                },
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: `
+                    <strong>Tabel Tanda Trigonometri di Setiap Kuadran:</strong><br><br>
+                    <table style="margin: 1rem 0; border-collapse: collapse; width: 100%;">
+                    <tr style="background-color: #f0f0f0;">
+                    <th style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;"><strong>Kuadran</strong></th>
+                    <th style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;"><strong>sin</strong></th>
+                    <th style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;"><strong>cos</strong></th>
+                    <th style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;"><strong>tan</strong></th>
+                    <th style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;"><strong>Sudut</strong></th>
+                    </tr>
+                    <tr>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;"><strong>I</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #d4edda;">+</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #d4edda;">+</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #d4edda;">+</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;">0°-90°</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;"><strong>II</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #fff3cd;">+</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #f8d7da;">-</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #f8d7da;">-</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;">90°-180°</td>
+                    </tr>
+                    <tr>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;"><strong>III</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #f8d7da;">-</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #f8d7da;">-</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #d4edda;">+</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;">180°-270°</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;"><strong>IV</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #f8d7da;">-</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #d4edda;">+</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center; background-color: #f8d7da;">-</td>
+                    <td style="border: 1px solid #ddd; padding: 0.7rem; text-align: center;">270°-360°</td>
+                    </tr>
+                    </table>
+                    <br>
+                    <strong>Langkah:</strong><br>
+                    1. Identifikasi kuadran sudut<br>
+                    2. Gunakan tabel untuk tanda yang benar<br>
+                    3. Hitung nilai menggunakan sudut acuan
+                `,
+                pembahasan: `
+                    <strong>Langkah-langkah menentukan nilai trigonometri di kuadran:</strong><br><br>
+                    <strong>1. Identifikasi kuadran dari sudut ${sudut}°</strong><br>
+                    Sudut ${sudut}° terletak di <strong>Kuadran ${kuadran}</strong><br><br>
+                    
+                    <strong>2. Tentukan sudut acuan</strong><br>
+                    ${kuadran === 'II' ? `Rumus Kuadran II: 180° - sudut = 180° - ${sudut}° = ${180 - sudut}°` : ''}
+                    ${kuadran === 'III' ? `Rumus Kuadran III: sudut - 180° = ${sudut}° - 180° = ${sudut - 180}°` : ''}
+                    ${kuadran === 'IV' ? `Rumus Kuadran IV: 360° - sudut = 360° - ${sudut}° = ${360 - sudut}°` : ''}
+                    <br>Sudut acuan = <strong>${acuan}°</strong><br><br>
+                    
+                    <strong>3. Tentukan nilai trigonometri dari sudut acuan</strong><br>
+                    ${trig} ${acuan}° = <strong>${val}</strong><br><br>
+                    
+                    <strong>4. Tentukan tanda berdasarkan kuadran</strong><br>
+                    <table style="margin: 1rem 0; border-collapse: collapse; width: 100%;">
+                    <tr style="background-color: #f0f0f0;">
+                    <th style="border: 1px solid #ddd; padding: 0.5rem;">Kuadran</th>
+                    <th style="border: 1px solid #ddd; padding: 0.5rem;">sin</th>
+                    <th style="border: 1px solid #ddd; padding: 0.5rem;">cos</th>
+                    <th style="border: 1px solid #ddd; padding: 0.5rem;">tan</th>
+                    </tr>
+                    <tr>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;"><strong>I (0°-90°)</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">+</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">+</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">+</td>
+                    </tr>
+                    <tr style="background-color: #fff3cd;">
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;"><strong>II (90°-180°)</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">+</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">-</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">-</td>
+                    </tr>
+                    <tr>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;"><strong>III (180°-270°)</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">-</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">-</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">+</td>
+                    </tr>
+                    <tr style="background-color: #d1ecf1;">
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;"><strong>IV (270°-360°)</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">-</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">+</td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">-</td>
+                    </tr>
+                    </table>
+                    <br>Di Kuadran ${kuadran}, ${trig} bernilai <strong>${kuadran === 'II' && trig === 'sin' ? '+' : kuadran === 'II' && trig !== 'sin' ? '-' : kuadran === 'III' && trig === 'tan' ? '+' : kuadran === 'III' ? '-' : kuadran === 'IV' && trig === 'cos' ? '+' : '-'}</strong><br><br>
+                    
+                    <strong>5. Kesimpulan</strong><br>
+                    ${pembahasan}
+                `
+            };
+        }
+
+        function generateBagian8(kasus) {
+            let soalTeks, jawaban, opsi;
+
+            const kasusMap = {
+                1: {
+                    teks: `sin 30° + cos 60° = ...`,
+                    jawaban: `1`,
+                    opsi: [`1`, `<span class="frac"><span>√3</span><span>2</span></span>`, `<span class="frac"><span>1</span><span>2</span></span>`, `√3`]
+                },
+                2: {
+                    teks: `cos 45° + sin 45° = ...`,
+                    jawaban: `√2`,
+                    opsi: [`√2`, `1`, `<span class="frac"><span>√2</span><span>2</span></span>`, `2`]
+                },
+                3: {
+                    teks: `2 × sin 45° = ...`,
+                    jawaban: `√2`,
+                    opsi: [`√2`, `2`, `1`, `<span class="frac"><span>√2</span><span>2</span></span>`]
+                },
+                4: {
+                    teks: `tan 60° - tan 30° = ...`,
+                    jawaban: `√3 - <span class="frac"><span>1</span><span>√3</span></span>`,
+                    opsi: [`√3 - <span class="frac"><span>1</span><span>√3</span></span>`, `√3`, `<span class="frac"><span>1</span><span>√3</span></span>`, `0`]
+                },
+                5: {
+                    teks: `<span class="frac"><span>sin 60°</span><span>cos 60°</span></span> = ...`,
+                    jawaban: `√3`,
+                    opsi: [`√3`, `1`, `<span class="frac"><span>1</span><span>√3</span></span>`, `<span class="frac"><span>√3</span><span>2</span></span>`]
+                },
+                6: {
+                    teks: `sin 30° × cos 60° = ...`,
+                    jawaban: `<span class="frac"><span>1</span><span>4</span></span>`,
+                    opsi: [`<span class="frac"><span>1</span><span>4</span></span>`, `<span class="frac"><span>1</span><span>2</span></span>`, `1`, `<span class="frac"><span>1</span><span>8</span></span>`]
+                },
+                7: {
+                    teks: `<span class="frac"><span>sin 45°</span><span>cos 45°</span></span> = ...`,
+                    jawaban: `1`,
+                    opsi: [`1`, `√2`, `2`, `<span class="frac"><span>1</span><span>2</span></span>`]
+                },
+                8: {
+                    teks: `sin 60° × tan 30° = ...`,
+                    jawaban: `<span class="frac"><span>1</span><span>2</span></span>`,
+                    opsi: [`<span class="frac"><span>1</span><span>2</span></span>`, `<span class="frac"><span>√3</span><span>2</span></span>`, `1`, `√3`]
+                },
+                9: {
+                    teks: `2 × sin 30° + cos 30° = ...`,
+                    jawaban: `1 + <span class="frac"><span>√3</span><span>2</span></span>`,
+                    opsi: [`1 + <span class="frac"><span>√3</span><span>2</span></span>`, `<span class="frac"><span>√3</span><span>2</span></span>`, `2`, `3`]
+                },
+                10: {
+                    teks: `<span class="frac"><span>cos 30°</span><span>sin 30°</span></span> = ...`,
+                    jawaban: `√3`,
+                    opsi: [`√3`, `1`, `<span class="frac"><span>1</span><span>√3</span></span>`, `<span class="frac"><span>√3</span><span>2</span></span>`]
+                }
+            };
+
+            const kasusData = kasusMap[kasus] || kasusMap[1];
+            soalTeks = `Hitunglah: ${kasusData.teks}`;
+            jawaban = kasusData.jawaban;
+            opsi = kasusData.opsi;
+
+            return {
+                bagian: 8,
+                kasus: kasus,
+                judul: BAGIAN_DATA[8].nama,
+                teks: soalTeks,
+                gambar: null,
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: `Gunakan tabel sudut istimewa untuk mengganti setiap nilai trigonometri, kemudian lakukan operasi hitung dengan hati-hati.`,
+                pembahasan: `
+                    <strong>Langkah-langkah:</strong><br>
+                    ${kasus === 1 ? `sin 30° = <span class="frac"><span>1</span><span>2</span></span>, cos 60° = <span class="frac"><span>1</span><span>2</span></span><br><span class="frac"><span>1</span><span>2</span></span> + <span class="frac"><span>1</span><span>2</span></span> = 1` : ''}
+                    ${kasus === 2 ? `cos 45° = <span class="frac"><span>√2</span><span>2</span></span>, sin 45° = <span class="frac"><span>√2</span><span>2</span></span><br><span class="frac"><span>√2</span><span>2</span></span> + <span class="frac"><span>√2</span><span>2</span></span> = √2` : ''}
+                    ${kasus === 3 ? `sin 45° = <span class="frac"><span>√2</span><span>2</span></span><br>2 × <span class="frac"><span>√2</span><span>2</span></span> = √2` : ''}
+                    ${kasus === 4 ? `tan 60° = √3, tan 30° = <span class="frac"><span>1</span><span>√3</span></span><br>√3 - <span class="frac"><span>1</span><span>√3</span></span>` : ''}
+                    ${kasus === 5 ? `sin 60° = <span class="frac"><span>√3</span><span>2</span></span>, cos 60° = <span class="frac"><span>1</span><span>2</span></span><br><span class="frac"><span>√3/2</span><span>1/2</span></span> = √3` : ''}
+                    ${kasus === 6 ? `sin 30° = <span class="frac"><span>1</span><span>2</span></span>, cos 60° = <span class="frac"><span>1</span><span>2</span></span><br><span class="frac"><span>1</span><span>2</span></span> × <span class="frac"><span>1</span><span>2</span></span> = <span class="frac"><span>1</span><span>4</span></span>` : ''}
+                    ${kasus === 7 ? `sin 45° = <span class="frac"><span>√2</span><span>2</span></span>, cos 45° = <span class="frac"><span>√2</span><span>2</span></span><br><span class="frac"><span>√2/2</span><span>√2/2</span></span> = 1` : ''}
+                    ${kasus === 8 ? `sin 60° = <span class="frac"><span>√3</span><span>2</span></span>, tan 30° = <span class="frac"><span>1</span><span>√3</span></span><br><span class="frac"><span>√3</span><span>2</span></span> × <span class="frac"><span>1</span><span>√3</span></span> = <span class="frac"><span>1</span><span>2</span></span>` : ''}
+                    ${kasus === 9 ? `sin 30° = <span class="frac"><span>1</span><span>2</span></span>, cos 30° = <span class="frac"><span>√3</span><span>2</span></span><br>2 × <span class="frac"><span>1</span><span>2</span></span> + <span class="frac"><span>√3</span><span>2</span></span> = 1 + <span class="frac"><span>√3</span><span>2</span></span>` : ''}
+                    ${kasus === 10 ? `cos 30° = <span class="frac"><span>√3</span><span>2</span></span>, sin 30° = <span class="frac"><span>1</span><span>2</span></span><br><span class="frac"><span>√3/2</span><span>1/2</span></span> = √3` : ''}
+                `
+            };
+        }
+
+        function generateBagian9(kasus) {
+            let soalTeks, jawaban, opsi;
+
+            if (kasus === 1) {
+                soalTeks = `Seorang pengamat berdiri di tanah dan melihat puncak tiang bendera yang berada di atasnya dengan membentuk sudut elevasi. Sudut elevasi berada di mana?`;
+                jawaban = "Antara garis pandang pengamat dan garis horizontal";
+                opsi = [
+                    "Antara garis pandang pengamat dan garis horizontal",
+                    "Antara garis pandang pengamat dan garis vertikal",
+                    "Antara tiang dan tanah",
+                    "Antara garis horizontal dan garis vertical"
+                ];
+            } else {
+                soalTeks = `Seorang pilot pesawat melihat ke bawah terhadap sebuah mercusuar di laut dengan membentuk sudut depresi. Sudut depresi berada di mana?`;
+                jawaban = "Antara garis pandang pilot dan garis horizontal";
+                opsi = [
+                    "Antara garis pandang pilot dan garis horizontal",
+                    "Antara garis pandang pilot dan garis vertikal",
+                    "Antara pesawat dan permukaan laut",
+                    "Antara mercusuar dan laut"
+                ];
+            }
+
+            return {
+                bagian: 9,
+                kasus: kasus,
+                judul: BAGIAN_DATA[9].nama,
+                teks: soalTeks,
+                gambar: null,
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: `Sudut elevasi adalah sudut di atas garis horizontal, sementara sudut depresi adalah sudut di bawah garis horizontal.`,
+                pembahasan: `
+                    <strong>Definisi:</strong><br>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li><strong>Sudut Elevasi</strong>: Sudut yang dibentuk antara garis pandang pengamat dengan garis horizontal, ketika objek yang dilihat berada DI ATAS mata pengamat.</li>
+                    <li><strong>Sudut Depresi</strong>: Sudut yang dibentuk antara garis pandang pengamat dengan garis horizontal, ketika objek yang dilihat berada DI BAWAH mata pengamat.</li>
+                    </ul>
+                    <br>
+                    Jawaban: <strong>${jawaban}</strong>
+                `
+            };
+        }
+
+        function generateBagian10(kasus) {
+            let soalTeks, jawaban, opsi;
+
+            const kasusMap = {
+                1: {
+                    teks: "Panjang bayangan sebuah tiang adalah 10 m. Jika sudut elevasi matahari adalah 45°, berapa tinggi tiang tersebut?",
+                    jawaban: "10 m",
+                    opsi: ["10 m", "10√3 m", "5 m", "10√2 m"],
+                    pembahasan: `
+                        <strong>Diberikan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Panjang bayangan (sisi samping) = 10 m</li>
+                        <li>Sudut elevasi matahari = 45°</li>
+                        <li>Nilai tan 45° = 1</li>
+                        </ul>
+                        <br>
+                        <strong>Ditanya:</strong> Tinggi tiang = ?<br><br>
+                        
+                        <strong>Penyelesaian:</strong>
+                        <ol style="margin-left: 1.5rem;">
+                        <li>Gambar segitiga siku-siku:<br>- Titik pengamat di tanah<br>- Puncak tiang di atas<br>- Bayangan di tanah = 10 m</li>
+                        <li>Identifikasi sisi:<br>
+                        <ul style="margin-left: 1rem;">
+                        <li>Sisi samping (bayangan) = 10 m</li>
+                        <li>Sisi depan (tinggi) = h (yang dicari)</li>
+                        <li>Sudut elevasi = 45°</li>
+                        </ul>
+                        </li>
+                        <li>Gunakan perbandingan trigonometri yang sesuai:<br>
+                        Karena diketahui samping dan dicari depan, gunakan <strong>tan θ = depan/samping</strong></li>
+                        <li>Substitusi nilai:<br>
+                        tan 45° = h/10<br>
+                        1 = h/10</li>
+                        <li>Hitung tinggi:<br>
+                        h = 1 × 10 = <strong>10 m</strong></li>
+                        </ol>
+                        <br>
+                        <strong>Jawaban: Tinggi tiang = 10 m</strong>
+                    `
+                },
+                2: {
+                    teks: "Sebuah tangga dengan panjang 8 m disandarkan pada tembok dengan membentuk sudut 60° terhadap tanah. Berapa tinggi tembok yang dapat dicapai?",
+                    jawaban: "4√3 m",
+                    opsi: ["4√3 m", "4 m", "8 m", "8√3 m"],
+                    pembahasan: `
+                        <strong>Diberikan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Panjang tangga (sisi miring) = 8 m</li>
+                        <li>Sudut terhadap tanah = 60°</li>
+                        <li>Nilai sin 60° = √3/2</li>
+                        </ul>
+                        <br>
+                        <strong>Ditanya:</strong> Tinggi tembok (sisi depan) = ?<br><br>
+                        
+                        <strong>Penyelesaian:</strong>
+                        <ol style="margin-left: 1.5rem;">
+                        <li>Gambar segitiga siku-siku:<br>- Tangga sebagai sisi miring<br>- Tinggi tembok sebagai sisi depan<br>- Tanah sebagai sisi samping</li>
+                        <li>Identifikasi sudut dan sisi:<br>
+                        <ul style="margin-left: 1rem;">
+                        <li>Sisi miring (tangga) = 8 m</li>
+                        <li>Sisi depan (tinggi) = h (yang dicari)</li>
+                        <li>Sudut = 60° (sudut antara tangga dan tanah)</li>
+                        </ul>
+                        </li>
+                        <li>Gunakan perbandingan trigonometri yang sesuai:<br>
+                        Karena diketahui miring dan sudut, dicari depan, gunakan <strong>sin θ = depan/miring</strong></li>
+                        <li>Substitusi nilai:<br>
+                        sin 60° = h/8<br>
+                        √3/2 = h/8</li>
+                        <li>Hitung tinggi:<br>
+                        h = 8 × (√3/2)<br>
+                        h = 4√3 m ≈ 6,93 m</li>
+                        </ol>
+                        <br>
+                        <strong>Jawaban: Tinggi tembok = 4√3 m atau ≈ 6,93 m</strong>
+                    `
+                },
+                3: {
+                    teks: "Seorang pengamat di atas menara setinggi 15 m melihat sebuah kapal dengan sudut depresi 30°. Berapa jarak horizontal kapal dari menara?",
+                    jawaban: "15√3 m",
+                    opsi: ["15√3 m", "15 m", "30 m", "5√3 m"],
+                    pembahasan: `
+                        <strong>Diberikan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Tinggi menara = 15 m</li>
+                        <li>Sudut depresi = 30°</li>
+                        <li>Nilai tan 30° = 1/√3</li>
+                        </ul>
+                        <br>
+                        <strong>Ditanya:</strong> Jarak horizontal kapal dari menara = ?<br><br>
+                        
+                        <strong>Penyelesaian:</strong>
+                        <ol style="margin-left: 1.5rem;">
+                        <li>Gambar segitiga siku-siku:<br>- Pengamat di puncak menara<br>- Kapal di bawah permukaan laut<br>- Garis pandang membentuk sudut depresi 30°</li>
+                        <li>Identifikasi sisi:<br>
+                        <ul style="margin-left: 1rem;">
+                        <li>Sisi depan (tinggi menara) = 15 m</li>
+                        <li>Sisi samping (jarak horizontal) = d (yang dicari)</li>
+                        <li>Sudut depresi = 30° (sama dengan sudut pada segitiga)</li>
+                        </ul>
+                        </li>
+                        <li>Gunakan perbandingan trigonometri yang sesuai:<br>
+                        Karena diketahui depan dan dicari samping, gunakan <strong>tan θ = depan/samping</strong></li>
+                        <li>Substitusi nilai:<br>
+                        tan 30° = 15/d<br>
+                        1/√3 = 15/d</li>
+                        <li>Hitung jarak horizontal:<br>
+                        d = 15/(1/√3)<br>
+                        d = 15 × √3<br>
+                        d = 15√3 m ≈ 25,98 m</li>
+                        </ol>
+                        <br>
+                        <strong>Jawaban: Jarak horizontal kapal = 15√3 m atau ≈ 25,98 m</strong>
+                    `
+                },
+                4: {
+                    teks: "Seorang anak menerbangkan layang-layang dengan tali sepanjang 20 m membuat sudut elevasi 45° dengan tanah. Berapa ketinggian layang-layang tersebut?",
+                    jawaban: "10√2 m",
+                    opsi: ["10√2 m", "20 m", "10 m", "20√2 m"],
+                    pembahasan: `
+                        <strong>Diberikan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Panjang tali (sisi miring) = 20 m</li>
+                        <li>Sudut elevasi = 45°</li>
+                        <li>Nilai sin 45° = √2/2</li>
+                        </ul>
+                        <br>
+                        <strong>Ditanya:</strong> Ketinggian layang-layang = ?<br><br>
+                        
+                        <strong>Penyelesaian:</strong>
+                        <ol style="margin-left: 1.5rem;">
+                        <li>Gambar segitiga siku-siku:<br>- Anak di tanah memegang tali<br>- Layang-layang di udara<br>- Tali sebagai sisi miring</li>
+                        <li>Identifikasi sisi:<br>
+                        <ul style="margin-left: 1rem;">
+                        <li>Sisi miring (tali) = 20 m</li>
+                        <li>Sisi depan (ketinggian) = h (yang dicari)</li>
+                        <li>Sudut elevasi = 45°</li>
+                        </ul>
+                        </li>
+                        <li>Gunakan perbandingan trigonometri yang sesuai:<br>
+                        Karena diketahui miring dan dicari depan, gunakan <strong>sin θ = depan/miring</strong></li>
+                        <li>Substitusi nilai:<br>
+                        sin 45° = h/20<br>
+                        √2/2 = h/20</li>
+                        <li>Hitung ketinggian:<br>
+                        h = 20 × (√2/2)<br>
+                        h = 10√2 m ≈ 14,14 m</li>
+                        </ol>
+                        <br>
+                        <strong>Jawaban: Ketinggian layang-layang = 10√2 m atau ≈ 14,14 m</strong>
+                    `
+                },
+                5: {
+                    teks: "Dari puncak gedung setinggi 30 m, seseorang melihat kendaraan di tanah dengan sudut depresi 60°. Berapa jarak horizontal kendaraan dari gedung?",
+                    jawaban: "10√3 m",
+                    opsi: ["10√3 m", "30 m", "30√3 m", "20√3 m"],
+                    pembahasan: `
+                        <strong>Diberikan:</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Tinggi gedung = 30 m</li>
+                        <li>Sudut depresi = 60°</li>
+                        <li>Nilai tan 60° = √3</li>
+                        </ul>
+                        <br>
+                        <strong>Ditanya:</strong> Jarak horizontal kendaraan dari gedung = ?<br><br>
+                        
+                        <strong>Penyelesaian:</strong>
+                        <ol style="margin-left: 1.5rem;">
+                        <li>Gambar segitiga siku-siku:<br>- Pengamat di puncak gedung<br>- Kendaraan di tanah<br>- Garis pandang membentuk sudut depresi 60°</li>
+                        <li>Identifikasi sisi:<br>
+                        <ul style="margin-left: 1rem;">
+                        <li>Sisi depan (tinggi gedung) = 30 m</li>
+                        <li>Sisi samping (jarak horizontal) = d (yang dicari)</li>
+                        <li>Sudut depresi = 60° (sama dengan sudut pada segitiga)</li>
+                        </ul>
+                        </li>
+                        <li>Gunakan perbandingan trigonometri yang sesuai:<br>
+                        Karena diketahui depan dan dicari samping, gunakan <strong>tan θ = depan/samping</strong></li>
+                        <li>Substitusi nilai:<br>
+                        tan 60° = 30/d<br>
+                        √3 = 30/d</li>
+                        <li>Hitung jarak horizontal:<br>
+                        d = 30/√3<br>
+                        d = 30/√3 × √3/√3<br>
+                        d = 30√3/3<br>
+                        d = 10√3 m ≈ 17,32 m</li>
+                        </ol>
+                        <br>
+                        <strong>Jawaban: Jarak horizontal kendaraan = 10√3 m atau ≈ 17,32 m</strong>
+                    `
+                }
+            };
+
+            const kasusData = kasusMap[kasus] || kasusMap[1];
+            soalTeks = kasusData.teks;
+            jawaban = kasusData.jawaban;
+            opsi = kasusData.opsi;
+
+            return {
+                bagian: 10,
+                kasus: kasus,
+                judul: BAGIAN_DATA[10].nama,
+                teks: soalTeks,
+                gambar: null,
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: `Gambarkan diagram dari situasi yang dijelaskan. Identifikasi sudut elevasi/depresi, sisi depan, samping, dan miring. Gunakan perbandingan trigonometri yang tepat untuk menghitung.`,
+                pembahasan: kasusData.pembahasan
+            };
+        }
+
+        function generateBagian11(kasus) {
+            let soalTeks, jawaban, opsi, sudutAcuan, sudutSikuSiku, petunjuk, pembahasan;
+
+            // 7 Kasus untuk Bagian 11
+            const kasusMap = {
+                1: {
+                    sudutAcuan: 'A',
+                    sudutSikuSiku: 'B',
+                    soalTeks: `Pada segitiga siku-siku dengan sudut acuan 30° di titik A, sisi miring AC = 10 cm. Tentukan panjang sisi depan (BC) dari sudut 30° tersebut!`,
+                    jawaban: '5 cm',
+                    opsi: ['5 cm', '5√3 cm', '10 cm', '10√3 cm'],
+                    petunjuk: `Gunakan perbandingan sinus: sin θ = depan/miring. Diketahui sudut 30° dan sisi miring, cari sisi depan dengan mengatur ulang rumus: depan = miring × sin θ`,
+                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Sudut acuan = 30°</li><li>Sisi miring (AC) = 10 cm</li><li>sin 30° = 1/2</li></ul><br><strong>Ditanya:</strong> Panjang sisi depan (BC) = ?<br><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>Gunakan perbandingan sinus: sin 30° = depan/miring</li><li>Substitusi nilai: 1/2 = BC/10</li><li>Hitung: BC = 10 × (1/2) = <strong>5 cm</strong></li></ol><br><strong>Jawaban: Sisi depan BC = 5 cm</strong>`
+                },
+                2: {
+                    sudutAcuan: 'C',
+                    sudutSikuSiku: 'B',
+                    soalTeks: `Pada segitiga siku-siku dengan sudut acuan 60° di titik C, sisi miring AB = 12 cm. Tentukan panjang sisi samping (BC) dari sudut 60° tersebut!`,
+                    jawaban: '6 cm',
+                    opsi: ['6 cm', '6√3 cm', '12 cm', '12√3 cm'],
+                    petunjuk: `Gunakan perbandingan kosinus: cos θ = samping/miring. Atur ulang rumus: samping = miring × cos θ`,
+                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Sudut acuan = 60°</li><li>Sisi miring (AB) = 12 cm</li><li>cos 60° = 1/2</li></ul><br><strong>Ditanya:</strong> Panjang sisi samping (BC) = ?<br><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>Gunakan perbandingan kosinus: cos 60° = samping/miring</li><li>Substitusi nilai: 1/2 = BC/12</li><li>Hitung: BC = 12 × (1/2) = <strong>6 cm</strong></li></ol><br><strong>Jawaban: Sisi samping BC = 6 cm</strong>`
+                },
+                3: {
+                    sudutAcuan: 'B',
+                    sudutSikuSiku: 'A',
+                    soalTeks: `Pada segitiga siku-siku dengan sudut acuan 45° di titik B, sisi depan (AC) = 5 cm. Tentukan panjang sisi miring (BC)!`,
+                    jawaban: '5√2 cm',
+                    opsi: ['5√2 cm', '5 cm', '5√3 cm', '10 cm'],
+                    petunjuk: `Gunakan perbandingan sinus: sin θ = depan/miring. Atur ulang rumus: miring = depan/sin θ`,
+                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Sudut acuan = 45°</li><li>Sisi depan (AC) = 5 cm</li><li>sin 45° = √2/2</li></ul><br><strong>Ditanya:</strong> Panjang sisi miring (BC) = ?<br><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>sin 45° = depan/miring</li><li>miring = 5/(√2/2) = 5 × (2/√2)</li><li>Rasionalkan: miring = 5 × 2√2/2 = <strong>5√2 cm</strong></li></ol><br><strong>Jawaban: Sisi miring BC = 5√2 cm</strong>`
+                },
+                4: {
+                    sudutAcuan: 'A',
+                    sudutSikuSiku: 'C',
+                    soalTeks: `Pada segitiga siku-siku dengan sudut acuan 30° di titik A, sisi samping (AC) = 8 cm. Tentukan panjang sisi miring (AB)!`,
+                    jawaban: '16√3/3 cm',
+                    opsi: ['16√3/3 cm', '8√3 cm', '16 cm', '8 cm'],
+                    petunjuk: `Gunakan perbandingan kosinus: cos θ = samping/miring. Atur ulang: miring = samping/cos θ`,
+                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Sudut acuan = 30°</li><li>Sisi samping (AC) = 8 cm</li><li>cos 30° = √3/2</li></ul><br><strong>Ditanya:</strong> Panjang sisi miring (AB) = ?<br><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>cos 30° = samping/miring</li><li>miring = 8/(√3/2) = 8 × (2/√3)</li><li>Rasionalkan: miring = 8 × 2√3/3 = <strong>16√3/3 cm</strong></li></ol><br><strong>Jawaban: Sisi miring AB ≈ 9,24 cm</strong>`
+                },
+                5: {
+                    sudutAcuan: 'C',
+                    sudutSikuSiku: 'A',
+                    soalTeks: `Pada segitiga siku-siku dengan sudut acuan 60° di titik C, sisi samping (AC) = 4 cm. Tentukan panjang sisi depan (AB)!`,
+                    jawaban: '4√3 cm',
+                    opsi: ['4√3 cm', '4 cm', '8 cm', '2√3 cm'],
+                    petunjuk: `Gunakan perbandingan tangen: tan θ = depan/samping. Atur ulang: depan = samping × tan θ`,
+                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Sudut acuan = 60°</li><li>Sisi samping (AC) = 4 cm</li><li>tan 60° = √3</li></ul><br><strong>Ditanya:</strong> Panjang sisi depan (AB) = ?<br><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>tan 60° = depan/samping</li><li>√3 = depan/4</li><li>depan = 4 × √3 = <strong>4√3 cm</strong></li></ol><br><strong>Jawaban: Sisi depan AB ≈ 6,93 cm</strong>`
+                },
+                6: {
+                    sudutAcuan: 'A',
+                    sudutSikuSiku: 'B',
+                    soalTeks: `Pada segitiga siku-siku sama kaki dengan sudut 45° di titik A, sisi tegak AB = 6 cm. Tentukan panjang sisi tegak lainnya (BC) dan sisi miring (AC)!`,
+                    jawaban: 'BC = 6 cm, AC = 6√2 cm',
+                    opsi: ['BC = 6 cm, AC = 6√2 cm', 'BC = 6√2 cm, AC = 6 cm', 'BC = 6 cm, AC = 6 cm', 'BC = 3 cm, AC = 6 cm'],
+                    petunjuk: `Pada segitiga 45-45-90, kedua sisi tegak selalu sama. Gunakan Pythagoras untuk mencari sisi miring: miring = sisi × √2`,
+                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Segitiga 45-45-90</li><li>Sisi tegak AB = 6 cm</li></ul><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li>Kedua sisi tegak sama panjang: BC = 6 cm</li><li>Pythagoras: AC² = 6² + 6² = 72</li><li>AC = √72 = 6√2 cm ≈ 8,49 cm</li></ol><br><strong>Jawaban: BC = 6 cm, AC = 6√2 cm</strong>`
+                },
+                7: {
+                    sudutAcuan: 'C',
+                    sudutSikuSiku: 'B',
+                    soalTeks: `Pada segitiga siku-siku dengan sudut 30° di titik C, sisi depan (AB) = 5 cm. Cari sisi samping (BC) dengan tangen, lalu verifikasi sisi miring (AC) dengan Pythagoras!`,
+                    jawaban: 'BC = 5√3 cm, AC = 10 cm',
+                    opsi: ['BC = 5√3 cm, AC = 10 cm', 'BC = 5 cm, AC = 5√3 cm', 'BC = 5√3 cm, AC = 5√2 cm', 'BC = 10 cm, AC = 5 cm'],
+                    petunjuk: `Langkah 1: Gunakan tan θ = depan/samping → samping = depan/tan θ. Langkah 2: Gunakan Pythagoras untuk verifikasi sisi miring`,
+                    pembahasan: `<strong>Diberikan:</strong><ul style="margin-left: 1.5rem;"><li>Sudut acuan = 30°</li><li>Sisi depan (AB) = 5 cm</li><li>tan 30° = 1/√3</li></ul><br><strong>Penyelesaian:</strong><ol style="margin-left: 1.5rem;"><li><strong>Mencari BC dengan tangen:</strong><br>tan 30° = 5/BC → BC = 5√3 cm</li><li><strong>Mencari AC dengan Pythagoras:</strong><br>AC² = 5² + (5√3)² = 25 + 75 = 100<br>AC = 10 cm</li><li><strong>Verifikasi:</strong> sin 30° = 5/10 = 1/2 ✓</li></ol><br><strong>Jawaban: BC = 5√3 cm, AC = 10 cm</strong>`
+                }
+            };
+
+            const caseData = kasusMap[kasus];
+            soalTeks = caseData.soalTeks;
+            jawaban = caseData.jawaban;
+            opsi = caseData.opsi;
+            sudutAcuan = caseData.sudutAcuan;
+            sudutSikuSiku = caseData.sudutSikuSiku;
+            petunjuk = caseData.petunjuk;
+            pembahasan = caseData.pembahasan;
+
+            return {
+                bagian: 11,
+                kasus: kasus,
+                judul: BAGIAN_DATA[11].nama,
+                teks: soalTeks,
+                gambar: {
+                    tipe: 'segitiga',
+                    sudutAcuan: sudutAcuan,
+                    sudutSikuSiku: sudutSikuSiku,
+                    showLabels: true
+                },
+                opsi: shuffleArray(opsi),
+                jawaban: jawaban,
+                petunjuk: petunjuk,
+                pembahasan: pembahasan
+            };
+        }
+
+        function muatSoal() {
+            currentSoal = generateSoal(currentBagian, currentKasus);
+            renderSoal();
+        }
+
+        function renderSoal() {
+            const container = document.getElementById('soalContainer');
+            container.innerHTML = '';
+
+            // Judul dan deskripsi bagian
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'soal-judul';
+            headerDiv.innerHTML = `${currentSoal.judul} - Kasus ${currentKasus}`;
+            container.appendChild(headerDiv);
+
+            // Teks soal
+            const tekstDiv = document.createElement('div');
+            tekstDiv.className = 'soal-teks';
+            tekstDiv.innerHTML = currentSoal.teks;
+            container.appendChild(tekstDiv);
+
+            // Gambar jika ada
+            if (currentSoal.gambar && currentSoal.gambar.tipe === 'segitiga') {
+                const gambarDiv = document.createElement('div');
+                gambarDiv.className = 'gambar-container';
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 350;
+                gambarDiv.appendChild(canvas);
+                container.appendChild(gambarDiv);
+
+                drawSegitiga(canvas, currentSoal.gambar.sudutAcuan, currentSoal.gambar.sudutSikuSiku, currentSoal.gambar.a, currentSoal.gambar.b, currentSoal.gambar.c, currentSoal.gambar.showLabels);
+            } else if (currentSoal.gambar && currentSoal.gambar.tipe === 'kuadran') {
+                const gambarDiv = document.createElement('div');
+                gambarDiv.className = 'gambar-container';
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 400;
+                gambarDiv.appendChild(canvas);
+                container.appendChild(gambarDiv);
+
+                if (currentSoal.gambar.tanda) {
+                    drawKuadranTanda(canvas, currentSoal.gambar.kuadran);
+                } else {
+                    drawKuadran(canvas, currentSoal.gambar.sudut, currentSoal.gambar.kuadran);
+                }
+            }
+
+            // Opsi jawaban
+            const opsiDiv = document.createElement('div');
+            opsiDiv.className = 'opsi-container';
+
+            const opsiLabel = document.createElement('div');
+            opsiLabel.className = 'opsi-label';
+            opsiLabel.textContent = 'Pilih jawaban:';
+            opsiDiv.appendChild(opsiLabel);
+
+            currentSoal.opsi.forEach((opt, idx) => {
+                const opsiBtn = document.createElement('label');
+                opsiBtn.className = 'opsi';
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'jawaban';
+                radio.value = opt;
+
+                const textSpan = document.createElement('span');
+                textSpan.className = 'opsi-text';
+                textSpan.innerHTML = opt;
+
+                opsiBtn.appendChild(radio);
+                opsiBtn.appendChild(textSpan);
+                opsiBtn.onclick = () => {
+                    radio.checked = true;
+                    updateOpsiUI();
+                };
+
+                opsiDiv.appendChild(opsiBtn);
+            });
+
+            container.appendChild(opsiDiv);
+
+            // Tombol jawab dan soal baru
+            const btnDiv = document.createElement('div');
+            btnDiv.style.display = 'flex';
+            btnDiv.style.gap = '1rem';
+            btnDiv.style.marginTop = '1rem';
+            
+            const btnJawab = document.createElement('button');
+            btnJawab.className = 'btn-jawab';
+            btnJawab.id = 'btnJawab';
+            btnJawab.textContent = 'Jawab';
+            btnJawab.onclick = cekJawaban;
+            btnDiv.appendChild(btnJawab);
+
+            const btnSoalBaru = document.createElement('button');
+            btnSoalBaru.className = 'btn-soal-baru';
+            btnSoalBaru.textContent = 'Soal Baru';
+            btnSoalBaru.onclick = () => {
+                currentKasus = Math.floor(Math.random() * BAGIAN_DATA[currentBagian].kasus) + 1;
+                attemptCount = 0;
+                muatSoal();
+            };
+            btnDiv.appendChild(btnSoalBaru);
+            
+            container.appendChild(btnDiv);
+
+            // Feedback area
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.id = 'feedback';
+            feedbackDiv.className = 'feedback';
+            container.appendChild(feedbackDiv);
+
+            MathJax.typesetPromise([container]).catch(err => console.log('MathJax error:', err));
+        }
+
+        function drawSegitiga(canvas, sudutAcuan, sudutSikuSiku, a, b, c, showLabels) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Tentukan posisi segitiga berdasarkan sudut siku-siku
+            let A, B, C;
+            const baseX = 100;
+            const baseY = 280;
+            
+            if (sudutSikuSiku === 'A') {
+                // Siku-siku di A (bottom-left)
+                A = { x: baseX, y: baseY };
+                B = { x: baseX + 180, y: baseY };      // Horizontal ke kanan
+                C = { x: baseX, y: baseY - 150 };      // Vertical ke atas
+            } else if (sudutSikuSiku === 'B') {
+                // Siku-siku di B (bottom-right)
+                B = { x: baseX + 180, y: baseY };
+                A = { x: baseX, y: baseY };            // Horizontal ke kiri
+                C = { x: baseX + 180, y: baseY - 150 }; // Vertical ke atas
+            } else if (sudutSikuSiku === 'C') {
+                // Siku-siku di C (top-right)
+                C = { x: baseX + 180, y: baseY - 150 };
+                B = { x: baseX + 180, y: baseY };      // Vertical ke bawah
+                A = { x: baseX, y: baseY - 150 };      // Horizontal ke kiri
+            }
+
+            // Gambar segitiga
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(A.x, A.y);
+            ctx.lineTo(B.x, B.y);
+            ctx.lineTo(C.x, C.y);
+            ctx.closePath();
+            ctx.stroke();
+
+            // Helper untuk menggambar kotak siku-siku
+            const drawRightAngleSquare = (vertex, p1, p2) => {
+                const size = 12;
+                const v1 = { x: p1.x - vertex.x, y: p1.y - vertex.y };
+                const v2 = { x: p2.x - vertex.x, y: p2.y - vertex.y };
+                const len1 = Math.sqrt(v1.x * v1.x + v1.y * v1.y);
+                const len2 = Math.sqrt(v2.x * v2.x + v2.y * v2.y);
+                
+                const u1 = { x: v1.x / len1, y: v1.y / len1 };
+                const u2 = { x: v2.x / len2, y: v2.y / len2 };
+                
+                const p1_box = { x: vertex.x + u1.x * size, y: vertex.y + u1.y * size };
+                const p2_box = { x: vertex.x + u2.x * size, y: vertex.y + u2.y * size };
+                const corner = { x: p1_box.x + u2.x * size, y: p1_box.y + u2.y * size };
+                
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(p1_box.x, p1_box.y);
+                ctx.lineTo(corner.x, corner.y);
+                ctx.lineTo(p2_box.x, p2_box.y);
+                ctx.stroke();
+            };
+
+            // Gambar kotak siku-siku di titik yang tepat
+            if (sudutSikuSiku === 'A') {
+                drawRightAngleSquare(A, B, C);
+            } else if (sudutSikuSiku === 'B') {
+                drawRightAngleSquare(B, A, C);
+            } else if (sudutSikuSiku === 'C') {
+                drawRightAngleSquare(C, A, B);
+            }
+
+            // Titik sudut
+            ctx.fillStyle = '#333';
+            [A, B, C].forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 5, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+
+            // Label titik A, B, C dengan posisi yang fleksibel
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Tentukan offset label berdasarkan posisi titik
+            const labelOffset = (point) => {
+                let offsetX = 0, offsetY = 0;
+                
+                if (point.x < 150) offsetX = -25; // Titik di sebelah kiri
+                else if (point.x > 250) offsetX = 25; // Titik di sebelah kanan
+                
+                if (point.y > 250) offsetY = 25; // Titik di bawah
+                else if (point.y < 150) offsetY = -25; // Titik di atas
+                
+                return { x: offsetX, y: offsetY };
+            };
+            
+            let offsetA = labelOffset(A);
+            let offsetB = labelOffset(B);
+            let offsetC = labelOffset(C);
+            
+            ctx.fillText('A', A.x + offsetA.x, A.y + offsetA.y);
+            ctx.fillText('B', B.x + offsetB.x, B.y + offsetB.y);
+            ctx.fillText('C', C.x + offsetC.x, C.y + offsetC.y);
+
+            // Label sisi dan panjang
+            if (showLabels && a && b && c) {
+                ctx.font = 'bold 13px Arial';
+                ctx.fillStyle = '#d32f2f';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // Tentukan miring berdasarkan sudut siku-siku
+                let sideValues = { AB: null, BC: null, AC: null };
+                
+                // Sisi yang berhadapan dengan siku-siku adalah sisi miring
+                if (sudutSikuSiku === 'A') {
+                    // BC adalah miring (berhadapan dengan A)
+                    // Tentukan depan/samping berdasarkan sudutAcuan
+                    if (sudutAcuan === 'B') {
+                        sideValues.AC = a;  // depan (tidak menyentuh B)
+                        sideValues.AB = b;  // samping (menyentuh B)
+                        sideValues.BC = c;  // miring
+                    } else if (sudutAcuan === 'C') {
+                        sideValues.AB = a;  // depan (tidak menyentuh C)
+                        sideValues.AC = b;  // samping (menyentuh C)
+                        sideValues.BC = c;  // miring
+                    }
+                } else if (sudutSikuSiku === 'B') {
+                    // AC adalah miring (berhadapan dengan B)
+                    if (sudutAcuan === 'A') {
+                        sideValues.BC = a;  // depan (tidak menyentuh A)
+                        sideValues.AB = b;  // samping (menyentuh A)
+                        sideValues.AC = c;  // miring
+                    } else if (sudutAcuan === 'C') {
+                        sideValues.AB = a;  // depan (tidak menyentuh C)
+                        sideValues.BC = b;  // samping (menyentuh C)
+                        sideValues.AC = c;  // miring
+                    }
+                } else if (sudutSikuSiku === 'C') {
+                    // AB adalah miring (berhadapan dengan C)
+                    if (sudutAcuan === 'A') {
+                        sideValues.BC = a;  // depan (tidak menyentuh A)
+                        sideValues.AC = b;  // samping (menyentuh A)
+                        sideValues.AB = c;  // miring
+                    } else if (sudutAcuan === 'B') {
+                        sideValues.AC = a;  // depan (tidak menyentuh B)
+                        sideValues.BC = b;  // samping (menyentuh B)
+                        sideValues.AB = c;  // miring
+                    }
+                }
+                
+                // Gambar label sisi dengan posisi yang tepat
+                if (sideValues.AB) {
+                    const midX = (A.x + B.x) / 2;
+                    const midY = (A.y + B.y) / 2;
+                    ctx.fillText(`${sideValues.AB} cm`, midX, midY + 25);
+                }
+                if (sideValues.BC) {
+                    const midX = (B.x + C.x) / 2;
+                    const midY = (B.y + C.y) / 2;
+                    ctx.fillText(`${sideValues.BC} cm`, midX + 30, midY);
+                }
+                if (sideValues.AC) {
+                    const midX = (A.x + C.x) / 2;
+                    const midY = (A.y + C.y) / 2;
+                    ctx.fillText(`${sideValues.AC} cm`, midX - 30, midY);
+                }
+            }
+
+            // Fungsi menggambar arc sudut
+            const drawAngleArc = (vertex, p1, p2, label) => {
+                const angle1 = Math.atan2(p1.y - vertex.y, p1.x - vertex.x);
+                const angle2 = Math.atan2(p2.y - vertex.y, p2.x - vertex.x);
+                
+                let startAngle = angle1;
+                let endAngle = angle2;
+                let angleDiff = endAngle - startAngle;
+                
+                if (angleDiff > Math.PI) endAngle -= 2 * Math.PI;
+                if (angleDiff < -Math.PI) endAngle += 2 * Math.PI;
+                
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 2.5;
+                ctx.fillStyle = 'rgba(255, 107, 107, 0.15)';
+                ctx.beginPath();
+                ctx.arc(vertex.x, vertex.y, 35, startAngle, endAngle, endAngle < startAngle);
+                ctx.lineTo(vertex.x, vertex.y);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                const midAngle = (startAngle + endAngle) / 2;
+                const labelX = vertex.x + 50 * Math.cos(midAngle);
+                const labelY = vertex.y + 50 * Math.sin(midAngle);
+                ctx.fillStyle = '#ff6b6b';
+                ctx.font = 'bold 18px Arial';
+                ctx.fillText(label, labelX, labelY);
+            };
+            
+            // Gambar arc untuk sudut acuan α
+            if (sudutAcuan === 'A') {
+                drawAngleArc(A, B, C, 'α');
+            } else if (sudutAcuan === 'B') {
+                drawAngleArc(B, A, C, 'α');
+            } else if (sudutAcuan === 'C') {
+                drawAngleArc(C, A, B, 'α');
+            }
+        }
+
+        function updateOpsiUI() {
+            document.querySelectorAll('.opsi').forEach(btn => {
+                const radio = btn.querySelector('input[type="radio"]');
+                btn.classList.toggle('selected', radio.checked);
+                btn.classList.remove('correct', 'incorrect');
+            });
+        }
+
+        function cekJawaban() {
+            const selected = document.querySelector('input[name="jawaban"]:checked');
+            if (!selected) {
+                alert('Pilih jawaban terlebih dahulu');
+                return;
+            }
+
+            attemptCount++;
+            const isCorrect = selected.value === currentSoal.jawaban;
+
+            if (isCorrect) {
+                // Benar
+                const selectedBtn = selected.closest('.opsi');
+                selectedBtn.classList.add('correct');
+                selectedBtn.classList.remove('selected');
+
+                const feedback = document.getElementById('feedback');
+                feedback.className = 'feedback benar show';
+                feedback.innerHTML = `<strong>Jawaban Benar</strong><br><br><strong>Pembahasan:</strong><br>${currentSoal.pembahasan}`;
+
+                document.getElementById('btnJawab').style.display = 'none';
+
+                const btnSoalBaru = document.querySelector('.btn-soal-baru');
+                if (btnSoalBaru) {
+                    btnSoalBaru.style.display = 'none';
+                }
+
+                const btnNext = document.createElement('button');
+                btnNext.className = 'btn-soal-baru';
+                btnNext.textContent = 'Soal Berikutnya';
+                btnNext.onclick = () => {
+                    currentKasus = Math.floor(Math.random() * BAGIAN_DATA[currentBagian].kasus) + 1;
+                    attemptCount = 0;
+                    muatSoal();
+                };
+                document.getElementById('soalContainer').appendChild(btnNext);
+            } else {
+                // Salah
+                const selectedBtn = selected.closest('.opsi');
+                selectedBtn.classList.add('incorrect');
+                selectedBtn.classList.remove('selected');
+
+                const feedback = document.getElementById('feedback');
+
+                if (attemptCount === 1) {
+                    // Kesalahan pertama
+                    feedback.className = 'feedback petunjuk show';
+                    feedback.innerHTML = `<strong>Jawaban Salah</strong><br><br><strong>Petunjuk:</strong><br>${currentSoal.petunjuk}<br><br>Coba lagi!`;
+                    selected.checked = false;
+                    selectedBtn.classList.remove('incorrect', 'selected');
+                } else {
+                    // Kesalahan kedua
+                    feedback.className = 'feedback jawaban show';
+                    feedback.innerHTML = `<strong>Jawaban Salah</strong><br><br><strong>Jawaban yang tepat: ${currentSoal.jawaban}</strong><br><br><strong>Pembahasan:</strong><br>${currentSoal.pembahasan}`;
+
+                    document.getElementById('btnJawab').style.display = 'none';
+                    
+                    const btnSoalBaru = document.querySelector('.btn-soal-baru');
+                    if (btnSoalBaru) {
+                        btnSoalBaru.style.display = 'none';
+                    }
+                    
+                    document.querySelectorAll('.opsi input').forEach(opt => opt.disabled = true);
+
+                    const btnNext = document.createElement('button');
+                    btnNext.className = 'btn-soal-baru';
+                    btnNext.textContent = 'Soal Berikutnya';
+                    btnNext.onclick = () => {
+                        currentKasus = Math.floor(Math.random() * BAGIAN_DATA[currentBagian].kasus) + 1;
+                        attemptCount = 0;
+                        muatSoal();
+                    };
+                    document.getElementById('soalContainer').appendChild(btnNext);
+                }
+            }
+        }
+
+        function drawKuadran(canvas, sudut, kuadran) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 100;
+
+            // Gambar sumbu
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(50, centerY);
+            ctx.lineTo(canvas.width - 50, centerY);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(centerX, 50);
+            ctx.lineTo(centerX, canvas.height - 50);
+            ctx.stroke();
+
+            // Label sumbu
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('+x', canvas.width - 40, centerY - 15);
+            ctx.fillText('+y', centerX + 20, 40);
+            ctx.fillText('-x', 40, centerY - 15);
+            ctx.fillText('-y', centerX + 20, canvas.height - 20);
+
+            // Gambar lingkaran satuan
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Konversi sudut ke radian dan gambar garis dari sudut
+            const angleRad = (sudut * Math.PI) / 180;
+            const endX = centerX + radius * Math.cos(angleRad);
+            const endY = centerY - radius * Math.sin(angleRad);
+
+            // Gambar garis sudut
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            // Titik di garis
+            ctx.fillStyle = '#ff6b6b';
+            ctx.beginPath();
+            ctx.arc(endX, endY, 5, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Gambar arc untuk sudut utama (dari sumbu +x ke garis sudut) - selalu counterclockwise
+            const arcRadius = 35;
+            ctx.strokeStyle = '#0066cc';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            // Arc dari 0 (sumbu +x) ke angleRad, counterclockwise dengan negative angle
+            ctx.arc(centerX, centerY, arcRadius, 0, -1 * angleRad, true);
+            ctx.stroke();
+
+            // Label sudut utama - ditempatkan di tengah arc
+            const labelAngle = -angleRad / 2;
+            const labelX = centerX + 50 * Math.cos(labelAngle);
+            const labelY = centerY - 50 * Math.sin(labelAngle);
+            ctx.fillStyle = '#0066cc';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${sudut}°`, labelX, labelY);
+        }
+
+        function drawKuadranTanda(canvas, kuadran) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Gambar sumbu tebal
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(40, centerY);
+            ctx.lineTo(canvas.width - 40, centerY);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(centerX, 40);
+            ctx.lineTo(centerX, canvas.height - 40);
+            ctx.stroke();
+
+            // Label sumbu
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('+x', canvas.width - 35, centerY - 20);
+            ctx.fillText('+y', centerX + 25, 40);
+            ctx.fillText('-x', 35, centerY - 20);
+            ctx.fillText('-y', centerX + 25, canvas.height - 15);
+
+            // Warna dan isi kuadran
+            const quadrants = {
+                'I': { x: 1, y: 1, tanda: '+', warna: 'rgba(0, 255, 0, 0.1)' },
+                'II': { x: -1, y: 1, tanda: '+', warna: 'rgba(255, 0, 0, 0.1)' },
+                'III': { x: -1, y: -1, tanda: '+', warna: 'rgba(0, 0, 255, 0.1)' },
+                'IV': { x: 1, y: -1, tanda: '+', warna: 'rgba(255, 255, 0, 0.1)' }
+            };
+
+            // Highlight kuadran yang dipilih dan label tanda
+            Object.keys(quadrants).forEach(q => {
+                const qData = quadrants[q];
+                const x1 = centerX + (qData.x > 0 ? 0 : -(canvas.width / 2 - 40));
+                const y1 = centerY + (qData.y > 0 ? 0 : -(canvas.height / 2 - 40));
+                const x2 = qData.x > 0 ? canvas.width - 40 : centerX;
+                const y2 = qData.y > 0 ? canvas.height - 40 : centerY;
+
+                ctx.fillStyle = q === kuadran ? qData.warna : 'rgba(200,200,200,0.05)';
+                ctx.fillRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
+
+                // Label tanda di setiap kuadran
+                const labelX = centerX + (qData.x > 0 ? 60 : -60);
+                const labelY = centerY + (qData.y > 0 ? -50 : 50);
+                ctx.fillStyle = q === kuadran ? '#ff6b6b' : '#999';
+                ctx.font = q === kuadran ? 'bold 20px Arial' : 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`Kuadran ${q}`, labelX, labelY - 20);
+
+                // Tanda sin, cos, tan
+                ctx.font = q === kuadran ? 'bold 13px Arial' : '12px Arial';
+                if (q === 'I') ctx.fillText('sin: +  cos: +  tan: +', labelX, labelY + 20);
+                else if (q === 'II') ctx.fillText('sin: +  cos: -  tan: -', labelX, labelY + 20);
+                else if (q === 'III') ctx.fillText('sin: -  cos: -  tan: +', labelX, labelY + 20);
+                else if (q === 'IV') ctx.fillText('sin: -  cos: +  tan: -', labelX, labelY + 20);
+            });
+        }
+
+        function shuffleArray(arr) {
+            const newArr = [...arr];
+            for (let i = newArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+            }
+            return newArr;
+        }
+
+        // Inisialisasi
+        initTabs();
+        muatSoal();
+        lucide.createIcons();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e4467d5752dea8a',t:'MTc3NDg0NTMwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
