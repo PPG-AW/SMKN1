@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi Ajar - Statistika (Diagram Lingkaran)</title>
+    <style>
+        /* =========================================
+           STYLE KONSISTEN DARI PERTEMUAN 1
+           ========================================= */
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #e0e0e0;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .btn-new-tab { background-color: #0056b3; color: white; }
+        .btn-close { background-color: #dc3545; color: white; }
+
+        .document-container {
+            background-color: #ffffff;
+            max-width: 800px;
+            margin: 70px auto 30px auto; 
+            padding: 40px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+        }
+        @media (max-width: 600px) {
+            .document-container { padding: 20px; margin: 60px 10px 20px 10px; }
+        }
+
+        h1 { text-align: center; font-size: 18px; margin-bottom: 5px; text-transform: uppercase; }
+        h2 { font-size: 16px; margin-top: 35px; border-bottom: 2px solid #333; padding-bottom: 5px; color: #333; }
+        h3 { font-size: 15px; margin-top: 25px; color: #0056b3; border-left: 3px solid #0056b3; padding-left: 8px;}
+        
+        .dictionary-box {
+            background-color: #fdfdfd;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .dictionary-box ul { margin: 0; padding-left: 20px; }
+        .dictionary-box li { margin-bottom: 8px; }
+        
+        table {
+            width: 100%;
+            max-width: 700px;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        th, td { border: 1px solid #333; padding: 8px; text-align: center; vertical-align: middle; }
+        th { background-color: #f0f0f0; }
+
+        .step-box {
+            background-color: #f9f9fa;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .step-item {
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 20px;
+        }
+        .step-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        
+        .soal-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .raw-data-box {
+            background-color: #e9ecef;
+            border: 1px dashed #6c757d;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        /* KOTAK PERHITUNGAN SATU PER SATU */
+        .calc-box {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .calc-box strong { color: #0056b3; }
+
+        /* KANVAS VISUAL */
+        .canvas-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .canvas-visual-container {
+            text-align: center;
+            background-color: #fff;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 4px;
+            width: 240px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .canvas-desc {
+            font-size: 13px;
+            color: #555;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        canvas { background-color: white; width: 100%; height: auto;}
+        
+        /* =========================================
+           STYLE UNTUK PECAHAN (ATAS/BAWAH)
+           ========================================= */
+        .formula-highlight {
+            background-color: #e8f4f8;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #0056b3;
+            border: 1px dashed #17a2b8;
+            display: inline-flex;
+            align-items: center;
+        }
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 6px;
+            font-weight: bold;
+        }
+        .fraction .numerator {
+            border-bottom: 2px solid #333;
+            padding: 0 4px;
+            line-height: 1.3;
+        }
+        .fraction .denominator {
+            padding: 0 4px;
+            line-height: 1.3;
+        }
+        .fraction-inline {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 5px;
+            font-weight: bold;
+            font-family: monospace;
+        }
+        .fraction-inline .numerator {
+            border-bottom: 1px solid #333;
+            padding: 0 2px;
+            line-height: 1.2;
+            font-size: 14px;
+        }
+        .fraction-inline .denominator {
+            padding: 0 2px;
+            line-height: 1.2;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <button class="btn btn-new-tab" onclick="openInNewTab()">Buka di Tab Baru</button>
+        <button class="btn btn-close" onclick="closeTab()">Tutup Materi</button>
+    </div>
+
+    <div class="document-container">
+        <h1>MATA PELAJARAN MATEMATIKA - KELAS X SMK</h1>
+        <h1>Penyajian Data: Diagram Lingkaran (Pie Chart)</h1>
+
+        <h2>A. Pendahuluan: Membagi "Kue" Penjualan</h2>
+        <p>Bayangkan kamu bekerja di bagian pemasaran Unit Produksi (UP). Kamu ingin menunjukkan laporan kepada Kepala Sekolah, produk mana yang paling laku dan paling tidak laku.</p>
+        <p>Jika Diagram Batang cocok untuk melihat "jumlah", maka <strong>Diagram Lingkaran</strong> sangat cocok untuk melihat <strong>porsi atau bagian</strong>. Anggap saja diagram ini seperti membagi martabak manis berdasarkan kepopuleran rasanya.</p>
+
+        <h2>B. Kamus Mini Matematika (Edisi Lingkaran)</h2>
+        <div class="dictionary-box">
+            <ul>
+                <li><strong>Data Total:</strong> Jumlah semua barang ditambahkan. Ini diibaratkan sebagai 1 lingkaran utuh.</li>
+                <li><strong>Satuan Sudut (Derajat / &deg;):</strong> Digunakan untuk menggambar diagram dengan busur derajat. <strong style="color: #d32f2f;">1 Lingkaran Penuh = 360&deg;</strong>.</li>
+                <li><strong>Satuan Porsi (Persen / %):</strong> Digunakan untuk membaca laporan dengan cepat. <strong style="color: #28a745;">1 Lingkaran Penuh = 100%</strong>.</li>
+            </ul>
+        </div>
+
+        <h2>C. Latihan Menggambar Sudut (Derajat)</h2>
+        <p>Untuk menggambar di buku menggunakan busur derajat, kita gunakan rumus:</p>
+        <div style="text-align: center; margin-bottom: 20px;">
+           <div class="formula-highlight">
+               Sudut (&deg;) = 
+               <span class="fraction">
+                   <span class="numerator">Jumlah 1 Barang</span>
+                   <span class="denominator">Data Total</span>
+               </span> 
+               &times; 360&deg;
+           </div>
+        </div>
+
+        <h3>Contoh Soal 1 (Angka Dasar)</h3>
+        <div class="soal-box">
+            Penjualan tiket Pensi SMK jurusan Pemasaran terjual total 60 lembar. Rinciannya: Tiket Reguler 30 lembar, Tiket Presale 20 lembar, dan Tiket VIP 10 lembar. Buatlah diagram lingkarannya!
+        </div>
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Tahap 1: Menghitung Sudut Derajat (Satu per Satu)</strong></p>
+                <div class="calc-box">
+                    <strong>1. Cari Total Data:</strong><br>
+                    30 (Reguler) + 20 (Presale) + 10 (VIP) = <strong>60 Tiket</strong>.
+                </div>
+                <div class="calc-box">
+                    <strong>2. Hitung Sudut Tiket Reguler:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">30</span><span class="denominator">60</span></span> &times; 360&deg; = <strong style="color: #0056b3;">180&deg;</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>3. Hitung Sudut Tiket Presale:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">20</span><span class="denominator">60</span></span> &times; 360&deg; = <strong style="color: #28a745;">120&deg;</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>4. Hitung Sudut Tiket VIP:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">10</span><span class="denominator">60</span></span> &times; 360&deg; = <strong style="color: #dc3545;">60&deg;</strong>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <p><strong>Tahap 2: Proses Menggambar Diagram</strong></p>
+                <div class="canvas-grid">
+                    <div class="canvas-visual-container">
+                        <canvas id="c1_1" width="240" height="200"></canvas>
+                        <div class="canvas-desc"><strong>Langkah 1:</strong> Buat lingkaran. Tarik garis dari titik pusat ke atas sebagai Garis 0&deg; (Garis Mulai).</div>
+                    </div>
+                    <div class="canvas-visual-container">
+                        <canvas id="c1_2" width="240" height="200"></canvas>
+                        <div class="canvas-desc"><strong>Langkah 2:</strong> Ukur 180&deg; dengan busur untuk <strong>Reguler</strong>, lalu tarik garis lurus membelah lingkaran.</div>
+                    </div>
+                    <div class="canvas-visual-container">
+                        <canvas id="c1_3" width="240" height="200"></canvas>
+                        <div class="canvas-desc"><strong>Langkah 3:</strong> Putar busurmu! Jadikan garis batas Reguler sebagai titik 0&deg; yang baru. Ukur 120&deg; untuk <strong>Presale</strong>.</div>
+                    </div>
+                    <div class="canvas-visual-container">
+                        <canvas id="c1_4" width="240" height="200"></canvas>
+                        <div class="canvas-desc"><strong>Hasil Akhir:</strong> Sisa ruang otomatis menjadi milik <strong>VIP (60&deg;)</strong>. Beri warna agar rapi.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Contoh Soal 2 (Empat Kategori)</h3>
+        <div class="soal-box">
+            Kantin mensurvei 72 siswa tentang rasa minuman favorit. Hasilnya: Vanilla 30 siswa, Cokelat 20 siswa, Stroberi 12 siswa, dan Mangga 10 siswa. 
+        </div>
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Tahap 1: Menghitung Sudut Derajat (Satu per Satu)</strong></p>
+                <div class="calc-box">
+                    <strong>1. Cari Total Data:</strong><br>
+                    30 + 20 + 12 + 10 = <strong>72 Siswa</strong>.
+                </div>
+                <div class="calc-box">
+                    <strong>2. Hitung Vanilla:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">30</span><span class="denominator">72</span></span> &times; 360&deg; = <strong style="color: #0056b3;">150&deg;</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>3. Hitung Cokelat:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">20</span><span class="denominator">72</span></span> &times; 360&deg; = <strong style="color: #28a745;">100&deg;</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>4. Hitung Stroberi:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">12</span><span class="denominator">72</span></span> &times; 360&deg; = <strong style="color: #dc3545;">60&deg;</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>5. Hitung Mangga:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">10</span><span class="denominator">72</span></span> &times; 360&deg; = <strong style="color: #ffc107;">50&deg;</strong>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <p><strong>Tahap 2: Proses Menggambar Diagram</strong></p>
+                <div class="canvas-grid">
+                    <div class="canvas-visual-container">
+                        <canvas id="c2_1" width="240" height="200"></canvas>
+                        <div class="canvas-desc"><strong>Langkah 1:</strong> Gambar potongan pertama (Vanilla 150&deg;) dimulai dari Garis Awal.</div>
+                    </div>
+                    <div class="canvas-visual-container">
+                        <canvas id="c2_2" width="240" height="200"></canvas>
+                        <div class="canvas-desc"><strong>Langkah 2:</strong> Sambung dengan Cokelat (100&deg;), dan Stroberi (60&deg;). Selalu gunakan batas sebelumnya sebagai titik mulai!</div>
+                    </div>
+                    <div class="canvas-visual-container">
+                        <canvas id="c2_3" width="240" height="200"></canvas>
+                        <div class="canvas-desc"><strong>Hasil Akhir:</strong> Sisa ruang adalah Mangga (50&deg;). Diagram selesai!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>D. Latihan Membaca Porsi (Persen / %)</h2>
+        <p>Di dunia nyata, laporan pemasaran menggunakan Persentase. Rumusnya:</p>
+        <div style="text-align: center; margin-bottom: 20px;">
+           <div class="formula-highlight">
+               Persen (%) = 
+               <span class="fraction">
+                   <span class="numerator">Jumlah 1 Barang</span>
+                   <span class="denominator">Data Total</span>
+               </span> 
+               &times; 100%
+           </div>
+        </div>
+
+        <h3>Contoh Soal 3 (Persentase Dasar)</h3>
+        <div class="soal-box">
+            Ada 100 lusin stok barang di gudang. Buku 50 lusin, Pensil 25 lusin, dan Pulpen 25 lusin. Buatlah laporan persentasenya!
+        </div>
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Tahap 1: Menghitung Persen (%) Satu per Satu</strong></p>
+                <div class="calc-box">
+                    <strong>1. Cari Total Data:</strong><br> 50 + 25 + 25 = <strong>100 Lusin</strong>.
+                </div>
+                <div class="calc-box">
+                    <strong>2. Hitung Persen Buku:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">50</span><span class="denominator">100</span></span> &times; 100% = <strong style="color: #0056b3;">50%</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>3. Hitung Persen Pensil:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">25</span><span class="denominator">100</span></span> &times; 100% = <strong style="color: #28a745;">25%</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>4. Hitung Persen Pulpen:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">25</span><span class="denominator">100</span></span> &times; 100% = <strong style="color: #dc3545;">25%</strong>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <p><strong>Tahap 2: Proses Menggambar (Menggunakan Patokan Visual)</strong></p>
+                <div class="canvas-grid">
+                    <div class="canvas-visual-container">
+                        <canvas id="c3_1" width="240" height="200"></canvas>
+                        <div class="canvas-desc"><strong>Langkah 1:</strong> Ingat! 50% berarti <strong>membelah tepat di tengah</strong> lingkaran. Kita buat potongan untuk Buku.</div>
+                    </div>
+                    <div class="canvas-visual-container">
+                        <canvas id="c3_2" width="240" height="200"></canvas>
+                        <div class="canvas-desc"><strong>Langkah 2:</strong> Sisa ruang (50%) dibagi dua sama rata (25% dan 25%).</div>
+                    </div>
+                    <div class="canvas-visual-container">
+                        <canvas id="c3_3" width="240" height="200"></canvas>
+                        <div class="canvas-desc"><strong>Hasil Akhir:</strong> Terlihat jelas bahwa 25% akan membentuk <strong>sudut siku-siku</strong>.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Contoh Soal 4 (Persentase Lanjutan)</h3>
+        <div class="soal-box">
+            Pengunjung pameran karya dicatat selama 4 hari dengan total 50 orang. Senin 20 orang, Selasa 15 orang, Rabu 10 orang, Kamis 5 orang. 
+        </div>
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Tahap 1: Menghitung Persen (%) Satu per Satu</strong></p>
+                <div class="calc-box">
+                    <strong>1. Cari Total Data:</strong><br> 20 + 15 + 10 + 5 = <strong>50 Orang</strong>.
+                </div>
+                <div class="calc-box">
+                    <strong>2. Hitung Senin:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">20</span><span class="denominator">50</span></span> &times; 100% = <strong style="color: #0056b3;">40%</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>3. Hitung Selasa:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">15</span><span class="denominator">50</span></span> &times; 100% = <strong style="color: #28a745;">30%</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>4. Hitung Rabu:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">10</span><span class="denominator">50</span></span> &times; 100% = <strong style="color: #dc3545;">20%</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>5. Hitung Kamis:</strong><br>
+                    <span class="fraction-inline"><span class="numerator">5</span><span class="denominator">50</span></span> &times; 100% = <strong style="color: #ffc107;">10%</strong>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <p><strong>Tahap 2: Hasil Diagram Akhir</strong></p>
+                <div class="canvas-grid">
+                    <div class="canvas-visual-container" style="width: 300px;">
+                        <canvas id="c4_1" width="300" height="200"></canvas>
+                        <div class="canvas-desc">Diagram berbasis persentase ini memudahkan kita melihat bahwa hari Senin (40%) hampir menguasai setengah pameran.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>E. Latihan Tantangan: Data Mentah ke Diagram</h2>
+        
+        <h3>Contoh Soal 5 (Ujian Lengkap)</h3>
+        <div class="soal-box">
+            Pemungutan suara pemilihan Ketua Kelas X PM 1 diikuti 30 siswa. Datanya masih berupa tumpukan kertas suara. Rangkumlah menjadi tabel, hitung Derajat (untuk menggambar) dan Persen (untuk label laporan)!
+        </div>
+        
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Tahap 1: Mengubah Data Mentah ke Tabel</strong></p>
+                <div class="raw-data-box" style="font-size: 13px;">
+                    Andi, Budi, Andi, Cici, Andi, Budi, Andi, Andi, Budi, Cici, <br>
+                    Andi, Andi, Cici, Budi, Andi, Budi, Andi, Cici, Andi, Budi, <br>
+                    Andi, Budi, Cici, Andi, Budi, Andi, Andi, Budi, Cici, Andi
+                </div>
+                <p>Kita hitung dengan mencoret (turus) satu per satu, hasilnya:</p>
+                <table>
+                    <tr><th>Nama Calon</th><th>Jumlah Suara</th></tr>
+                    <tr><td>Andi</td><td>15</td></tr>
+                    <tr><td>Budi</td><td>9</td></tr>
+                    <tr><td>Cici</td><td>6</td></tr>
+                    <tr style="background:#e0e0e0; font-weight:bold;"><td>TOTAL DATA</td><td>30 Siswa</td></tr>
+                </table>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Tahap 2: Menghitung Derajat (&deg;) dan Persen (%)</strong></p>
+                <div class="calc-box">
+                    <strong>1. Andi (15 Suara):</strong><br>
+                    - Derajat: <span class="fraction-inline"><span class="numerator">15</span><span class="denominator">30</span></span> &times; 360&deg; = <strong>180&deg;</strong><br>
+                    - Persen: <span class="fraction-inline"><span class="numerator">15</span><span class="denominator">30</span></span> &times; 100% = <strong>50%</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>2. Budi (9 Suara):</strong><br>
+                    - Derajat: <span class="fraction-inline"><span class="numerator">9</span><span class="denominator">30</span></span> &times; 360&deg; = <strong>108&deg;</strong><br>
+                    - Persen: <span class="fraction-inline"><span class="numerator">9</span><span class="denominator">30</span></span> &times; 100% = <strong>30%</strong>
+                </div>
+                <div class="calc-box">
+                    <strong>3. Cici (6 Suara):</strong><br>
+                    - Derajat: <span class="fraction-inline"><span class="numerator">6</span><span class="denominator">30</span></span> &times; 360&deg; = <strong>72&deg;</strong><br>
+                    - Persen: <span class="fraction-inline"><span class="numerator">6</span><span class="denominator">30</span></span> &times; 100% = <strong>20%</strong>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Tahap 3: Hasil Diagram Akhir</strong></p>
+                <div class="canvas-grid">
+                    <div class="canvas-visual-container" style="width: 300px;">
+                        <canvas id="c5_1" width="300" height="200"></canvas>
+                        <div class="canvas-desc">Sempurna! Kamu baru saja merapikan data yang berantakan menjadi infografis profesional.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openInNewTab() { window.open(window.location.href, '_blank'); }
+        function closeTab() {
+            window.close();
+            document.body.innerHTML = `
+                <div style="text-align: center; margin-top: 50px; font-family: Calibri, sans-serif;">
+                    <h2 style="color: #0056b3;">Materi telah ditutup.</h2>
+                    <p>Silakan kembali ke halaman utama LMS Bapak/Ibu.</p>
+                </div>
+            `;
+        }
+
+        function drawStepPie(canvasId, slicesData, stepsToShow) {
+            const canvas = document.getElementById(canvasId);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const CX = canvas.width / 2; 
+            const CY = canvas.height / 2; 
+            const RAD = 75;
+
+            // 1. Gambar Lingkaran Dasar
+            ctx.beginPath(); 
+            ctx.arc(CX, CY, RAD, 0, 2*Math.PI);
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
+            
+            let currentAngle = -Math.PI / 2; // Mulai dari jam 12
+
+            if(stepsToShow === 0) {
+                ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(CX, CY - RAD);
+                ctx.strokeStyle = '#0056b3'; ctx.lineWidth = 3; ctx.stroke();
+                ctx.fillStyle = 'black'; ctx.font = '12px Calibri';
+                ctx.fillText('Garis Awal (0°)', CX - 35, CY - RAD - 8);
+            }
+
+            for(let i = 0; i < stepsToShow; i++) {
+                let slice = slicesData[i];
+                let sliceAngleRad = (slice.degree / 360) * 2 * Math.PI;
+
+                ctx.beginPath();
+                ctx.moveTo(CX, CY);
+                ctx.arc(CX, CY, RAD, currentAngle, currentAngle + sliceAngleRad);
+                ctx.fillStyle = slice.color;
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                let middleAngle = currentAngle + (sliceAngleRad / 2);
+                let textX = CX + Math.cos(middleAngle) * (RAD * 0.65); 
+                let textY = CY + Math.sin(middleAngle) * (RAD * 0.65);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(slice.label, textX, textY - 8);
+                ctx.fillText(slice.text, textX, textY + 8);
+
+                currentAngle += sliceAngleRad;
+            }
+
+            if (stepsToShow > 0 && stepsToShow < slicesData.length) {
+                ctx.beginPath();
+                ctx.moveTo(CX, CY);
+                let nextX = CX + Math.cos(currentAngle) * RAD;
+                let nextY = CY + Math.sin(currentAngle) * RAD;
+                ctx.lineTo(nextX, nextY);
+                ctx.strokeStyle = '#dc3545'; 
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+
+            ctx.beginPath(); ctx.arc(CX, CY, 4, 0, 2*Math.PI);
+            ctx.fillStyle = 'red'; ctx.fill();
+        }
+
+        // =====================================
+        // EKSEKUSI PENGGAMBARAN KE KANVAS
+        // =====================================
+
+        // Contoh 1 (Sudut 3 Kategori)
+        const dataEx1 = [
+            { label: 'Reguler', degree: 180, text: '180°', color: '#0056b3' },
+            { label: 'Presale', degree: 120, text: '120°', color: '#28a745' },
+            { label: 'VIP', degree: 60, text: '60°', color: '#dc3545' }
+        ];
+        drawStepPie('c1_1', dataEx1, 0); 
+        drawStepPie('c1_2', dataEx1, 1); 
+        drawStepPie('c1_3', dataEx1, 2); 
+        drawStepPie('c1_4', dataEx1, 3); 
+
+        // Contoh 2 (Sudut 4 Kategori)
+        const dataEx2 = [
+            { label: 'Vanilla', degree: 150, text: '150°', color: '#0056b3' },
+            { label: 'Cokelat', degree: 100, text: '100°', color: '#28a745' },
+            { label: 'Stroberi', degree: 60, text: '60°', color: '#dc3545' },
+            { label: 'Mangga', degree: 50, text: '50°', color: '#ffc107' }
+        ];
+        drawStepPie('c2_1', dataEx2, 1); 
+        drawStepPie('c2_2', dataEx2, 3); 
+        drawStepPie('c2_3', dataEx2, 4); 
+
+        // Contoh 3 (Persen Dasar)
+        const dataEx3 = [
+            { label: 'Buku', degree: 180, text: '50%', color: '#0056b3' },
+            { label: 'Pensil', degree: 90, text: '25%', color: '#28a745' },
+            { label: 'Pulpen', degree: 90, text: '25%', color: '#dc3545' }
+        ];
+        drawStepPie('c3_1', dataEx3, 1); 
+        drawStepPie('c3_2', dataEx3, 2); 
+        drawStepPie('c3_3', dataEx3, 3); 
+
+        // Contoh 4 (Persen 4 Hari)
+        const dataEx4 = [
+            { label: 'Senin', degree: 144, text: '40%', color: '#0056b3' },
+            { label: 'Selasa', degree: 108, text: '30%', color: '#28a745' },
+            { label: 'Rabu', degree: 72, text: '20%', color: '#dc3545' },
+            { label: 'Kamis', degree: 36, text: '10%', color: '#ffc107' }
+        ];
+        drawStepPie('c4_1', dataEx4, 4); 
+
+        // Contoh 5 (Tantangan)
+        const dataEx5 = [
+            { label: 'Andi', degree: 180, text: '50%', color: '#0056b3' },
+            { label: 'Budi', degree: 108, text: '30%', color: '#28a745' },
+            { label: 'Cici', degree: 72, text: '20%', color: '#dc3545' }
+        ];
+        drawStepPie('c5_1', dataEx5, 3); 
+
+    </script>
+</body>
+</html>
