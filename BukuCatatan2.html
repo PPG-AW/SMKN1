@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Format Catatan Statistika - Diagram Lingkaran</title>
+    <style>
+        .catatan-container {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #ffffff;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 40px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            color: #333;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        .judul-utama {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0056b3;
+            border-bottom: 3px double #0056b3;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+        
+        /* Kotak Instruksi Pengganti Identitas */
+        .instruksi-box {
+            background-color: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-radius: 6px;
+            color: #856404;
+        }
+        .instruksi-hint {
+            display: block;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #ffeeba;
+            font-size: 14.5px;
+            color: #664d03;
+            font-style: italic;
+        }
+
+        .titik-titik {
+            display: inline-block;
+            border-bottom: 1px dotted #333;
+        }
+        .titik-panjang {
+            display: inline-block;
+            min-width: 250px;
+            border-bottom: 1px dotted #333;
+        }
+        h3 {
+            color: #d32f2f;
+            border-left: 5px solid #d32f2f;
+            padding-left: 10px;
+            background-color: #fce4e4;
+            padding: 8px 10px;
+            margin-top: 35px;
+        }
+        .instruksi {
+            font-style: italic;
+            color: #555;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        
+        /* Style Tabel */
+        .tabel-catatan {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .tabel-catatan th, .tabel-catatan td {
+            border: 1px solid #333;
+            padding: 12px 5px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .tabel-catatan th { background-color: #e0e0e0; }
+        
+        .area-gambar {
+            height: 250px;
+            border: 2px dashed #999;
+            background-color: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            margin-top: 15px;
+            position: relative;
+        }
+        .lingkaran-samar {
+            width: 180px;
+            height: 180px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .titik-pusat-samar {
+            width: 6px;
+            height: 6px;
+            background-color: #ddd;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .refleksi-box {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #b8daff;
+        }
+        ul, ol { margin-top: 5px; }
+
+        /* Style untuk Rumus Pecahan (Atas/Bawah) */
+        .rumus-box {
+            text-align: center;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 8px;
+            font-weight: bold;
+        }
+        .fraction .numerator {
+            border-bottom: 2px solid #333;
+            padding: 0 5px;
+            line-height: 1.3;
+        }
+        .fraction .denominator {
+            padding: 0 5px;
+            line-height: 1.3;
+        }
+        
+        /* Flex container untuk menyejajarkan pecahan dan pengali di dalam tabel */
+        .math-row {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            .catatan-container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="catatan-container">
+    
+    <div class="judul-utama">Catatan Statistika: Diagram Lingkaran</div>
+
+    <div class="instruksi-box">
+        <strong style="font-size: 18px;">📌 PENGUMUMAN PENTING:</strong><br>
+        Catatlah seluruh materi di bawah ini ke dalam buku catatan matematikamu secara rapi.<br>
+        <strong>Buku catatan akan dikumpulkan kepada Guru sebagai penambah Nilai Tugas!</strong>
+        <span class="instruksi-hint">💡 <strong>Petunjuk:</strong> Jika kamu sudah membaca sumber belajar (materi web interaktif) sebelumnya, kamu pasti bisa melengkapi buku catatan ini dengan sangat mudah!</span>
+    </div>
+
+    <h3>A. KONSEP & KAMUS MINI</h3>
+    <div class="instruksi">(Lengkapi titik-titik di bawah ini dengan mengingat kembali materi di web!)</div>
+    <ol>
+        <li>Diagram lingkaran sangat cocok untuk melihat <strong>porsi</strong>. Bayangkan diagram ini seperti memotong sebuah <span class="titik-titik" style="width: 120px;"></span> sesuai kepopuleran rasanya.</li>
+        <li style="margin-top: 8px;"><strong>Total Seluruh Data</strong> diibaratkan sebagai 1 lingkaran utuh.</li>
+        <li style="margin-top: 8px;">Untuk keperluan <strong>menggambar dengan busur</strong>, 1 lingkaran penuh bernilai <span class="titik-titik" style="width: 50px;"></span> <strong>derajat (&deg;)</strong>.</li>
+        <li style="margin-top: 8px;">Untuk keperluan <strong>membaca laporan atasan</strong>, 1 lingkaran penuh bernilai <span class="titik-titik" style="width: 50px;"></span> <strong>persen (%)</strong>.</li>
+        <li style="margin-top: 8px;">Patokan cepat: Setengah lingkaran = <strong>180&deg; (50%)</strong>. Sudut Siku-siku (L) = <strong>90&deg; (25%)</strong>.</li>
+    </ol>
+
+    <h3>B. RUMUS PECAHAN AJAIB</h3>
+    <div class="instruksi">(Salin rumus di bawah ini ke bukumu agar tidak lupa!)</div>
+    
+    <div class="rumus-box">
+        <strong>1. Rumus Mencari Sudut Gambar:</strong><br><br>
+        Sudut (&deg;) = 
+        <span class="fraction">
+            <span class="numerator">Jumlah 1 Barang</span>
+            <span class="denominator">Total Seluruh Data</span>
+        </span>
+        &times; 360&deg;
+    </div>
+
+    <div class="rumus-box">
+        <strong>2. Rumus Mencari Label Laporan:</strong><br><br>
+        Persen (%) = 
+        <span class="fraction">
+            <span class="numerator">Jumlah 1 Barang</span>
+            <span class="denominator">Total Seluruh Data</span>
+        </span>
+        &times; 100%
+    </div>
+
+    <h3>C. URUTAN LANGKAH KERJA</h3>
+    <div class="instruksi">(Pilih dan salin urutan langkah yang benar dari kata dalam kurung: Siapkan Lingkaran Dasar / Ukur Busur & Gambar / Hitung Total Data / Buat Tabel & Rumus)</div>
+    <ul style="list-style-type: none; padding-left: 0;">
+        <li style="margin-bottom: 10px;">- <strong>Langkah 1 :</strong> <span class="titik-panjang"></span></li>
+        <li style="margin-bottom: 10px;">- <strong>Langkah 2 :</strong> <span class="titik-panjang"></span></li>
+        <li style="margin-bottom: 10px;">- <strong>Langkah 3 :</strong> <span class="titik-panjang"></span></li>
+        <li style="margin-bottom: 10px;">- <strong>Langkah 4 :</strong> <span class="titik-panjang"></span></li>
+    </ul>
+
+    <h3>D. LATIHAN PRAKTIK PEMASARAN</h3>
+    <p><strong>Kasus:</strong> Kantin UP mencatat penjualan minuman pagi ini. Susu laku 20 botol, Teh laku 10 botol, dan Kopi laku 10 botol.</p>
+
+    <p><strong>1. Rekap Data & Hitung Rumusnya!</strong><br>
+    <span class="instruksi">(Lengkapi tabel di bawah ini. Cari Total Datanya dulu!)</span></p>
+    
+    <table class="tabel-catatan">
+        <thead>
+            <tr>
+                <th style="width: 20%;">Jenis Minuman</th>
+                <th style="width: 15%;">Frekuensi</th>
+                <th style="width: 30%;">Hitungan Persen (%)</th>
+                <th style="width: 35%;">Hitungan Sudut (&deg;)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Susu</td>
+                <td><span class="titik-titik" style="width: 30px;"></span></td>
+                <td>
+                    <div class="math-row">
+                        <span class="fraction">
+                            <span class="numerator"><span class="titik-titik" style="width: 30px;"></span></span>
+                            <span class="denominator"><span class="titik-titik" style="width: 30px;"></span></span>
+                        </span> &times; 100 = <strong>50%</strong>
+                    </div>
+                </td>
+                <td>
+                    <div class="math-row">
+                        <span class="fraction">
+                            <span class="numerator"><span class="titik-titik" style="width: 30px;"></span></span>
+                            <span class="denominator"><span class="titik-titik" style="width: 30px;"></span></span>
+                        </span> &times; 360 = <strong>180&deg;</strong>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Teh</td>
+                <td><span class="titik-titik" style="width: 30px;"></span></td>
+                <td>
+                    <div class="math-row">
+                        <span class="fraction">
+                            <span class="numerator"><span class="titik-titik" style="width: 30px;"></span></span>
+                            <span class="denominator"><span class="titik-titik" style="width: 30px;"></span></span>
+                        </span> &times; 100 = <strong>... %</strong>
+                    </div>
+                </td>
+                <td>
+                    <div class="math-row">
+                        <span class="fraction">
+                            <span class="numerator"><span class="titik-titik" style="width: 30px;"></span></span>
+                            <span class="denominator"><span class="titik-titik" style="width: 30px;"></span></span>
+                        </span> &times; 360 = <strong>... &deg;</strong>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="titik-titik" style="width: 60px;"></span></td>
+                <td><span class="titik-titik" style="width: 30px;"></span></td>
+                <td>
+                    <div class="math-row">
+                        <span class="fraction">
+                            <span class="numerator"><span class="titik-titik" style="width: 30px;"></span></span>
+                            <span class="denominator"><span class="titik-titik" style="width: 30px;"></span></span>
+                        </span> &times; 100 = <strong>... %</strong>
+                    </div>
+                </td>
+                <td>
+                    <div class="math-row">
+                        <span class="fraction">
+                            <span class="numerator"><span class="titik-titik" style="width: 30px;"></span></span>
+                            <span class="denominator"><span class="titik-titik" style="width: 30px;"></span></span>
+                        </span> &times; 360 = <strong>... &deg;</strong>
+                    </div>
+                </td>
+            </tr>
+            <tr style="background-color: #f9f9fa; font-weight: bold;">
+                <td style="text-align: right;">TOTAL:</td>
+                <td><span class="titik-titik" style="width: 30px;"></span></td>
+                <td>100%</td>
+                <td>360&deg;</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><strong>2. Eksekusi Gambar Diagramnya di Bawah Ini!</strong><br>
+    <span class="instruksi">(Gunakan Busur Derajat. Ingat, setelah menggambar Susu, putar busurmu!)</span></p>
+    
+    <div class="area-gambar">
+        <div class="lingkaran-samar"></div>
+        <div class="titik-pusat-samar"></div>
+        <span style="position: absolute; bottom: 10px; font-size: 12px;">(Buat lingkaran sebesar ini di bukumu, tandai titik pusatnya)</span>
+    </div>
+
+    <h3>E. REFLEKSI HARI INI</h3>
+    <div class="refleksi-box">
+        <div class="instruksi" style="margin-top: 0;">(Pilih kalimat yang paling sesuai dengan kondisimu, lalu salin ke buku catatan beserta angka pilihannya!)</div>
+        
+        <ol style="margin-bottom: 20px; line-height: 1.6;">
+            <li>Saya sudah paham sepenuhnya, tidak ada yang ingin saya tanyakan.</li>
+            <li>Saya masih bingung saat membuat dan mengisi tabel.</li>
+            <li>Saya masih bingung saat menghitung/mengubah data ke sudut (derajat).</li>
+            <li>Saya masih bingung saat menghitung/mengubah data ke persen (%).</li>
+            <li>Saya masih bingung saat menggambar menggunakan busur derajat.</li>
+        </ol>
+
+        <p style="font-weight: bold; margin-bottom: 5px;">Pilihan Saya (Tuliskan Kalimatnya):</p>
+        <div class="titik-panjang" style="width: 100%; margin-bottom: 15px;"></div>
+        <div class="titik-panjang" style="width: 100%;"></div>
+
+        <p style="font-weight: bold; margin-top: 20px; margin-bottom: 5px;">6. Ada yang ingin saya tanyakan (Tulis pertanyaanmu di sini):</p>
+        <div class="titik-panjang" style="width: 100%; margin-bottom: 15px;"></div>
+        <div class="titik-panjang" style="width: 100%;"></div>
+    </div>
+
+</div>
+
+</body>
+</html>
