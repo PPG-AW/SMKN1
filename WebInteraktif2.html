@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Interaktif - Diagram Lingkaran Dinamis</title>
+    <style>
+        /* =========================================
+           STYLE KONSISTEN DARI PERTEMUAN 1
+           ========================================= */
+        body { font-family: 'Calibri', Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; color: #333; line-height: 1.6; }
+        
+        .top-nav { background: #2c3e50; color: white; padding: 10px; text-align: center; position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+        .top-nav button { background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 6px 15px; cursor: pointer; border-radius: 4px; font-size: 13px; margin: 0 5px;}
+        .top-nav button:hover { background: #7f8c8d; }
+
+        .app-container { background-color: #fff; max-width: 900px; margin: 55px auto 30px auto; border: 1px solid #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-height: 85vh; }
+        
+        .tab-menu { display: flex; flex-wrap: wrap; background: #e0e0e0; border-bottom: 3px solid #0056b3; }
+        .tab-button { flex: 1; padding: 12px 5px; border: none; background: #e0e0e0; cursor: pointer; font-weight: bold; font-size: 13px; color: #555; transition: 0.3s; text-align: center; min-width: 100px;}
+        .tab-button:hover { background: #d0d0d0; }
+        .tab-button.active { background: #0056b3; color: white; }
+
+        .tab-content { display: none; padding: 25px; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h2 { font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 0; color: #333;}
+        .dictionary-box { background: #fdfdfd; border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .soal-box { background: #e8f4f8; border-left: 5px solid #17a2b8; padding: 15px; margin-bottom: 15px; font-size: 15px; line-height: 1.5; border-radius: 0 4px 4px 0;}
+        .raw-data { background: #fff; border: 1px dashed #666; padding: 15px; font-family: monospace; font-size: 16px; text-align: center; letter-spacing: 2px; margin-bottom: 15px; line-height: 2;}
+        
+        .fraction-inline { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 5px; font-weight: bold; font-family: monospace; font-size: 14px;}
+        .fraction-inline .numerator { border-bottom: 1px solid #333; padding: 0 4px; line-height: 1.2; }
+        .fraction-inline .denominator { padding: 0 4px; line-height: 1.2; }
+
+        .table-responsive { width: 100%; overflow-x: auto; margin: 15px 0; }
+        table { width: 100%; min-width: 600px; border-collapse: collapse; background: #fff; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: center; vertical-align: middle; }
+        th { background-color: #f0f0f0; }
+        
+        .table-input { width: 55px; text-align: center; padding: 6px; border: 2px solid #ccc; border-radius: 4px; font-weight: bold; font-size: 14px;}
+        .mini-input { width: 40px; text-align: center; padding: 4px; border: 2px solid #ccc; border-radius: 4px; font-weight: bold; font-size: 12px;}
+        
+        .table-input.correct, .mini-input.correct { border-color: #28a745; background-color: #e8f5e9; }
+        .table-input.wrong, .mini-input.wrong { border-color: #dc3545; background-color: #f8d7da; }
+
+        .interactive-section { display: none; margin-top: 20px; border-top: 2px dashed #ccc; padding-top: 20px; }
+        .canvas-container { width: 100%; overflow-x: auto; background: #fcfcfc; border: 2px solid #333; margin: 10px auto 20px auto; text-align: center; }
+        .grid-svg { display: inline-block; min-width: 500px; background-image: radial-gradient(circle, #f0f0f0 1px, transparent 1px); background-size: 20px 20px; } 
+        
+        .controls { text-align: center; margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;}
+        .step-btn { padding: 10px 15px; cursor: pointer; border: 1px solid #999; background: #f8f8f8; font-weight: bold; font-size: 13px; border-radius: 4px; transition: 0.2s;}
+        .step-btn.btn-cek { background-color: #28a745; color: white; border-color: #1e7e34; margin-top:10px; }
+        .step-btn.btn-cek:hover { background-color: #218838; }
+        .step-btn.btn-ganti { background-color: #0056b3; color: white; border-color: #004085; }
+        .step-btn.btn-ganti:hover { background-color: #004085; }
+        .step-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .instr { color: #0056b3; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 14px; background: #e8f4f8; padding: 10px; border-radius: 4px; border: 1px solid #b8daff;}
+        .msg { text-align: center; font-weight: bold; margin-top: 15px; font-size: 15px;}
+        .tools-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px;}
+        
+        @media (max-width: 600px) {
+            .tab-button { font-size: 11px; padding: 10px 5px; min-width: 30%; }
+            .tools-header { flex-direction: column; gap: 10px; text-align: center;}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <button onclick="window.close()">Tutup Materi</button>
+        <button onclick="window.open(window.location.href, '_blank')">Buka Tab Baru</button>
+    </div>
+
+    <div class="app-container">
+        <div class="tab-menu">
+            <button class="tab-button active" onclick="openTab(event, 'tab-materi')">1. Materi Dasar</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-dasar'); initLatihan('dasar')">2. Latihan Derajat</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-lanjut'); initLatihan('lanjut')">3. Latihan Persen</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-mentah'); initLatihan('mentah')">4. Data Mentah</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-rangkuman')">5. Rangkuman</button>
+        </div>
+
+        <div id="tab-materi" class="tab-content active">
+            <h2>A. Pendahuluan</h2>
+            <p>Di dunia pemasaran, laporan porsi pasar (Market Share) disajikan dengan <strong>Diagram Lingkaran (Pie Chart)</strong>. Diagram ini mengibaratkan total penjualan sebagai sebuah martabak manis bulat yang dibagi sesuai kepopuleran produk.</p>
+
+            <h2>B. Kamus Mini Rumus Utama</h2>
+            <div class="dictionary-box">
+                <ul style="margin:0; padding-left: 20px;">
+                    <li><strong>Total Data:</strong> Semua jumlah frekuensi barang ditambah. Diibaratkan sebagai 1 lingkaran utuh.</li>
+                    <li style="margin-top:8px;"><strong>Rumus Sudut (Derajat / &deg;):</strong> Digunakan untuk mengukur dan menggambar di kertas menggunakan busur.<br>
+                        <span style="color:#0056b3;">Sudut = </span>
+                        <span class="fraction-inline"><span class="numerator">Data 1 Barang</span><span class="denominator">Total Semua Data</span></span> &times; 360&deg;
+                    </li>
+                    <li style="margin-top:8px;"><strong>Rumus Laporan (Persen / %):</strong> Digunakan sebagai label laporan akhir agar mudah dibaca.<br>
+                        <span style="color:#28a745;">Persen = </span>
+                        <span class="fraction-inline"><span class="numerator">Data 1 Barang</span><span class="denominator">Total Semua Data</span></span> &times; 100%
+                    </li>
+                </ul>
+            </div>
+
+            <h2>C. Petunjuk Latihan Interaktif</h2>
+            <p>Latihan di tab selanjutnya bersifat <strong>dinamis (angkanya akan selalu berubah setiap kamu klik tombol Acak Angka & Cerita)</strong>. Lakukan langkah ini:</p>
+            <ol>
+                <li>Baca cerita soal dan jumlahkan dulu <strong>Total Data Keseluruhan</strong>.</li>
+                <li>Isi kolom Frekuensi untuk setiap barang.</li>
+                <li>Isi <strong>Pembilang (atas)</strong> dengan frekuensi barang, dan <strong>Penyebut (bawah)</strong> dengan Total Data.</li>
+                <li>Tuliskan hasil akhir perhitunganmu di kotak paling kanan.</li>
+                <li>Setelah tabel disetujui sistem, putar <strong>Busur Derajat Digital</strong> dan klik titik koordinat sudutnya!</li>
+            </ol>
+        </div>
+
+        <div id="tab-dasar" class="tab-content">
+            <div class="tools-header">
+                <h1 style="font-size: 18px; margin:0;">LATIHAN MENGHITUNG SUDUT (&deg;)</h1>
+                <button onclick="initLatihan('dasar')" class="step-btn btn-ganti">Acak Angka & Cerita</button>
+            </div>
+            
+            <div class="soal-box" id="soal-teks-dasar"></div>
+            <div class="instr">Langkah 1: Hitung frekuensi tiap barang, lalu isi proses pecahannya untuk menghitung Sudut (&deg;)!</div>
+            
+            <div class="table-responsive">
+                <table id="tabel-dasar"></table>
+            </div>
+            <div style="text-align: center;"><button class="step-btn btn-cek" id="btnCek-dasar" onclick="cekTabel('dasar')">Cek Proses Hitunganmu</button></div>
+            <div class="msg" id="msg-tabel-dasar"></div>
+
+            <div class="interactive-section" id="interaktif-dasar">
+                <div class="instr" id="guide-dasar" style="background:#e8f5e9; border-color:#c3e6cb; color:#155724;">Langkah 2: Perhitungan Valid! Mulai proses menggambar diagram di bawah ini.</div>
+                <div class="canvas-container">
+                    <svg class="grid-svg" width="500" height="450" id="svg-dasar">
+                        <circle id="baseCircle-dasar" cx="250" cy="230" r="130" stroke="#333" stroke-width="2" fill="none" style="display:none;" />
+                        <line id="baseLine-dasar" x1="250" y1="230" x2="250" y2="100" stroke="#0056b3" stroke-width="3" style="display:none;" />
+                        <g id="drawGroup-dasar"></g>
+                        <g id="protractor-dasar"></g>
+                        <g id="labelsGroup-dasar"></g>
+                        <circle id="centerDot-dasar" cx="250" cy="230" r="4" fill="red" style="display:none;" />
+                    </svg>
+                </div>
+                <div class="controls">
+                    <button class="step-btn" id="btn1-dasar" onclick="stepCreateBase('dasar')">1. Siapkan Lingkaran & Garis</button>
+                    <button class="step-btn" id="btn2-dasar" onclick="stepStartProtractor('dasar')" disabled>2. Munculkan Busur & Cari Titik</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-lanjut" class="tab-content">
+            <div class="tools-header">
+                <h1 style="font-size: 18px; margin:0;">LATIHAN DIAGRAM LAPORAN (PERSEN %)</h1>
+                <button onclick="initLatihan('lanjut')" class="step-btn btn-ganti">Acak Angka & Cerita</button>
+            </div>
+            
+            <div class="soal-box" id="soal-teks-lanjut"></div>
+            <div class="instr">Langkah 1: Jangan tertukar! Hitung proses untuk label laporan (Persen %) dan alat gambar (Derajat &deg;).</div>
+            
+            <div class="table-responsive">
+                <table id="tabel-lanjut"></table>
+            </div>
+            <div style="text-align: center;"><button class="step-btn btn-cek" id="btnCek-lanjut" onclick="cekTabel('lanjut')">Cek Proses Hitunganmu</button></div>
+            <div class="msg" id="msg-tabel-lanjut"></div>
+
+            <div class="interactive-section" id="interaktif-lanjut">
+                <div class="instr" id="guide-lanjut" style="background:#e8f5e9; border-color:#c3e6cb; color:#155724;">Langkah 2: Perhitungan Valid! Mulai proses menggambar diagram di bawah ini.</div>
+                <div class="canvas-container">
+                    <svg class="grid-svg" width="500" height="450" id="svg-lanjut">
+                        <circle id="baseCircle-lanjut" cx="250" cy="230" r="130" stroke="#333" stroke-width="2" fill="none" style="display:none;" />
+                        <line id="baseLine-lanjut" x1="250" y1="230" x2="250" y2="100" stroke="#0056b3" stroke-width="3" style="display:none;" />
+                        <g id="drawGroup-lanjut"></g>
+                        <g id="protractor-lanjut"></g>
+                        <g id="labelsGroup-lanjut"></g>
+                        <circle id="centerDot-lanjut" cx="250" cy="230" r="4" fill="red" style="display:none;" />
+                    </svg>
+                </div>
+                <div class="controls">
+                    <button class="step-btn" id="btn1-lanjut" onclick="stepCreateBase('lanjut')">1. Siapkan Lingkaran & Garis</button>
+                    <button class="step-btn" id="btn2-lanjut" onclick="stepStartProtractor('lanjut')" disabled>2. Munculkan Busur & Cari Titik</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-mentah" class="tab-content">
+            <div class="tools-header">
+                <h1 style="font-size: 18px; margin:0; color: #dc3545;">TANTANGAN DATA MENTAH</h1>
+                <button onclick="initLatihan('mentah')" class="step-btn btn-ganti" style="background-color: #dc3545; border-color: #c82333;">Acak Angka & Cerita</button>
+            </div>
+            
+            <div class="soal-box" id="soal-teks-mentah" style="border-left-color: #dc3545; background: #fdf5f6;"></div>
+            <div class="instr" style="color: #dc3545; background: #fdf5f6; border-color: #f5c6cb;">Langkah 1: Hitung kemunculan data di atas secara teliti, lalu jabarkan hitungan persen dan derajatnya!</div>
+            
+            <div class="table-responsive">
+                <table id="tabel-mentah"></table>
+            </div>
+            <div style="text-align: center;"><button class="step-btn btn-cek" id="btnCek-mentah" onclick="cekTabel('mentah')">Cek Hasil Analisismu</button></div>
+            <div class="msg" id="msg-tabel-mentah"></div>
+
+            <div class="interactive-section" id="interaktif-mentah">
+                <div class="instr" id="guide-mentah" style="background:#e8f5e9; border-color:#c3e6cb; color:#155724;">Langkah 2: Data Matang! Presentasikan datamu ke dalam infografis lingkaran.</div>
+                <div class="canvas-container">
+                    <svg class="grid-svg" width="500" height="450" id="svg-mentah">
+                        <circle id="baseCircle-mentah" cx="250" cy="230" r="130" stroke="#333" stroke-width="2" fill="none" style="display:none;" />
+                        <line id="baseLine-mentah" x1="250" y1="230" x2="250" y2="100" stroke="#0056b3" stroke-width="3" style="display:none;" />
+                        <g id="drawGroup-mentah"></g>
+                        <g id="protractor-mentah"></g>
+                        <g id="labelsGroup-mentah"></g>
+                        <circle id="centerDot-mentah" cx="250" cy="230" r="4" fill="red" style="display:none;" />
+                    </svg>
+                </div>
+                <div class="controls">
+                    <button class="step-btn" id="btn1-mentah" onclick="stepCreateBase('mentah')">1. Siapkan Lingkaran & Garis</button>
+                    <button class="step-btn" id="btn2-mentah" onclick="stepStartProtractor('mentah')" disabled>2. Putar Busur & Cari Titik</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-rangkuman" class="tab-content">
+            <h2 style="color: #28a745;">Rangkuman Pembelajaran Hari Ini</h2>
+            <div class="dictionary-box" style="background: #e8f5e9; border-color: #c3e6cb;">
+                <ul style="font-size: 15px; line-height: 1.8;">
+                    <li><strong>Diagram Lingkaran</strong> adalah bentuk penyajian yang memecah data total menjadi bagian-bagian porsi (pangsa pasar).</li>
+                    <li>Sebelum bisa digambar dengan Busur Derajat, data frekuensi <strong>wajib</strong> diubah menjadi besaran sudut dengan rumus:<br>
+                        <span class="fraction-inline"><span class="numerator">Data Bagian</span><span class="denominator">Total Data</span></span> &times; 360&deg;
+                    </li>
+                    <li>Sedangkan agar laporan mudah dibaca oleh atasan/publik, besaran data diubah menjadi Persen dengan rumus:<br>
+                        <span class="fraction-inline"><span class="numerator">Data Bagian</span><span class="denominator">Total Data</span></span> &times; 100%
+                    </li>
+                    <li>Siklus menggunakan busur derajat adalah: Ukur - Tandai - Tarik Garis - <strong>Putar Busur ke Garis Baru!</strong></li>
+                </ul>
+            </div>
+            <p style="text-align: center; font-weight: bold;">Selamat! Kamu telah menguasai seni visualisasi Diagram Lingkaran.</p>
+        </div>
+
+    </div>
+
+    <script>
+        const colors = ["#0056b3", "#28a745", "#dc3545", "#ffc107", "#6f42c1"];
+
+        // GENERATOR TAB 1: DASAR (Hanya Derajat)
+        function genDasar() {
+            const templates = [
+                "Koperasi 'Siswa Mandiri' mencatat penjualan perlengkapan. Terjual <strong>{l0}</strong> sebanyak {v0} buah, <strong>{l1}</strong> {v1} buah, dan <strong>{l2}</strong> {v2} buah.",
+                "Toko elektronik merekap retur barang minggu ini. Ada <strong>{l0}</strong> sebanyak {v0} unit, <strong>{l1}</strong> {v1} unit, dan <strong>{l2}</strong> {v2} unit.",
+                "Pendataan stok helm di bengkel. Ukuran <strong>{l0}</strong> ada {v0} helm, ukuran <strong>{l1}</strong> {v1} helm, ukuran <strong>{l2}</strong> {v2} helm, dan ukuran <strong>{l3}</strong> {v3} helm."
+            ];
+            const labelsPool = [
+                ["Buku Tulis", "Pensil", "Penghapus"],
+                ["Kipas Angin", "Setrika", "Blender"],
+                ["Size M", "Size L", "Size XL", "Size XXL"]
+            ];
+            
+            let tplIdx = Math.floor(Math.random() * templates.length);
+            let degSetsTemp;
+            if(tplIdx === 2) {
+                degSetsTemp = [ [120, 100, 80, 60], [140, 100, 70, 50], [90, 90, 90, 90] ];
+            } else {
+                degSetsTemp = [ [180, 120, 60], [150, 120, 90], [160, 100, 100] ];
+            }
+            
+            let degs = degSetsTemp[Math.floor(Math.random() * degSetsTemp.length)];
+            let multiplier = [0.1, 0.2, 0.5][Math.floor(Math.random() * 3)]; 
+            
+            let slices = [];
+            for(let i=0; i<degs.length; i++){
+                slices.push({
+                    label: labelsPool[tplIdx][i],
+                    freq: Math.round(degs[i] * multiplier),
+                    degree: degs[i],
+                    color: colors[i]
+                });
+            }
+            
+            let teks = templates[tplIdx];
+            slices.forEach((s, i) => {
+                teks = teks.replace(`{l${i}}`, s.label).replace(`{v${i}}`, s.freq);
+            });
+            
+            return { teks, slices };
+        }
+
+        // GENERATOR TAB 2: LANJUT (Persen & Derajat)
+        function genLanjut() {
+            const templates = [
+                "Laporan akhir tahun target tercapai! Dari total stok <strong>{total} lusin</strong> barang, <strong>{l0}</strong> terjual {v0} lusin, <strong>{l1}</strong> {v1} lusin, dan <strong>{l2}</strong> {v2} lusin.",
+                "Pameran SMK dikunjungi <strong>{total} orang</strong>. Pengunjung di hari <strong>{l0}</strong> ada {v0} orang, hari <strong>{l1}</strong> {v1} orang, dan hari <strong>{l2}</strong> {v2} orang.",
+                "Sebuah survei kepuasan pelanggan bengkel dengan <strong>{total} responden</strong>. Yang menjawab <strong>{l0}</strong> ada {v0} orang, <strong>{l1}</strong> {v1} orang, <strong>{l2}</strong> {v2} orang, dan <strong>{l3}</strong> {v3} orang."
+            ];
+            const labelsPool = [
+                ["Baju Praktik", "Celana", "Kacamata"],
+                ["Jumat", "Sabtu", "Minggu"],
+                ["Sangat Puas", "Puas", "Biasa", "Kurang"]
+            ];
+            
+            const comboSets = [
+                { pct: [50, 25, 25], deg: [180, 90, 90], items: 3 },
+                { pct: [50, 50], deg: [180, 180], items: 2 }, 
+                { pct: [25, 25, 25, 25], deg: [90, 90, 90, 90], items: 4 }
+            ];
+            
+            let tplIdx = Math.floor(Math.random() * templates.length);
+            let combo = comboSets.find(c => c.items === labelsPool[tplIdx].length);
+            
+            const totals = [20, 40, 60, 80, 100, 120, 200];
+            let total = totals[Math.floor(Math.random() * totals.length)];
+            
+            let slices = [];
+            for(let i=0; i<combo.pct.length; i++){
+                slices.push({
+                    label: labelsPool[tplIdx][i],
+                    freq: (combo.pct[i] / 100) * total,
+                    pct: combo.pct[i],
+                    degree: combo.deg[i],
+                    color: colors[i]
+                });
+            }
+            
+            let teks = templates[tplIdx].replace('{total}', total);
+            slices.forEach((s, i) => {
+                teks = teks.replace(`{l${i}}`, s.label).replace(`{v${i}}`, s.freq);
+            });
+            
+            return { teks, slices };
+        }
+
+        // GENERATOR TAB 3: MENTAH (Data Acak Text)
+        function genMentah() {
+            const pools = [
+                { title: "Pemilihan Ketua Ekskul", labels: ["Andi", "Budi", "Cici"] },
+                { title: "Survei Minuman Favorit", labels: ["Boba", "Kopi", "Teh"] },
+                { title: "Pendataan Ukuran Sepatu Safety", labels: ["Uk.40", "Uk.41", "Uk.42"] }
+            ];
+            
+            let pIdx = Math.floor(Math.random() * pools.length);
+            let p = pools[pIdx];
+            
+            const combo = { pct: [50, 25, 25], deg: [180, 90, 90] };
+            const totals = [16, 20, 24]; 
+            let total = totals[Math.floor(Math.random() * totals.length)];
+            
+            let freqs = combo.pct.map(pct => (pct / 100) * total);
+            
+            let rawArr = [];
+            for(let i=0; i<3; i++){
+                for(let j=0; j<freqs[i]; j++){
+                    rawArr.push(p.labels[i]);
+                }
+            }
+            rawArr.sort(() => Math.random() - 0.5);
+            
+            let teks = `<strong>Kasus: ${p.title}.</strong> Total sampel adalah ${total} data. Hasil catatannya masih sangat acak seperti ini:<br><div class='raw-data'>${rawArr.join(", ")}</div>`;
+            
+            let slices = [];
+            for(let i=0; i<3; i++){
+                slices.push({
+                    label: p.labels[i],
+                    freq: freqs[i],
+                    pct: combo.pct[i],
+                    degree: combo.deg[i],
+                    color: colors[i]
+                });
+            }
+            
+            return { teks, slices };
+        }
+
+        // STATE MANAGER
+        let activeData = { dasar: {}, lanjut: {}, mentah: {} };
+        let state = {
+            dasar: { isFindingPoint: false, currentGlobalAngle: 0, currentIndex: 0 },
+            lanjut: { isFindingPoint: false, currentGlobalAngle: 0, currentIndex: 0 },
+            mentah: { isFindingPoint: false, currentGlobalAngle: 0, currentIndex: 0 }
+        };
+
+        function openTab(evt, tabName) {
+            let i, tabcontent, tabbuttons;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) { tabbuttons[i].className = tabbuttons[i].className.replace(" active", ""); }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function initLatihan(tab) {
+            let soalObj;
+            if(tab === 'dasar') soalObj = genDasar();
+            else if(tab === 'lanjut') soalObj = genLanjut();
+            else soalObj = genMentah();
+
+            activeData[tab] = soalObj;
+            activeData[tab].totalData = soalObj.slices.reduce((sum, slice) => sum + slice.freq, 0);
+
+            document.getElementById(`soal-teks-${tab}`).innerHTML = soalObj.teks;
+
+            let tableHtml = `<tr><th>Kategori</th><th>Frekuensi</th>`;
+            if(tab === 'lanjut' || tab === 'mentah') {
+                tableHtml += `<th>Proses Persen (%)</th>`;
+            }
+            tableHtml += `<th>Proses Derajat (&deg;)</th></tr>`;
+
+            soalObj.slices.forEach((slice, i) => {
+                tableHtml += `<tr><td><strong>${slice.label}</strong></td>`;
+                tableHtml += `<td><input type="number" class="table-input input-${tab}" data-idx="${i}" data-field="freq" placeholder="..."></td>`;
+                
+                if(tab === 'lanjut' || tab === 'mentah') {
+                    tableHtml += `<td>
+                        <div style="display:flex; align-items:center; justify-content:center; gap:3px; flex-wrap:wrap;">
+                            (
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                                <input type="number" class="mini-input input-${tab}" data-idx="${i}" data-field="f_pct" placeholder="Frek">
+                                <hr style="width:100%; margin:2px 0; border:1px solid #333;">
+                                <input type="number" class="mini-input input-${tab}" data-idx="${i}" data-field="t_pct" placeholder="Tot">
+                            </div>
+                            ) &times; 100 = 
+                            <input type="number" class="table-input input-${tab}" data-idx="${i}" data-field="pct" placeholder="%">
+                        </div>
+                    </td>`;
+                }
+
+                tableHtml += `<td>
+                    <div style="display:flex; align-items:center; justify-content:center; gap:3px; flex-wrap:wrap;">
+                        (
+                        <div style="display:flex; flex-direction:column; align-items:center;">
+                            <input type="number" class="mini-input input-${tab}" data-idx="${i}" data-field="f_deg" placeholder="Frek">
+                            <hr style="width:100%; margin:2px 0; border:1px solid #333;">
+                            <input type="number" class="mini-input input-${tab}" data-idx="${i}" data-field="t_deg" placeholder="Tot">
+                        </div>
+                        ) &times; 360 = 
+                        <input type="number" class="table-input input-${tab}" data-idx="${i}" data-field="degree" placeholder="&deg;">
+                    </div>
+                </td></tr>`;
+            });
+            document.getElementById(`tabel-${tab}`).innerHTML = tableHtml;
+
+            // RESET FULL UI & STATE
+            document.getElementById(`interaktif-${tab}`).style.display = "none";
+            document.getElementById(`msg-tabel-${tab}`).innerHTML = "";
+            document.getElementById(`btnCek-${tab}`).disabled = false;
+            
+            document.getElementById(`drawGroup-${tab}`).innerHTML = '';
+            document.getElementById(`protractor-${tab}`).innerHTML = '';
+            document.getElementById(`labelsGroup-${tab}`).innerHTML = '';
+            
+            document.getElementById(`baseCircle-${tab}`).style.display = 'none';
+            document.getElementById(`baseLine-${tab}`).style.display = 'none';
+            document.getElementById(`centerDot-${tab}`).style.display = 'none';
+            
+            document.getElementById(`btn1-${tab}`).disabled = false;
+            document.getElementById(`btn2-${tab}`).disabled = true;
+            
+            state[tab] = { isFindingPoint: false, currentGlobalAngle: 0, currentIndex: 0 };
+        }
+
+        // VALIDASI TABEL BERSARANG
+        function cekTabel(tab) {
+            let inputs = document.querySelectorAll(`.input-${tab}`);
+            let allCorrect = true;
+            
+            inputs.forEach(input => {
+                input.classList.remove('correct', 'wrong');
+
+                let idx = input.getAttribute('data-idx');
+                let field = input.getAttribute('data-field');
+                let expected;
+                
+                if (field === 'freq' || field === 'f_pct' || field === 'f_deg') {
+                    expected = activeData[tab].slices[idx].freq; 
+                } else if (field === 't_pct' || field === 't_deg') {
+                    expected = activeData[tab].totalData; 
+                } else if (field === 'pct') {
+                    expected = activeData[tab].slices[idx].pct; 
+                } else if (field === 'degree') {
+                    expected = activeData[tab].slices[idx].degree; 
+                }
+
+                if(parseFloat(input.value) === expected) {
+                    input.classList.add('correct');
+                } else {
+                    input.classList.add('wrong');
+                    allCorrect = false;
+                }
+            });
+
+            let msgBox = document.getElementById(`msg-tabel-${tab}`);
+            if(allCorrect) {
+                msgBox.innerHTML = "<span style='color:green;'>Luar biasa! Pemahaman rumusmu sangat akurat. Silakan lanjut menggambar!</span>";
+                document.getElementById(`btnCek-${tab}`).disabled = true;
+                document.getElementById(`interaktif-${tab}`).style.display = "block";
+            } else {
+                msgBox.innerHTML = "<span style='color:red;'>Ada kotak merah. Pastikan: Pembilang (Atas) = Frekuensi, Penyebut (Bawah) = Total Seluruh Data!</span>";
+            }
+        }
+
+        // FUNGSI MENGGAMBAR KANVAS
+        function stepCreateBase(tab) {
+            document.getElementById(`baseCircle-${tab}`).style.display = "block";
+            document.getElementById(`baseLine-${tab}`).style.display = "block";
+            document.getElementById(`centerDot-${tab}`).style.display = "block";
+            
+            // Pindahkan titik pusat merah ke atas jika ia ter-render di bawah elemen lain
+            let svg = document.getElementById(`svg-${tab}`);
+            let centerDot = document.getElementById(`centerDot-${tab}`);
+            svg.appendChild(centerDot);
+
+            document.getElementById(`btn1-${tab}`).disabled = true;
+            document.getElementById(`btn2-${tab}`).disabled = false;
+            document.getElementById(`guide-${tab}`).innerHTML = "Lingkaran siap! Klik tombol langkah 2 untuk memunculkan Busur Derajat.";
+        }
+
+        function stepStartProtractor(tab) {
+            state[tab].isFindingPoint = true;
+            state[tab].currentGlobalAngle = 0;
+            state[tab].currentIndex = 0;
+            
+            document.getElementById(`btn2-${tab}`).disabled = true;
+            const svg = document.getElementById(`svg-${tab}`);
+            svg.style.cursor = "crosshair";
+            
+            drawProtractor(tab);
+            updatePrompt(tab);
+
+            svg.onclick = function(e) { handleSvgClick(e, tab, svg); };
+        }
+
+        function drawProtractor(tab) {
+            let g = document.getElementById(`protractor-${tab}`);
+            g.innerHTML = '';
+            let globalAngle = state[tab].currentGlobalAngle;
+
+            let protractorGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            protractorGroup.setAttribute("transform", `rotate(${globalAngle}, 250, 230)`);
+
+            let ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            ring.setAttribute("cx", 250); ring.setAttribute("cy", 230); ring.setAttribute("r", 155);
+            ring.setAttribute("fill", "rgba(0, 86, 179, 0.05)");
+            ring.setAttribute("stroke", "#0056b3"); ring.setAttribute("stroke-width", "2");
+            protractorGroup.appendChild(ring);
+
+            for(let i=0; i<360; i+=10) {
+                let rad = (i - 90) * Math.PI / 180;
+                let isMajor = i % 30 === 0;
+                let rStart = isMajor ? 145 : 150;
+                let rEnd = 155;
+
+                let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", 250 + Math.cos(rad)*rStart);
+                line.setAttribute("y1", 230 + Math.sin(rad)*rStart);
+                line.setAttribute("x2", 250 + Math.cos(rad)*rEnd);
+                line.setAttribute("y2", 230 + Math.sin(rad)*rEnd);
+                line.setAttribute("stroke", "#0056b3");
+                line.setAttribute("stroke-width", isMajor ? "2" : "1");
+                protractorGroup.appendChild(line);
+
+                if(isMajor) {
+                    let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("x", 250 + Math.cos(rad)*170);
+                    text.setAttribute("y", 230 + Math.sin(rad)*170);
+                    text.setAttribute("fill", "#0056b3");
+                    text.setAttribute("font-size", "11px");
+                    text.setAttribute("font-weight", "bold");
+                    text.setAttribute("text-anchor", "middle");
+                    text.setAttribute("alignment-baseline", "middle");
+                    text.setAttribute("transform", `rotate(${-globalAngle}, ${250 + Math.cos(rad)*170}, ${230 + Math.sin(rad)*170})`);
+                    text.textContent = i + "°";
+                    protractorGroup.appendChild(text);
+                }
+            }
+            g.appendChild(protractorGroup);
+        }
+
+        function updatePrompt(tab) {
+            let slice = activeData[tab].slices[state[tab].currentIndex];
+            let msgBox = document.getElementById(`guide-${tab}`);
+            msgBox.innerHTML = `Busur berputar otomatis. <strong>KLIK ANGKA ${slice.degree}&deg;</strong> di pinggiran busur untuk memotong bagian <strong>${slice.label}</strong>!`;
+        }
+
+        function handleSvgClick(e, tab, svg) {
+            if (!state[tab].isFindingPoint) return;
+            
+            const pt = svg.createSVGPoint();
+            pt.x = e.clientX; pt.y = e.clientY;
+            const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+            
+            let dx = svgP.x - 250; let dy = svgP.y - 230;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            
+            if (dist < 100 || dist > 210) return; 
+
+            let clickRad = Math.atan2(dy, dx);
+            let clickDeg = (clickRad * 180 / Math.PI) + 90; 
+            if (clickDeg < 0) clickDeg += 360;
+
+            let relativeDeg = (clickDeg - state[tab].currentGlobalAngle) % 360;
+            if (relativeDeg < 0) relativeDeg += 360;
+
+            let expectedDeg = activeData[tab].slices[state[tab].currentIndex].degree;
+
+            if (Math.abs(relativeDeg - expectedDeg) <= 10 || Math.abs(relativeDeg - expectedDeg) >= 350) {
+                drawSlice(tab, state[tab].currentIndex, state[tab].currentGlobalAngle);
+                state[tab].currentGlobalAngle = (state[tab].currentGlobalAngle + expectedDeg) % 360;
+                state[tab].currentIndex++;
+
+                if (state[tab].currentIndex < activeData[tab].slices.length) {
+                    drawProtractor(tab);
+                    updatePrompt(tab);
+                } else {
+                    finishDrawing(tab);
+                }
+            } else {
+                let msgBox = document.getElementById(`guide-${tab}`);
+                let userClick = Math.round(relativeDeg/10)*10; 
+                msgBox.innerHTML = `<span style='color:red;'>Melenceng! Kamu mengklik daerah ${userClick}&deg;. Seharusnya klik <strong>${expectedDeg}&deg;</strong>. Coba lagi!</span>`;
+                setTimeout(() => updatePrompt(tab), 2500);
+            }
+        }
+
+        function drawSlice(tab, sliceIndex, startAngle) {
+            let slice = activeData[tab].slices[sliceIndex];
+            let radStart = (startAngle - 90) * Math.PI / 180;
+            let radEnd = radStart + (slice.degree * Math.PI / 180);
+
+            let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            let d = `M 250 230 L ${250 + Math.cos(radStart)*130} ${230 + Math.sin(radStart)*130} A 130 130 0 ${slice.degree > 180 ? 1 : 0} 1 ${250 + Math.cos(radEnd)*130} ${230 + Math.sin(radEnd)*130} Z`;
+            path.setAttribute("d", d);
+            path.setAttribute("fill", slice.color);
+            path.setAttribute("stroke", "white");
+            path.setAttribute("stroke-width", "2");
+            path.setAttribute("opacity", "0.9");
+            
+            document.getElementById(`drawGroup-${tab}`).appendChild(path);
+        }
+
+        function finishDrawing(tab) {
+            state[tab].isFindingPoint = false;
+            const svg = document.getElementById(`svg-${tab}`);
+            svg.style.cursor = "default";
+            document.getElementById(`protractor-${tab}`).innerHTML = ''; 
+
+            let lblGroup = document.getElementById(`labelsGroup-${tab}`);
+            lblGroup.innerHTML = '';
+            let startAngle = 0;
+
+            activeData[tab].slices.forEach(slice => {
+                let sliceAngleRad = (slice.degree / 360) * 2 * Math.PI;
+                let currentAngleRad = (startAngle - 90) * Math.PI / 180;
+                let middleAngle = currentAngleRad + (sliceAngleRad / 2);
+                
+                let textX = 250 + Math.cos(middleAngle) * 85;
+                let textY = 230 + Math.sin(middleAngle) * 85;
+
+                let tName = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                tName.setAttribute("x", textX); tName.setAttribute("y", textY - 8);
+                tName.setAttribute("fill", "white"); tName.setAttribute("font-size", "14px");
+                tName.setAttribute("font-weight", "bold"); tName.setAttribute("text-anchor", "middle");
+                tName.textContent = slice.label;
+
+                let tVal = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                tVal.setAttribute("x", textX); tVal.setAttribute("y", textY + 8);
+                tVal.setAttribute("fill", "white"); tVal.setAttribute("font-size", "14px");
+                tVal.setAttribute("font-weight", "bold"); tVal.setAttribute("text-anchor", "middle");
+                tVal.textContent = (slice.pct !== undefined) ? slice.pct + "%" : slice.degree + "°";
+
+                tName.style.textShadow = "1px 1px 2px rgba(0,0,0,0.8)";
+                tVal.style.textShadow = "1px 1px 2px rgba(0,0,0,0.8)";
+
+                lblGroup.appendChild(tName);
+                lblGroup.appendChild(tVal);
+                
+                startAngle += slice.degree;
+            });
+
+            // Pastikan titik pusat tetap di atas
+            let centerDot = document.getElementById(`centerDot-${tab}`);
+            svg.appendChild(centerDot);
+
+            document.getElementById(`guide-${tab}`).innerHTML = "<span style='color:#0056b3; font-size:16px;'><strong>MISI SELESAI!</strong> Data berhasil kamu rakit menjadi Laporan Visual yang memukau. Klik 'Acak Angka & Cerita' untuk mengulang dengan soal baru!</span>";
+        }
+    </script>
+</body>
+</html>
