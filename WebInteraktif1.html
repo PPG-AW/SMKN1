@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Interaktif - Membangun Diagram</title>
+    <style>
+        body { font-family: 'Calibri', Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; color: #333; line-height: 1.6; }
+        
+        /* Navigasi Atas */
+        .top-nav { background: #2c3e50; color: white; padding: 10px; text-align: center; position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+        .top-nav button { background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 6px 15px; cursor: pointer; border-radius: 4px; font-size: 13px; margin: 0 5px;}
+        .top-nav button:hover { background: #7f8c8d; }
+
+        .app-container { background-color: #fff; max-width: 850px; margin: 55px auto 30px auto; border: 1px solid #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-height: 85vh; }
+        
+        /* Tab Menu */
+        .tab-menu { display: flex; flex-wrap: wrap; background: #e0e0e0; border-bottom: 3px solid #0056b3; }
+        .tab-button { flex: 1; padding: 12px 5px; border: none; background: #e0e0e0; cursor: pointer; font-weight: bold; font-size: 13px; color: #555; transition: 0.3s; text-align: center; min-width: 120px;}
+        .tab-button:hover { background: #d0d0d0; }
+        .tab-button.active { background: #0056b3; color: white; }
+
+        /* Konten */
+        .tab-content { display: none; padding: 25px; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Tipografi & Boks */
+        h2 { font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 0; color: #333;}
+        .dictionary-box { background: #fdfdfd; border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .soal-box { background: #e8f4f8; border-left: 5px solid #17a2b8; padding: 15px; margin-bottom: 15px; font-size: 15px; line-height: 1.5; border-radius: 0 4px 4px 0;}
+        .raw-data { background: #fff; border: 1px dashed #666; padding: 15px; font-family: monospace; font-size: 16px; text-align: center; letter-spacing: 2px; margin-bottom: 15px;}
+        
+        /* Tabel Input */
+        table { width: 100%; max-width: 450px; border-collapse: collapse; margin: 15px auto; background: #fff; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+        th { background-color: #f0f0f0; }
+        .table-input { width: 50px; text-align: center; padding: 5px; border: 2px solid #ccc; border-radius: 4px; font-weight: bold;}
+        .table-input.correct { border-color: #28a745; background-color: #e8f5e9; }
+        .table-input.wrong { border-color: #dc3545; background-color: #f8d7da; }
+
+        /* Area Kerja Grid */
+        .interactive-section { display: none; margin-top: 20px; border-top: 2px dashed #ccc; padding-top: 20px; }
+        
+        /* Scrollable Canvas Container */
+        .canvas-container { width: 100%; overflow-x: auto; background: #fcfcfc; border: 2px solid #333; margin: 10px auto 20px auto; }
+        .grid-svg { display: block; min-width: 650px; } 
+        
+        .grid-line { stroke: #ddd; stroke-width: 1; }
+        .axis-line { stroke: #111; stroke-width: 3; transition: all 0.5s; }
+        .zigzag-line { stroke: #111; stroke-width: 2; fill: none; }
+        
+        /* Label Sumbu Input dalam SVG */
+        .axis-input { border: 1px solid #0056b3; font-size: 12px; text-align: center; padding: 2px; box-sizing: border-box; background: white;}
+        .axis-input:focus { outline: 2px solid #ffc107; }
+
+        /* Kontrol */
+        .controls { text-align: center; margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;}
+        .step-btn { padding: 10px 15px; cursor: pointer; border: 1px solid #999; background: #f8f8f8; font-weight: bold; font-size: 13px; border-radius: 4px;}
+        .step-btn.btn-cek { background-color: #28a745; color: white; border-color: #1e7e34; }
+        .step-btn.btn-cek:hover { background-color: #218838; }
+        .step-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .instr { color: #0056b3; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 14px; background: #e8f4f8; padding: 10px; border-radius: 4px; border: 1px solid #b8daff;}
+        .msg { text-align: center; font-weight: bold; margin-top: 15px; font-size: 15px;}
+        .tools-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px;}
+        
+        @media (max-width: 600px) {
+            .tab-button { font-size: 11px; padding: 10px 5px; min-width: 30%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <button onclick="window.close()">Tutup Materi</button>
+        <button onclick="window.open(window.location.href, '_blank')">Buka Tab Baru</button>
+        <button onclick="location.reload()">Muat Ulang Latihan</button>
+    </div>
+
+    <div class="app-container">
+        <div class="tab-menu">
+            <button class="tab-button active" onclick="openTab(event, 'tab-materi')">1. Materi Dasar</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-batang'); initLatihan('batang')">2. Diagram Batang</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-garis'); initLatihan('garis')">3. Diagram Garis</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-mentah'); initLatihan('mentah')">4. Data Mentah</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-rangkuman')">5. Rangkuman</button>
+        </div>
+
+        <div id="tab-materi" class="tab-content active">
+            <h2>A. Pendahuluan</h2>
+            <p>Di dunia kerja dan industri, laporan tidak lagi menggunakan kalimat panjang, melainkan berupa grafik dan diagram. Jika sebuah bengkel ingin melaporkan target produksi atau penjualan, mereka akan menyajikannya dalam bentuk visual agar mudah dipahami secara cepat.</p>
+
+            <h2>B. Kamus Mini Matematika</h2>
+            <div class="dictionary-box">
+                <ul style="margin:0; padding-left: 20px;">
+                    <li><strong>Sumbu X (Mendatar):</strong> Diisi dengan <strong>Nama Kategori/Waktu</strong> secara berurutan.</li>
+                    <li><strong>Sumbu Y (Tegak):</strong> Diisi dengan <strong>Angka Skala</strong> yang memiliki kelipatan tetap.</li>
+                    <li><strong>Titik Koordinat:</strong> Titik pertemuan presisi antara kategori (X) dan angkanya (Y).</li>
+                </ul>
+            </div>
+
+            <h2>C. Petunjuk Latihan Interaktif</h2>
+            <p>Pada tab latihan di atas, kamu akan menemukan kasus sehari-hari. Lakukan langkah ini:</p>
+            <ol>
+                <li>Baca cerita masalah dengan teliti.</li>
+                <li>Ekstrak data penting dan hitung ke dalam <strong>Tabel Distribusi</strong>.</li>
+                <li>Setelah tabel divalidasi benar oleh sistem, siapkan kanvas (Buat Sumbu).</li>
+                <li>Isi label angka skala dan nama kategori pada kotak yang muncul di gambar.</li>
+                <li><strong>Cari Titiknya!</strong> Klik persimpangan garis (*grid*) yang tepat. Sistem akan menolak jika titikmu melenceng!</li>
+            </ol>
+        </div>
+
+        <div id="tab-batang" class="tab-content">
+            <div class="tools-header">
+                <h1 style="font-size: 18px; margin:0;">LATIHAN DIAGRAM BATANG</h1>
+                <button onclick="initLatihan('batang')" class="step-btn">Ganti Kasus Cerita</button>
+            </div>
+            
+            <div class="soal-box" id="soal-teks-batang"></div>
+            <div class="instr">Langkah 1: Temukan angka pada teks cerita, lalu masukkan ke dalam tabel.</div>
+            <table id="tabel-batang"></table>
+            <div style="text-align: center;"><button class="step-btn btn-cek" id="btnCek-batang" onclick="cekTabel('batang')">Cek Kebenaran Tabel</button></div>
+            <div class="msg" id="msg-tabel-batang"></div>
+
+            <div class="interactive-section" id="interaktif-batang">
+                <div class="instr" id="guide-batang" style="background:#e8f5e9; border-color:#c3e6cb; color:#155724;">Langkah 2: Tabel Valid! Klik 'Buat Sumbu' untuk memulai menggambar.</div>
+                
+                <div class="canvas-container">
+                    <svg class="grid-svg" width="650" height="450" id="svg-batang">
+                        <g id="gridGroup-batang"></g>
+                        <g id="zigzagGroup-batang"></g>
+                        <line id="axisY-batang" x1="60" y1="380" x2="60" y2="380" class="axis-line" style="display:none;" />
+                        <line id="axisX-batang" x1="60" y1="380" x2="60" y2="380" class="axis-line" style="display:none;" />
+                        <g id="labelsGroup-batang"></g>
+                        <g id="drawGroup-batang"></g>
+                        <g id="pointGroup-batang"></g>
+                    </svg>
+                </div>
+
+                <div class="controls">
+                    <button class="step-btn" id="btn1-batang" onclick="stepCreateAxis('batang')">Buat Sumbu</button>
+                    <button class="step-btn" id="btn2-batang" onclick="stepAddLabels('batang')" disabled>Isi Sumbu (Label)</button>
+                    <button class="step-btn" id="btn3-batang" onclick="stepStartPoints('batang')" disabled>Tentukan Titik Presisi</button>
+                    <button class="step-btn" id="btn4-batang" onclick="stepDrawChart('batang')" disabled>Bangun Batang</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-garis" class="tab-content">
+            <div class="tools-header">
+                <h1 style="font-size: 18px; margin:0;">LATIHAN DIAGRAM GARIS</h1>
+                <button onclick="initLatihan('garis')" class="step-btn">Ganti Kasus Cerita</button>
+            </div>
+            
+            <div class="soal-box" id="soal-teks-garis"></div>
+            <div class="instr">Langkah 1: Ekstrak data tren dari cerita dan masukkan ke tabel.</div>
+            <table id="tabel-garis"></table>
+            <div style="text-align: center;"><button class="step-btn btn-cek" id="btnCek-garis" onclick="cekTabel('garis')">Cek Kebenaran Tabel</button></div>
+            <div class="msg" id="msg-tabel-garis"></div>
+
+            <div class="interactive-section" id="interaktif-garis">
+                <div class="instr" id="guide-garis" style="background:#e8f5e9; border-color:#c3e6cb; color:#155724;">Langkah 2: Tabel Valid! Klik 'Buat Sumbu' untuk memulai menggambar.</div>
+                
+                <div class="canvas-container">
+                    <svg class="grid-svg" width="650" height="450" id="svg-garis">
+                        <g id="gridGroup-garis"></g>
+                        <g id="zigzagGroup-garis"></g>
+                        <line id="axisY-garis" x1="60" y1="380" x2="60" y2="380" class="axis-line" style="display:none;" />
+                        <line id="axisX-garis" x1="60" y1="380" x2="60" y2="380" class="axis-line" style="display:none;" />
+                        <g id="labelsGroup-garis"></g>
+                        <g id="drawGroup-garis"></g>
+                        <g id="pointGroup-garis"></g>
+                    </svg>
+                </div>
+
+                <div class="controls">
+                    <button class="step-btn" id="btn1-garis" onclick="stepCreateAxis('garis')">Buat Sumbu</button>
+                    <button class="step-btn" id="btn2-garis" onclick="stepAddLabels('garis')" disabled>Isi Sumbu (Label)</button>
+                    <button class="step-btn" id="btn3-garis" onclick="stepStartPoints('garis')" disabled>Tentukan Titik Presisi</button>
+                    <button class="step-btn" id="btn4-garis" onclick="stepDrawChart('garis')" disabled>Tarik Garis Hubung</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-mentah" class="tab-content">
+            <div class="tools-header">
+                <h1 style="font-size: 18px; margin:0; color: #dc3545;">TANTANGAN DATA MENTAH</h1>
+                <button onclick="initLatihan('mentah')" class="step-btn">Ganti Kasus Data</button>
+            </div>
+            
+            <div class="soal-box" id="soal-teks-mentah" style="border-left-color: #dc3545; background: #fdf5f6;"></div>
+            <div class="instr" style="color: #dc3545; background: #fdf5f6; border-color: #f5c6cb;">Langkah 1: Hitung kemunculan tiap angka (turus), lalu masukkan frekuensinya ke tabel!</div>
+            <table id="tabel-mentah"></table>
+            <div style="text-align: center;"><button class="step-btn btn-cek" id="btnCek-mentah" onclick="cekTabel('mentah')">Cek Hasil Hitunganmu</button></div>
+            <div class="msg" id="msg-tabel-mentah"></div>
+
+            <div class="interactive-section" id="interaktif-mentah">
+                <div class="instr" id="guide-mentah" style="background:#e8f5e9; border-color:#c3e6cb; color:#155724;">Langkah 2: Hitungan Valid! Karena angka terbesarnya kecil, kita gunakan <strong>Skala 1</strong>.</div>
+                
+                <div class="canvas-container">
+                    <svg class="grid-svg" width="650" height="450" id="svg-mentah">
+                        <g id="gridGroup-mentah"></g>
+                        <g id="zigzagGroup-mentah"></g>
+                        <line id="axisY-mentah" x1="60" y1="380" x2="60" y2="380" class="axis-line" style="display:none;" />
+                        <line id="axisX-mentah" x1="60" y1="380" x2="60" y2="380" class="axis-line" style="display:none;" />
+                        <g id="labelsGroup-mentah"></g>
+                        <g id="drawGroup-mentah"></g>
+                        <g id="pointGroup-mentah"></g>
+                    </svg>
+                </div>
+
+                <div class="controls">
+                    <button class="step-btn" id="btn1-mentah" onclick="stepCreateAxis('mentah')">Buat Sumbu</button>
+                    <button class="step-btn" id="btn2-mentah" onclick="stepAddLabels('mentah')" disabled>Isi Sumbu (Label)</button>
+                    <button class="step-btn" id="btn3-mentah" onclick="stepStartPoints('mentah')" disabled>Tentukan Titik Presisi</button>
+                    <button class="step-btn" id="btn4-mentah" onclick="stepDrawChart('mentah')" disabled>Bangun Batang</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-rangkuman" class="tab-content">
+            <h2 style="color: #28a745;">Rangkuman Pembelajaran Hari Ini</h2>
+            <div class="dictionary-box" style="background: #e8f5e9; border-color: #c3e6cb;">
+                <ul style="font-size: 15px; line-height: 1.8;">
+                    <li>Data mentah yang banyak dan berantakan <strong>wajib</strong> dihitung terlebih dahulu menggunakan <strong>Tabel Distribusi Frekuensi</strong> agar tidak ada yang terlewat.</li>
+                    <li>Dalam menggambar diagram, <strong>Sumbu Mendatar (X)</strong> adalah tempat untuk nama kategori, sedangkan <strong>Sumbu Tegak (Y)</strong> adalah tempat untuk jumlah/frekuensi.</li>
+                    <li>Skala pada Sumbu Y <strong>tidak harus selalu dimulai dari 1</strong>. Kita bisa menggunakan kelipatan 2, 3, 5, atau 10 agar grafik tidak terlalu tinggi.</li>
+                    <li>Jika angka terkecil pada data sangat besar (misalnya langsung ke angka 28), kita bisa menggunakan <strong>Garis Zigzag</strong> di pangkal Sumbu Y sebagai tanda adanya angka yang dilompati.</li>
+                    <li><strong>Diagram Batang</strong> sangat cocok untuk membandingkan jumlah barang yang berbeda.</li>
+                    <li><strong>Diagram Garis</strong> sangat cocok untuk melihat <em>perubahan/tren</em> yang terjadi seiring berjalannya waktu (seperti suhu atau peningkatan peminjaman).</li>
+                </ul>
+            </div>
+            <p style="text-align: center; font-weight: bold;">Selamat! Kamu telah menyelesaikan seluruh rangkaian latihan Statistika Dasar.</p>
+        </div>
+
+    </div>
+
+    <script>
+        const svgW = 650;
+        const svgH = 450;
+        
+        const spacingX = 85; 
+        const spacingY = 40; 
+        
+        const originX = 60;  
+        const originY = 380; 
+        
+        function openTab(evt, tabName) {
+            let i, tabcontent, tabbuttons;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) { tabbuttons[i].className = tabbuttons[i].className.replace(" active", ""); }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function drawGrid(svgId) {
+            const svg = document.getElementById(svgId);
+            const gridGroup = svg.querySelector("#gridGroup-" + svgId.split('-')[1]);
+            gridGroup.innerHTML = ''; 
+            
+            for (let i = originY; i >= 0; i -= spacingY) {
+                let hLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                hLine.setAttribute("x1", 0); hLine.setAttribute("y1", i);
+                hLine.setAttribute("x2", svgW); hLine.setAttribute("y2", i);
+                hLine.setAttribute("class", "grid-line");
+                gridGroup.appendChild(hLine);
+            }
+            for (let i = originX; i <= svgW; i += spacingX) {
+                let vLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                vLine.setAttribute("x1", i); vLine.setAttribute("y1", 0);
+                vLine.setAttribute("x2", i); vLine.setAttribute("y2", svgH);
+                vLine.setAttribute("class", "grid-line");
+                gridGroup.appendChild(vLine);
+            }
+        }
+        drawGrid('svg-batang');
+        drawGrid('svg-garis');
+        drawGrid('svg-mentah');
+
+        const bankBatang = [
+            {
+                teks: "Sebuah bengkel motor 'Lancar Jaya' mencatat penjualan oli mesin. Pada hari Senin terjual {v0} botol. Hari Selasa turun menjadi {v1} botol. Hari Rabu mulai ramai sehingga terjual {v2} botol, dan hari Kamis puncaknya terjual {v3} botol.",
+                lbl: ["Senin", "Selasa", "Rabu", "Kamis"],
+                vSets: [[12, 8, 16, 20], [16, 12, 24, 28], [8, 4, 12, 16]],
+                skala: 4, baseY: 0
+            },
+            {
+                teks: "Toko aksesoris motor mengecek stok helm. Helm warna Hitam ada {v0} buah, warna Putih {v1} buah, warna Merah {v2} buah, warna Biru {v3} buah, dan warna Abu-abu {v4} buah.",
+                lbl: ["Hitam", "Putih", "Merah", "Biru", "Abu"],
+                vSets: [[15, 25, 10, 20, 5], [20, 30, 15, 25, 10]],
+                skala: 5, baseY: 0
+            },
+            {
+                teks: "Tempat cuci motor 'Kinclong' mencatat pelanggan dari hari Rabu hingga Minggu. Hari Rabu ada {v0} motor, Kamis {v1} motor, Jumat {v2} motor, Sabtu {v3} motor, dan Minggu {v4} motor.",
+                lbl: ["Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"],
+                vSets: [[15, 21, 9, 27, 24], [12, 18, 6, 24, 21]],
+                skala: 3, baseY: 0
+            }
+        ];
+
+        const bankGaris = [
+            {
+                teks: "Seorang mekanik memantau suhu mesin bubut setiap jam. Pukul 08.00 suhunya {v0}°C, 09.00 naik ke {v1}°C, 10.00 mencapai {v2}°C, 11.00 turun ke {v3}°C, 12.00 menjadi {v4}°C, dan 13.00 suhunya {v5}°C.",
+                lbl: ["08.00", "09.00", "10.00", "11.00", "12.00", "13.00"],
+                vSets: [[28, 32, 36, 30, 34, 38], [26, 30, 34, 28, 32, 36]],
+                skala: 2, baseY: 26
+            },
+            {
+                teks: "Petugas perpustakaan mencatat jumlah peminjaman buku servis mekanik dalam empat minggu terakhir. Minggu ke-1 dipinjam {v0} buku. Minggu ke-2 menjadi {v1} buku. Minggu ke-3 turun menjadi {v2} buku, dan Minggu ke-4 naik menjadi {v3} buku.",
+                lbl: ["Ming-1", "Ming-2", "Ming-3", "Ming-4"],
+                vSets: [[20, 30, 10, 40], [30, 40, 20, 50]],
+                skala: 10, baseY: 0
+            }
+        ];
+
+        const bankMentah = [
+            {
+                teks: "Guru Matematika membagikan hasil ulangan harian dari 30 siswa di kelas X SMK. Nilai mereka masih sangat berantakan:<br><div class='raw-data'>74, 72, 76, 78, 70, 80, 74, 74, 72, 76,<br>70, 78, 74, 72, 76, 80, 74, 78, 70, 76,<br>74, 72, 78, 80, 70, 76, 74, 72, 78, 76</div>Bantulah guru menghitung berapa banyak siswa yang mendapat tiap nilai!",
+                lbl: ["70", "72", "74", "76", "78", "80"],
+                val: [4, 5, 7, 6, 5, 3],
+                skala: 1, baseY: 0
+            },
+            {
+                teks: "Instruktur bengkel meminta siswa mengukur diameter 30 buah piston (dalam mm). Hasil pengukurannya dicatat acak sebagai berikut:<br><div class='raw-data'>52, 51, 53, 50, 54, 52, 55, 51, 52, 53,<br>51, 54, 52, 50, 55, 52, 53, 51, 54, 52,<br>55, 53, 51, 50, 54, 52, 51, 55, 53, 52</div>Hitunglah kemunculan tiap ukuran diameter tersebut!",
+                lbl: ["50", "51", "52", "53", "54", "55"],
+                val: [3, 6, 8, 5, 4, 4],
+                skala: 1, baseY: 0
+            },
+            {
+                teks: "Toko perlengkapan bengkel mendata ukuran sepatu safety dari 30 mekanik baru. Datanya belum diurutkan:<br><div class='raw-data'>40, 39, 41, 38, 42, 40, 43, 39, 40, 41,<br>39, 42, 40, 38, 43, 40, 41, 39, 42, 40,<br>43, 41, 39, 38, 42, 40, 41, 40, 41, 40</div>Bantulah admin toko merapikan pesanan berdasarkan ukurannya!",
+                lbl: ["38", "39", "40", "41", "42", "43"],
+                val: [3, 5, 9, 6, 4, 3],
+                skala: 1, baseY: 0
+            }
+        ];
+
+        let activeData = { batang: {}, garis: {}, mentah: {} };
+        let pointStatus = { batang: { count: 0, active: false }, garis: { count: 0, active: false }, mentah: { count: 0, active: false } };
+
+        function initLatihan(tab) {
+            let soal;
+            if(tab === 'batang') {
+                soal = bankBatang[Math.floor(Math.random() * bankBatang.length)];
+                let vSet = soal.vSets[Math.floor(Math.random() * soal.vSets.length)];
+                activeData[tab] = { labels: soal.lbl, values: vSet, skala: soal.skala, baseY: soal.baseY };
+            } else if (tab === 'garis') {
+                soal = bankGaris[Math.floor(Math.random() * bankGaris.length)];
+                let vSet = soal.vSets[Math.floor(Math.random() * soal.vSets.length)];
+                activeData[tab] = { labels: soal.lbl, values: vSet, skala: soal.skala, baseY: soal.baseY };
+            } else {
+                soal = bankMentah[Math.floor(Math.random() * bankMentah.length)];
+                activeData[tab] = { labels: soal.lbl, values: soal.val, skala: soal.skala, baseY: soal.baseY };
+            }
+
+            let exPts = activeData[tab].values.map((v, i) => {
+                let langkahY = (v - activeData[tab].baseY) / activeData[tab].skala;
+                return {
+                    x: originX + ((i + 1) * spacingX),
+                    y: originY - (langkahY * spacingY),
+                    found: false
+                };
+            });
+            activeData[tab].expectedPts = exPts;
+            activeData[tab].maxSteps = Math.max(...activeData[tab].values.map(v => (v - activeData[tab].baseY) / activeData[tab].skala));
+
+            let t = soal.teks;
+            if(tab !== 'mentah') {
+                activeData[tab].values.forEach((val, i) => { t = t.replace(`{v${i}}`, val); });
+                document.getElementById(`soal-teks-${tab}`).innerHTML = `${t}<br><br><em>Instruksi: Gunakan skala kelipatan ${activeData[tab].skala} di Sumbu Y.</em>`;
+            } else {
+                document.getElementById(`soal-teks-${tab}`).innerHTML = t;
+            }
+
+            let tableHtml = `<tr><th>Kategori (Sumbu X)</th><th>Frekuensi (Sumbu Y)</th></tr>`;
+            for(let i=0; i<activeData[tab].labels.length; i++) {
+                tableHtml += `<tr>
+                    <td>${activeData[tab].labels[i]}</td>
+                    <td><input type="number" class="table-input input-${tab}" data-idx="${i}"></td>
+                </tr>`;
+            }
+            document.getElementById(`tabel-${tab}`).innerHTML = tableHtml;
+
+            document.getElementById(`interaktif-${tab}`).style.display = "none";
+            document.getElementById(`msg-tabel-${tab}`).innerHTML = "";
+            document.getElementById(`btnCek-${tab}`).disabled = false;
+            document.getElementById(`drawGroup-${tab}`).innerHTML = '';
+            document.getElementById(`pointGroup-${tab}`).innerHTML = '';
+            document.getElementById(`zigzagGroup-${tab}`).innerHTML = '';
+            document.getElementById(`labelsGroup-${tab}`).innerHTML = '';
+            
+            document.getElementById(`axisX-${tab}`).style.display = 'none';
+            document.getElementById(`axisY-${tab}`).style.display = 'none';
+            document.getElementById(`axisX-${tab}`).setAttribute("x2", originX);
+            document.getElementById(`axisY-${tab}`).setAttribute("y2", originY);
+            
+            document.getElementById(`btn1-${tab}`).disabled = false;
+            document.getElementById(`btn2-${tab}`).disabled = true;
+            document.getElementById(`btn3-${tab}`).disabled = true;
+            document.getElementById(`btn4-${tab}`).disabled = true;
+            
+            pointStatus[tab].count = 0;
+            pointStatus[tab].active = false;
+        }
+
+        function cekTabel(tab) {
+            let inputs = document.querySelectorAll(`.input-${tab}`);
+            let allCorrect = true;
+            inputs.forEach(input => {
+                let idx = input.getAttribute('data-idx');
+                if(parseInt(input.value) === activeData[tab].values[idx]) {
+                    input.className = `table-input input-${tab} correct`;
+                } else {
+                    input.className = `table-input input-${tab} wrong`;
+                    allCorrect = false;
+                }
+            });
+
+            let msgBox = document.getElementById(`msg-tabel-${tab}`);
+            if(allCorrect) {
+                msgBox.innerHTML = "<span style='color:green;'>Hebat! Data di tabelmu sangat akurat. Silakan lanjut ke bawah.</span>";
+                document.getElementById(`btnCek-${tab}`).disabled = true;
+                document.getElementById(`interaktif-${tab}`).style.display = "block";
+            } else {
+                msgBox.innerHTML = "<span style='color:red;'>Oops, ada angka yang salah. Coba hitung ulang dengan teliti!</span>";
+            }
+        }
+
+        function stepCreateAxis(tab) {
+            const axisX = document.getElementById(`axisX-${tab}`);
+            const axisY = document.getElementById(`axisY-${tab}`);
+            axisX.style.display = "block";
+            axisY.style.display = "block";
+            
+            let lenX = originX + (activeData[tab].labels.length * spacingX) + 40;
+            let lenY = originY - (activeData[tab].maxSteps * spacingY) - 40;
+
+            setTimeout(() => {
+                axisX.setAttribute("x2", lenX); 
+                axisY.setAttribute("y2", lenY);  
+            }, 50);
+
+            if(activeData[tab].baseY > 0) {
+                let zigGroup = document.getElementById(`zigzagGroup-${tab}`);
+                let zig = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+                zig.setAttribute("points", `${originX-4},${originY-5} ${originX+4},${originY-10} ${originX-4},${originY-15} ${originX},${originY-20}`);
+                zig.setAttribute("class", "zigzag-line");
+                zigGroup.appendChild(zig);
+            }
+
+            document.getElementById(`guide-${tab}`).innerText = `Sumbu siap! Sekarang isikan label angka dan kategori ke dalam kotak.`;
+            document.getElementById(`btn1-${tab}`).disabled = true;
+            document.getElementById(`btn2-${tab}`).disabled = false;
+        }
+
+        function stepAddLabels(tab) {
+            const lblGroup = document.getElementById(`labelsGroup-${tab}`);
+            let d = activeData[tab];
+
+            d.labels.forEach((lbl, index) => {
+                let fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+                let px = originX + ((index + 1) * spacingX); 
+                fo.setAttribute("x", px - 35); 
+                fo.setAttribute("y", originY + 5);
+                fo.setAttribute("width", "70");
+                fo.setAttribute("height", "30");
+                
+                let input = document.createElement('input');
+                input.className = 'axis-input';
+                input.style.width = "100%";
+                input.style.height = "100%";
+                input.placeholder = "Kategori";
+                fo.appendChild(input);
+                lblGroup.appendChild(fo);
+            });
+
+            let fo0 = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+            fo0.setAttribute("x", "10"); fo0.setAttribute("y", originY - 12);
+            fo0.setAttribute("width", "40"); fo0.setAttribute("height", "24");
+            let inp0 = document.createElement('input'); inp0.className = 'axis-input';
+            inp0.style.width = "100%"; inp0.style.height = "100%"; inp0.placeholder = "0";
+            fo0.appendChild(inp0); lblGroup.appendChild(fo0);
+
+            for (let i = 1; i <= d.maxSteps; i++) {
+                let fo = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+                let py = originY - (i * spacingY); 
+                fo.setAttribute("x", "10");
+                fo.setAttribute("y", py - 12);
+                fo.setAttribute("width", "40");
+                fo.setAttribute("height", "24");
+                
+                let input = document.createElement('input');
+                input.className = 'axis-input';
+                input.style.width = "100%";
+                input.style.height = "100%";
+                input.placeholder = "...";
+                fo.appendChild(input);
+                lblGroup.appendChild(fo);
+            }
+
+            document.getElementById(`guide-${tab}`).innerHTML = "Klik <strong>'Tentukan Titik Presisi'</strong>, lalu klik area kanvas untuk menentukan titik!";
+            document.getElementById(`btn2-${tab}`).disabled = true;
+            document.getElementById(`btn3-${tab}`).disabled = false;
+        }
+
+        function stepStartPoints(tab) {
+            pointStatus[tab].active = true;
+            const svgEl = document.getElementById(`svg-${tab}`);
+            svgEl.style.cursor = "crosshair";
+            document.getElementById(`btn3-${tab}`).disabled = true;
+            
+            let totalPts = activeData[tab].expectedPts.length;
+            document.getElementById(`guide-${tab}`).innerHTML = `Ayo, letakkan <strong>${totalPts} titik</strong>. Sistem akan mengecek keakuratannya!`;
+
+            svgEl.onclick = function(e) {
+                if(!pointStatus[tab].active) return;
+                
+                const pt = svgEl.createSVGPoint();
+                pt.x = e.clientX;
+                pt.y = e.clientY;
+                const svgP = pt.matrixTransform(svgEl.getScreenCTM().inverse());
+                const x = svgP.x;
+                const y = svgP.y;
+
+                const snapX = originX + Math.round((x - originX) / spacingX) * spacingX;
+                const snapY = originY - Math.round((originY - y) / spacingY) * spacingY;
+
+                if (snapX <= originX || snapY >= originY) return; 
+
+                let cekTitik = activeData[tab].expectedPts.find(p => Math.abs(p.x - snapX) < 1 && Math.abs(p.y - snapY) < 1 && !p.found);
+
+                if(cekTitik) {
+                    cekTitik.found = true;
+                    let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    circle.setAttribute("cx", snapX); circle.setAttribute("cy", snapY);
+                    circle.setAttribute("r", 6); circle.setAttribute("fill", "#28a745");
+                    circle.setAttribute("class", `user-dot-${tab}`);
+                    document.getElementById(`pointGroup-${tab}`).appendChild(circle);
+                    
+                    pointStatus[tab].count++;
+                    let sisa = totalPts - pointStatus[tab].count;
+                    document.getElementById(`guide-${tab}`).innerHTML = `<span style="color:green;">Tepat! (Tersisa ${sisa} titik lagi)</span>`;
+
+                    if(pointStatus[tab].count >= totalPts) {
+                        pointStatus[tab].active = false;
+                        svgEl.style.cursor = "default";
+                        document.getElementById(`btn4-${tab}`).disabled = false;
+                        document.getElementById(`guide-${tab}`).innerHTML = "Semua titik sudah benar! Sekarang klik tombol langkah 4.";
+                    }
+                } else {
+                    document.getElementById(`guide-${tab}`).innerHTML = "<span style='color:red;'>Titik melenceng! Cek lagi angkanya di tabel.</span>";
+                    let errCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    errCircle.setAttribute("cx", snapX); errCircle.setAttribute("cy", snapY);
+                    errCircle.setAttribute("r", 5); errCircle.setAttribute("fill", "red");
+                    document.getElementById(`pointGroup-${tab}`).appendChild(errCircle);
+                    setTimeout(() => errCircle.remove(), 600); 
+                }
+            };
+        }
+
+        function stepDrawChart(tab) {
+            const points = document.querySelectorAll(`.user-dot-${tab}`);
+            const drawGroup = document.getElementById(`drawGroup-${tab}`);
+            
+            if(tab === 'garis') {
+                let ptsArray = Array.from(points).sort((a,b) => parseFloat(a.getAttribute("cx")) - parseFloat(b.getAttribute("cx")));
+                let polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+                let pointsStr = ptsArray.map(p => `${p.getAttribute("cx")},${p.getAttribute("cy")}`).join(" ");
+                polyline.setAttribute("points", pointsStr);
+                polyline.setAttribute("fill", "none");
+                polyline.setAttribute("stroke", "#0056b3");
+                polyline.setAttribute("stroke-width", "4");
+                drawGroup.appendChild(polyline);
+            } else {
+                points.forEach(p => {
+                    let rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                    let px = parseFloat(p.getAttribute("cx"));
+                    let py = parseFloat(p.getAttribute("cy"));
+                    rect.setAttribute("x", px - 20); 
+                    rect.setAttribute("y", py);
+                    rect.setAttribute("width", 40);
+                    rect.setAttribute("height", originY - py); 
+                    rect.setAttribute("fill", tab==='mentah' ? "#6f42c1" : "#0056b3");
+                    rect.setAttribute("opacity", "0.8");
+                    drawGroup.appendChild(rect);
+                });
+            }
+
+            document.getElementById(`btn4-${tab}`).disabled = true;
+            document.getElementById(`guide-${tab}`).innerHTML = "<span style='color:#0056b3;'><strong>MISI SELESAI!</strong> Analisis dan pengolahan data kamu sempurna.</span>";
+        }
+    </script>
+</body>
+</html>
