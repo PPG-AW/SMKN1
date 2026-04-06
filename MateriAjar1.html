@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi Ajar - Statistika (Diagram Batang & Garis)</title>
+    <style>
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #e0e0e0;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .btn-new-tab { background-color: #0056b3; color: white; }
+        .btn-close { background-color: #dc3545; color: white; }
+
+        .document-container {
+            background-color: #ffffff;
+            max-width: 800px;
+            margin: 70px auto 30px auto; 
+            padding: 40px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+        }
+        @media (max-width: 600px) {
+            .document-container { padding: 20px; margin: 60px 10px 20px 10px; }
+        }
+
+        h1 { text-align: center; font-size: 18px; margin-bottom: 5px; }
+        h2 { font-size: 16px; margin-top: 35px; border-bottom: 2px solid #333; padding-bottom: 5px; }
+        h3 { font-size: 15px; margin-top: 25px; color: #0056b3; border-left: 3px solid #0056b3; padding-left: 8px;}
+        
+        .dictionary-box {
+            background-color: #fdfdfd;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .dictionary-box ul { margin: 0; padding-left: 20px; }
+        
+        table {
+            width: 100%;
+            max-width: 450px;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+        th { background-color: #f0f0f0; }
+
+        .step-box {
+            background-color: #f9f9fa;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .step-item {
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 15px;
+        }
+        .step-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        
+        .soal-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .raw-data-box {
+            background-color: #e9ecef;
+            border: 1px dashed #6c757d;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        .step-visual {
+            text-align: center;
+            margin-top: 10px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            padding: 10px;
+        }
+        svg {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+        }
+        
+        .summary-box {
+            background-color: #e8f4f8;
+            border: 1px solid #b8daff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .summary-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .summary-box li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <button class="btn btn-new-tab" onclick="openInNewTab()">Buka di Tab Baru</button>
+        <button class="btn btn-close" onclick="closeTab()">Tutup Materi</button>
+    </div>
+
+    <div class="document-container">
+        <h1>MATA PELAJARAN MATEMATIKA - KELAS X SMK</h1>
+        <h1>Penyajian Data: Diagram Batang dan Garis</h1>
+
+        <h2>A. Pendahuluan: Mengapa Kita Butuh Statistika?</h2>
+        <p>Bayangkan kamu bekerja sebagai admin di sebuah toko elektronik. Setiap hari, ada banyak barang yang terjual. Tumpukan nota penjualan harian menumpuk di mejamu. Jika bos tiba-tiba bertanya, <em>"Berapa banyak laptop yang terjual pada hari Rabu?"</em>, kamu pasti akan kebingungan jika harus mencari dan menghitungnya satu per satu dari tumpukan nota tersebut.</p>
+        <p>Di sinilah <strong>Statistika</strong> hadir untuk membantu. Dengan mengubah tumpukan nota yang berantakan (data mentah) menjadi sebuah tabel dan gambar (diagram), kita bisa langsung membaca informasi penting tersebut hanya dalam hitungan detik.</p>
+
+        <h2>B. Kamus Mini Matematika</h2>
+        <div class="dictionary-box">
+            <p><strong>Sebelum menggambar, mari pahami istilah penting ini:</strong></p>
+            <ul>
+                <li><strong>Frekuensi:</strong> Banyaknya data (contoh: jumlah barang yang terjual, besaran suhu).</li>
+                <li><strong>Sumbu Mendatar (Sumbu X):</strong> Garis horizontal (tidur), tempat menuliskan nama hari, jam, atau jenis barang.</li>
+                <li><strong>Sumbu Tegak (Sumbu Y):</strong> Garis vertikal (berdiri), tempat menuliskan angka atau Frekuensi.</li>
+                <li><strong>Skala:</strong> Jarak antar angka pada sumbu Y yang nilainya harus sama rata (misal kelipatan 5: 0, 5, 10, 15).</li>
+                <li><strong>Titik Koordinat:</strong> Titik pertemuan antara nilai di Sumbu X dan nilai di Sumbu Y.</li>
+            </ul>
+        </div>
+
+        <h2>C. Menyajikan Diagram Batang</h2>
+        
+        <h3>Contoh Soal 1</h3>
+        <div class="soal-box">
+            Kamu bekerja di toko elektronik "Maju Jaya". Bos meminta kamu membuat laporan bergambar dari tumpukan nota penjualan Laptop minggu ini. Tercatat hari Senin laku 10 unit, Selasa 15 unit, Rabu 25 unit, Kamis 10 unit, dan Jumat 20 unit. Buatlah diagram batangnya!
+        </div>
+
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Langkah Awal: Mengubah Data Menjadi Tabel</strong><br>Sebelum menggambar, rapikan cerita pada soal ke dalam bentuk Tabel Distribusi Frekuensi agar mudah dibaca.</p>
+                <table>
+                    <tr><th>Hari (Sumbu X)</th><th>Jumlah Terjual (Sumbu Y)</th></tr>
+                    <tr><td>Senin</td><td>10</td></tr>
+                    <tr><td>Selasa</td><td>15</td></tr>
+                    <tr><td>Rabu</td><td>25</td></tr>
+                    <tr><td>Kamis</td><td>10</td></tr>
+                    <tr><td>Jumat</td><td>20</td></tr>
+                </table>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 1: Membuat Sumbu.</strong> Buatlah dua garis yang saling tegak lurus membentuk sudut siku-siku. Garis tidur adalah Sumbu X, garis berdiri adalah Sumbu Y.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="15" y="195" font-size="12">0</text>
+                        <text x="30" y="5" font-size="12" text-anchor="middle">Y</text>
+                        <text x="315" y="185" font-size="12">X</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 2: Mengisi Sumbu X.</strong> Tuliskan nama hari dari tabel ke Sumbu X. Berilah jarak spasi yang sama rata.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">Senin</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">Selasa</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">Rabu</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">Kamis</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">Jumat</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 3 & 4: Skala Y & Titik Koordinat.</strong> Angka tertinggi adalah 25. Gunakan skala kelipatan 5. Tarik garis putus-putus dan beri titik merah sebagai batas atas batang.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">Senin</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">Selasa</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">Rabu</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">Kamis</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">Jumat</text>
+                        <text x="25" y="185" font-size="10" text-anchor="end">0</text>
+                        <text x="25" y="150" font-size="10" text-anchor="end">5</text>
+                        <text x="25" y="116" font-size="10" text-anchor="end">10</text>
+                        <text x="25" y="82" font-size="10" text-anchor="end">15</text>
+                        <text x="25" y="48" font-size="10" text-anchor="end">20</text>
+                        <text x="25" y="14" font-size="10" text-anchor="end">25</text>
+                        
+                        <line x1="65" y1="180" x2="65" y2="112" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="112" x2="65" y2="112" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="65" cy="112" r="4" fill="red" />
+
+                        <line x1="115" y1="180" x2="115" y2="78" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="78" x2="115" y2="78" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="115" cy="78" r="4" fill="red" />
+
+                        <line x1="165" y1="180" x2="165" y2="10" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="10" x2="165" y2="10" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="165" cy="10" r="4" fill="red" />
+
+                        <line x1="215" y1="180" x2="215" y2="112" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="112" x2="215" y2="112" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="215" cy="112" r="4" fill="red" />
+
+                        <line x1="265" y1="180" x2="265" y2="44" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="44" x2="265" y2="44" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="265" cy="44" r="4" fill="red" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 5: Menggambar Batang.</strong> Buat persegi panjang dengan batas titik merah tadi tepat berada di tengah atasnya. Selesai!</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">Senin</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">Selasa</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">Rabu</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">Kamis</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">Jumat</text>
+                        <text x="25" y="185" font-size="10" text-anchor="end">0</text>
+                        <text x="25" y="150" font-size="10" text-anchor="end">5</text>
+                        <text x="25" y="116" font-size="10" text-anchor="end">10</text>
+                        <text x="25" y="82" font-size="10" text-anchor="end">15</text>
+                        <text x="25" y="48" font-size="10" text-anchor="end">20</text>
+                        <text x="25" y="14" font-size="10" text-anchor="end">25</text>
+                        
+                        <rect x="50" y="112" width="30" height="68" fill="#0056b3" /> 
+                        <rect x="100" y="78" width="30" height="102" fill="#0056b3" /> 
+                        <rect x="150" y="10" width="30" height="170" fill="#0056b3" /> 
+                        <rect x="200" y="112" width="30" height="68" fill="#0056b3" /> 
+                        <rect x="250" y="44" width="30" height="136" fill="#0056b3" /> 
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <h3>Contoh Soal 2</h3>
+        <div class="soal-box">
+            Di rak ruang perkakas bengkel, kamu diminta mendata jumlah alat yang tersedia. Tercatat ada 15 buah Obeng, 27 buah Kunci Pas, 18 buah Tang, 9 buah Palu, dan 21 buah Gergaji. Buatlah diagram batangnya sebagai laporan!
+        </div>
+
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Langkah Awal: Mengubah Data Menjadi Tabel</strong></p>
+                <table>
+                    <tr><th>Nama Alat (Sumbu X)</th><th>Jumlah (Sumbu Y)</th></tr>
+                    <tr><td>Obeng</td><td>15</td></tr>
+                    <tr><td>Kunci Pas</td><td>27</td></tr>
+                    <tr><td>Tang</td><td>18</td></tr>
+                    <tr><td>Palu</td><td>9</td></tr>
+                    <tr><td>Gergaji</td><td>21</td></tr>
+                </table>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 1 & 2: Sumbu dan Sumbu X.</strong> Buat garis tegak lurus dan tuliskan nama perkakas mendatar.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">Obeng</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">K. Pas</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">Tang</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">Palu</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">Gergaji</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 3 & 4: Skala Y & Titik Koordinat.</strong> Angka tertinggi adalah 27. Kita gunakan skala <strong>kelipatan 3</strong>. Tarik garis putus-putus dan tentukan titik merahnya.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">Obeng</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">K. Pas</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">Tang</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">Palu</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">Gergaji</text>
+                        
+                        <text x="25" y="185" font-size="10" text-anchor="end">0</text>
+                        <text x="25" y="168" font-size="10" text-anchor="end">3</text>
+                        <text x="25" y="153" font-size="10" text-anchor="end">6</text>
+                        <text x="25" y="138" font-size="10" text-anchor="end">9</text>
+                        <text x="25" y="123" font-size="10" text-anchor="end">12</text>
+                        <text x="25" y="108" font-size="10" text-anchor="end">15</text>
+                        <text x="25" y="93" font-size="10" text-anchor="end">18</text>
+                        <text x="25" y="78" font-size="10" text-anchor="end">21</text>
+                        <text x="25" y="63" font-size="10" text-anchor="end">24</text>
+                        <text x="25" y="48" font-size="10" text-anchor="end">27</text>
+
+                        <line x1="65" y1="180" x2="65" y2="105" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="105" x2="65" y2="105" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="65" cy="105" r="4" fill="red" />
+
+                        <line x1="115" y1="180" x2="115" y2="45" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="45" x2="115" y2="45" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="115" cy="45" r="4" fill="red" />
+
+                        <line x1="165" y1="180" x2="165" y2="90" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="90" x2="165" y2="90" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="165" cy="90" r="4" fill="red" />
+
+                        <line x1="215" y1="180" x2="215" y2="135" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="135" x2="215" y2="135" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="215" cy="135" r="4" fill="red" />
+
+                        <line x1="265" y1="180" x2="265" y2="75" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="75" x2="265" y2="75" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="265" cy="75" r="4" fill="red" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 5: Menggambar Batang.</strong> Bangun persegi panjang lurus ke atas hingga menyentuh titik koordinat merah.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">Obeng</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">K. Pas</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">Tang</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">Palu</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">Gergaji</text>
+                        
+                        <text x="25" y="185" font-size="10" text-anchor="end">0</text>
+                        <text x="25" y="168" font-size="10" text-anchor="end">3</text>
+                        <text x="25" y="153" font-size="10" text-anchor="end">6</text>
+                        <text x="25" y="138" font-size="10" text-anchor="end">9</text>
+                        <text x="25" y="123" font-size="10" text-anchor="end">12</text>
+                        <text x="25" y="108" font-size="10" text-anchor="end">15</text>
+                        <text x="25" y="93" font-size="10" text-anchor="end">18</text>
+                        <text x="25" y="78" font-size="10" text-anchor="end">21</text>
+                        <text x="25" y="63" font-size="10" text-anchor="end">24</text>
+                        <text x="25" y="48" font-size="10" text-anchor="end">27</text>
+
+                        <rect x="50" y="105" width="30" height="75" fill="#17a2b8" /> 
+                        <rect x="100" y="45" width="30" height="135" fill="#17a2b8" /> 
+                        <rect x="150" y="90" width="30" height="90" fill="#17a2b8" /> 
+                        <rect x="200" y="135" width="30" height="45" fill="#17a2b8" /> 
+                        <rect x="250" y="75" width="30" height="105" fill="#17a2b8" /> 
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <h2>D. Menyajikan Diagram Garis</h2>
+
+        <h3>Contoh Soal 3</h3>
+        <div class="soal-box">
+            Kamu adalah teknisi mesin CNC. Suhu mesin harus dicatat setiap jam. Pada jam 08.00 suhu tercatat 26°C, jam 09.00 naik menjadi 28°C, jam 10.00 menjadi 32°C, jam 11.00 turun ke 30°C, dan jam 12.00 menjadi 31°C. Buatlah diagram garisnya!
+        </div>
+
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Langkah Awal: Mengubah Data Menjadi Tabel</strong></p>
+                <table>
+                    <tr><th>Waktu (Sumbu X)</th><th>Suhu Mesin / °C (Sumbu Y)</th></tr>
+                    <tr><td>08.00</td><td>26</td></tr>
+                    <tr><td>09.00</td><td>28</td></tr>
+                    <tr><td>10.00</td><td>32</td></tr>
+                    <tr><td>11.00</td><td>30</td></tr>
+                    <tr><td>12.00</td><td>31</td></tr>
+                </table>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 1 & 2: Sumbu dan Sumbu X.</strong> Buat garis tegak lurus dan tulis jam dengan jarak yang sama.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">08.00</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">09.00</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">10.00</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">11.00</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">12.00</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 3 & 4: Skala Y & Titik Koordinat.</strong> Buat skala kelipatan 2 dimulai dari 24. Gunakan garis zigzag dari 0 ke 24. Tarik garis putus-putus untuk menemukan titik temu waktu dan suhu.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">08.00</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">09.00</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">10.00</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">11.00</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">12.00</text>
+                        <text x="25" y="154" font-size="10" text-anchor="end">24</text>
+                        <text x="25" y="124" font-size="10" text-anchor="end">26</text>
+                        <text x="25" y="94" font-size="10" text-anchor="end">28</text>
+                        <text x="25" y="64" font-size="10" text-anchor="end">30</text>
+                        <text x="25" y="34" font-size="10" text-anchor="end">32</text>
+                        <polyline points="28,175 35,170 25,165 30,160" fill="none" stroke="black" stroke-width="1.5" />
+                        <text x="15" y="185" font-size="10" text-anchor="end">0</text>
+                        
+                        <line x1="65" y1="180" x2="65" y2="120" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="120" x2="65" y2="120" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="65" cy="120" r="4" fill="red" />
+                        
+                        <line x1="115" y1="180" x2="115" y2="90" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="90" x2="115" y2="90" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="115" cy="90" r="4" fill="red" />
+                        
+                        <line x1="165" y1="180" x2="165" y2="30" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="30" x2="165" y2="30" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="165" cy="30" r="4" fill="red" />
+                        
+                        <line x1="215" y1="180" x2="215" y2="60" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="60" x2="215" y2="60" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="215" cy="60" r="4" fill="red" />
+                        
+                        <line x1="265" y1="180" x2="265" y2="45" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="45" x2="265" y2="45" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="265" cy="45" r="4" fill="red" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 5: Menarik Garis Lurus.</strong> Tarik garis lurus menyambung dari titik pertama secara berurutan.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">08.00</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">09.00</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">10.00</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">11.00</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">12.00</text>
+                        <text x="25" y="154" font-size="10" text-anchor="end">24</text>
+                        <text x="25" y="124" font-size="10" text-anchor="end">26</text>
+                        <text x="25" y="94" font-size="10" text-anchor="end">28</text>
+                        <text x="25" y="64" font-size="10" text-anchor="end">30</text>
+                        <text x="25" y="34" font-size="10" text-anchor="end">32</text>
+                        <polyline points="28,175 35,170 25,165 30,160" fill="none" stroke="black" stroke-width="1.5" />
+                        <text x="15" y="185" font-size="10" text-anchor="end">0</text>
+                        
+                        <polyline points="65,120 115,90 165,30 215,60 265,45" fill="none" stroke="#28a745" stroke-width="3" />
+                        <circle cx="65" cy="120" r="5" fill="red" />
+                        <circle cx="115" cy="90" r="5" fill="red" />
+                        <circle cx="165" cy="30" r="5" fill="red" />
+                        <circle cx="215" cy="60" r="5" fill="red" />
+                        <circle cx="265" cy="45" r="5" fill="red" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <h3>Contoh Soal 4</h3>
+        <div class="soal-box">
+            Sebuah mesin bubut otomatis sedang mencetak baut. Teknisi mencatat jumlah produksi setiap 2 jam. Jam 08.00 selesai 100 baut, jam 10.00 naik menjadi 150 baut, jam 12.00 turun sedikit karena istirahat jadi 120 baut, jam 14.00 naik drastis jadi 180 baut, dan jam 16.00 mencapai 160 baut. Buatlah diagram garisnya!
+        </div>
+
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Langkah Awal: Mengubah Data Menjadi Tabel</strong></p>
+                <table>
+                    <tr><th>Waktu (Sumbu X)</th><th>Jumlah Produksi (Sumbu Y)</th></tr>
+                    <tr><td>08.00</td><td>100</td></tr>
+                    <tr><td>10.00</td><td>150</td></tr>
+                    <tr><td>12.00</td><td>120</td></tr>
+                    <tr><td>14.00</td><td>180</td></tr>
+                    <tr><td>16.00</td><td>160</td></tr>
+                </table>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 1 & 2: Sumbu dan Sumbu X.</strong></p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">08.00</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">10.00</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">12.00</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">14.00</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">16.00</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 3 & 4: Skala Y dan Titik Koordinat.</strong> Angka produksi mulai dari 100 hingga 180. Kita buat zigzag dari 0 langsung ke 100, lalu kelipatan 20.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">08.00</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">10.00</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">12.00</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">14.00</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">16.00</text>
+                        
+                        <polyline points="28,175 35,170 25,165 30,160" fill="none" stroke="black" stroke-width="1.5" />
+                        <text x="15" y="185" font-size="10" text-anchor="end">0</text>
+                        
+                        <text x="25" y="154" font-size="10" text-anchor="end">100</text>
+                        <text x="25" y="124" font-size="10" text-anchor="end">120</text>
+                        <text x="25" y="94" font-size="10" text-anchor="end">140</text>
+                        <text x="25" y="64" font-size="10" text-anchor="end">160</text>
+                        <text x="25" y="34" font-size="10" text-anchor="end">180</text>
+
+                        <line x1="65" y1="180" x2="65" y2="150" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="150" x2="65" y2="150" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="65" cy="150" r="4" fill="red" />
+
+                        <line x1="115" y1="180" x2="115" y2="79" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="79" x2="115" y2="79" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="115" cy="79" r="4" fill="red" />
+
+                        <line x1="165" y1="180" x2="165" y2="120" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="120" x2="165" y2="120" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="165" cy="120" r="4" fill="red" />
+
+                        <line x1="215" y1="180" x2="215" y2="30" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="30" x2="215" y2="30" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="215" cy="30" r="4" fill="red" />
+
+                        <line x1="265" y1="180" x2="265" y2="60" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="60" x2="265" y2="60" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="265" cy="60" r="4" fill="red" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 5: Menarik Garis Lurus.</strong> Hubungkan semua titik merah menggunakan penggaris.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="65" y="195" font-size="10" text-anchor="middle">08.00</text>
+                        <text x="115" y="195" font-size="10" text-anchor="middle">10.00</text>
+                        <text x="165" y="195" font-size="10" text-anchor="middle">12.00</text>
+                        <text x="215" y="195" font-size="10" text-anchor="middle">14.00</text>
+                        <text x="265" y="195" font-size="10" text-anchor="middle">16.00</text>
+                        
+                        <polyline points="28,175 35,170 25,165 30,160" fill="none" stroke="black" stroke-width="1.5" />
+                        <text x="15" y="185" font-size="10" text-anchor="end">0</text>
+                        
+                        <text x="25" y="154" font-size="10" text-anchor="end">100</text>
+                        <text x="25" y="124" font-size="10" text-anchor="end">120</text>
+                        <text x="25" y="94" font-size="10" text-anchor="end">140</text>
+                        <text x="25" y="64" font-size="10" text-anchor="end">160</text>
+                        <text x="25" y="34" font-size="10" text-anchor="end">180</text>
+
+                        <polyline points="65,150 115,79 165,120 215,30 265,60" fill="none" stroke="#e83e8c" stroke-width="3" />
+                        <circle cx="65" cy="150" r="5" fill="red" />
+                        <circle cx="115" cy="79" r="5" fill="red" />
+                        <circle cx="165" cy="120" r="5" fill="red" />
+                        <circle cx="215" cy="30" r="5" fill="red" />
+                        <circle cx="265" cy="60" r="5" fill="red" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <h2>E. Latihan Tambahan: Mengolah Data Mentah</h2>
+
+        <h3>Contoh Soal 5 (Tantangan Ekstra)</h3>
+        <div class="soal-box">
+            Guru Matematika membagikan hasil ulangan harian. Dari 30 siswa yang ada di kelas, nilai mereka sangat beragam dan belum diurutkan. Kebetulan, semua nilainya adalah angka genap (kelipatan 2). Kamu diminta untuk membantu guru membuatkan <strong>Diagram Batang</strong> dari data yang masih berantakan tersebut!
+        </div>
+
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Data Mentah yang Berantakan</strong><br>Ini adalah daftar 30 nilai siswa yang baru saja dicatat oleh guru:</p>
+                <div class="raw-data-box">
+                    74, 72, 76, 78, 70, 80, 74, 74, 72, 76, <br>
+                    70, 78, 74, 72, 76, 80, 74, 78, 70, 76, <br>
+                    74, 72, 78, 80, 70, 76, 74, 72, 78, 76
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah Awal: Menghitung Data (Tally / Turus)</strong><br>Jangan langsung menggambar! Kita harus mencari tahu dulu ada berapa orang yang mendapat nilai 70, nilai 72, nilai 74, dan seterusnya dengan cara dihitung perlahan (menggunakan sistem coret/turus).</p>
+                <table>
+                    <tr><th>Nilai Siswa (Sumbu X)</th><th>Berapa Orang? / Frekuensi (Sumbu Y)</th></tr>
+                    <tr><td>70</td><td>4 orang</td></tr>
+                    <tr><td>72</td><td>5 orang</td></tr>
+                    <tr><td>74</td><td><strong>7 orang</strong></td></tr>
+                    <tr><td>76</td><td>6 orang</td></tr>
+                    <tr><td>78</td><td>5 orang</td></tr>
+                    <tr><td>80</td><td>3 orang</td></tr>
+                </table>
+                <p style="font-size: 13px; color: #555;"><em>Coba hitung ulang: 4+5+7+6+5+3 = 30 orang. Pas!</em></p>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 1: Membuat Sumbu.</strong> Buatlah dua garis tegak lurus untuk Sumbu X (mendatar) dan Sumbu Y (berdiri).</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="15" y="195" font-size="12">0</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 2: Mengisi Sumbu X.</strong> Karena data di tabel sudah rapi, tuliskan kategori nilai (70, 72, 74, dst) secara mendatar di bawahnya dengan jarak yang sama rata.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="55" y="195" font-size="10" text-anchor="middle">70</text>
+                        <text x="100" y="195" font-size="10" text-anchor="middle">72</text>
+                        <text x="145" y="195" font-size="10" text-anchor="middle">74</text>
+                        <text x="190" y="195" font-size="10" text-anchor="middle">76</text>
+                        <text x="235" y="195" font-size="10" text-anchor="middle">78</text>
+                        <text x="280" y="195" font-size="10" text-anchor="middle">80</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 3: Menentukan Skala pada Sumbu Y.</strong> Jumlah siswa terbanyak yang mendapat nilai sama adalah 7 orang. Berarti kita cukup menggunakan skala <strong>kelipatan 1</strong> (0, 1, 2, 3, 4, 5, 6, 7, 8) untuk Sumbu Y.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="55" y="195" font-size="10" text-anchor="middle">70</text>
+                        <text x="100" y="195" font-size="10" text-anchor="middle">72</text>
+                        <text x="145" y="195" font-size="10" text-anchor="middle">74</text>
+                        <text x="190" y="195" font-size="10" text-anchor="middle">76</text>
+                        <text x="235" y="195" font-size="10" text-anchor="middle">78</text>
+                        <text x="280" y="195" font-size="10" text-anchor="middle">80</text>
+                        
+                        <text x="25" y="184" font-size="10" text-anchor="end">0</text>
+                        <text x="25" y="163" font-size="10" text-anchor="end">1</text>
+                        <text x="25" y="142" font-size="10" text-anchor="end">2</text>
+                        <text x="25" y="120" font-size="10" text-anchor="end">3</text>
+                        <text x="25" y="99" font-size="10" text-anchor="end">4</text>
+                        <text x="25" y="78" font-size="10" text-anchor="end">5</text>
+                        <text x="25" y="57" font-size="10" text-anchor="end">6</text>
+                        <text x="25" y="35" font-size="10" text-anchor="end">7</text>
+                        <text x="25" y="14" font-size="10" text-anchor="end">8</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 4: Menentukan Titik Koordinat.</strong> Tarik garis putus-putus ke atas sesuai jumlah orangnya yang tepat pada sumbu Y, lalu beri titik merah (●).</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="55" y="195" font-size="10" text-anchor="middle">70</text>
+                        <text x="100" y="195" font-size="10" text-anchor="middle">72</text>
+                        <text x="145" y="195" font-size="10" text-anchor="middle">74</text>
+                        <text x="190" y="195" font-size="10" text-anchor="middle">76</text>
+                        <text x="235" y="195" font-size="10" text-anchor="middle">78</text>
+                        <text x="280" y="195" font-size="10" text-anchor="middle">80</text>
+                        
+                        <text x="25" y="184" font-size="10" text-anchor="end">0</text>
+                        <text x="25" y="163" font-size="10" text-anchor="end">1</text>
+                        <text x="25" y="142" font-size="10" text-anchor="end">2</text>
+                        <text x="25" y="120" font-size="10" text-anchor="end">3</text>
+                        <text x="25" y="99" font-size="10" text-anchor="end">4</text>
+                        <text x="25" y="78" font-size="10" text-anchor="end">5</text>
+                        <text x="25" y="57" font-size="10" text-anchor="end">6</text>
+                        <text x="25" y="35" font-size="10" text-anchor="end">7</text>
+                        <text x="25" y="14" font-size="10" text-anchor="end">8</text>
+
+                        <line x1="55" y1="180" x2="55" y2="95" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="95" x2="55" y2="95" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="55" cy="95" r="4" fill="red" />
+
+                        <line x1="100" y1="180" x2="100" y2="74" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="74" x2="100" y2="74" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="100" cy="74" r="4" fill="red" />
+
+                        <line x1="145" y1="180" x2="145" y2="31" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="31" x2="145" y2="31" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="145" cy="31" r="4" fill="red" />
+
+                        <line x1="190" y1="180" x2="190" y2="53" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="53" x2="190" y2="53" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="190" cy="53" r="4" fill="red" />
+
+                        <line x1="235" y1="180" x2="235" y2="74" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="74" x2="235" y2="74" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="235" cy="74" r="4" fill="red" />
+
+                        <line x1="280" y1="180" x2="280" y2="116" stroke="gray" stroke-dasharray="3,3" />
+                        <line x1="30" y1="116" x2="280" y2="116" stroke="gray" stroke-dasharray="3,3" />
+                        <circle cx="280" cy="116" r="4" fill="red" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 5: Menggambar Batang.</strong> Bangun persegi panjang hingga menyentuh titik merah. Selesai! Kini data nilai siswa yang tadinya berantakan sudah menjadi laporan gambar yang rapi dan mudah dibaca.</p>
+                <div class="step-visual">
+                    <svg viewBox="0 -20 320 220">
+                        <line x1="30" y1="180" x2="30" y2="10" stroke="black" stroke-width="2"/>
+                        <line x1="30" y1="180" x2="310" y2="180" stroke="black" stroke-width="2"/>
+                        <text x="55" y="195" font-size="10" text-anchor="middle">70</text>
+                        <text x="100" y="195" font-size="10" text-anchor="middle">72</text>
+                        <text x="145" y="195" font-size="10" text-anchor="middle">74</text>
+                        <text x="190" y="195" font-size="10" text-anchor="middle">76</text>
+                        <text x="235" y="195" font-size="10" text-anchor="middle">78</text>
+                        <text x="280" y="195" font-size="10" text-anchor="middle">80</text>
+                        
+                        <text x="25" y="184" font-size="10" text-anchor="end">0</text>
+                        <text x="25" y="163" font-size="10" text-anchor="end">1</text>
+                        <text x="25" y="142" font-size="10" text-anchor="end">2</text>
+                        <text x="25" y="120" font-size="10" text-anchor="end">3</text>
+                        <text x="25" y="99" font-size="10" text-anchor="end">4</text>
+                        <text x="25" y="78" font-size="10" text-anchor="end">5</text>
+                        <text x="25" y="57" font-size="10" text-anchor="end">6</text>
+                        <text x="25" y="35" font-size="10" text-anchor="end">7</text>
+                        <text x="25" y="14" font-size="10" text-anchor="end">8</text>
+
+                        <rect x="43" y="95" width="24" height="85" fill="#6f42c1" /> 
+                        <rect x="88" y="74" width="24" height="106" fill="#6f42c1" /> 
+                        <rect x="133" y="31" width="24" height="149" fill="#6f42c1" /> 
+                        <rect x="178" y="53" width="24" height="127" fill="#6f42c1" /> 
+                        <rect x="223" y="74" width="24" height="106" fill="#6f42c1" /> 
+                        <rect x="268" y="116" width="24" height="64" fill="#6f42c1" /> 
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <h2>F. Ringkasan Materi</h2>
+        <div class="summary-box">
+            <ul>
+                <li>Data mentah yang berantakan harus dihitung dan diolah terlebih dahulu menjadi <strong>Tabel Distribusi Frekuensi</strong> agar mudah dibaca dan digambar.</li>
+                <li><strong>Sumbu X</strong> (Garis Mendatar) selalu digunakan untuk menuliskan kategori (seperti nama hari, jam, atau jenis benda).</li>
+                <li><strong>Sumbu Y</strong> (Garis Tegak) selalu digunakan untuk menuliskan frekuensi (jumlah dari data tersebut).</li>
+                <li><strong>Skala</strong> pada Sumbu Y bisa disesuaikan dengan kebutuhan (bisa kelipatan 1, 2, 3, 5, atau lainnya) asalkan jarak angkanya konsisten.</li>
+                <li><strong>Diagram Batang</strong> sangat cocok digunakan untuk membandingkan jumlah benda atau kategori yang berbeda-beda.</li>
+                <li><strong>Diagram Garis</strong> sangat cocok digunakan untuk melihat perubahan atau tren suatu keadaan seiring berjalannya waktu (seperti suhu mesin atau angka produksi per jam).</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        function openInNewTab() { window.open(window.location.href, '_blank'); }
+        function closeTab() {
+            window.close();
+            document.body.innerHTML = `
+                <div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
+                    <h2>Materi telah ditutup.</h2>
+                    <p>Silakan kembali ke halaman utama Canvas.</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
