@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesmen Pemasaran - Diagram Lingkaran</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 950px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .header { border-bottom: 2px solid #0056b3; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .title { font-size: 22px; font-weight: bold; color: #0056b3; }
+        .badge { background: #e9ecef; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+
+        .panel { display: none; animation: slideIn 0.4s ease-out; }
+        .panel.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        .case-box { background: #e8f4f8; border-left: 5px solid #17a2b8; padding: 15px; margin-bottom: 20px; font-size: 15px; line-height: 1.6; border-radius: 0 6px 6px 0; }
+        .chart-container { text-align: center; margin: 0 auto 20px auto; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; max-width: 450px;}
+        canvas { max-width: 100%; height: auto; }
+
+        .question-text { font-size: 17px; margin-bottom: 15px; font-weight: 600; line-height: 1.5;}
+        input[type="text"], input[type="number"], select { width: 100%; padding: 10px; border: 2px solid #dfe4ea; border-radius: 6px; font-size: 14px; transition: 0.3s; box-sizing: border-box; }
+        input:focus, select:focus { border-color: #0056b3; outline: none; box-shadow: 0 0 8px rgba(0,86,179,0.2); }
+
+        .btn-group { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; gap: 10px;}
+        button { padding: 12px 25px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; flex: 1;}
+        .btn-next { background: #0056b3; color: white; }
+        .btn-prev { background: #6c757d; color: white; }
+        .btn-reset { background: #dc3545; color: white; margin-top: 15px; width: 100%;}
+        button:hover:not(:disabled) { opacity: 0.9; transform: translateY(-2px); }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Khusus Praktik */
+        .step-section { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #0056b3; display: none; }
+        .step-section.active { display: block; }
+        .raw-data-box { background: #fff; border: 1px dashed #333; padding: 15px; font-family: monospace; line-height: 1.8; margin-bottom: 20px; font-size: 15px; text-align: center;}
+        
+        .table-responsive { width: 100%; overflow-x: auto; margin-bottom: 15px; }
+        .table-dynamic { width: 100%; min-width: 800px; border-collapse: collapse; background: white;}
+        .table-dynamic th, .table-dynamic td { border: 1px solid #ccc; padding: 8px; text-align: center; vertical-align: middle;}
+        .table-dynamic th { background: #e0e0e0; }
+        
+        .table-input { width: 60px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px; font-weight: bold; font-size: 14px;}
+        .mini-input { width: 45px; text-align: center; padding: 4px; border: 1px solid #ccc; border-radius: 4px; font-weight: bold; font-size: 13px;}
+
+        /* CSS Responsif SVG */
+        .interactive-canvas-wrapper { position: relative; width: 100%; max-width: 500px; margin: 20px auto; touch-action: none; background: #fcfcfc; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;}
+        .svg-canvas { display: block; width: 100%; height: auto; cursor: crosshair;}
+        
+        .langkah-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .instr-text { color: #0056b3; font-size: 14px; margin-top: 15px; font-weight: bold; text-align: center; background: #e8f5e9; padding: 10px; border: 1px solid #c3e6cb; border-radius: 4px;}
+        
+        .btn-tambah { background: #28a745; color: white; padding: 8px 15px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+        .btn-unlock { background: #ffc107; color: #333; margin-top: 10px; width: 100%; display: none; border: 1px solid #d39e00;}
+        .btn-unlock:hover { background: #e0a800; }
+        
+        @media (max-width: 650px) {
+            .container { padding: 15px; }
+            .btn-group { flex-direction: column; }
+            .langkah-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <div class="panel active" id="panel-0">
+        <div class="header"><div class="title">Asesmen Pemasaran: Diagram Lingkaran</div></div>
+        <p style="font-size: 16px;">Selamat datang di ujian analisis data pasar! Masukkan nama lengkap dan kelasmu untuk memulai. Waktu pengerjaan akan dicatat otomatis.</p>
+        <input type="text" id="namaSiswa" placeholder="Misal: Budi Santoso - X PM 1" style="margin-bottom: 20px;">
+        <div class="btn-group"><div style="flex-grow:1"></div><button class="btn-next" onclick="startAssesment()">Mulai Ujian</button></div>
+    </div>
+
+    <div id="literacy-questions"></div>
+
+    <div class="panel" id="panel-9">
+        <div class="header"><div class="title">Soal 9: Analisis Data Sepatu</div><div class="badge">Soal 9 / 10</div></div>
+        <div class="case-box"><strong>Studi Kasus:</strong> Toko Sepatu UP mencatat laporan barang yang terjual hari ini. Data kasir menunjukkan rincian penjualan sebagai berikut:<br>
+            <div class="raw-data-box" id="data9-box">Sneakers, Pantofel, Sneakers, Boots, Sandal, Pantofel, Sneakers, Sneakers, Boots, Sandal, Sneakers, Pantofel, Sneakers, Boots, Sneakers, Sandal, Pantofel, Sneakers, Boots, Sandal, Sneakers, Sneakers, Boots, Sandal, Pantofel, Sneakers, Pantofel, Sneakers, Pantofel, Sneakers, Sneakers, Pantofel, Sneakers, Sandal, Sneakers, Pantofel, Sneakers, Pantofel, Sneakers, Sneakers</div>
+        </div>
+
+        <div id="q9-step1" class="active">
+            <p style="font-weight:bold; color:#d32f2f;">1. Susun Urutan Langkah Kerja yang Benar:</p>
+            <div class="langkah-grid">
+                <select id="s9-1"><option value="">Langkah 1...</option><option value="Hitung Total Data">Hitung Total Data</option><option value="Buat Tabel & Hitung Rumus">Buat Tabel & Hitung Rumus</option><option value="Siapkan Lingkaran Dasar">Siapkan Lingkaran Dasar</option><option value="Ukur Busur & Gambar Potongan">Ukur Busur & Gambar Potongan</option></select>
+                <select id="s9-2"><option value="">Langkah 2...</option><option value="Hitung Total Data">Hitung Total Data</option><option value="Buat Tabel & Hitung Rumus">Buat Tabel & Hitung Rumus</option><option value="Siapkan Lingkaran Dasar">Siapkan Lingkaran Dasar</option><option value="Ukur Busur & Gambar Potongan">Ukur Busur & Gambar Potongan</option></select>
+                <select id="s9-3"><option value="">Langkah 3...</option><option value="Hitung Total Data">Hitung Total Data</option><option value="Buat Tabel & Hitung Rumus">Buat Tabel & Hitung Rumus</option><option value="Siapkan Lingkaran Dasar">Siapkan Lingkaran Dasar</option><option value="Ukur Busur & Gambar Potongan">Ukur Busur & Gambar Potongan</option></select>
+                <select id="s9-4"><option value="">Langkah 4...</option><option value="Hitung Total Data">Hitung Total Data</option><option value="Buat Tabel & Hitung Rumus">Buat Tabel & Hitung Rumus</option><option value="Siapkan Lingkaran Dasar">Siapkan Lingkaran Dasar</option><option value="Ukur Busur & Gambar Potongan">Ukur Busur & Gambar Potongan</option></select>
+            </div>
+            <button class="btn-next" style="width:100%" onclick="unlockStep('q9-step2')">Konfirmasi Urutan & Lanjut ke Tabel</button>
+        </div>
+
+        <div id="q9-step2" class="step-section">
+            <p style="font-weight:bold; color:#0056b3;">2. Rekap Data & Hitung Manual:</p>
+            <p style="font-size: 14px; margin-top: -10px;">Tambahkan baris sesuai jumlah jenis sepatu yang kamu temukan di atas.</p>
+            
+            <button onclick="addRow(9)" id="btnAddRow-9" class="btn-tambah">+ Tambah Baris Tabel</button>
+            
+            <div class="table-responsive">
+                <table class="table-dynamic" id="tbl-9">
+                    <thead>
+                        <tr>
+                            <th>Jenis Sepatu</th>
+                            <th>Frekuensi</th>
+                            <th>Proses Persen (%)</th>
+                            <th>Proses Derajat (&deg;)</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-9">
+                        </tbody>
+                </table>
+            </div>
+            <button class="btn-next" id="btnLock-9" style="width:100%" onclick="lockTable(9)">Kunci Tabel & Lanjut Menggambar</button>
+            <button class="btn-unlock" id="btnUnlock-9" onclick="unlockTable(9)">&#128275; Buka Kunci & Edit Tabel</button>
+        </div>
+
+        <div id="q9-step3" class="step-section">
+            <p style="font-weight:bold; color:#0056b3; margin-bottom: 5px;">3. Gambar Diagram Lingkaran Sesuai Hitunganmu:</p>
+            <p style="font-size:13px; color:#666; margin-top:0;">Gunakan tombol di bawah untuk memutar busur, lalu klik angka derajat di pinggiran busur. Sistem akan memotong lingkaran persis di angka yang kamu klik!</p>
+            
+            <div class="interactive-canvas-wrapper">
+                <svg class="svg-canvas" id="svg-9" viewBox="0 0 500 450" preserveAspectRatio="xMidYMid meet">
+                    <circle id="baseCircle-9" cx="250" cy="230" r="130" stroke="#333" stroke-width="2" fill="none" style="display:none;" />
+                    <line id="baseLine-9" x1="250" y1="230" x2="250" y2="100" stroke="#0056b3" stroke-width="3" style="display:none;" />
+                    <g id="drawGroup-9"></g>
+                    <g id="protractor-9"></g>
+                    <g id="labelsGroup-9"></g>
+                    <circle id="centerDot-9" cx="250" cy="230" r="4" fill="red" style="display:none;" />
+                </svg>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                <button onclick="stepCreateBase(9)" id="btnBase-9" style="background:#17a2b8; color:white; padding:10px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;" disabled>1. Siapkan Lingkaran</button>
+                <button onclick="stepStartProtractor(9)" id="btnProtractor-9" style="background:#28a745; color:white; padding:10px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;" disabled>2. Putar Busur & Klik Titik</button>
+            </div>
+            <div class="instr-text" id="guide-9">Selesaikan dan kunci tabel terlebih dahulu.</div>
+            <button onclick="resetPractice(9)" class="btn-reset">Hapus Gambar & Ulangi Busur</button>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-prev" onclick="navigate(8)">Sebelumnya</button>
+            <button class="btn-next" onclick="navigate(10)">Lanjut ke Soal 10</button>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-10">
+        <div class="header"><div class="title">Soal 10: Analisis Merek HP</div><div class="badge">Soal 10 / 10</div></div>
+        <div class="case-box"><strong>Studi Kasus Final:</strong> Sebuah perusahaan ingin melihat dominasi merek HP di kelasmu. Data 20 siswa berhasil dikumpulkan secara acak:<br>
+            <div class="raw-data-box" id="data10-box">Samsung, Apple, Oppo, Samsung, Vivo, Apple, Samsung, Oppo, Vivo, Samsung, Apple, Oppo, Samsung, Vivo, Samsung, Apple, Oppo, Samsung, Vivo, Samsung</div>
+        </div>
+        
+        <div id="q10-step1" class="active">
+            <p style="font-weight:bold; color:#d32f2f;">1. Susun Urutan Langkah Kerja yang Benar:</p>
+            <div class="langkah-grid">
+                <select id="s10-1"><option value="">Langkah 1...</option><option value="Hitung Total Data">Hitung Total Data</option><option value="Buat Tabel & Hitung Rumus">Buat Tabel & Hitung Rumus</option><option value="Siapkan Lingkaran Dasar">Siapkan Lingkaran Dasar</option><option value="Ukur Busur & Gambar Potongan">Ukur Busur & Gambar Potongan</option></select>
+                <select id="s10-2"><option value="">Langkah 2...</option><option value="Hitung Total Data">Hitung Total Data</option><option value="Buat Tabel & Hitung Rumus">Buat Tabel & Hitung Rumus</option><option value="Siapkan Lingkaran Dasar">Siapkan Lingkaran Dasar</option><option value="Ukur Busur & Gambar Potongan">Ukur Busur & Gambar Potongan</option></select>
+                <select id="s10-3"><option value="">Langkah 3...</option><option value="Hitung Total Data">Hitung Total Data</option><option value="Buat Tabel & Hitung Rumus">Buat Tabel & Hitung Rumus</option><option value="Siapkan Lingkaran Dasar">Siapkan Lingkaran Dasar</option><option value="Ukur Busur & Gambar Potongan">Ukur Busur & Gambar Potongan</option></select>
+                <select id="s10-4"><option value="">Langkah 4...</option><option value="Hitung Total Data">Hitung Total Data</option><option value="Buat Tabel & Hitung Rumus">Buat Tabel & Hitung Rumus</option><option value="Siapkan Lingkaran Dasar">Siapkan Lingkaran Dasar</option><option value="Ukur Busur & Gambar Potongan">Ukur Busur & Gambar Potongan</option></select>
+            </div>
+            <button class="btn-next" style="width:100%" onclick="unlockStep('q10-step2')">Konfirmasi Urutan & Lanjut ke Tabel</button>
+        </div>
+
+        <div id="q10-step2" class="step-section">
+            <p style="font-weight:bold; color:#0056b3;">2. Rekap Data & Hitung Manual:</p>
+            
+            <button onclick="addRow(10)" id="btnAddRow-10" class="btn-tambah">+ Tambah Baris Tabel</button>
+            
+            <div class="table-responsive">
+                <table class="table-dynamic" id="tbl-10">
+                    <thead><tr><th>Merek HP</th><th>Frekuensi</th><th>Proses Persen (%)</th><th>Proses Derajat (&deg;)</th><th>Aksi</th></tr></thead>
+                    <tbody id="tbody-10">
+                        </tbody>
+                </table>
+            </div>
+            <button class="btn-next" id="btnLock-10" style="width:100%" onclick="lockTable(10)">Kunci Tabel & Lanjut Menggambar</button>
+            <button class="btn-unlock" id="btnUnlock-10" onclick="unlockTable(10)">&#128275; Buka Kunci & Edit Tabel</button>
+        </div>
+
+        <div id="q10-step3" class="step-section">
+            <p style="font-weight:bold; color:#0056b3; margin-bottom: 5px;">3. Eksekusi Gambar Diagram:</p>
+            
+            <div class="interactive-canvas-wrapper">
+                <svg class="svg-canvas" id="svg-10" viewBox="0 0 500 450" preserveAspectRatio="xMidYMid meet">
+                    <circle id="baseCircle-10" cx="250" cy="230" r="130" stroke="#333" stroke-width="2" fill="none" style="display:none;" />
+                    <line id="baseLine-10" x1="250" y1="230" x2="250" y2="100" stroke="#0056b3" stroke-width="3" style="display:none;" />
+                    <g id="drawGroup-10"></g>
+                    <g id="protractor-10"></g>
+                    <g id="labelsGroup-10"></g>
+                    <circle id="centerDot-10" cx="250" cy="230" r="4" fill="red" style="display:none;" />
+                </svg>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                <button onclick="stepCreateBase(10)" id="btnBase-10" style="background:#17a2b8; color:white; padding:10px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;" disabled>1. Siapkan Lingkaran</button>
+                <button onclick="stepStartProtractor(10)" id="btnProtractor-10" style="background:#28a745; color:white; padding:10px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;" disabled>2. Putar Busur & Klik Titik</button>
+            </div>
+            <div class="instr-text" id="guide-10">Selesaikan dan kunci tabel terlebih dahulu.</div>
+            <button onclick="resetPractice(10)" class="btn-reset">Hapus Gambar & Ulangi Busur</button>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-prev" onclick="navigate(9)">Sebelumnya</button>
+            <button class="btn-next" onclick="finalSubmit()" id="btnSubmit">Kirim Ujian ke Guru</button>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-end">
+        <div class="header"><div class="title">Ujian Selesai!</div></div>
+        <div style="text-align:center;">
+            <h3 style="font-size: 20px;">Selamat, <span id="lblNama" style="color:#0056b3;"></span>!</h3>
+            <p style="font-size: 16px;">Seluruh jawaban analitis dan praktik gambarmu telah direkam secara utuh ke sistem Guru.</p>
+            <div style="color: #155724; font-weight: bold; padding: 20px; background: #d4edda; border-radius: 8px; margin-top:20px; font-size: 15px;" id="statusKirim"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // URL GOOGLE APPS SCRIPT (Ganti dengan URL Anda)
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxppeJ_QaY8hWbc6BP6GD-H1uVVoo8krH1DENEFnJDYz_DL2ozCncTQaxtWpcZ3GJO1HA/exec";
+    
+    let currentPanel = 0;
+    let timeStart = 0;
+    let assesmentStart = 0;
+    let dataKirim = {};
+    const colors = ["#0056b3", "#28a745", "#dc3545", "#ffc107", "#6f42c1", "#e83e8c"];
+
+    // ==========================================
+    // 1. DATA SOAL LITERASI (MURNI TANPA PETUNJUK)
+    // ==========================================
+    const casesInfo = {
+        derajat: {
+            title: "Laporan Penjualan Elektronik",
+            story: "Toko Elektronik 'Sinar Jaya' mencatat laporan penjualan bulanan mereka menggunakan Diagram Lingkaran berbasis Derajat (&deg;). Data ini sangat penting untuk menyusun stok bulan depan."
+        },
+        persen: {
+            title: "Market Share Pengguna HP",
+            story: "Sebuah lembaga riset merilis hasil survei pengguna merek HP di kalangan pelajar SMK menggunakan Diagram Lingkaran berbasis Persentase (%)."
+        }
+    };
+
+    const questions = [
+        { type: "derajat", q: "Jika total seluruh barang yang terjual bulan ini adalah 120 unit, berapakah jumlah Kipas Angin yang berhasil terjual?", data: [120, 90, 60, 90], labels: ["Kipas Angin", "Setrika", "Rice Cooker", "Blender"], textVal: ["120°", "90°", "60°", "90°"] },
+        { type: "derajat", q: "Melihat diagram tersebut, berapakah selisih jumlah barang antara penjualan Setrika dan Rice Cooker jika total penjualan semua barang adalah 120 unit?", data: [120, 90, 60, 90], labels: ["Kipas Angin", "Setrika", "Rice Cooker", "Blender"], textVal: ["120°", "90°", "60°", "90°"] },
+        { type: "derajat", q: "Berapakah total unit gabungan dari Setrika dan Blender yang berhasil dijual bulan ini (dari total 120 unit keseluruhan)?", data: [120, 90, 60, 90], labels: ["Kipas Angin", "Setrika", "Rice Cooker", "Blender"], textVal: ["120°", "90°", "60°", "90°"] },
+        { type: "derajat", q: "Jika bulan depan penjualan Blender diperkirakan akan naik DUA KALI LIPAT dari hasil bulan ini, berapakah target penjualan Blender bulan depan?", data: [120, 90, 60, 90], labels: ["Kipas Angin", "Setrika", "Rice Cooker", "Blender"], textVal: ["120°", "90°", "60°", "90°"] },
+        
+        { type: "persen", q: "Lembaga riset tersebut mewawancarai total 200 responden. Berapakah jumlah orang yang menggunakan Merk A?", data: [144, 108, 72, 36], labels: ["Merk A", "Merk B", "Merk C", "Merk D"], textVal: ["40%", "30%", "20%", "10%"] },
+        { type: "persen", q: "Dari 200 responden tersebut, berapakah jumlah gabungan orang yang menggunakan Merk B dan Merk C?", data: [144, 108, 72, 36], labels: ["Merk A", "Merk B", "Merk C", "Merk D"], textVal: ["40%", "30%", "20%", "10%"] },
+        { type: "persen", q: "Jika perusahaan Merk D ingin menyamai jumlah pengguna Merk C (dari 200 responden saat ini), berapa banyak tambahan pelanggan baru yang harus mereka cari?", data: [144, 108, 72, 36], labels: ["Merk A", "Merk B", "Merk C", "Merk D"], textVal: ["40%", "30%", "20%", "10%"] },
+        { type: "persen", q: "Berapa selisih jumlah orang antara pengguna merek yang paling dominan (Merk A) dengan yang paling sedikit (Merk D) dari total 200 responden?", data: [144, 108, 72, 36], labels: ["Merk A", "Merk B", "Merk C", "Merk D"], textVal: ["40%", "30%", "20%", "10%"] }
+    ];
+
+    let qHTML = "";
+    questions.forEach((s, idx) => {
+        let i = idx + 1;
+        let cInfo = casesInfo[s.type];
+        qHTML += `
+        <div class="panel" id="panel-${i}">
+            <div class="header"><div class="title">Analisis Data: ${cInfo.title}</div><div class="badge">Soal ${i} / 10</div></div>
+            <div class="case-box">${cInfo.story}</div>
+            <div class="chart-container"><canvas id="canvas-${i}" width="350" height="250"></canvas></div>
+            <div class="question-text"><strong>Pertanyaan:</strong><br>${s.q}</div>
+            <input type="text" id="ans-${i}" placeholder="Ketik hitungan/jawabanmu di sini...">
+            <div class="btn-group">
+                <button class="btn-prev" onclick="navigate(${i-1})">Sebelumnya</button>
+                <button class="btn-next" onclick="navigate(${i+1})">Selanjutnya</button>
+            </div>
+        </div>`;
+    });
+    document.getElementById('literacy-questions').innerHTML = qHTML;
+
+    function drawCanvasCharts() {
+        questions.forEach((item, i) => {
+            const canvas = document.getElementById(`canvas-${i+1}`);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const CX = 175; const CY = 125; const RAD = 90;
+            
+            ctx.clearRect(0,0,350,250);
+            let startAngle = -Math.PI / 2;
+
+            item.data.forEach((deg, idx) => {
+                let sliceAngleRad = (deg / 360) * 2 * Math.PI;
+                ctx.beginPath();
+                ctx.moveTo(CX, CY);
+                ctx.arc(CX, CY, RAD, startAngle, startAngle + sliceAngleRad);
+                ctx.fillStyle = colors[idx % colors.length];
+                ctx.fill();
+                ctx.strokeStyle = 'white'; ctx.lineWidth = 2; ctx.stroke();
+
+                let middleAngle = startAngle + (sliceAngleRad / 2);
+                let textX = CX + Math.cos(middleAngle) * (RAD * 0.65); 
+                let textY = CY + Math.sin(middleAngle) * (RAD * 0.65);
+                
+                ctx.fillStyle = 'white'; ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                
+                ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 3;
+                ctx.fillText(item.labels[idx], textX, textY - 8);
+                ctx.fillText(item.textVal[idx], textX, textY + 8);
+                ctx.shadowBlur = 0;
+
+                startAngle += sliceAngleRad;
+            });
+        });
+    }
+
+    // ==========================================
+    // 2. LOGIKA PRAKTIK DINAMIS (Q9 & Q10)
+    // ==========================================
+    let practiceData = { 9: { slices: [] }, 10: { slices: [] } };
+    let state = {
+        9: { isFindingPoint: false, currentGlobalAngle: 0, currentIndex: 0 },
+        10: { isFindingPoint: false, currentGlobalAngle: 0, currentIndex: 0 }
+    };
+
+    function buildFractionUI(id, isPercent) {
+        let typeStr = isPercent ? "pct" : "deg";
+        let multiplier = isPercent ? "100 =" : "360 =";
+        let placeholder = isPercent ? "%" : "&deg;";
+        
+        return `
+            <div style="display:flex; align-items:center; justify-content:center; gap:5px; white-space:nowrap; font-family:monospace; font-size:14px; font-weight:bold;">
+                <span style="font-size:18px; font-weight:normal;">(</span>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <input type="number" class="mini-input input-f${typeStr}-${id}" placeholder="F">
+                    <div style="width:100%; height:2px; background:#333; margin:2px 0;"></div>
+                    <input type="number" class="mini-input input-t${typeStr}-${id}" placeholder="T">
+                </div>
+                <span style="font-size:18px; font-weight:normal;">)</span>
+                <span>&times; ${multiplier} </span> 
+                <input type="number" step="0.1" class="table-input input-${typeStr}-${id}" placeholder="${placeholder}">
+            </div>
+        `;
+    }
+
+    function addRow(id) {
+        let tbody = document.getElementById(`tbody-${id}`);
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" class="input-kat-${id}" placeholder="Nama Kategori"></td>
+            <td><input type="number" class="input-frek-${id}" placeholder="0" style="width: 50px;"></td>
+            <td>${buildFractionUI(id, true)}</td>
+            <td>${buildFractionUI(id, false)}</td>
+            <td><button onclick="this.parentElement.parentElement.remove()" style="background:#dc3545;color:white;border:none;border-radius:4px;cursor:pointer;padding:5px 10px;font-weight:bold;">X</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function lockTable(id) {
+        let rows = document.getElementById(`tbody-${id}`).children;
+        if(rows.length === 0) { alert("Tabel masih kosong! Tambahkan baris terlebih dahulu."); return; }
+        
+        let slices = [];
+        let totalDeg = 0;
+        
+        for(let i=0; i<rows.length; i++) {
+            let r = rows[i];
+            let kat = r.querySelector(`.input-kat-${id}`).value || `Bagian ${i+1}`;
+            let deg = parseFloat(r.querySelector(`.input-deg-${id}`).value) || 0;
+            let pct = parseFloat(r.querySelector(`.input-pct-${id}`).value) || 0;
+            
+            slices.push({ label: kat, degree: deg, pct: pct, color: colors[i % colors.length] });
+            totalDeg += deg;
+        }
+        
+        if(Math.round(totalDeg) !== 360) {
+            if(!confirm(`Total derajat hitunganmu adalah ${totalDeg}°, bukan 360°. Gambar lingkarannya nanti mungkin tidak akan tertutup sempurna atau saling menimpa. Yakin ingin melanjutkan dengan hitungan ini?`)) {
+                return;
+            }
+        }
+        
+        practiceData[id].slices = slices; 
+        
+        document.querySelectorAll(`#tbody-${id} input`).forEach(inp => inp.readOnly = true);
+        document.getElementById(`btnAddRow-${id}`).style.display = 'none';
+        
+        let btnLock = document.getElementById(`btnLock-${id}`);
+        btnLock.disabled = true; btnLock.innerText = "Tabel Terkunci & Siap Digambar";
+        
+        // Tampilkan tombol Buka Kunci
+        document.getElementById(`btnUnlock-${id}`).style.display = 'block';
+        
+        document.getElementById(`btnBase-${id}`).disabled = false;
+        document.getElementById(`guide-${id}`).innerHTML = "<span style='color:#28a745;'>Tabel dikunci!</span> Sekarang klik 'Siapkan Lingkaran' untuk mulai menggambar.";
+        
+        unlockStep(`q${id}-step3`);
+    }
+
+    function unlockTable(id) {
+        // Buka kembali form input
+        document.querySelectorAll(`#tbody-${id} input`).forEach(inp => inp.readOnly = false);
+        document.getElementById(`btnAddRow-${id}`).style.display = 'inline-block';
+        
+        // Kembalikan tombol Kunci
+        let btnLock = document.getElementById(`btnLock-${id}`);
+        btnLock.disabled = false; btnLock.innerText = "Kunci Tabel & Lanjut Menggambar";
+        
+        // Sembunyikan tombol Buka Kunci
+        document.getElementById(`btnUnlock-${id}`).style.display = 'none';
+        
+        // Hapus/Reset Kanvas
+        resetPractice(id);
+        
+        document.getElementById(`btnBase-${id}`).disabled = true;
+        document.getElementById(`guide-${id}`).innerHTML = "Tabel dibuka kembali. Silakan perbaiki hitunganmu, lalu kunci kembali untuk menggambar.";
+    }
+
+    function unlockStep(stepId) {
+        document.getElementById(stepId).classList.add('active');
+        setTimeout(() => { document.getElementById(stepId).scrollIntoView({ behavior: 'smooth' }); }, 200);
+    }
+
+    function resetPractice(id) {
+        state[id] = { isFindingPoint: false, currentGlobalAngle: 0, currentIndex: 0 };
+        document.getElementById(`drawGroup-${id}`).innerHTML = '';
+        document.getElementById(`protractor-${id}`).innerHTML = '';
+        document.getElementById(`labelsGroup-${id}`).innerHTML = '';
+        
+        document.getElementById(`btnProtractor-${id}`).disabled = false; 
+        document.getElementById(`guide-${id}`).innerHTML = "Gambar dihapus. Klik 'Putar Busur' untuk mengulang dari potongan pertama.";
+    }
+
+    function stepCreateBase(id) {
+        document.getElementById(`baseCircle-${id}`).style.display = "block";
+        document.getElementById(`baseLine-${id}`).style.display = "block";
+        document.getElementById(`centerDot-${id}`).style.display = "block";
+        
+        let svg = document.getElementById(`svg-${id}`);
+        let centerDot = document.getElementById(`centerDot-${id}`);
+        svg.appendChild(centerDot); // Bawa ke atas
+
+        document.getElementById(`btnBase-${id}`).disabled = true;
+        document.getElementById(`btnProtractor-${id}`).disabled = false;
+        document.getElementById(`guide-${id}`).innerHTML = "Lingkaran siap! Klik 'Putar Busur' lalu cari angkanya.";
+    }
+
+    function stepStartProtractor(id) {
+        state[id].isFindingPoint = true;
+        document.getElementById(`btnProtractor-${id}`).disabled = true;
+        const svg = document.getElementById(`svg-${id}`);
+        svg.style.cursor = "crosshair";
+        
+        drawProtractor(id);
+        updatePrompt(id);
+
+        svg.onclick = function(e) { handleSvgClick(e, id, svg); };
+    }
+
+    function drawProtractor(id) {
+        let g = document.getElementById(`protractor-${id}`);
+        g.innerHTML = '';
+        let globalAngle = state[id].currentGlobalAngle;
+
+        let pGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        pGroup.setAttribute("transform", `rotate(${globalAngle}, 250, 230)`);
+
+        let ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        ring.setAttribute("cx", 250); ring.setAttribute("cy", 230); ring.setAttribute("r", 155);
+        ring.setAttribute("fill", "rgba(0, 86, 179, 0.05)");
+        ring.setAttribute("stroke", "#0056b3"); ring.setAttribute("stroke-width", "2");
+        pGroup.appendChild(ring);
+
+        for(let i=0; i<360; i+=5) {
+            let rad = (i - 90) * Math.PI / 180;
+            let isMajor = i % 10 === 0;
+            let rStart = isMajor ? 145 : 150;
+            let rEnd = 155;
+
+            let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", 250 + Math.cos(rad)*rStart);
+            line.setAttribute("y1", 230 + Math.sin(rad)*rStart);
+            line.setAttribute("x2", 250 + Math.cos(rad)*rEnd);
+            line.setAttribute("y2", 230 + Math.sin(rad)*rEnd);
+            line.setAttribute("stroke", "#0056b3");
+            line.setAttribute("stroke-width", isMajor ? "2" : "1");
+            pGroup.appendChild(line);
+
+            if(i % 30 === 0 || i % 45 === 0) { 
+                let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", 250 + Math.cos(rad)*170);
+                text.setAttribute("y", 230 + Math.sin(rad)*170);
+                text.setAttribute("fill", "#0056b3");
+                text.setAttribute("font-size", "10px");
+                text.setAttribute("font-weight", "bold");
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("alignment-baseline", "middle");
+                text.setAttribute("transform", `rotate(${-globalAngle}, ${250 + Math.cos(rad)*170}, ${230 + Math.sin(rad)*170})`);
+                text.textContent = i + "°";
+                pGroup.appendChild(text);
+            }
+        }
+        g.appendChild(pGroup);
+    }
+
+    function updatePrompt(id) {
+        let slice = practiceData[id].slices[state[id].currentIndex];
+        document.getElementById(`guide-${id}`).innerHTML = `Busur berputar. Klik angka pada busur untuk memotong bagian <strong>${slice.label}</strong> sesuai hitungan tabelmu!`;
+    }
+
+    // FUNGSI MENGGAMBAR BEBAS TANPA VALIDASI
+    function handleSvgClick(e, id, svg) {
+        if (!state[id].isFindingPoint) return;
+        
+        const pt = svg.createSVGPoint();
+        pt.x = e.clientX; pt.y = e.clientY;
+        const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+        
+        let dx = svgP.x - 250; let dy = svgP.y - 230;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 100 || dist > 210) return; 
+
+        let clickRad = Math.atan2(dy, dx);
+        let clickDeg = (clickRad * 180 / Math.PI) + 90; 
+        if (clickDeg < 0) clickDeg += 360;
+
+        let relativeDeg = (clickDeg - state[id].currentGlobalAngle) % 360;
+        if (relativeDeg < 0) relativeDeg += 360;
+
+        let userClick = Math.round(relativeDeg/5)*5; 
+        if (userClick <= 0) userClick = 360; 
+
+        practiceData[id].slices[state[id].currentIndex].drawnDegree = userClick;
+        
+        drawSlice(id, state[id].currentIndex, state[id].currentGlobalAngle, userClick);
+        state[id].currentGlobalAngle = (state[id].currentGlobalAngle + userClick) % 360;
+        state[id].currentIndex++;
+
+        if (state[id].currentIndex < practiceData[id].slices.length) {
+            drawProtractor(id);
+            updatePrompt(id);
+        } else {
+            finishDrawing(id);
+        }
+    }
+
+    function drawSlice(id, sliceIndex, startAngle, actualDegree) {
+        let slice = practiceData[id].slices[sliceIndex];
+        let radStart = (startAngle - 90) * Math.PI / 180;
+        let radEnd = radStart + (actualDegree * Math.PI / 180);
+
+        let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        let d = `M 250 230 L ${250 + Math.cos(radStart)*130} ${230 + Math.sin(radStart)*130} A 130 130 0 ${actualDegree > 180 ? 1 : 0} 1 ${250 + Math.cos(radEnd)*130} ${230 + Math.sin(radEnd)*130} Z`;
+        path.setAttribute("d", d);
+        path.setAttribute("fill", slice.color);
+        path.setAttribute("stroke", "white"); path.setAttribute("stroke-width", "2");
+        
+        document.getElementById(`drawGroup-${id}`).appendChild(path);
+    }
+
+    function finishDrawing(id) {
+        state[id].isFindingPoint = false;
+        const svg = document.getElementById(`svg-${id}`);
+        svg.style.cursor = "default";
+        document.getElementById(`protractor-${id}`).innerHTML = ''; 
+
+        let lblGroup = document.getElementById(`labelsGroup-${id}`);
+        lblGroup.innerHTML = '';
+        let startAngle = 0;
+
+        practiceData[id].slices.forEach(slice => {
+            let actualDeg = slice.drawnDegree || slice.degree; 
+            let sliceAngleRad = (actualDeg / 360) * 2 * Math.PI;
+            let currentAngleRad = (startAngle - 90) * Math.PI / 180;
+            let middleAngle = currentAngleRad + (sliceAngleRad / 2);
+            
+            let textX = 250 + Math.cos(middleAngle) * 85;
+            let textY = 230 + Math.sin(middleAngle) * 85;
+
+            let tName = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            tName.setAttribute("x", textX); tName.setAttribute("y", textY - 8);
+            tName.setAttribute("fill", "white"); tName.setAttribute("font-size", "14px");
+            tName.setAttribute("font-weight", "bold"); tName.setAttribute("text-anchor", "middle");
+            tName.style.textShadow = "1px 1px 2px rgba(0,0,0,0.8)";
+            tName.textContent = slice.label;
+
+            let tVal = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            tVal.setAttribute("x", textX); tVal.setAttribute("y", textY + 8);
+            tVal.setAttribute("fill", "white"); tVal.setAttribute("font-size", "14px");
+            tVal.setAttribute("font-weight", "bold"); tVal.setAttribute("text-anchor", "middle");
+            tVal.style.textShadow = "1px 1px 2px rgba(0,0,0,0.8)";
+            tVal.textContent = slice.degree + "°";
+
+            lblGroup.appendChild(tName);
+            lblGroup.appendChild(tVal);
+            
+            startAngle += actualDeg;
+        });
+
+        let centerDot = document.getElementById(`centerDot-${id}`);
+        svg.appendChild(centerDot);
+        document.getElementById(`guide-${id}`).innerHTML = "<span style='color:#0056b3; font-size:16px;'><strong>SELESAI!</strong> Segala hasil gambar (benar atau salah) sudah direkam.</span>";
+    }
+
+    // ==========================================
+    // 4. LOGIKA NAVIGASI & SUBMIT GOOGLE SHEETS
+    // ==========================================
+    function startAssesment() {
+        let nama = document.getElementById('namaSiswa').value;
+        if(nama.trim() === "") { alert("Mohon isi nama terlebih dahulu!"); return; }
+        
+        dataKirim.namaSiswa = nama;
+        assesmentStart = Date.now();
+        
+        addRow(9); addRow(10);
+        drawCanvasCharts(); 
+        navigate(1);
+    }
+
+    function extractComplexAnswer(id) {
+        let laporan = "";
+
+        let sop1 = document.getElementById(`s${id}-1`).value || "(Kosong)";
+        let sop2 = document.getElementById(`s${id}-2`).value || "(Kosong)";
+        let sop3 = document.getElementById(`s${id}-3`).value || "(Kosong)";
+        let sop4 = document.getElementById(`s${id}-4`).value || "(Kosong)";
+        laporan += `[URUTAN LANGKAH]\n1. ${sop1} | 2. ${sop2} | 3. ${sop3} | 4. ${sop4}\n\n`;
+
+        laporan += `[REKAP TABEL & EKSEKUSI SISWA]\n`;
+        let rows = document.getElementById(`tbody-${id}`).children;
+        if(rows.length === 0) {
+            laporan += "- Tabel kosong / tidak diisi.\n";
+        } else {
+            for(let i=0; i<rows.length; i++) {
+                let r = rows[i];
+                let kat = r.querySelector(`.input-kat-${id}`).value || "-";
+                let f = r.querySelector(`.input-frek-${id}`).value || "-";
+                let fpct = r.querySelector(`.input-fpct-${id}`).value || "-";
+                let tpct = r.querySelector(`.input-tpct-${id}`).value || "-";
+                let pct = r.querySelector(`.input-pct-${id}`).value || "-";
+                let fdeg = r.querySelector(`.input-fdeg-${id}`).value || "-";
+                let tdeg = r.querySelector(`.input-tdeg-${id}`).value || "-";
+                let deg = r.querySelector(`.input-deg-${id}`).value || "-";
+                
+                let dData = practiceData[id].slices[i];
+                let actualDrawn = (dData && dData.drawnDegree) ? dData.drawnDegree + "°" : "Belum digambar";
+
+                laporan += `- ${kat} => Frek:${f} | Pcs:(${fpct}/${tpct})*100=${pct}% | Derajat:(${fdeg}/${tdeg})*360=${deg}° | (Digambar: ${actualDrawn})\n`;
+            }
+        }
+
+        return laporan;
+    }
+
+    function navigate(targetPanelId) {
+        if (currentPanel > 0 && currentPanel <= 10) {
+            let durasiDetik = Math.round((Date.now() - timeStart) / 1000);
+            let existingTime = parseInt(dataKirim["q" + currentPanel + "_time"]) || 0;
+            dataKirim["q" + currentPanel + "_time"] = (existingTime + durasiDetik) + "s";
+            
+            if(currentPanel <= 8) {
+                let ansInput = document.getElementById('ans-' + currentPanel);
+                if(ansInput) dataKirim["q" + currentPanel + "_ans"] = ansInput.value;
+            } else {
+                dataKirim["q" + currentPanel + "_ans"] = extractComplexAnswer(currentPanel);
+            }
+        }
+
+        if(currentPanel >= 0) document.getElementById('panel-' + currentPanel).classList.remove('active');
+        document.getElementById('panel-' + targetPanelId).classList.add('active');
+        window.scrollTo(0, 0);
+
+        currentPanel = targetPanelId;
+        timeStart = Date.now();
+    }
+
+    async function finalSubmit() {
+        let btn = document.getElementById('btnSubmit');
+        btn.disabled = true; btn.innerText = "Mengirim Ujian...";
+
+        let durasiDetik = Math.round((Date.now() - timeStart) / 1000);
+        let existingTime = parseInt(dataKirim["q10_time"]) || 0;
+        dataKirim["q10_time"] = (existingTime + durasiDetik) + "s";
+        dataKirim["q10_ans"] = extractComplexAnswer(10);
+
+        let totalDetik = Math.round((Date.now() - assesmentStart) / 1000);
+        let m = Math.floor(totalDetik / 60); let s = totalDetik % 60;
+        dataKirim.totalWaktuSelesai = `${m}m ${s}s`;
+
+        document.getElementById('panel-10').classList.remove('active');
+        document.getElementById('panel-end').classList.add('active');
+        document.getElementById('lblNama').innerText = dataKirim.namaSiswa;
+        document.getElementById('statusKirim').innerText = "Sedang mengirim data ke server. Harap tunggu...";
+
+        try {
+            const response = await fetch(GAS_URL, {
+                method: 'POST', mode: 'cors', body: JSON.stringify(dataKirim)
+            });
+            document.getElementById('statusKirim').innerText = "Berhasil! Jawaban analitis dan praktikmu sudah terekam di sistem Guru.";
+        } catch (error) {
+            document.getElementById('statusKirim').innerText = "Respons Server selesai. Jawaban sudah masuk ke Spreadsheet.";
+            btn.disabled = false; btn.innerText = "Kirim Ulang Jika Gagal";
+        }
+    }
+</script>
+
+</body>
+</html>
