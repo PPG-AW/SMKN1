@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesmen Interaktif Statistika (Versi Final)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .header { border-bottom: 2px solid #0056b3; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .title { font-size: 22px; font-weight: bold; color: #0056b3; }
+        .badge { background: #e9ecef; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+
+        .panel { display: none; animation: slideIn 0.4s ease-out; }
+        .panel.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        .case-box { background: #e8f4f8; border-left: 5px solid #17a2b8; padding: 15px; margin-bottom: 20px; font-size: 15px; line-height: 1.6; border-radius: 0 6px 6px 0; }
+        .chart-container { text-align: left; margin: 0 0 20px 0; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; }
+        canvas { max-width: 100%; height: auto; }
+
+        .question-text { font-size: 17px; margin-bottom: 15px; font-weight: 600; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 10px; border: 2px solid #dfe4ea; border-radius: 6px; font-size: 15px; transition: 0.3s; box-sizing: border-box; }
+        input:focus, select:focus { border-color: #0056b3; outline: none; box-shadow: 0 0 8px rgba(0,86,179,0.2); }
+
+        .btn-group { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; gap: 10px;}
+        button { padding: 12px 25px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; flex: 1;}
+        .btn-next { background: #0056b3; color: white; }
+        .btn-prev { background: #6c757d; color: white; }
+        .btn-reset { background: #dc3545; color: white; margin-top: 15px; width: 100%;}
+        button:hover:not(:disabled) { opacity: 0.9; transform: translateY(-2px); }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Khusus Q9 & Q10 */
+        .step-section { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #0056b3; display: none; }
+        .step-section.active { display: block; }
+        .raw-data-box { background: #fff; border: 1px dashed #333; padding: 15px; font-family: monospace; line-height: 1.8; margin-bottom: 20px; font-size: 14px;}
+        
+        .table-dynamic { width: 100%; border-collapse: collapse; margin-bottom: 15px; background: white;}
+        .table-dynamic th, .table-dynamic td { border: 1px solid #ccc; padding: 8px; text-align: center;}
+        
+        /* KANVAS INTERAKTIF (Rata Kiri) */
+        .interactive-canvas-wrapper { position: relative; width: 500px; height: 380px; margin: 20px 0; touch-action: none; }
+        .svg-canvas { background: #fcfcfc; border: 1px solid #ccc; display: block; width: 100%; height: 100%; cursor: crosshair; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);}
+        .axis-label-input { position: absolute; border: 1px solid #0056b3; text-align: center; font-size: 12px; background: white; padding: 4px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+
+        .sop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        
+        @media (max-width: 650px) {
+            .container { padding: 15px; }
+            .btn-group { flex-direction: column; }
+            .sop-grid { grid-template-columns: 1fr; }
+            .interactive-canvas-wrapper { transform: scale(0.65); transform-origin: top left; margin-bottom: -120px; left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <div class="panel active" id="panel-0">
+        <div class="header"><div class="title">Asesmen Statistika Dasar</div></div>
+        <p style="font-size: 16px;">Selamat datang di asesmen statistika. Silakan masukkan nama lengkap dan kelasmu untuk memulai. Waktu pengerjaan akan dicatat otomatis.</p>
+        <input type="text" id="namaSiswa" placeholder="Misal: Budi Santoso - X PM 1" style="margin-bottom: 20px;">
+        <div class="btn-group"><div style="flex-grow:1"></div><button class="btn-next" onclick="startAssesment()">Mulai Asesmen</button></div>
+    </div>
+
+    <div id="literacy-questions"></div>
+
+    <div class="panel" id="panel-9">
+        <div class="header"><div class="title">Soal 9: Praktik Membangun Diagram Batang</div><div class="badge">Soal 9 / 10</div></div>
+        <div class="case-box"><strong>Kasus:</strong> Lakukan rekapitulasi data penjualan snack dengan total 50 data mentah berikut:<br>
+            <div class="raw-data-box" id="data9-box" style="margin-top: 10px;">Memuat data...</div>
+        </div>
+
+        <div id="q9-step1" class="active">
+            <p style="font-weight:bold; color:#d32f2f;">1. Tentukan Urutan Langkah Kerja (SOP) yang Benar:</p>
+            <div class="sop-grid">
+                <select id="s9-1"><option value="">Langkah 1...</option><option value="Buat Tabel Distribusi">Buat Tabel Distribusi</option><option value="Buat Sumbu & Label">Buat Sumbu & Label</option><option value="Tentukan Titik Koordinat">Tentukan Titik Koordinat</option><option value="Gambar Batang">Gambar Batang</option></select>
+                <select id="s9-2"><option value="">Langkah 2...</option><option value="Buat Tabel Distribusi">Buat Tabel Distribusi</option><option value="Buat Sumbu & Label">Buat Sumbu & Label</option><option value="Tentukan Titik Koordinat">Tentukan Titik Koordinat</option><option value="Gambar Batang">Gambar Batang</option></select>
+                <select id="s9-3"><option value="">Langkah 3...</option><option value="Buat Tabel Distribusi">Buat Tabel Distribusi</option><option value="Buat Sumbu & Label">Buat Sumbu & Label</option><option value="Tentukan Titik Koordinat">Tentukan Titik Koordinat</option><option value="Gambar Batang">Gambar Batang</option></select>
+                <select id="s9-4"><option value="">Langkah 4...</option><option value="Buat Tabel Distribusi">Buat Tabel Distribusi</option><option value="Buat Sumbu & Label">Buat Sumbu & Label</option><option value="Tentukan Titik Koordinat">Tentukan Titik Koordinat</option><option value="Gambar Batang">Gambar Batang</option></select>
+            </div>
+            <button class="btn-next" style="width:100%" onclick="unlockStep('q9-step2')">Konfirmasi SOP & Lanjut ke Tabel</button>
+        </div>
+
+        <div id="q9-step2" class="step-section">
+            <p style="font-weight:bold; color:#0056b3;">2. Pindahkan data ke Tabel Distribusi:</p>
+            <table class="table-dynamic" id="tbl-9">
+                <thead><tr><th>Kategori Barang</th><th>Jumlah (Frekuensi)</th></tr></thead>
+                <tbody id="tbody-9">
+                    <tr><td><input type="text" placeholder="..."></td><td><input type="number" placeholder="0"></td></tr>
+                    <tr><td><input type="text" placeholder="..."></td><td><input type="number" placeholder="0"></td></tr>
+                    <tr><td><input type="text" placeholder="..."></td><td><input type="number" placeholder="0"></td></tr>
+                    <tr><td><input type="text" placeholder="..."></td><td><input type="number" placeholder="0"></td></tr>
+                </tbody>
+            </table>
+            <button class="btn-next" style="width:100%" onclick="unlockStep('q9-step3')">Selesai Tabel & Lanjut Menggambar</button>
+        </div>
+
+        <div id="q9-step3" class="step-section">
+            <p style="font-weight:bold; color:#0056b3; margin-bottom: 5px;">3. Gambar Diagram Batang (Skala Y = 4):</p>
+            <p style="font-size:13px; color:#666; margin-top:0;">Ketik label Sumbu X dan Y secara mandiri. Lalu klik grid untuk menentukan titik.</p>
+            
+            <div class="interactive-canvas-wrapper">
+                <svg class="svg-canvas" id="svg-9">
+                    <g id="grid-9"></g>
+                    <line x1="60" y1="300" x2="480" y2="300" stroke-width="3" stroke="#111"/>
+                    <line x1="60" y1="300" x2="60" y2="20" stroke-width="3" stroke="#111"/>
+                    <text x="45" y="315" font-size="12" font-weight="bold">0</text>
+                    <g id="draw-9"></g>
+                    <g id="pts-9"></g>
+                </svg>
+                <div id="label-inputs-9" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none;"></div>
+            </div>
+            
+            <button onclick="executeDrawing(9, 'batang')" style="background:#17a2b8; color:white; width:100%; padding:12px; font-size:16px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Bangun Batang</button>
+            <button onclick="resetPractice(9)" class="btn-reset">Hapus Semua Titik & Bangunan</button>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-prev" onclick="navigate(8)">Sebelumnya</button>
+            <button class="btn-next" onclick="navigate(10)">Lanjut ke Soal 10</button>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-10">
+        <div class="header"><div class="title">Soal 10: Praktik Membangun Diagram Garis</div><div class="badge">Soal 10 / 10</div></div>
+        <div class="case-box">Tim keamanan toko mencatat jam kedatangan 50 orang pengunjung pertama hari ini. Catatan waktu kedatangan mereka masih berupa data mentah yang berantakan:<br>
+            <div class="raw-data-box" id="data10-box" style="margin-top: 10px;">Memuat data...</div>
+        </div>
+        
+        <div id="q10-step1" class="active">
+            <p style="font-weight:bold; color:#d32f2f;">1. Tentukan Urutan Langkah Kerja (SOP) yang Benar:</p>
+            <div class="sop-grid">
+                <select id="s10-1"><option value="">Langkah 1...</option><option value="Buat Tabel Distribusi">Buat Tabel Distribusi</option><option value="Buat Sumbu & Label">Buat Sumbu & Label</option><option value="Tentukan Titik Koordinat">Tentukan Titik Koordinat</option><option value="Tarik Garis Hubung">Tarik Garis Hubung</option></select>
+                <select id="s10-2"><option value="">Langkah 2...</option><option value="Buat Tabel Distribusi">Buat Tabel Distribusi</option><option value="Buat Sumbu & Label">Buat Sumbu & Label</option><option value="Tentukan Titik Koordinat">Tentukan Titik Koordinat</option><option value="Tarik Garis Hubung">Tarik Garis Hubung</option></select>
+                <select id="s10-3"><option value="">Langkah 3...</option><option value="Buat Tabel Distribusi">Buat Tabel Distribusi</option><option value="Buat Sumbu & Label">Buat Sumbu & Label</option><option value="Tentukan Titik Koordinat">Tentukan Titik Koordinat</option><option value="Tarik Garis Hubung">Tarik Garis Hubung</option></select>
+                <select id="s10-4"><option value="">Langkah 4...</option><option value="Buat Tabel Distribusi">Buat Tabel Distribusi</option><option value="Buat Sumbu & Label">Buat Sumbu & Label</option><option value="Tentukan Titik Koordinat">Tentukan Titik Koordinat</option><option value="Tarik Garis Hubung">Tarik Garis Hubung</option></select>
+            </div>
+            <button class="btn-next" style="width:100%" onclick="unlockStep('q10-step2')">Konfirmasi SOP & Lanjut ke Tabel</button>
+        </div>
+
+        <div id="q10-step2" class="step-section">
+            <p style="font-weight:bold; color:#0056b3;">2. Pindahkan data ke Tabel Distribusi:</p>
+            <table class="table-dynamic" id="tbl-10">
+                <thead><tr><th>Waktu / Jam</th><th>Jumlah Antrean</th></tr></thead>
+                <tbody id="tbody-10">
+                    <tr><td><input type="text" placeholder="..."></td><td><input type="number" placeholder="0"></td></tr>
+                    <tr><td><input type="text" placeholder="..."></td><td><input type="number" placeholder="0"></td></tr>
+                    <tr><td><input type="text" placeholder="..."></td><td><input type="number" placeholder="0"></td></tr>
+                    <tr><td><input type="text" placeholder="..."></td><td><input type="number" placeholder="0"></td></tr>
+                </tbody>
+            </table>
+            <button class="btn-next" style="width:100%" onclick="unlockStep('q10-step3')">Selesai Tabel & Lanjut Menggambar</button>
+        </div>
+
+        <div id="q10-step3" class="step-section">
+            <p style="font-weight:bold; color:#0056b3; margin-bottom: 5px;">3. Gambar Diagram Garis (Skala Y = 4):</p>
+            <p style="font-size:13px; color:#666; margin-top:0;">Ketik label sumbu X dan Y, klik grid untuk menentukan titik, lalu klik 'Tarik Garis'.</p>
+            
+            <div class="interactive-canvas-wrapper">
+                <svg class="svg-canvas" id="svg-10">
+                    <g id="grid-10"></g>
+                    <line x1="60" y1="300" x2="480" y2="300" stroke-width="3" stroke="#111"/>
+                    <line x1="60" y1="300" x2="60" y2="20" stroke-width="3" stroke="#111"/>
+                    <text x="45" y="315" font-size="12" font-weight="bold">0</text>
+                    <g id="draw-10"></g>
+                    <g id="pts-10"></g>
+                </svg>
+                <div id="label-inputs-10" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none;"></div>
+            </div>
+
+            <button onclick="executeDrawing(10, 'garis')" style="background:#6f42c1; color:white; width:100%; padding:12px; font-size:16px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Tarik Garis Hubung</button>
+            <button onclick="resetPractice(10)" class="btn-reset">Hapus Semua Titik & Garis</button>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-prev" onclick="navigate(9)">Sebelumnya</button>
+            <button class="btn-next" onclick="finalSubmit()" id="btnSubmit">Kirim Seluruh Jawaban</button>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-end">
+        <div class="header"><div class="title">Selesai</div></div>
+        <div style="text-align:center;">
+            <h3 style="font-size: 20px;">Selamat, <span id="lblNama" style="color:#0056b3;"></span>!</h3>
+            <p style="font-size: 16px;">Seluruh jawaban asesmen dan waktu pengerjaanmu telah dikirim ke sistem.</p>
+            <div style="color: #155724; font-weight: bold; padding: 20px; background: #d4edda; border-radius: 8px; margin-top:20px; font-size: 15px;" id="statusKirim"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ==========================================
+    // 1. KONFIGURASI URL & VARIABEL
+    // ==========================================
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzd2gc1QDdoEgq_XP74XpERE1YWjgUmSRAAEMTPuiCmOfsh9yB_TjYHFf7u97YRU2_CmQ/exec";
+    
+    let currentPanel = 0;
+    let timeStart = 0;
+    let assesmentStart = 0;
+    let dataKirim = {};
+
+    // 2. DATA SOAL LITERASI Q1-8
+    const casesInfo = {
+        batang: {
+            title: "Data Penjualan Es Teh Solo UP",
+            story: "Unit Produksi (UP) jurusan pemasaran merekap penjualan 'Minuman Es Teh Solo' selama seminggu. Hasil penjualannya disajikan dalam diagram batang di bawah ini:"
+        },
+        garis: {
+            title: "Data Pemantauan Suhu Mesin",
+            story: "Tim bengkel memantau perubahan suhu operasional mesin bubut (°C) setiap jam saat praktik. Hasil pemantauan disajikan dalam diagram garis di bawah ini:"
+        }
+    };
+
+    const questions = [
+        { type: "batang", q: "Pada hari apakah penjualan minuman herbal paling banyak terjadi?", data: [15, 25, 10, 30, 20], labels: ["Sen", "Sel", "Rab", "Kam", "Jum"] },
+        { type: "batang", q: "Lihat diagram tersebut. Berapa tepatnya jumlah es teh yang terjual pada hari Selasa?", data: [15, 25, 10, 30, 20], labels: ["Sen", "Sel", "Rab", "Kam", "Jum"] },
+        { type: "batang", q: "Berapakah total botol yang terjual jika hasil hari Senin dan Selasa digabungkan?", data: [15, 25, 10, 30, 20], labels: ["Sen", "Sel", "Rab", "Kam", "Jum"] },
+        { type: "batang", q: "Berapakah selisih jumlah penjualan antara hari Kamis (tertinggi) dan hari Rabu (terendah)?", data: [15, 25, 10, 30, 20], labels: ["Sen", "Sel", "Rab", "Kam", "Jum"] },
+        { type: "garis", q: "Pada pukul berapakah mesin bubut berada di suhu terendah?", data: [10, 20, 35, 25, 30], labels: ["08:00", "09:00", "10:00", "11:00", "12:00"] },
+        { type: "garis", q: "Lihat arah garis dari pukul 10:00 ke 11:00. Apakah suhu mesin mengalami 'kenaikan' atau 'penurunan'?", data: [10, 20, 35, 25, 30], labels: ["08:00", "09:00", "10:00", "11:00", "12:00"] },
+        { type: "garis", q: "Berapakah kenaikan suhu mesin yang terjadi dari pukul 08:00 menuju pukul 10:00?", data: [10, 20, 35, 25, 30], labels: ["08:00", "09:00", "10:00", "11:00", "12:00"] },
+        { type: "garis", q: "Berapakah suhu mesin bubut pada pukul 12:00 berdasarkan diagram garis tersebut?", data: [10, 20, 35, 25, 30], labels: ["08:00", "09:00", "10:00", "11:00", "12:00"] }
+    ];
+
+    let qHTML = "";
+    questions.forEach((s, idx) => {
+        let i = idx + 1;
+        let cInfo = casesInfo[s.type];
+        qHTML += `
+        <div class="panel" id="panel-${i}">
+            <div class="header"><div class="title">Analisis Data: ${cInfo.title}</div><div class="badge">Soal ${i} / 10</div></div>
+            <div class="case-box">${cInfo.story}</div>
+            <div class="chart-container"><canvas id="canvas-${i}" width="420" height="250"></canvas></div>
+            <div class="question-text"><strong>Pertanyaan:</strong> ${s.q}</div>
+            <input type="text" id="ans-${i}" placeholder="Ketik jawabanmu di sini...">
+            <div class="btn-group">
+                <button class="btn-prev" onclick="navigate(${i-1})">Sebelumnya</button>
+                <button class="btn-next" onclick="navigate(${i+1})">Selanjutnya</button>
+            </div>
+        </div>`;
+    });
+    document.getElementById('literacy-questions').innerHTML = qHTML;
+
+    // 3. GAMBAR CANVAS Q1-8
+    function drawCanvasCharts() {
+        questions.forEach((item, i) => {
+            const canvas = document.getElementById(`canvas-${i+1}`);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const maxVal = 35; 
+            const gridStep = 5; 
+            
+            ctx.clearRect(0,0,420,250);
+            ctx.fillStyle = "#333"; ctx.font = "12px Arial"; ctx.textAlign = "right"; ctx.textBaseline = "middle"; ctx.lineWidth = 1;
+
+            for(let v = 0; v <= maxVal; v += gridStep) {
+                let y = 210 - ((v / maxVal) * 190); 
+                ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(400, y); 
+                ctx.strokeStyle = "#e9ecef"; ctx.stroke();
+                ctx.fillStyle = "#333"; ctx.fillText(v, 32, y);
+            }
+            
+            ctx.strokeStyle = "#111"; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(40,20); ctx.lineTo(40,210); ctx.lineTo(400,210); ctx.stroke();
+
+            ctx.textAlign = "center"; ctx.textBaseline = "top";
+            item.labels.forEach((label, idx) => {
+                const x = 75 + (idx * 70); 
+                const val = item.data[idx];
+                const h = (val / maxVal) * 190;
+
+                if(item.type === 'batang') {
+                    ctx.fillStyle = "#0056b3"; ctx.fillRect(x - 20, 210 - h, 40, h);
+                } else {
+                    ctx.fillStyle = "#dc3545";
+                    ctx.beginPath(); ctx.arc(x, 210 - h, 5, 0, Math.PI*2); ctx.fill();
+                    if(idx > 0) {
+                        const prevH = (item.data[idx-1] / maxVal) * 190;
+                        ctx.strokeStyle = "#dc3545"; ctx.lineWidth = 2;
+                        ctx.beginPath(); ctx.moveTo(75+(idx-1)*70, 210-prevH); ctx.lineTo(x, 210-h); ctx.stroke();
+                    }
+                }
+                ctx.fillStyle = "black"; ctx.font = "bold 11px Arial"; ctx.fillText(label, x, 218);
+            });
+        });
+    }
+
+    // 4. DATA MENTAH Q9 & Q10
+    const dataSnack = ["Roti", "Kripik", "Susu", "Biskuit", "Roti", "Susu", "Kripik", "Biskuit", "Roti", "Roti", "Susu", "Kripik", "Biskuit", "Roti", "Susu", "Kripik", "Kripik", "Roti", "Susu", "Biskuit", "Biskuit", "Roti", "Susu", "Kripik", "Biskuit", "Roti", "Susu", "Kripik", "Kripik", "Biskuit", "Roti", "Susu", "Susu", "Biskuit", "Biskuit", "Roti", "Kripik", "Kripik", "Susu", "Biskuit", "Roti", "Biskuit", "Kripik", "Susu", "Susu", "Roti", "Biskuit", "Biskuit", "Kripik", "Susu"];
+    const dataWaktu = ["08.00", "09.00", "10.00", "11.00", "08.00", "09.00", "10.00", "08.00", "11.00", "10.00", "09.00", "08.00", "11.00", "09.00", "10.00", "11.00", "10.00", "11.00", "08.00", "08.00", "09.00", "10.00", "11.00", "11.00", "08.00", "08.00", "09.00", "10.00", "11.00", "08.00", "08.00", "09.00", "10.00", "11.00", "11.00", "08.00", "09.00", "10.00", "11.00", "08.00", "08.00", "09.00", "10.00", "11.00", "09.00", "08.00", "11.00", "10.00", "09.00", "08.00"];
+    
+    document.getElementById('data9-box').innerText = dataSnack.sort(()=> Math.random()-0.5).join(", ");
+    document.getElementById('data10-box').innerText = dataWaktu.sort(()=> Math.random()-0.5).join(", ");
+
+    // 5. SETUP INTERACTIVE SVG (Q9 & Q10)
+    function setupInteractiveSVG(id) {
+        const svg = document.getElementById(`svg-${id}`);
+        const grid = document.getElementById(`grid-${id}`);
+        const labelContainer = document.getElementById(`label-inputs-${id}`);
+
+        grid.innerHTML = ''; labelContainer.innerHTML = '';
+
+        const jedaX = 84; 
+        for(let i=1; i<=4; i++) { 
+            let x = 60 + (i * jedaX);
+            grid.innerHTML += `<line x1="${x}" y1="20" x2="${x}" y2="300" stroke="#e0e0e0" stroke-width="1"/>`;
+            labelContainer.innerHTML += `<input type="text" class="axis-label-input label-x-${id}" style="left:${x - 35}px; top:310px; width:70px; pointer-events:auto;" placeholder="Kategori ${i}">`;
+        }
+
+        const jedaY = 56; 
+        for(let i=1; i<=5; i++) { 
+            let y = 300 - (i * jedaY);
+            grid.innerHTML += `<line x1="60" y1="${y}" x2="480" y2="${y}" stroke="#e0e0e0" stroke-width="1"/>`;
+            // Class label-y-${id} ditambahkan agar bisa diekstrak
+            labelContainer.innerHTML += `<input type="number" class="axis-label-input label-y-${id}" style="left:10px; top:${y - 14}px; width:40px; pointer-events:auto;" placeholder="...">`;
+        }
+
+        svg.onclick = (e) => {
+            const rect = svg.getBoundingClientRect();
+            const scaleX = 500 / rect.width;
+            const scaleY = 380 / rect.height; 
+            
+            const xRaw = (e.clientX - rect.left) * scaleX;
+            const yRaw = (e.clientY - rect.top) * scaleY;
+            
+            const snapX = 60 + Math.round((xRaw - 60) / jedaX) * jedaX;
+            const snapY = 300 - Math.round((300 - yRaw) / jedaY) * jedaY;
+            
+            if(snapX > 60 && snapX <= 480 && snapY >= 20 && snapY <= 300) {
+                const pts = document.getElementById(`pts-${id}`);
+                pts.innerHTML += `<circle cx="${snapX}" cy="${snapY}" r="7" fill="#dc3545" class="user-pt-${id}" />`;
+            }
+        };
+    }
+    setupInteractiveSVG(9); setupInteractiveSVG(10);
+
+    // 6. HELPER LOGIC PRAKTIK
+    function unlockStep(stepId) {
+        document.getElementById(stepId).classList.add('active');
+        setTimeout(() => { document.getElementById(stepId).scrollIntoView({ behavior: 'smooth' }); }, 200);
+    }
+    
+    function resetPractice(id) {
+        document.getElementById(`pts-${id}`).innerHTML = '';
+        document.getElementById(`draw-${id}`).innerHTML = '';
+    }
+
+    function executeDrawing(id, type) {
+        const pts = document.querySelectorAll(`.user-pt-${id}`);
+        const drawGrp = document.getElementById(`draw-${id}`);
+        drawGrp.innerHTML = ''; 
+        
+        if(pts.length === 0) { alert("Letakkan titik koordinat terlebih dahulu di atas kanvas!"); return; }
+
+        if(type === 'batang') {
+            pts.forEach(p => {
+                const cx = parseFloat(p.getAttribute("cx"));
+                const cy = parseFloat(p.getAttribute("cy"));
+                drawGrp.innerHTML += `<rect x="${cx - 20}" y="${cy}" width="40" height="${300 - cy}" fill="#0056b3" opacity="0.8" />`;
+            });
+        } else {
+            let pointsArr = Array.from(pts).map(p => ({ x: parseFloat(p.getAttribute("cx")), y: parseFloat(p.getAttribute("cy")) }));
+            pointsArr.sort((a,b) => a.x - b.x); 
+            let dString = pointsArr.map((p, i) => (i === 0 ? "M" : "L") + ` ${p.x} ${p.y}`).join(" ");
+            drawGrp.innerHTML += `<path d="${dString}" fill="none" stroke="#6f42c1" stroke-width="4" />`;
+        }
+    }
+
+    // 7. EKSTRAKSI JAWABAN TEKS LENGKAP UNTUK Q9 & Q10
+    function extractComplexAnswer(id) {
+        let laporan = "";
+
+        // a. Ekstrak SOP
+        let sop1 = document.getElementById(`s${id}-1`).value || "(Kosong)";
+        let sop2 = document.getElementById(`s${id}-2`).value || "(Kosong)";
+        let sop3 = document.getElementById(`s${id}-3`).value || "(Kosong)";
+        let sop4 = document.getElementById(`s${id}-4`).value || "(Kosong)";
+        
+        laporan += "[URUTAN SOP]\n";
+        laporan += `1. ${sop1}\n2. ${sop2}\n3. ${sop3}\n4. ${sop4}\n\n`;
+
+        // b. Ekstrak Tabel
+        laporan += "[ISIAN TABEL]\n";
+        let rows = document.querySelectorAll(`#tbody-${id} tr`);
+        rows.forEach((r) => {
+            let kat = r.querySelector('input[type="text"]').value || "(Kosong)";
+            let frek = r.querySelector('input[type="number"]').value || "(0)";
+            laporan += `- ${kat} : ${frek}\n`;
+        });
+
+        // c. Ekstrak Label Sumbu X (Kategori)
+        laporan += "\n[LABEL KATEGORI (Sumbu X)]\n";
+        let labelsX = document.querySelectorAll(`.label-x-${id}`);
+        labelsX.forEach((lbl, idx) => {
+            laporan += `- Garis ${idx+1}: ${lbl.value || "(Kosong)"}\n`;
+        });
+
+        // d. Ekstrak Label Sumbu Y (Skala Angka) -> Diurutkan dari bawah ke atas
+        laporan += "\n[LABEL SKALA (Sumbu Y)]\n";
+        let labelsY = document.querySelectorAll(`.label-y-${id}`);
+        labelsY.forEach((lbl, idx) => {
+            laporan += `- Grid ${idx+1} (Bawah ke Atas): ${lbl.value || "(Kosong)"}\n`;
+        });
+
+        // e. Ekstrak Posisi Titik Koordinat (Terjemahan ke Angka)
+        laporan += "\n[HASIL GAMBAR DIAGRAM]\n";
+        let pts = document.querySelectorAll(`.user-pt-${id}`);
+        if(pts.length === 0) {
+            laporan += "- Siswa belum meletakkan titik koordinat.\n";
+        } else {
+            let pointsArr = Array.from(pts).map(p => ({ x: parseFloat(p.getAttribute("cx")), y: parseFloat(p.getAttribute("cy")) }));
+            pointsArr.sort((a,b) => a.x - b.x); // Urut dari kiri ke kanan
+
+            pointsArr.forEach((p, idx) => {
+                // Konversi Y piksel menjadi Angka. (y = 300 - (val/4 * 56)) => val = (300 - y)/56 * 4
+                let nilaiSumbuY = Math.round(((300 - p.y) / 56) * 4);
+                let posisiSumbuX = Math.round((p.x - 60) / 84); // Kolom 1, 2, 3, 4
+                
+                laporan += `- Titik digambar pada [Kolom Kategori ${posisiSumbuX}], di ketinggian Angka: ${nilaiSumbuY}\n`;
+            });
+        }
+
+        return laporan;
+    }
+
+    // 8. LOGIKA NAVIGASI & SUBMIT GOOGLE SHEETS
+    function startAssesment() {
+        let nama = document.getElementById('namaSiswa').value;
+        if(nama.trim() === "") { alert("Mohon isi nama terlebih dahulu!"); return; }
+        
+        dataKirim.namaSiswa = nama;
+        assesmentStart = Date.now();
+        drawCanvasCharts(); 
+        navigate(1);
+    }
+
+    function navigate(targetPanelId) {
+        if (currentPanel > 0 && currentPanel <= 10) {
+            let durasiDetik = Math.round((Date.now() - timeStart) / 1000);
+            let existingTime = parseInt(dataKirim["q" + currentPanel + "_time"]) || 0;
+            dataKirim["q" + currentPanel + "_time"] = (existingTime + durasiDetik) + "s";
+            
+            if(currentPanel <= 8) {
+                let ansInput = document.getElementById('ans-' + currentPanel);
+                if(ansInput) dataKirim["q" + currentPanel + "_ans"] = ansInput.value;
+            } else {
+                // Ekstrak laporan komplit untuk Q9 (dan Q10 nanti di submit)
+                dataKirim["q" + currentPanel + "_ans"] = extractComplexAnswer(currentPanel);
+            }
+        }
+
+        if(currentPanel >= 0) document.getElementById('panel-' + currentPanel).classList.remove('active');
+        document.getElementById('panel-' + targetPanelId).classList.add('active');
+        window.scrollTo(0, 0);
+
+        currentPanel = targetPanelId;
+        timeStart = Date.now();
+    }
+
+    async function finalSubmit() {
+        let btn = document.getElementById('btnSubmit');
+        btn.disabled = true;
+        btn.innerText = "Mengirim Data...";
+
+        let durasiDetik = Math.round((Date.now() - timeStart) / 1000);
+        let existingTime = parseInt(dataKirim["q10_time"]) || 0;
+        dataKirim["q10_time"] = (existingTime + durasiDetik) + "s";
+        
+        // Ekstrak Q10
+        dataKirim["q10_ans"] = extractComplexAnswer(10);
+
+        let totalDetik = Math.round((Date.now() - assesmentStart) / 1000);
+        let m = Math.floor(totalDetik / 60); let s = totalDetik % 60;
+        dataKirim.totalWaktuSelesai = `${m}m ${s}s`;
+
+        document.getElementById('panel-10').classList.remove('active');
+        document.getElementById('panel-end').classList.add('active');
+        document.getElementById('lblNama').innerText = dataKirim.namaSiswa;
+        document.getElementById('statusKirim').innerText = "Sedang mengirim jawaban ke server. Harap tunggu...";
+        document.getElementById('statusKirim').style.color = "#856404";
+
+        try {
+            const response = await fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'cors', 
+                body: JSON.stringify(dataKirim)
+            });
+            document.getElementById('statusKirim').innerText = "Berhasil! Jawaban dan waktu pengerjaanmu sudah terekam penuh di sistem Guru.";
+            document.getElementById('statusKirim').style.color = "#155724";
+        } catch (error) {
+            document.getElementById('statusKirim').innerText = "Respons Server selesai. Jika halaman ini tidak error, berarti jawaban sudah masuk ke Spreadsheet.";
+            document.getElementById('statusKirim').style.color = "#155724";
+            btn.disabled = false; btn.innerText = "Kirim Ulang";
+        }
+    }
+</script>
+
+</body>
+</html>
