@@ -25,17 +25,30 @@
             color: #0056b3;
             border-bottom: 3px double #0056b3;
             padding-bottom: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             text-transform: uppercase;
         }
-        .identitas-box {
-            background-color: #f8f9fa;
+
+        /* Kotak Instruksi Pengganti Identitas */
+        .instruksi-box {
+            background-color: #fff3cd;
+            border: 2px dashed #ffc107;
             padding: 15px;
-            border: 1px dashed #666;
-            margin-bottom: 25px;
-            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            border-radius: 6px;
+            color: #856404;
         }
-        .identitas-baris { margin-bottom: 8px; }
+        .instruksi-hint {
+            display: block;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #ffeeba;
+            font-size: 14.5px;
+            color: #664d03;
+            font-style: italic;
+        }
+
         .titik-titik {
             display: inline-block;
             min-width: 150px;
@@ -101,11 +114,14 @@
 
 <div class="catatan-container">
     
-    <div class="identitas-box">
-        <div class="identitas-baris">Catatlah ini di Buku Catatan kalian dan dikumpulkan di Sekolah sebagai nilai<span class="titik-panjang"></span></div>
-        </div>
-
     <div class="judul-utama">Catatan Statistika Dasar</div>
+
+    <div class="instruksi-box">
+        <strong style="font-size: 18px;">📌 PENGUMUMAN PENTING:</strong><br>
+        Catatlah seluruh materi di bawah ini ke dalam buku catatan matematikamu secara rapi.<br>
+        <strong>Buku catatan akan dikumpulkan kepada Guru sebagai penambah Nilai Tugas!</strong>
+        <span class="instruksi-hint">💡 <strong>Petunjuk:</strong> Jika kamu sudah mempelajari sumber belajar sebelumnya, kamu pasti bisa melengkapi buku catatan ini dengan sangat mudah!</span>
+    </div>
 
     <h3>A. KONSEP & KAMUS MINI</h3>
     <div class="instruksi">(Lengkapi titik-titik di bawah ini dengan mengingat kembali materi di web latihan!)</div>
@@ -169,13 +185,23 @@
 
     <h3>D. REFLEKSI HARI INI</h3>
     <div class="refleksi-box">
-        <div class="instruksi" style="margin-top: 0;">(Tulis salah satu kalimat di bawah ini yang paling sesuai dengan perasaanmu di buku catatan)</div>
-        <ol>
-            <li>Saya sudah paham dan bisa menggambar sendiri!</li>
-            <li>Saya lumayan paham, tapi kadang masih tertukar antara Sumbu X dan Y.</li>
-            <li>Saya masih bingung dan butuh bantuan Guru.</li>
+        <div class="instruksi" style="margin-top: 0;">(Pilih kalimat yang paling sesuai dengan kondisimu, lalu salin ke buku catatan beserta angka pilihannya!)</div>
+        
+        <ol style="margin-bottom: 20px; line-height: 1.6;">
+            <li>Saya sudah paham sepenuhnya, tidak ada yang ingin saya tanyakan.</li>
+            <li>Saya masih bingung saat merekap data mentah ke dalam tabel.</li>
+            <li>Saya masih sering tertukar antara posisi Sumbu X (mendatar) dan Sumbu Y (tegak).</li>
+            <li>Saya masih bingung cara menentukan skala angka pada Sumbu Y.</li>
+            <li>Saya masih kesulitan menentukan titik koordinat yang pas saat menggambar diagram.</li>
         </ol>
-        <p style="font-weight: bold; margin-top: 15px;">Pilihan Saya: <span class="titik-panjang"></span></p>
+
+        <p style="font-weight: bold; margin-bottom: 5px;">Pilihan Saya (Tuliskan Kalimatnya):</p>
+        <div class="titik-panjang" style="width: 100%; margin-bottom: 15px;"></div>
+        <div class="titik-panjang" style="width: 100%;"></div>
+
+        <p style="font-weight: bold; margin-top: 20px; margin-bottom: 5px;">6. Ada yang ingin saya tanyakan (Tulis pertanyaanmu di sini):</p>
+        <div class="titik-panjang" style="width: 100%; margin-bottom: 15px;"></div>
+        <div class="titik-panjang" style="width: 100%;"></div>
     </div>
 
 </div>
