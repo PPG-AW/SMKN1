@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesmen Statistika - TDF Berkelompok</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 950px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .header { border-bottom: 2px solid #0056b3; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .title { font-size: 22px; font-weight: bold; color: #0056b3; text-transform: uppercase;}
+        .badge { background: #e9ecef; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+
+        .panel { display: none; animation: slideIn 0.4s ease-out; }
+        .panel.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        .case-box { background: #e8f4f8; border-left: 5px solid #17a2b8; padding: 15px; margin-bottom: 20px; font-size: 15px; line-height: 1.6; border-radius: 0 6px 6px 0; }
+        
+        input[type="text"], input[type="number"] { padding: 10px; border: 2px solid #dfe4ea; border-radius: 4px; font-size: 14px; font-family: monospace; font-weight: bold; transition: 0.3s; width: 100%; box-sizing: border-box;}
+        input:focus { border-color: #0056b3; outline: none; box-shadow: 0 0 8px rgba(0,86,179,0.2); }
+
+        .btn-group { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; gap: 10px;}
+        button { padding: 12px 25px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; flex: 1;}
+        .btn-next { background: #0056b3; color: white; }
+        .btn-prev { background: #6c757d; color: white; }
+        button:hover:not(:disabled) { opacity: 0.9; transform: translateY(-2px); }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Struktur Soal Ujian */
+        .step-container { background: #fdfdfd; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #6c757d;}
+        .step-title { font-weight: bold; font-size: 16px; margin-bottom: 15px; color: #333; border-bottom: 1px dashed #ccc; padding-bottom: 10px;}
+        
+        .raw-data-box { background: #fff; border: 2px dashed #6c757d; padding: 15px; font-family: monospace; font-size: 16px; text-align: center; letter-spacing: 2px; line-height: 1.8; margin-bottom: 20px; border-radius: 6px;}
+        
+        /* Grid Input Responsif untuk HP */
+        .exam-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px dashed #ccc; margin-bottom: 15px;}
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 13px; font-weight: bold; color: #555; }
+        .form-group.highlight input { border-color: #0056b3; background-color: #f4f8fc;}
+
+        /* Kertas Buram DND */
+        .dnd-area { border: 2px dashed #b8daff; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;}
+        .dnd-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;}
+        .dnd-title { font-weight: bold; color: #0056b3; font-size: 13px; }
+        .pool-container { display: flex; flex-wrap: wrap; gap: 6px; min-height: 60px; background: white; padding: 10px; border: 1px solid #ddd; border-radius: 6px; position: relative;}
+        
+        .pill { background: #6c757d; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold; font-size: 13px; cursor: grab; user-select: none;}
+        .pill:active { cursor: grabbing; }
+        .pill.dragging { opacity: 0.5; background: #ffc107; color: #333;}
+
+        /* Tabel Dinamis Laporan */
+        .table-responsive { width: 100%; overflow-x: auto; margin-bottom: 15px; }
+        .table-dynamic { width: 100%; min-width: 600px; border-collapse: collapse; background: white;}
+        .table-dynamic th, .table-dynamic td { border: 1px solid #ccc; padding: 8px; text-align: center; vertical-align: middle;}
+        .table-dynamic th { background: #e0e0e0; font-size: 14px;}
+        .btn-tambah { background: #28a745; color: white; padding: 8px 15px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 10px; flex: none; font-size: 13px;}
+        
+        .td-rentang { display: flex; justify-content: center; align-items: center; gap: 8px; font-family: monospace; }
+        .range-input { width: 70px; text-align: center; }
+
+        @media (max-width: 650px) {
+            .container { padding: 15px; }
+            .btn-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <div class="panel active" id="panel-0">
+        <div class="header"><div class="title">Ujian Praktik: TDF Berkelompok</div></div>
+        <div class="case-box" style="font-size: 16px;">
+            <strong>Selamat datang di Ujian Statistika!</strong><br><br>
+            Pada ujian ini, kamu diminta untuk mengolah data mentah menjadi Tabel Distribusi Frekuensi (TDF) Berkelompok secara mandiri. <br><br>
+            <strong>Penting:</strong>
+            <ul style="margin-top: 5px; padding-left: 20px;">
+                <li>Tidak ada validasi, petunjuk rumus, maupun tabel logaritma di ujian ini.</li>
+                <li><strong>Hitung sendiri berapa total data (n) pada setiap soal.</strong></li>
+                <li>Kamu harus menentukan sendiri berapa jumlah baris tabel yang harus dibuat.</li>
+                <li>Seluruh langkah perhitunganmu (J, k, c) dan tabel akhir akan terekam ke sistem Guru.</li>
+            </ul>
+        </div>
+        <p style="font-weight: bold;">Masukkan identitasmu untuk memulai:</p>
+        <input type="text" id="namaSiswa" placeholder="Misal: Budi Santoso - X PM 1" style="width: 100%; text-align: left; padding: 12px; margin-bottom: 20px; font-family: 'Segoe UI'; font-size: 15px;">
+        <div class="btn-group"><div style="flex-grow:1"></div><button class="btn-next" onclick="startAssesment()">Mulai Ujian Sekarang</button></div>
+    </div>
+
+    <div class="panel" id="panel-1">
+        <div class="header"><div class="title">Soal 1: Data Ujian Training</div><div class="badge">Soal 1 / 2</div></div>
+        
+        <div class="case-box">
+            Sebuah perusahaan mendata nilai ujian akhir dari <strong>beberapa peserta</strong> pelatihan. Hitunglah total datanya secara mandiri dan susunlah data berikut menjadi TDF Berkelompok!
+        </div>
+
+        <div class="raw-data-box">
+            95, 42, 50, 75, 88, 60, 40, 55, 65, 70, 45, 80, 92, 48, 58, 62, 78, 85, 41, 52, 68, 72, 82, 44, 56, 64, 76, 84, 46, 54
+        </div>
+
+        <div class="dnd-area">
+            <div class="dnd-header">
+                <span class="dnd-title">💡 KERTAS BURAM (Boleh dipakai untuk menyortir data, bebas diabaikan)</span>
+            </div>
+            <div class="pool-container" id="q1-pool-raw"></div>
+        </div>
+
+        <div class="step-container">
+            <div class="step-title">BAGIAN A: Perhitungan Tiga Serangkai</div>
+            
+            <div class="exam-form-grid">
+                <div class="form-group"><label>1. Nilai Terbesar (Max)</label><input type="number" id="q1_max"></div>
+                <div class="form-group"><label>Nilai Terkecil (Min)</label><input type="number" id="q1_min"></div>
+                <div class="form-group highlight"><label>Jangkauan (J)</label><input type="number" id="q1_j"></div>
+            </div>
+
+            <div class="exam-form-grid">
+                <div class="form-group"><label>2. Total Data (n)</label><input type="number" id="q1_n"></div>
+                <div class="form-group"><label>Nilai log(n)</label><input type="number" step="0.01" id="q1_logn"></div>
+                <div class="form-group"><label>Banyak Kelas (k) Desimal</label><input type="number" step="0.01" id="q1_k_dec"></div>
+                <div class="form-group highlight"><label>Banyak Kelas (k) Bulat</label><input type="number" id="q1_k_fin"></div>
+            </div>
+
+            <div class="exam-form-grid">
+                <div class="form-group"><label>3. Panjang Kelas (c) Desimal</label><input type="number" step="0.01" id="q1_c_dec"></div>
+                <div class="form-group highlight"><label>Panjang Kelas (c) Bulat</label><input type="number" id="q1_c_fin"></div>
+            </div>
+        </div>
+
+        <div class="step-container" style="border-left-color: #0056b3;">
+            <div class="step-title">BAGIAN B: Laporan Tabel Resmi</div>
+            <p style="font-size: 13px; color: #555; margin-top: -10px;">Tambahkan baris tabel secara mandiri sesuai dengan jumlah kelas (k) yang sudah kamu hitung di atas.</p>
+            <button onclick="addRow('q1')" class="btn-tambah">+ Tambah Baris Kelas</button>
+            <div class="table-responsive">
+                <table class="table-dynamic">
+                    <thead><tr><th>Kelas Ke-</th><th>Rentang Nilai (Bawah - Atas)</th><th>Frekuensi</th><th>Aksi</th></tr></thead>
+                    <tbody id="q1_tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-prev" disabled>Sebelumnya</button>
+            <button class="btn-next" onclick="navigate(2)">Lanjut ke Soal 2</button>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-2">
+        <div class="header"><div class="title">Soal 2: Berat Paket Ekspedisi</div><div class="badge">Soal 2 / 2</div></div>
+        
+        <div class="case-box">
+            Sebuah perusahaan ekspedisi mendata berat dari <strong>sejumlah tumpukan paket</strong> yang masuk hari ini. Hitunglah total datanya secara mandiri dan susunlah data berikut menjadi TDF Berkelompok!
+        </div>
+
+        <div class="raw-data-box">
+            32, 45, 67, 82, 54, 38, 71, 49, 60, 77, 85, 34, 56, 62, 41, 74, 50, 68, 79, 36, 58, 65, 43, 75, 52, 69, 81, 39, 59, 64, 47, 72, 51, 66, 80, 35, 57, 63, 48, 73, 55, 61, 42, 76, 53, 70, 84, 37, 83, 46
+        </div>
+
+        <div class="dnd-area">
+            <div class="dnd-header">
+                <span class="dnd-title">💡 KERTAS BURAM (Boleh dipakai untuk menyortir data, bebas diabaikan)</span>
+            </div>
+            <div class="pool-container" id="q2-pool-raw"></div>
+        </div>
+
+        <div class="step-container">
+            <div class="step-title">BAGIAN A: Perhitungan Tiga Serangkai</div>
+            
+            <div class="exam-form-grid">
+                <div class="form-group"><label>1. Nilai Terbesar (Max)</label><input type="number" id="q2_max"></div>
+                <div class="form-group"><label>Nilai Terkecil (Min)</label><input type="number" id="q2_min"></div>
+                <div class="form-group highlight"><label>Jangkauan (J)</label><input type="number" id="q2_j"></div>
+            </div>
+
+            <div class="exam-form-grid">
+                <div class="form-group"><label>2. Total Data (n)</label><input type="number" id="q2_n"></div>
+                <div class="form-group"><label>Nilai log(n)</label><input type="number" step="0.01" id="q2_logn"></div>
+                <div class="form-group"><label>Banyak Kelas (k) Desimal</label><input type="number" step="0.01" id="q2_k_dec"></div>
+                <div class="form-group highlight"><label>Banyak Kelas (k) Bulat</label><input type="number" id="q2_k_fin"></div>
+            </div>
+
+            <div class="exam-form-grid">
+                <div class="form-group"><label>3. Panjang Kelas (c) Desimal</label><input type="number" step="0.01" id="q2_c_dec"></div>
+                <div class="form-group highlight"><label>Panjang Kelas (c) Bulat</label><input type="number" id="q2_c_fin"></div>
+            </div>
+        </div>
+
+        <div class="step-container" style="border-left-color: #0056b3;">
+            <div class="step-title">BAGIAN B: Laporan Tabel Resmi</div>
+            <p style="font-size: 13px; color: #555; margin-top: -10px;">Tambahkan baris tabel secara mandiri sesuai dengan jumlah kelas (k) yang sudah kamu hitung di atas.</p>
+            <button onclick="addRow('q2')" class="btn-tambah">+ Tambah Baris Kelas</button>
+            <div class="table-responsive">
+                <table class="table-dynamic">
+                    <thead><tr><th>Kelas Ke-</th><th>Rentang Nilai (Bawah - Atas)</th><th>Frekuensi</th><th>Aksi</th></tr></thead>
+                    <tbody id="q2_tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-prev" onclick="navigate(1)">Sebelumnya</button>
+            <button class="btn-next" onclick="finalSubmit()" id="btnSubmit">Kumpulkan Ujian Final</button>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-end">
+        <div class="header"><div class="title">Ujian Selesai!</div></div>
+        <div style="text-align:center;">
+            <h3 style="font-size: 22px;">Selamat, <span id="lblNama" style="color:#0056b3;"></span>!</h3>
+            <p style="font-size: 16px;">Tugas beratmu hari ini telah selesai. Seluruh jejak perhitungan matematis dan laporan tabelmu telah direkam secara detail ke sistem Guru.</p>
+            <div style="color: #155724; font-weight: bold; padding: 20px; background: #d4edda; border-radius: 8px; margin-top:20px; font-size: 15px;" id="statusKirim"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // GANTI DENGAN URL WEB APP MILIK BAPAK/IBU (Untuk script baru di bawah)
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyNMaBXK8zjIGnEiaxuAGSQ5v433zgLP8jBTAe9_cAQl0u6OjYoLxz512GySGfhYS7KIA/exec";
+    
+    let currentPanel = 0;
+    let timeStart = 0;
+    let assesmentStart = 0;
+    let dataKirim = {};
+    
+    let rowCounts = { q1: 0, q2: 0 };
+
+    const dataQ1 = [95, 42, 50, 75, 88, 60, 40, 55, 65, 70, 45, 80, 92, 48, 58, 62, 78, 85, 41, 52, 68, 72, 82, 44, 56, 64, 76, 84, 46, 54];
+    const dataQ2 = [32, 45, 67, 82, 54, 38, 71, 49, 60, 77, 85, 34, 56, 62, 41, 74, 50, 68, 79, 36, 58, 65, 43, 75, 52, 69, 81, 39, 59, 64, 47, 72, 51, 66, 80, 35, 57, 63, 48, 73, 55, 61, 42, 76, 53, 70, 84, 37, 83, 46];
+
+    // ==========================================
+    // FUNGSI DND (KERTAS BURAM BEBAS)
+    // ==========================================
+    function setupDND(poolId, dataArr) {
+        let pool = document.getElementById(poolId);
+        pool.innerHTML = ''; 
+        
+        dataArr.forEach((val, i) => {
+            let pill = document.createElement('div');
+            pill.className = 'pill'; 
+            pill.dataset.val = val; 
+            pill.innerText = val;
+            pill.draggable = true;
+            
+            pill.addEventListener('dragstart', (e) => {
+                pill.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', pill.id);
+            });
+            pill.addEventListener('dragend', () => pill.classList.remove('dragging'));
+            pool.appendChild(pill);
+        });
+
+        pool.addEventListener('dragover', e => {
+            e.preventDefault();
+            const dragged = pool.querySelector('.dragging');
+            if (dragged) {
+                const afterElement = getDragAfterElement(pool, e.clientX, e.clientY);
+                if (afterElement == null) { pool.appendChild(dragged); } 
+                else { pool.insertBefore(dragged, afterElement); }
+            }
+        });
+    }
+
+    function getDragAfterElement(container, x, y) {
+        const draggableElements = [...container.querySelectorAll('.pill:not(.dragging)')];
+        for (let i = 0; i < draggableElements.length; i++) {
+            const child = draggableElements[i];
+            const box = child.getBoundingClientRect();
+            if (y >= box.top && y <= box.bottom) {
+                if (x < box.left + box.width / 2) return child;
+            } else if (y < box.top) { return child; }
+        }
+        return null; 
+    }
+
+    // ==========================================
+    // FUNGSI TABEL DINAMIS (KONTROL SISWA)
+    // ==========================================
+    function addRow(qId) {
+        rowCounts[qId]++;
+        let tbody = document.getElementById(`${qId}_tbody`);
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="row-number"><strong>${rowCounts[qId]}</strong></td>
+            <td>
+                <div class="td-rentang">
+                    <input type="number" class="range-input exam-l" placeholder="Bawah"> 
+                    <span>&minus;</span> 
+                    <input type="number" class="range-input exam-u" placeholder="Atas">
+                </div>
+            </td>
+            <td><input type="number" class="range-input exam-f" placeholder="Frek" style="border-color:#0056b3;"></td>
+            <td><button onclick="deleteRow(this, '${qId}')" style="background:#dc3545;color:white;border:none;border-radius:4px;cursor:pointer;padding:6px 12px;font-weight:bold;font-size:12px;">Hapus</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function deleteRow(btn, qId) {
+        btn.parentElement.parentElement.remove();
+        rowCounts[qId]--;
+        let tbody = document.getElementById(`${qId}_tbody`);
+        let rows = tbody.children;
+        for(let i=0; i<rows.length; i++) {
+            rows[i].querySelector('.row-number').innerHTML = `<strong>${i+1}</strong>`;
+        }
+    }
+
+    // ==========================================
+    // LOGIKA NAVIGASI & REKAM JAWABAN
+    // ==========================================
+    function startAssesment() {
+        let nama = document.getElementById('namaSiswa').value;
+        if(nama.trim() === "") { alert("Mohon isi nama terlebih dahulu!"); return; }
+        
+        dataKirim.namaSiswa = nama;
+        assesmentStart = Date.now();
+        
+        setupDND('q1-pool-raw', dataQ1);
+        setupDND('q2-pool-raw', dataQ2);
+        
+        // Pancingan awal 1 baris
+        addRow('q1'); 
+        addRow('q2');
+
+        navigate(1);
+    }
+
+    function getV(id) { return document.getElementById(id).value || "(Kosong)"; }
+
+    function extractComplexAnswer(qId) {
+        let laporan = "[A. HITUNGAN TIGA SERANGKAI]\n";
+        
+        laporan += `1. Jangkauan (J)\n - Max: ${getV(qId+'_max')} | Min: ${getV(qId+'_min')} | J: ${getV(qId+'_j')}\n\n`;
+        laporan += `2. Banyak Kelas (k)\n - n: ${getV(qId+'_n')} | log(n): ${getV(qId+'_logn')}\n - k Desimal: ${getV(qId+'_k_dec')} | k Bulat: ${getV(qId+'_k_fin')} Kelas\n\n`;
+        laporan += `3. Panjang Kelas (c)\n - c Desimal: ${getV(qId+'_c_dec')} | c Bulat: ${getV(qId+'_c_fin')}\n\n`;
+
+        let rows = document.getElementById(`${qId}_tbody`).children;
+        laporan += `[B. TABEL LAPORAN (Siswa membuat ${rows.length} Baris)]\n`;
+        if(rows.length === 0) {
+            laporan += "- Tabel kosong / tidak diisi.\n";
+        } else {
+            for(let i=0; i<rows.length; i++) {
+                let r = rows[i];
+                let l = r.querySelector(`.exam-l`).value || "?";
+                let u = r.querySelector(`.exam-u`).value || "?";
+                let f = r.querySelector(`.exam-f`).value || "?";
+                laporan += `- Kelas ${i+1}: [${l} - ${u}] => F:${f}\n`;
+            }
+        }
+        return laporan;
+    }
+
+    function navigate(targetPanelId) {
+        if (currentPanel === 1 || currentPanel === 2) {
+            let durasiDetik = Math.round((Date.now() - timeStart) / 1000);
+            let existingTime = parseInt(dataKirim["q" + currentPanel + "_time"]) || 0;
+            dataKirim["q" + currentPanel + "_time"] = (existingTime + durasiDetik) + "s";
+            dataKirim["q" + currentPanel + "_ans"] = extractComplexAnswer("q" + currentPanel);
+        }
+
+        if(currentPanel >= 0) document.getElementById('panel-' + currentPanel).classList.remove('active');
+        document.getElementById('panel-' + targetPanelId).classList.add('active');
+        window.scrollTo(0, 0);
+
+        currentPanel = targetPanelId;
+        timeStart = Date.now();
+    }
+
+    async function finalSubmit() {
+        if(!confirm("Apakah kamu yakin semua perhitungan Tiga Serangkai (J, k, c), jumlah baris kelas, dan rentang tabelmu sudah benar? Jawaban akan segera direkam ke buku nilai.")) return;
+
+        let btn = document.getElementById('btnSubmit');
+        btn.disabled = true; btn.innerText = "Mengirim Ujian...";
+
+        // Rekam soal 2 terakhir
+        let durasiDetik = Math.round((Date.now() - timeStart) / 1000);
+        let existingTime = parseInt(dataKirim["q2_time"]) || 0;
+        dataKirim["q2_time"] = (existingTime + durasiDetik) + "s";
+        dataKirim["q2_ans"] = extractComplexAnswer("q2");
+
+        let totalDetik = Math.round((Date.now() - assesmentStart) / 1000);
+        let m = Math.floor(totalDetik / 60); let s = totalDetik % 60;
+        dataKirim.totalWaktuSelesai = `${m}m ${s}s`;
+
+        document.getElementById('panel-2').classList.remove('active');
+        document.getElementById('panel-end').classList.add('active');
+        document.getElementById('lblNama').innerText = dataKirim.namaSiswa;
+        document.getElementById('statusKirim').innerText = "Sedang mengirim data ke server. Harap tunggu...";
+
+        try {
+            const response = await fetch(GAS_URL, {
+                method: 'POST', mode: 'cors', body: JSON.stringify(dataKirim)
+            });
+            document.getElementById('statusKirim').innerText = "Berhasil! Laporan tabel dan jalan pikiranmu sudah terekam dengan aman di sistem Guru.";
+        } catch (error) {
+            document.getElementById('statusKirim').innerText = "Respons Server selesai. Jika halaman ini tidak memunculkan pesan error merah, berarti jawaban sudah masuk ke Spreadsheet Guru.";
+            btn.disabled = false; btn.innerText = "Kirim Ulang Jika Gagal";
+        }
+    }
+</script>
+
+</body>
+</html>

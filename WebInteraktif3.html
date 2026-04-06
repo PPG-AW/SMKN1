@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Interaktif - TDF Berkelompok</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; color: #333; line-height: 1.6; }
+        
+        /* Navigasi Atas */
+        .top-nav { background: #2c3e50; color: white; padding: 10px; text-align: center; position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+        .top-nav button { background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 6px 15px; cursor: pointer; border-radius: 4px; font-size: 13px; margin: 0 5px;}
+        .top-nav button:hover { background: #7f8c8d; }
+
+        .app-container { background-color: #fff; max-width: 950px; margin: 55px auto 30px auto; border: 1px solid #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-height: 85vh; border-radius: 8px; overflow: hidden;}
+        
+        /* Tab Menu */
+        .tab-menu { display: flex; flex-wrap: wrap; background: #e0e0e0; border-bottom: 3px solid #0056b3; }
+        .tab-button { flex: 1; padding: 12px 5px; border: none; background: #e0e0e0; cursor: pointer; font-weight: bold; font-size: 14px; color: #555; transition: 0.3s; text-align: center; min-width: 120px;}
+        .tab-button:hover { background: #d0d0d0; }
+        .tab-button.active { background: #0056b3; color: white; }
+
+        .tab-content { display: none; padding: 25px; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h2 { font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 0; color: #0056b3;}
+        
+        .case-box { background: #e8f4f8; border-left: 5px solid #17a2b8; padding: 15px; margin-bottom: 20px; font-size: 15px; border-radius: 0 6px 6px 0; }
+        .dictionary-box { background: #fdfdfd; border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        
+        /* Sistem Scaffolding Terkunci */
+        .step-container { background: #fdfdfd; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #6c757d; transition: 0.3s; opacity: 0.4; pointer-events: none;}
+        .step-container.active { opacity: 1; pointer-events: auto; border-left-color: #28a745; background: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.05);}
+        .step-title { font-weight: bold; font-size: 16px; margin-bottom: 10px; color: #333; display: flex; justify-content: space-between; align-items: center;}
+        .step-status { font-size: 13px; padding: 3px 8px; border-radius: 12px; background: #e9ecef; color: #666;}
+        .step-status.done { background: #d4edda; color: #155724; }
+
+        /* Mengizinkan Wrap di HP */
+        .input-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; font-weight: bold; font-size: 15px;}
+        .inline-wrapper { display: inline-flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+        
+        .num-input { width: 70px; padding: 8px; text-align: center; border: 2px solid #ccc; border-radius: 4px; font-weight: bold; font-size: 15px;}
+        .num-input.correct { border-color: #28a745; background-color: #e8f5e9; }
+        .num-input.wrong { border-color: #dc3545; background-color: #f8d7da; }
+
+        button.btn-cek { background: #0056b3; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s;}
+        button.btn-cek:hover { background: #004085; }
+        button:disabled { background: #ccc !important; cursor: not-allowed; }
+
+        .msg { font-size: 14px; font-weight: bold; margin-top: 10px; display: block; }
+        .helper-box { background: #fff3cd; color: #856404; padding: 12px; font-size: 14px; border-radius: 6px; border: 1px solid #ffeeba; margin-top: 10px; }
+
+        /* Khusus Step 2 Logaritma Scaffolding */
+        .math-derivation { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; padding: 15px; background: #f8f9fa; border: 1px dashed #adb5bd; border-radius: 6px; font-family: monospace; font-size: 15px;}
+        .math-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap;}
+        .math-input { width: 55px; padding: 5px; text-align: center; border: 2px solid #ced4da; border-radius: 4px; font-weight: bold; font-family: monospace; font-size: 14px;}
+        .math-input.correct { border-color: #28a745; background-color: #e8f5e9; }
+        .math-input.wrong { border-color: #dc3545; background-color: #f8d7da; }
+
+        .fraction-inline { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 5px; font-weight: bold; font-family: monospace; font-size: 15px;}
+        .fraction-inline .numerator { border-bottom: 2px solid #333; padding: 0 4px; line-height: 1.2; }
+        .fraction-inline .denominator { padding: 0 4px; line-height: 1.2; }
+
+        /* Tabel Logaritma Responsif untuk HP */
+        .log-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; background: white; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: monospace; font-size: 14px; margin-top: 8px;}
+        .log-item { background: #fdfdfd; border: 1px solid #eee; padding: 6px; text-align: center; border-radius: 4px; }
+        .log-item strong { color: #0056b3; }
+
+        /* Drag and Drop Area */
+        .dnd-area { border: 2px dashed #999; background: #f4f7f6; padding: 15px; border-radius: 8px; margin-bottom: 15px;}
+        .dnd-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;}
+        .dnd-title { font-weight: bold; color: #333; font-size: 14px; }
+        .btn-sort { background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px;}
+        
+        .pool-container { display: flex; flex-wrap: wrap; gap: 6px; min-height: 60px; background: white; padding: 12px; border: 1px solid #ddd; border-radius: 6px; position: relative;}
+        
+        /* Pills draggable */
+        .pill { background: #0056b3; color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold; font-size: 13px; cursor: grab; user-select: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: background 0.2s;}
+        .pill:active { cursor: grabbing; }
+        .pill.dragging { opacity: 0.8; background: #ffc107; color: #333; transform: scale(1.05); }
+
+        .bins-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 15px;}
+        .bin { background: white; border: 2px solid #6c757d; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; min-height: 120px;}
+        .bin-header { background: #6c757d; color: white; padding: 6px 5px; text-align: center; font-weight: bold; font-size: 14px; line-height: 1.4;}
+        .bin-content { padding: 10px; display: flex; flex-wrap: wrap; gap: 5px; align-content: flex-start; background: #fdfdfd; flex-grow: 1; transition: 0.2s;}
+        .bin-content.drag-over { background: #e8f5e9; border: 2px dashed #28a745;}
+
+        /* Tabel Distribusi */
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; margin-bottom: 20px;}
+        table { width: 100%; min-width: 500px; border-collapse: collapse; background: white;}
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; vertical-align: middle;}
+        th { background: #e0e0e0; font-size: 14px;}
+        
+        .td-rentang { display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .range-input { width: 50px; padding: 5px; text-align: center; border: 1px solid #999; border-radius: 4px; font-weight: bold; font-size: 14px;}
+
+        @media (max-width: 650px) {
+            .tab-button { min-width: 30%; font-size: 12px;}
+            .tab-content { padding: 15px; }
+            .bins-container { grid-template-columns: 1fr; }
+            .input-group { flex-direction: column; align-items: flex-start; }
+            .math-row { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <button onclick="window.close()">Tutup Materi</button>
+        <button onclick="window.open(window.location.href, '_blank')">Buka Tab Baru</button>
+    </div>
+
+    <div class="app-container">
+        <div class="tab-menu">
+            <button class="tab-button active" onclick="openTab(event, 'tab-materi')">1. Materi Dasar</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-latihan'); initLatihan()">2. Praktik Interaktif</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-rangkuman')">3. Rangkuman</button>
+        </div>
+
+        <div id="tab-materi" class="tab-content active">
+            <h2>A. Kenapa Datanya Harus "Berkelompok"?</h2>
+            <p>Jika data sangat banyak dan nilainya bervariasi (misal dari angka 40 sampai 98), kita tidak bisa membuat tabel satu per satu karena akan sangat panjang. Solusinya adalah mengelompokkannya ke dalam "Rak/Interval".</p>
+            
+            <h2>B. Tiga Langkah Pembuat Rak Gudang</h2>
+            <div class="dictionary-box">
+                <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>1. Jangkauan (J) :</strong> Data Terbesar (Max) &minus; Data Terkecil (Min).</li>
+                    <li><strong>2. Banyak Kelas (k) :</strong> <strong>1 + 3,3 &times; log n</strong>. Karena jumlah rak harus utuh, wajib dibulatkan ke bilangan bulat terdekat!</li>
+                    <li><strong>3. Panjang Kelas (c) :</strong> <strong>J &divide; k</strong>. (Gunakan <em>Aturan Sewa Angkot</em>: Wajib dibulatkan ke ATAS!).</li>
+                </ul>
+            </div>
+
+            <div class="helper-box" style="border-left: 4px solid #ffc107;">
+                <strong style="font-size: 15px;">⚠️ ATURAN SEWA ANGKOT (PEMBULATAN KE ATAS)</strong><br>
+                Untuk hitungan Panjang Kelas (c), berapapun nilai di belakang komanya <strong>WAJIB dibulatkan naik ke atas</strong> (contoh: hitungan 8,1 &rarr; dibulatkan jadi 9).<br>
+                <em>Ibarat menyewa angkot, walau sisa penumpangnya cuma sedikit, kita tetap butuh 1 angkot tambahan agar semua muat terangkut!</em>
+            </div>
+
+            <p>Klik tab <strong>2. Praktik Interaktif</strong> untuk memulai simulasi pengolahan data mentah menjadi Tabel Distribusi Frekuensi (TDF) Berkelompok.</p>
+        </div>
+
+        <div id="tab-latihan" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin:0; border:none; padding:0;">SIMULASI TDF KELOMPOK</h2>
+                <button onclick="initLatihan()" style="background: #17a2b8; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Acak Kasus Baru</button>
+            </div>
+            
+            <div class="case-box"><strong id="soal-title">Kasus:</strong> <span id="soal-desc">...</span></div>
+
+            <div class="step-container active" id="step-1">
+                <div class="step-title">
+                    Langkah 1: Menyortir Data & Jangkauan (J)
+                    <span class="step-status" id="status-1">Belum Selesai</span>
+                </div>
+                
+                <p style="font-size: 13px; margin-top: 0; color: #555;"><em>💡 Petunjuk: Pada HP, tekan angka agak lama lalu geser (Drag & Drop). Kamu bebas menyisipkan angka di depan, tengah, atau belakang angka lain untuk mengurutkannya dari yang terkecil!</em></p>
+                
+                <div class="dnd-area" style="background: #f8f9fa; border-color: #6c757d;">
+                    <div class="dnd-header">
+                        <span class="dnd-title" style="color: #333;">🔢 Keranjang Angka (Urutkan dari Terkecil ke Terbesar)</span>
+                    </div>
+                    <div class="pool-container" id="pool-raw"></div>
+                </div>
+
+                <div class="input-group" style="margin-top: 20px;">
+                    <span class="inline-wrapper">Max: <input type="number" id="in-max" class="num-input"></span>
+                    <span class="inline-wrapper">Min: <input type="number" id="in-min" class="num-input"></span>
+                    <span class="inline-wrapper"><strong>&nbsp;&nbsp;J</strong> = Max &minus; Min = <input type="number" id="in-j" class="num-input"></span>
+                </div>
+                <div class="input-group" style="margin-top: 15px;">
+                    <button class="btn-cek" id="btn-cek-1" onclick="cekStep1()">Kunci Jawaban 1</button>
+                </div>
+                <span class="msg" id="msg-1"></span>
+            </div>
+
+            <div class="step-container" id="step-2">
+                <div class="step-title">
+                    Langkah 2: Banyak Kelas (k)
+                    <span class="step-status" id="status-2">Terkunci</span>
+                </div>
+                
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <span class="inline-wrapper">Hitung Total Seluruh Datamu: <strong>n =</strong> <input type="number" id="in-n" class="num-input"></span>
+                </div>
+
+                <div class="helper-box">
+                    💡 <strong>Bantuan Nilai Logaritma Dasar:</strong>
+                    <div class="log-grid">
+                        <div class="log-item">log 2 = <strong>0,30</strong></div>
+                        <div class="log-item">log 3 = <strong>0,48</strong></div>
+                        <div class="log-item">log 4 = <strong>0,60</strong></div>
+                        <div class="log-item">log 5 = <strong>0,70</strong></div>
+                        <div class="log-item">log 7 = <strong>0,85</strong></div>
+                        <div class="log-item">log 10 = <strong>1,00</strong></div>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 15px; font-weight: bold; font-size: 14px;">Lengkapi proses perhitungan logaritma manual di bawah ini:</p>
+                <div class="math-derivation">
+                    <div class="math-row">k = 1 + 3,3 &times; log ( <input type="number" id="k-n" class="math-input" placeholder="n"> )</div>
+                    <div class="math-row">k = 1 + 3,3 &times; log ( <input type="number" id="k-a" class="math-input" placeholder="a"> &times; <input type="number" id="k-b" class="math-input" placeholder="b"> )</div>
+                    <div class="math-row">k = 1 + 3,3 &times; ( log <input type="number" id="k-loga" class="math-input" placeholder="a"> + log <input type="number" id="k-logb" class="math-input" placeholder="b"> )</div>
+                    <div class="math-row">k = 1 + 3,3 &times; ( <input type="number" step="0.01" id="k-vala" class="math-input" placeholder="0,xx"> + <input type="number" step="0.01" id="k-valb" class="math-input" placeholder="1,00"> )</div>
+                    <div class="math-row">k = 1 + 3,3 &times; ( <input type="number" step="0.01" id="k-sum" class="math-input" placeholder="Total"> )</div>
+                    <div class="math-row">k = 1 + <input type="number" step="0.01" id="k-mult" class="math-input" placeholder="Hasil"></div>
+                    <div class="math-row" style="margin-top: 5px; color: #0056b3;"><strong>Hasil Akhir k = <input type="number" step="0.01" id="k-final" class="math-input" placeholder="Final" style="width: 70px;"></strong></div>
+                </div>
+
+                <div class="input-group" style="margin-top: 15px; flex-direction: column; align-items: flex-start;">
+                    <span style="font-weight: normal; color: #555;">Karena Rak Gudang harus utuh, bulatkan hasil k ke <strong>BILANGAN BULAT</strong>:</span>
+                    <div class="inline-wrapper" style="flex-wrap: wrap;">
+                        <span class="inline-wrapper"><em>(Jika desimal < 0,5 bulatkan ke bawah, &ge; 0,5 bulatkan ke atas)</em> = <input type="number" id="in-k" class="num-input"> Kelas.</span>
+                        <button class="btn-cek" id="btn-cek-2" onclick="cekStep2()" style="margin-left: 5px;">Kunci Jawaban 2</button>
+                    </div>
+                </div>
+                <span class="msg" id="msg-2"></span>
+            </div>
+
+            <div class="step-container" id="step-3">
+                <div class="step-title">
+                    Langkah 3: Panjang Kelas (c)
+                    <span class="step-status" id="status-3">Terkunci</span>
+                </div>
+                <div class="input-group" style="background: #fff3cd; padding: 10px; border-radius: 4px; border: 1px dashed #ffc107;">
+                    <span class="fraction-inline"><span class="numerator">J (<span id="txt-j">...</span>)</span><span class="denominator">k bulat (<span id="txt-k">...</span>)</span></span>
+                    = <input type="number" step="0.01" id="in-c-mentah" class="num-input" style="width: 80px;" placeholder="Koma">
+                </div>
+                <div class="input-group">
+                    <span class="inline-wrapper">
+                        Aturan <strong>Sewa Angkot</strong>, c dibulatkan jadi = <input type="number" id="in-c" class="num-input">
+                    </span>
+                    <button class="btn-cek" id="btn-cek-3" onclick="cekStep3()">Kunci Jawaban 3</button>
+                </div>
+                <span class="msg" id="msg-3"></span>
+            </div>
+
+            <div class="step-container" id="step-4">
+                <div class="step-title">
+                    Langkah 4: Laporan Tabel Final
+                    <span class="step-status" id="status-4">Terkunci</span>
+                </div>
+                
+                <p style="font-size: 15px; margin-top: 0; font-weight: bold; color: #0056b3;">📝 LAPORAN RESMI TDF BERKELOMPOK:</p>
+                <p style="font-size: 14px; margin-top: -10px;">Sistem telah menyiapkan <strong id="txt-baris">...</strong> baris tabel. Tentukan Batas Bawah dan Batas Atas tiap rak dengan benar, lalu isikan jumlah frekuensinya!</p>
+                
+                <div class="table-responsive">
+                    <table id="tbl-final">
+                        <thead>
+                            <tr>
+                                <th>Kelas Ke-</th>
+                                <th>Rentang Nilai (Bawah - Atas)</th>
+                                <th>Frekuensi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-final">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div style="text-align: center; margin-top: 15px; margin-bottom: 25px;">
+                    <button class="btn-cek" id="btn-cek-4" style="padding: 12px 20px; font-size: 15px;" onclick="cekStep4()">Kirim & Periksa Tabel Laporan</button>
+                    <span class="msg" id="msg-4" style="display: block;"></span>
+                </div>
+
+                <div style="background: #e8f4f8; border: 1px dashed #17a2b8; padding: 15px; border-radius: 6px;">
+                    <strong style="color: #17a2b8;">🛠️ ALAT BANTU KERANJANG SORTIR (Kertas Buram Bebas)</strong><br>
+                    <p style="font-size: 13px; margin-top: 5px;">Gunakan rak di bawah ini untuk menyortir data mentah sebelum dimasukkan ke tabel resmi di atas secara manual. <em>(Catatan: Tarik dan sisipkan angka di mana saja yang kamu mau!)</em></p>
+                    
+                    <div class="dnd-area" id="dnd-active-area">
+                        <div class="dnd-header">
+                            <span class="dnd-title">Sumber Angka Terurut:</span>
+                            <button class="btn-sort" onclick="sortPillsToFinal()">🔄 Kembalikan Semua ke Sini</button>
+                        </div>
+                        <div class="pool-container" id="pool-final">
+                            </div>
+                    </div>
+                    <div class="bins-container" id="bins-container">
+                        </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="tab-rangkuman" class="tab-content">
+            <h2 style="color: #28a745;">Rangkuman Pembelajaran Hari Ini</h2>
+            <div class="dictionary-box" style="background: #e8f5e9; border-color: #c3e6cb;">
+                <ul style="font-size: 15px; line-height: 1.8;">
+                    <li><strong>Tabel Distribusi Frekuensi (TDF) Berkelompok</strong> digunakan saat jumlah data sangat banyak dan nilainya sangat beragam agar laporan lebih ringkas.</li>
+                    <li><strong>Jangkauan (J)</strong> adalah selisih antara nilai tertinggi dan terendah pada sekumpulan data.</li>
+                    <li><strong>Banyak Kelas (k)</strong> dihitung menggunakan aturan Sturges. Nilainya dibulatkan ke <strong>bilangan bulat</strong> karena jumlah Rak tidak mungkin berbentuk koma.</li>
+                    <li><strong>Panjang Kelas (c)</strong> dihitung dengan membagi Jangkauan dan Banyak Kelas bulat. <strong>Penting:</strong> Ingat aturan sewa angkot, panjang kelas wajib dibulatkan ke atas!</li>
+                    <li>Sifat logaritma dasar seperti <strong>log (a &times; b) = log a + log b</strong> sangat membantu kita menghitung tanpa kalkulator.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            let i, tabcontent, tabbuttons;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) { tabbuttons[i].className = tabbuttons[i].className.replace(" active", ""); }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function parseLocalFloat(val) {
+            if(!val) return 0;
+            return parseFloat(val.toString().replace(',', '.'));
+        }
+
+        const dbKasus = [
+            { title: "Usia Pelanggan Baru", desc: "Data usia pelanggan member bulan ini.", n: 40, logA: 4, logVal: 0.60, logRes: 1.60 },
+            { title: "Nilai Ujian Training", desc: "Data nilai tes akhir peserta pemasaran.", n: 30, logA: 3, logVal: 0.48, logRes: 1.48 },
+            { title: "Berat Paket Barang", desc: "Data berat (kg) paket yang akan dikirim.", n: 50, logA: 5, logVal: 0.70, logRes: 1.70 }
+        ];
+
+        let activeData = { raw: [], max: 0, min: 0, j: 0, kMentah: 0, cMentah: 0, c: 0, n: 0, logA: 0, logVal: 0, logRes: 0, kSum: 0, kFinal: 0, kRounded: 0, ranges: [] };
+
+        function generateData(n, minVal, maxVal) {
+            let arr = [];
+            for(let i=0; i<n; i++) { arr.push(Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal); }
+            return arr;
+        }
+
+        function initLatihan() {
+            let kasus = dbKasus[Math.floor(Math.random() * dbKasus.length)];
+            document.getElementById('soal-title').innerText = kasus.title;
+            document.getElementById('soal-desc').innerText = kasus.desc;
+            
+            let baseMin = Math.floor(Math.random() * 20) + 25; 
+            let baseMax = Math.floor(Math.random() * 20) + 75; 
+            
+            activeData.raw = generateData(kasus.n, baseMin, baseMax);
+            activeData.raw[0] = baseMin; activeData.raw[1] = baseMax;
+            activeData.raw.sort(() => Math.random() - 0.5); 
+
+            // Kalkulasi Kunci
+            activeData.n = kasus.n; activeData.logA = kasus.logA; activeData.logVal = kasus.logVal; activeData.logRes = kasus.logRes;
+            activeData.max = baseMax; activeData.min = baseMin; activeData.j = activeData.max - activeData.min;
+            
+            activeData.kSum = 3.3 * kasus.logRes;
+            activeData.kFinal = 1 + activeData.kSum;
+            activeData.kRounded = Math.round(activeData.kFinal); // Pembulatan normal
+            
+            activeData.cMentah = activeData.j / activeData.kRounded;
+            activeData.c = Math.ceil(activeData.cMentah); // Bulatkan ke atas
+
+            // Generate Bins Expected
+            activeData.ranges = []; activeData.freqs = [];
+            let currentLower = activeData.min;
+            for(let i=0; i < activeData.kRounded; i++) {
+                let currentUpper = currentLower + activeData.c - 1;
+                activeData.ranges.push({ low: currentLower, up: currentUpper });
+                let f = activeData.raw.filter(v => v >= currentLower && v <= currentUpper).length;
+                activeData.freqs.push(f);
+                currentLower = currentUpper + 1;
+            }
+            
+            resetUI();
+            setupStep1DND();
+        }
+
+        function resetUI() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(inp => { inp.value = ''; inp.classList.remove('correct', 'wrong'); inp.readOnly = false; });
+            
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`msg-${i}`).innerHTML = '';
+                let status = document.getElementById(`status-${i}`);
+                if(status) {
+                    status.innerText = (i === 1) ? 'Belum Selesai' : 'Terkunci';
+                    status.className = 'step-status';
+                }
+                let btn = document.getElementById(`btn-cek-${i}`);
+                if(btn) btn.disabled = false;
+                
+                let container = document.getElementById(`step-${i}`);
+                if(i === 1) container.classList.add('active');
+                else container.classList.remove('active');
+            }
+            
+            document.getElementById('pool-raw').innerHTML = '';
+            document.getElementById('pool-final').innerHTML = '';
+            document.getElementById('bins-container').innerHTML = '';
+            document.getElementById('tbody-final').innerHTML = '';
+        }
+
+        function unlockNextStep(currentStep) {
+            let nextStep = currentStep + 1;
+            document.getElementById(`status-${currentStep}`).innerText = 'Selesai ✓';
+            document.getElementById(`status-${currentStep}`).classList.add('done');
+            document.getElementById(`btn-cek-${currentStep}`).disabled = true;
+            document.querySelectorAll(`#step-${currentStep} input`).forEach(inp => inp.readOnly = true);
+
+            if(document.getElementById(`step-${nextStep}`)) {
+                document.getElementById(`step-${nextStep}`).classList.add('active');
+                document.getElementById(`status-${nextStep}`).innerText = 'Belum Selesai';
+                
+                if(nextStep === 3) {
+                    document.getElementById('txt-j').innerText = activeData.j;
+                    document.getElementById('txt-k').innerText = activeData.kRounded;
+                } else if (nextStep === 4) {
+                    document.getElementById('txt-baris').innerText = activeData.kRounded;
+                    setupStep4DND();
+                    buildTableUI();
+                }
+                setTimeout(() => { document.getElementById(`step-${nextStep}`).scrollIntoView({ behavior: 'smooth' }); }, 200);
+            }
+        }
+
+        // ==========================================
+        // DND ENGINE (REALTIME INSERT-BEFORE)
+        // ==========================================
+        function getDragAfterElement(container, x, y) {
+            const draggableElements = [...container.querySelectorAll('.pill:not(.dragging)')];
+            
+            for (let i = 0; i < draggableElements.length; i++) {
+                const child = draggableElements[i];
+                const box = child.getBoundingClientRect();
+                if (y >= box.top && y <= box.bottom) {
+                    if (x < box.left + box.width / 2) return child;
+                } else if (y < box.top) { return child; }
+            }
+            return null; 
+        }
+
+        function enableDND(container) {
+            container.addEventListener('dragover', e => {
+                e.preventDefault();
+                container.classList.add('drag-over');
+                const dragged = document.querySelector('.dragging');
+                if (dragged) {
+                    const afterElement = getDragAfterElement(container, e.clientX, e.clientY);
+                    if (afterElement == null) { container.appendChild(dragged); } 
+                    else { container.insertBefore(dragged, afterElement); }
+                }
+            });
+            container.addEventListener('dragleave', e => { container.classList.remove('drag-over'); });
+            container.addEventListener('drop', e => { e.preventDefault(); container.classList.remove('drag-over'); });
+        }
+
+        // ==========================================
+        // STEP 1: SORTING DND (1 Keranjang)
+        // ==========================================
+        function setupStep1DND() {
+            let poolRaw = document.getElementById('pool-raw');
+            poolRaw.innerHTML = ''; 
+            
+            activeData.raw.forEach((val, i) => {
+                let pill = document.createElement('div');
+                pill.className = 'pill'; pill.id = `pill-raw-${i}`;
+                pill.dataset.val = val; pill.innerText = val;
+                pill.draggable = true;
+                
+                pill.addEventListener('dragstart', (e) => {
+                    pill.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', pill.id);
+                });
+                pill.addEventListener('dragend', () => pill.classList.remove('dragging'));
+                poolRaw.appendChild(pill);
+            });
+
+            enableDND(poolRaw);
+        }
+
+        function cekStep1() {
+            let iMax = parseInt(document.getElementById('in-max').value);
+            let iMin = parseInt(document.getElementById('in-min').value);
+            let iJ = parseInt(document.getElementById('in-j').value);
+            let elMax = document.getElementById('in-max'); let elMin = document.getElementById('in-min'); let elJ = document.getElementById('in-j');
+            let allCorrect = true;
+            
+            if(iMax === activeData.max) { elMax.className = "num-input correct"; } else { elMax.className = "num-input wrong"; allCorrect = false; }
+            if(iMin === activeData.min) { elMin.className = "num-input correct"; } else { elMin.className = "num-input wrong"; allCorrect = false; }
+            if(iJ === activeData.j) { elJ.className = "num-input correct"; } else { elJ.className = "num-input wrong"; allCorrect = false; }
+
+            if(allCorrect) {
+                document.getElementById('msg-1').innerHTML = "<span style='color:green;'>Tepat sekali! Jangkauan berhasil ditemukan.</span>";
+                document.querySelectorAll('#step-1 .pill').forEach(p => p.draggable = false);
+                unlockNextStep(1);
+            } else { document.getElementById('msg-1').innerHTML = "<span style='color:red;'>Coba periksa lagi. J = Max - Min!</span>"; }
+        }
+
+        // ==========================================
+        // STEP 2: BANYAK KELAS
+        // ==========================================
+        function checkMathInput(id, expectedVal, tolerance = 0) {
+            let el = document.getElementById(id);
+            let val = parseLocalFloat(el.value);
+            if (Math.abs(val - expectedVal) <= tolerance) { el.className = "math-input correct"; return true; } 
+            else { el.className = "math-input wrong"; return false; }
+        }
+
+        function cekStep2() {
+            let allCorrect = true;
+            let iN = parseInt(document.getElementById('in-n').value); let elN = document.getElementById('in-n');
+            if(iN === activeData.n) { elN.className = "num-input correct"; } else { elN.className = "num-input wrong"; allCorrect = false; }
+
+            if(!checkMathInput('k-n', activeData.n)) allCorrect = false;
+            
+            let iA = parseInt(document.getElementById('k-a').value); let iB = parseInt(document.getElementById('k-b').value);
+            let elA = document.getElementById('k-a'); let elB = document.getElementById('k-b');
+            if ((iA === activeData.logA && iB === 10) || (iA === 10 && iB === activeData.logA)) { elA.className = "math-input correct"; elB.className = "math-input correct"; } 
+            else { elA.className = "math-input wrong"; elB.className = "math-input wrong"; allCorrect = false; }
+
+            let iLogA = parseInt(document.getElementById('k-loga').value); let iLogB = parseInt(document.getElementById('k-logb').value);
+            let elLogA = document.getElementById('k-loga'); let elLogB = document.getElementById('k-logb');
+            if ((iLogA === activeData.logA && iLogB === 10) || (iLogA === 10 && iLogB === activeData.logA)) { elLogA.className = "math-input correct"; elLogB.className = "math-input correct"; } 
+            else { elLogA.className = "math-input wrong"; elLogB.className = "math-input wrong"; allCorrect = false; }
+
+            let iValA = parseLocalFloat(document.getElementById('k-vala').value); let iValB = parseLocalFloat(document.getElementById('k-valb').value);
+            let elValA = document.getElementById('k-vala'); let elValB = document.getElementById('k-valb');
+            if ((Math.abs(iValA - activeData.logVal) < 0.01 && Math.abs(iValB - 1.00) < 0.01) || (Math.abs(iValA - 1.00) < 0.01 && Math.abs(iValB - activeData.logVal) < 0.01)) { elValA.className = "math-input correct"; elValB.className = "math-input correct"; } 
+            else { elValA.className = "math-input wrong"; elValB.className = "math-input wrong"; allCorrect = false; }
+
+            if(!checkMathInput('k-sum', activeData.logRes, 0.01)) allCorrect = false;
+            if(!checkMathInput('k-mult', activeData.kSum, 0.02)) allCorrect = false;
+            if(!checkMathInput('k-final', activeData.kFinal, 0.02)) allCorrect = false;
+
+            let elRounded = document.getElementById('in-k');
+            if(parseInt(elRounded.value) === activeData.kRounded) { elRounded.className = "num-input correct"; } 
+            else { elRounded.className = "num-input wrong"; allCorrect = false; }
+
+            if(allCorrect) {
+                document.getElementById('msg-2').innerHTML = "<span style='color:green;'>Sempurna! Logaritma terpecahkan dan pembulatanmu tepat!</span>";
+                unlockNextStep(2);
+            } else { document.getElementById('msg-2').innerHTML = "<span style='color:red;'>Ada kotak merah. Pastikan n benar, lalu selesaikan logaritmanya.</span>"; }
+        }
+
+        // ==========================================
+        // STEP 3: PANJANG KELAS
+        // ==========================================
+        function cekStep3() {
+            let iCMentah = parseLocalFloat(document.getElementById('in-c-mentah').value);
+            let iC = parseInt(document.getElementById('in-c').value);
+            
+            let elCMentah = document.getElementById('in-c-mentah'); let elC = document.getElementById('in-c');
+            let allCorrect = true;
+
+            let expectedCMentah = activeData.j / activeData.kRounded;
+
+            if(Math.abs(iCMentah - expectedCMentah) < 0.1) { elCMentah.className = "num-input correct"; } 
+            else { elCMentah.className = "num-input wrong"; allCorrect = false; }
+
+            if(iC === activeData.c) { elC.className = "num-input correct"; } 
+            else { elC.className = "num-input wrong"; allCorrect = false; }
+
+            if(allCorrect) {
+                document.getElementById('msg-3').innerHTML = "<span style='color:green;'>Mantap! Aturan Sewa Angkotmu tepat. Gembok Terbuka!</span>";
+                unlockNextStep(3);
+            } else { document.getElementById('msg-3').innerHTML = "<span style='color:red;'>Oops! Pastikan hasil bagi benar, dan WAJIB DIBULATKAN KE ATAS!</span>"; }
+        }
+
+        // ==========================================
+        // STEP 4: TABEL & DND FINAL
+        // ==========================================
+        function setupStep4DND() {
+            let poolFinal = document.getElementById('pool-final');
+            poolFinal.innerHTML = '';
+            
+            let sortedRaw = [...activeData.raw].sort((a, b) => a - b);
+            sortedRaw.forEach((val, i) => {
+                let pill = document.createElement('div');
+                pill.className = 'pill'; pill.id = `pill-final-${i}`;
+                pill.dataset.val = val; pill.innerText = val;
+                pill.draggable = true;
+                
+                pill.addEventListener('dragstart', (e) => {
+                    pill.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', pill.id);
+                });
+                pill.addEventListener('dragend', () => pill.classList.remove('dragging'));
+                poolFinal.appendChild(pill);
+            });
+            enableDND(poolFinal);
+            
+            let binsContainer = document.getElementById('bins-container');
+            binsContainer.innerHTML = '';
+            
+            for(let i=0; i<activeData.kRounded; i++) {
+                let bin = document.createElement('div');
+                bin.className = 'bin';
+                bin.innerHTML = `
+                    <div class="bin-header" id="bin-hdr-${i}">Rak ${i+1} <br> <span style="font-weight:normal; font-size:13px;">[ ? - ? ]</span></div>
+                    <div class="bin-content" id="bin-content-${i}"></div>
+                `;
+                let contentArea = bin.querySelector('.bin-content');
+                enableDND(contentArea);
+                binsContainer.appendChild(bin);
+            }
+        }
+
+        function sortPillsToFinal() {
+            let poolFinal = document.getElementById('pool-final');
+            let allPills = document.querySelectorAll('#step-4 .pill');
+            let pillsArr = Array.from(allPills).sort((a, b) => parseInt(a.dataset.val) - parseInt(b.dataset.val));
+            
+            document.querySelectorAll('#step-4 .bin-content').forEach(b => b.innerHTML = '');
+            poolFinal.innerHTML = '';
+            pillsArr.forEach(p => poolFinal.appendChild(p));
+        }
+
+        function buildTableUI() {
+            let tbody = document.getElementById('tbody-final');
+            let html = "";
+            for(let i=0; i<activeData.kRounded; i++) {
+                html += `
+                <tr>
+                    <td><strong>${i+1}</strong></td>
+                    <td>
+                        <div class="td-rentang">
+                            <input type="number" id="tbl-l-${i}" class="range-input" placeholder="..."> 
+                            <span>&minus;</span> 
+                            <input type="number" id="tbl-u-${i}" class="range-input" placeholder="...">
+                        </div>
+                    </td>
+                    <td><input type="number" id="tbl-f-${i}" class="range-input" placeholder="..."></td>
+                </tr>`;
+            }
+            html += `<tr style="background:#f0f0f0;"><td colspan="2" style="text-align:right; font-weight:bold;">Total Seluruh Frekuensi:</td><td><strong id="tbl-n-cek">...</strong></td></tr>`;
+            tbody.innerHTML = html;
+            
+            setTimeout(() => {
+                for(let i=0; i<activeData.kRounded; i++) {
+                    document.getElementById(`tbl-f-${i}`).addEventListener('input', updateTableSum);
+                    document.getElementById(`tbl-l-${i}`).addEventListener('input', updateBinHeaders);
+                    document.getElementById(`tbl-u-${i}`).addEventListener('input', updateBinHeaders);
+                }
+            }, 100);
+        }
+        
+        function updateBinHeaders() {
+            for(let i=0; i<activeData.kRounded; i++) {
+                let l = document.getElementById(`tbl-l-${i}`).value || "?";
+                let u = document.getElementById(`tbl-u-${i}`).value || "?";
+                let hdr = document.getElementById(`bin-hdr-${i}`);
+                if(hdr) hdr.innerHTML = `Rak ${i+1} <br> <span style="font-weight:normal; font-size:13px;">[ ${l} - ${u} ]</span>`;
+            }
+        }
+
+        function updateTableSum() {
+            let sum = 0;
+            for(let i=0; i<activeData.kRounded; i++) {
+                sum += parseInt(document.getElementById(`tbl-f-${i}`).value) || 0;
+            }
+            document.getElementById('tbl-n-cek').innerText = sum;
+            if(sum === activeData.n) { document.getElementById('tbl-n-cek').style.color = "green"; } 
+            else { document.getElementById('tbl-n-cek').style.color = "red"; }
+        }
+
+        function cekStep4() {
+            let allCorrect = true;
+            for(let i=0; i<activeData.kRounded; i++) {
+                let elL = document.getElementById(`tbl-l-${i}`); let elU = document.getElementById(`tbl-u-${i}`); let elF = document.getElementById(`tbl-f-${i}`);
+                let vL = parseInt(elL.value); let vU = parseInt(elU.value); let vF = parseInt(elF.value);
+                
+                let expectedLow = activeData.ranges[i].low; let expectedUp = activeData.ranges[i].up; let expectedFreq = activeData.freqs[i];
+                
+                if(vL === expectedLow) { elL.style.borderColor = "#28a745"; elL.style.backgroundColor = "#e8f5e9"; } 
+                else { elL.style.borderColor = "#dc3545"; elL.style.backgroundColor = "#f8d7da"; allCorrect = false; }
+                
+                if(vU === expectedUp) { elU.style.borderColor = "#28a745"; elU.style.backgroundColor = "#e8f5e9"; } 
+                else { elU.style.borderColor = "#dc3545"; elU.style.backgroundColor = "#f8d7da"; allCorrect = false; }
+                
+                if(vF === expectedFreq) { elF.style.borderColor = "#28a745"; elF.style.backgroundColor = "#e8f5e9"; } 
+                else { elF.style.borderColor = "#dc3545"; elF.style.backgroundColor = "#f8d7da"; allCorrect = false; }
+            }
+
+            let msg = document.getElementById('msg-4');
+            if(allCorrect) {
+                msg.innerHTML = "<span style='color:#155724; background:#d4edda; padding:15px; border-radius:8px; display:inline-block; border:2px solid #c3e6cb;'>🎉 SELAMAT! Laporan tabelmu sangat akurat!</span>";
+                document.getElementById('btn-cek-4').disabled = true; document.getElementById('status-4').innerText = 'Selesai ✓'; document.getElementById('status-4').classList.add('done');
+            } else {
+                msg.innerHTML = "<span style='color:red;'>Masih ada kotak tabel yang salah. Cek rentang nilainya (hitung pakai jari untuk batas atasnya) dan pastikan frekuensinya pas!</span>";
+            }
+        }
+    </script>
+</body>
+</html>

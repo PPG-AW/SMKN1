@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi Ajar - TDF Data Berkelompok</title>
+    <style>
+        /* =========================================
+           STYLE KONSISTEN MATERI AJAR
+           ========================================= */
+        body { font-family: 'Calibri', 'Arial', sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; color: #333; line-height: 1.6; }
+        .nav-bar { position: fixed; top: 0; left: 0; width: 100%; background-color: #e0e0e0; border-bottom: 1px solid #ccc; padding: 10px 0; text-align: center; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn { padding: 8px 16px; margin: 0 5px; border: none; border-radius: 4px; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .btn-new-tab { background-color: #0056b3; color: white; }
+        .btn-close { background-color: #dc3545; color: white; }
+
+        .document-container { background-color: #ffffff; max-width: 900px; margin: 70px auto 30px auto; padding: 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: 1px solid #ddd; }
+        @media (max-width: 600px) { .document-container { padding: 20px; margin: 60px 10px 20px 10px; } }
+
+        h1 { text-align: center; font-size: 18px; margin-bottom: 5px; text-transform: uppercase; color: #0056b3;}
+        h2 { font-size: 16px; margin-top: 35px; border-bottom: 2px solid #333; padding-bottom: 5px; color: #333; }
+        h3 { font-size: 15px; margin-top: 25px; color: #d32f2f; border-left: 3px solid #d32f2f; padding-left: 8px;}
+        
+        .dictionary-box { background-color: #fdfdfd; border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .dictionary-box ul { margin: 0; padding-left: 20px; }
+        .dictionary-box li { margin-bottom: 10px; }
+        
+        table { width: 100%; max-width: 500px; border-collapse: collapse; margin: 15px auto; font-size: 15px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: center; vertical-align: middle; }
+        th { background-color: #e0e0e0; }
+
+        .step-box { background-color: #f9f9fa; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        .step-item { margin-bottom: 20px; border-bottom: 1px dashed #ccc; padding-bottom: 15px; }
+        .step-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        
+        .soal-box { background-color: #e8f4f8; border-left: 4px solid #17a2b8; padding: 15px; margin: 15px 0; font-weight: bold;}
+        .raw-data-box { background-color: #fff; border: 1px dashed #6c757d; padding: 10px; font-family: monospace; font-size: 14px; text-align: center; letter-spacing: 1px; margin-top: 10px; color: #555; }
+
+        /* Rumus Pecahan */
+        .fraction-inline { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 5px; font-weight: bold; font-family: monospace; font-size: 15px; }
+        .fraction-inline .numerator { border-bottom: 2px solid #333; padding: 0 4px; line-height: 1.2; }
+        .fraction-inline .denominator { padding: 0 4px; line-height: 1.2; }
+        
+        .highlight-text { background-color: #fff3cd; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #856404;}
+        .note-box { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; font-size: 14px; margin-top: 15px; color: #856404; border-radius: 0 8px 8px 0;}
+        
+        /* Kotak Trik Logaritma */
+        .log-box { background-color: #e2e3e5; border: 2px solid #6c757d; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: center; }
+        .log-table { width: 100%; max-width: 400px; margin: 10px auto; background: white; border: 1px solid #999; }
+        .log-table td { padding: 5px; border: 1px solid #ddd; font-family: monospace; font-size: 16px;}
+        .log-table td:nth-child(even) { font-weight: bold; color: #0056b3; }
+        
+        .memory-box { background-color: #d1ecf1; color: #0c5460; border: 2px solid #bee5eb; padding: 15px; border-radius: 8px; margin: 15px 0; font-weight: bold;}
+        .case-title { background: #343a40; color: white; padding: 10px 15px; border-radius: 4px; margin-top: 40px; font-size: 16px; text-transform: uppercase; }
+        
+        .summary-box { background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb; padding: 20px; border-radius: 8px; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <button class="btn btn-new-tab" onclick="openInNewTab()">Buka di Tab Baru</button>
+        <button class="btn btn-close" onclick="closeTab()">Tutup Materi</button>
+    </div>
+
+    <div class="document-container">
+        <h1>MATA PELAJARAN MATEMATIKA - KELAS X SMK</h1>
+        <h1>Tabel Distribusi Frekuensi Berkelompok</h1>
+
+        <h2>A. Kenapa Datanya Harus "Berkelompok"?</h2>
+        <p>Bayangkan kamu bekerja sebagai admin pabrik sepatu. Bos memintamu mendata hasil produksi per hari selama sebulan. Angka yang muncul sangat bervariasi: ada hari yang cuma laku 40 pasang, ada hari yang laku sampai 98 pasang.</p>
+        <p>Jika kamu menggunakan tabel biasa (tunggal) dari angka 40, 41, 42... sampai 98, tabelmu akan sangat panjang! Solusinya? <strong>Kelompokkan datanya ke dalam beberapa "Rak Gudang"!</strong></p>
+
+        <h2>B. Tiga Kunci Rahasia Pembuat Rak Gudang</h2>
+        <div class="dictionary-box">
+            <ul>
+                <li><strong style="color: #0056b3;">1. Jangkauan (J)</strong> &rarr; Mengukur jarak terjauh data.<br> <strong>J = Data Terbesar (Max) &minus; Data Terkecil (Min)</strong></li>
+                <li><strong style="color: #28a745;">2. Banyak Kelas (k)</strong> &rarr; Berapa banyak tingkat "Rak" yang harus dibuat.<br> <strong>k = 1 + ( 3,3 &times; log n )</strong></li>
+                <li><strong style="color: #d32f2f;">3. Panjang Kelas (c)</strong> &rarr; Berapa isi/kapasitas dalam 1 Rak.<br> <strong>c = J &divide; k</strong></li>
+            </ul>
+        </div>
+
+        <div class="note-box">
+            <strong style="font-size: 16px;">⚠️ ATURAN SEWA ANGKOT (PEMBULATAN KHUSUS "c")</strong><br>
+            Saat menghitung Panjang Kelas (c), berapapun angka di belakang komanya, <strong>WAJIB DIBULATKAN KE ATAS!</strong><br><br>
+            Sama seperti menyewa angkot. Jika ada 8,2 rombongan penumpang, kamu tidak bisa hanya menyewa 8 angkot karena ada orang yang tertinggal. Kamu <strong>wajib menyewa 9 angkot</strong> agar semua muat masuk!
+        </div>
+
+        <div class="log-box">
+            <h3 style="margin-top:0; color:#333; border:none; background:none; padding:0; text-align:center;">✨ Dasar Hafalan Logaritma ✨</h3>
+            <table class="log-table">
+                <tr><td>log 2</td><td>0,30</td><td>log 5</td><td>0,70</td></tr>
+                <tr><td>log 3</td><td>0,48</td><td>log 7</td><td>0,85</td></tr>
+                <tr><td>log 4</td><td>0,60</td><td>log 10</td><td>1,00</td></tr>
+            </table>
+
+            <div class="memory-box">
+                💡 INGAT RUMUS PENJUMLAHAN LOGARITMA:<br>
+                <span style="font-size: 18px;"><strong>log c = log (a &times; b) = log a + log b</strong></span><br>
+                <div style="font-size: 13px; font-weight: normal; margin-top: 8px; color: #333; text-align: left; background: rgba(255,255,255,0.5); padding: 8px; border-left: 3px solid #0c5460;">
+                    <em>*Syarat Matematika: Angka yang dihitung logaritmanya (nilai a, b, dan c) <strong>harus positif (lebih besar dari 0)</strong>. Syarat ini sangat masuk akal karena di dunia nyata, jumlah total data/barang (n) tidak mungkin bernilai minus!</em>
+                </div>
+            </div>
+            
+            <p style="font-size: 14px; text-align: left; background: white; padding: 10px; border-radius: 4px;">
+                <strong>Contoh Cara Hitung:</strong> Jika n = 50, maka cari <strong>log 50</strong>.<br>
+                Pecah 50 menjadi (5 &times; 10).<br>
+                log 50 = log 5 + log 10 = 0,70 + 1,00 = <strong>1,70</strong>.
+            </p>
+        </div>
+
+        <h2>C. Praktik Menyusun Data (5 Studi Kasus)</h2>
+
+        <div class="case-title">KASUS 1: Penjualan Motor Dealer (n = 40)</div>
+        <div class="raw-data-box">42, 55, 48, 62, 50, 71, 85, 45, 66, 75, 88, 51, 60, 95, 47, 58, 63, 72, 80, 52, 69, 78, 92, 56, 49, 64, 82, 53, 76, 68, 90, 59, 44, 61, 74, 86, 54, 65, 79, 98</div>
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>1. Jangkauan (J):</strong> Max (98) - Min (42) = <strong>56</strong></p>
+            </div>
+            <div class="step-item">
+                <p><strong>2. Banyak Kelas (k):</strong> n = 40.<br>
+                Proses Log: <span class="highlight-text">log 40 = log(4 &times; 10) = log 4 + log 10 = 0,60 + 1,00 = 1,60</span><br>
+                k = 1 + 3,3(1,60) = 1 + 5,28 = <strong>6,28</strong> &rarr; (Bulat normal: <strong>6 Kelas</strong>)</p>
+            </div>
+            <div class="step-item">
+                <p><strong>3. Panjang Kelas (c):</strong><br>
+                c = 56 &divide; 6 = 9,33 &rarr; (Aturan Sewa Angkot: <strong>10</strong>)</p>
+            </div>
+            <div class="step-item">
+                <table>
+                    <tr><th>Rentang Penjualan</th><th>Frekuensi</th></tr>
+                    <tr><td>42 - 51</td><td>7</td></tr>
+                    <tr><td>52 - 61</td><td>9</td></tr>
+                    <tr><td>62 - 71</td><td>8</td></tr>
+                    <tr><td>72 - 81</td><td>7</td></tr>
+                    <tr><td>82 - 91</td><td>5</td></tr>
+                    <tr><td>92 - 101</td><td>4</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="case-title">KASUS 2: Nilai Ujian Training (n = 30)</div>
+        <div class="raw-data-box">95, 42, 50, 75, 88, 60, 40, 55, 65, 70, 45, 80, 92, 48, 58, 62, 78, 85, 41, 52, 68, 72, 82, 44, 56, 64, 76, 84, 46, 54</div>
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>1. Jangkauan (J):</strong> Max (95) - Min (40) = <strong>55</strong></p>
+            </div>
+            <div class="step-item">
+                <p><strong>2. Banyak Kelas (k):</strong> n = 30.<br>
+                Proses Log: <span class="highlight-text">log 30 = log(3 &times; 10) = log 3 + log 10 = 0,48 + 1,00 = 1,48</span><br>
+                k = 1 + 3,3(1,48) = 1 + 4,88 = <strong>5,88</strong> &rarr; (Bulat normal: <strong>6 Kelas</strong>)</p>
+            </div>
+            <div class="step-item">
+                <p><strong>3. Panjang Kelas (c):</strong><br>
+                c = 55 &divide; 6 = 9,16 &rarr; (Aturan Sewa Angkot: <strong>10</strong>)</p>
+            </div>
+            <div class="step-item">
+                <table>
+                    <tr><th>Rentang Nilai</th><th>Frekuensi</th></tr>
+                    <tr><td>40 - 49</td><td>7</td></tr>
+                    <tr><td>50 - 59</td><td>6</td></tr>
+                    <tr><td>60 - 69</td><td>5</td></tr>
+                    <tr><td>70 - 79</td><td>4</td></tr>
+                    <tr><td>80 - 89</td><td>6</td></tr>
+                    <tr><td>90 - 99</td><td>2</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="case-title">KASUS 3: Paket Ekspedisi (n = 50)</div>
+        <div class="raw-data-box">Data berat 50 paket dengan Paket teringan 32 kg dan Terberat 85 kg.</div>
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>1. Jangkauan (J):</strong> 85 - 32 = <strong>53</strong></p>
+            </div>
+            <div class="step-item">
+                <p><strong>2. Banyak Kelas (k):</strong> n = 50.<br>
+                Proses Log: <span class="highlight-text">log 50 = log(5 &times; 10) = log 5 + log 10 = 0,70 + 1,00 = 1,70</span><br>
+                k = 1 + 3,3(1,70) = 1 + 5,61 = <strong>6,61</strong> &rarr; (Bulat normal: <strong>7 Kelas</strong>)</p>
+            </div>
+            <div class="step-item">
+                <p><strong>3. Panjang Kelas (c):</strong><br>
+                c = 53 &divide; 7 = 7,57 &rarr; (Aturan Sewa Angkot: <strong>8</strong>)</p>
+            </div>
+            <div class="step-item">
+                <table>
+                    <tr><th>Berat Paket (Kg)</th><th>Frekuensi</th></tr>
+                    <tr><td>32 - 39</td><td>5</td></tr>
+                    <tr><td>40 - 47</td><td>8</td></tr>
+                    <tr><td>48 - 55</td><td>12</td></tr>
+                    <tr><td>56 - 63</td><td>10</td></tr>
+                    <tr><td>64 - 71</td><td>7</td></tr>
+                    <tr><td>72 - 79</td><td>5</td></tr>
+                    <tr><td>80 - 87</td><td>3</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="case-title">KASUS 4: Uang Makan Karyawan (n = 20)</div>
+        <div class="raw-data-box">Pengeluaran terkecil Rp 15 (ribu) dan terbesar Rp 51 (ribu).</div>
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>1. Jangkauan (J):</strong> 51 - 15 = <strong>36</strong></p>
+            </div>
+            <div class="step-item">
+                <p><strong>2. Banyak Kelas (k):</strong> n = 20.<br>
+                Proses Log: <span class="highlight-text">log 20 = log(2 &times; 10) = log 2 + log 10 = 0,30 + 1,00 = 1,30</span><br>
+                k = 1 + 3,3(1,30) = 1 + 4,29 = <strong>5,29</strong> &rarr; (Bulat normal: <strong>5 Kelas</strong>)</p>
+            </div>
+            <div class="step-item">
+                <p><strong>3. Panjang Kelas (c):</strong><br>
+                c = 36 &divide; 5 = 7,20 &rarr; (Aturan Sewa Angkot: <strong>8</strong>)</p>
+            </div>
+            <div class="step-item">
+                <table>
+                    <tr><th>Pengeluaran (Ribuan)</th><th>Frekuensi</th></tr>
+                    <tr><td>15 - 22</td><td>3</td></tr>
+                    <tr><td>23 - 30</td><td>5</td></tr>
+                    <tr><td>31 - 38</td><td>6</td></tr>
+                    <tr><td>39 - 46</td><td>4</td></tr>
+                    <tr><td>47 - 54</td><td>2</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="case-title">KASUS 5: Usia Pelanggan Baru (n = 70)</div>
+        <div class="raw-data-box">Usia paling muda 16 tahun dan paling tua 66 tahun.</div>
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>1. Jangkauan (J):</strong> 66 - 16 = <strong>50</strong></p>
+            </div>
+            <div class="step-item">
+                <p><strong>2. Banyak Kelas (k):</strong> n = 70.<br>
+                Proses Log: <span class="highlight-text">log 70 = log(7 &times; 10) = log 7 + log 10 = 0,85 + 1,00 = 1,85</span><br>
+                k = 1 + 3,3(1,85) = 1 + 6,10 = <strong>7,10</strong> &rarr; (Bulat normal: <strong>7 Kelas</strong>)</p>
+            </div>
+            <div class="step-item">
+                <p><strong>3. Panjang Kelas (c):</strong><br>
+                c = 50 &divide; 7 = 7,14 &rarr; (Aturan Sewa Angkot: <strong>8</strong>)</p>
+            </div>
+            <div class="step-item">
+                <table>
+                    <tr><th>Usia Pelanggan</th><th>Frekuensi</th></tr>
+                    <tr><td>16 - 23</td><td>10</td></tr>
+                    <tr><td>24 - 31</td><td>15</td></tr>
+                    <tr><td>32 - 39</td><td>18</td></tr>
+                    <tr><td>40 - 47</td><td>12</td></tr>
+                    <tr><td>48 - 55</td><td>8</td></tr>
+                    <tr><td>56 - 63</td><td>5</td></tr>
+                    <tr><td>64 - 71</td><td>2</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h2 style="margin-top:0; border:none; color:#155724; border-bottom: 2px solid #c3e6cb; padding-bottom: 10px;">✅ Kesimpulan Pembelajaran Hari Ini</h2>
+            <p>Tabel Distribusi Frekuensi (TDF) Berkelompok adalah alat bantu terpenting untuk meringkas data yang rentangnya sangat jauh atau jumlahnya sangat banyak. Berikut adalah 4 langkah utama yang harus kamu kuasai:</p>
+            <ol style="line-height: 1.8;">
+                <li><strong>Mencari Jangkauan (J):</strong> Rumusnya adalah <strong>Max &minus; Min</strong>. Langkah ini berfungsi untuk mengukur seberapa jauh jarak dari data terkecil hingga terbesar.</li>
+                <li><strong>Menentukan Banyak Kelas (k):</strong> Ini adalah proses menghitung jumlah "Rak" yang dibutuhkan menggunakan rumus Sturges: <strong>k = 1 + 3,3 log n</strong>. Ingatlah trik memecah perkalian logaritma (contoh: log 40 = log 4 + log 10). Hasil hitungan akhirnya dibulatkan secara <strong>normal</strong> ke angka yang terdekat.</li>
+                <li><strong>Menentukan Panjang Kelas (c):</strong> Ini adalah proses menghitung kapasitas di dalam setiap "Rak" menggunakan rumus <strong>c = J &divide; k</strong>. Di sinilah kamu harus mengingat <strong>Aturan Sewa Angkot</strong>: Berapapun angka di belakang koma yang kamu temukan, hasil (c) <strong>WAJIB dibulatkan ke ATAS</strong> agar tidak ada data yang tertinggal di luar tabel!</li>
+                <li><strong>Menyusun Rentang di Tabel:</strong> Mulailah dari angka terkecil pada datamu, lalu buatlah rentang dengan menghitung maju sebanyak nilai <strong>(c)</strong>. Jangan malu untuk menghitung menggunakan jari tangan agar angkanya pas dan tidak meleset.</li>
+            </ol>
+            <p style="font-weight: bold; text-align: center; margin-top: 20px; color: #0c5460;">Dengan memahami 4 langkah runut di atas, kamu siap mengolah data seberantakan apa pun menjadi laporan profesional!</p>
+        </div>
+
+    </div>
+
+    <script>
+        function openInNewTab() { window.open(window.location.href, '_blank'); }
+        function closeTab() {
+            window.close();
+            document.body.innerHTML = `
+                <div style="text-align: center; margin-top: 50px; font-family: Calibri, sans-serif;">
+                    <h2 style="color: #0056b3;">Materi telah ditutup.</h2>
+                    <p>Silakan kembali ke halaman utama LMS Bapak/Ibu.</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

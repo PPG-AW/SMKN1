@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Format Catatan - TDF Berkelompok</title>
+    <style>
+        .catatan-container {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #ffffff;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            color: #333;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        .judul-utama {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #0056b3;
+            border-bottom: 3px double #0056b3;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        /* Kotak Instruksi Pengganti Identitas */
+        .instruksi-box {
+            background-color: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-radius: 6px;
+            color: #856404;
+        }
+        .instruksi-hint {
+            display: block;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #ffeeba;
+            font-size: 14px;
+            color: #664d03;
+            font-style: italic;
+        }
+
+        h3 {
+            color: #d32f2f;
+            border-left: 5px solid #d32f2f;
+            padding-left: 10px;
+            background-color: #fce4e4;
+            padding: 8px 10px;
+            margin-top: 35px;
+            font-size: 16px;
+        }
+        .instruksi {
+            font-style: italic;
+            color: #555;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        
+        .refleksi-box {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #b8daff;
+        }
+        ul, ol { margin-top: 5px; padding-left: 20px;}
+        
+        .math-box {
+            background-color: #fdfdfd;
+            border: 1px dashed #999;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 6px;
+        }
+
+        /* Tabel Bantuan Logaritma (Diperkecil & Ditengahkan) */
+        .log-table {
+            width: auto;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 13px;
+            background-color: #fff;
+        }
+        .log-table td {
+            border: 1px solid #ccc;
+            padding: 4px 10px;
+            text-align: center;
+        }
+
+        /* Tabel Laporan Resmi Kosong */
+        .tabel-kosong {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .tabel-kosong th, .tabel-kosong td {
+            border: 1px solid #333;
+            padding: 12px;
+            text-align: center;
+        }
+        .tabel-kosong th {
+            background-color: #e0e0e0;
+        }
+
+        @media (max-width: 600px) {
+            .catatan-container { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="catatan-container">
+    
+    <div class="judul-utama">Catatan: TDF Berkelompok</div>
+
+    <div class="instruksi-box">
+        <strong style="font-size: 16px;">📌 PENGUMUMAN PENTING:</strong><br>
+        Catatlah seluruh materi di bawah ini ke dalam buku catatan matematikamu secara rapi.<br>
+        <strong>Buku catatan ini akan dikumpulkan kepada Guru dan dinilai sebagai Nilai Tugas!</strong>
+        <span class="instruksi-hint">💡 <strong>Petunjuk:</strong> Jika kamu sudah menyelesaikan simulasi di web interaktif sebelumnya, kamu pasti bisa melengkapi bagian yang rumpang di bawah ini dengan sangat mudah!</span>
+    </div>
+
+    <h3>A. KONSEP & RUMUS RAHASIA</h3>
+    <div class="instruksi">(Lengkapi 3 titik di bawah ini dengan kata yang tepat!)</div>
+    <ol>
+        <li><strong>Tujuan Berkelompok:</strong> Merapikan data yang nilainya sangat bervariasi ke dalam beberapa ... agar laporannya tidak terlalu panjang ke bawah.</li>
+        <li style="margin-top: 8px;"><strong>Jangkauan (J):</strong> Cara mencarinya adalah Nilai ... dikurangi Nilai ... .</li>
+        <li style="margin-top: 8px;"><strong>Banyak Kelas (k):</strong> Menggunakan aturan Sturges yaitu: <strong>k = 1 + 3,3 &times; ...</strong> . Karena bentuk rak harus utuh, hasilnya dibulatkan secara ... (bilangan bulat terdekat).</li>
+        <li style="margin-top: 8px;"><strong>Panjang Kelas (c):</strong> Hasil pembagian dari J dibagi k. Di sini berlaku aturan <strong>Sewa ...</strong> , yaitu berapapun hasil komanya wajib dibulatkan ke ... !</li>
+    </ol>
+
+    <div class="math-box">
+        <strong>✨ Trik Pemecahan Logaritma:</strong><br>
+        Bentuk logaritma bisa dipecah dari perkalian menjadi penjumlahan.<br>
+        <strong>log (a &times; b) = log ... + log ...</strong><br><br>
+        (Hafalkan Nilai Dasar Berikut):
+        <table class="log-table">
+            <tr>
+                <td>log 2 = 0,30</td>
+                <td>log 3 = 0,48</td>
+                <td>log 4 = 0,60</td>
+            </tr>
+            <tr>
+                <td>log 5 = 0,70</td>
+                <td>log 7 = 0,85</td>
+                <td>log 10 = 1,00</td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>B. LATIHAN KASUS GUDANG</h3>
+    <p><strong>Kasus:</strong> Hitunglah "Tiga Serangkai" dan buatlah tabel untuk <strong>20 data (n = 20)</strong> uang makan harian karyawan (dalam ribuan) berikut ini: <br>
+    <em>24, 30, 42, 18, 51, 35, 29, 45, 15, 38, 22, 48, 31, 26, 40, 36, 19, 49, 27, 33</em></p>
+
+    <p><strong>1. Menghitung Tiga Serangkai</strong><br>
+    <span class="instruksi">(Isilah 3 titik perhitungan di bawah ini!)</span></p>
+    
+    <div class="math-box" style="line-height: 2;">
+        <strong>Langkah 1: Jangkauan (J)</strong><br>
+        Max = ... , Min = ... <br>
+        J = Max &minus; Min = ... <br><br>
+        
+        <strong>Langkah 2: Banyak Kelas (k)</strong><br>
+        n = 20<br><br>
+        log 20 = log (... &times; 10)<br>
+        log 20 = log ... + log 10<br>
+        log 20 = ... + 1,00<br>
+        log 20 = ...<br><br>
+        k = 1 + 3,3(...)<br>
+        k = 1 + ...<br>
+        k = ...<br><br>
+        Hasil k dibulatkan bulat = ... Kelas.<br><br>
+        
+        <strong>Langkah 3: Panjang Kelas (c)</strong><br>
+        c = J &divide; k = ... &divide; ... = ... <br>
+        Aturan Angkot (Bulat ke Atas) c = ...
+    </div>
+
+    <p style="margin-top: 30px;"><strong>2. Laporan Tabel Resmi</strong><br>
+    <span class="instruksi">(Isilah rentang nilai batas bawah-atas dan frekuensinya pada tabel kosong di bawah ini!)</span></p>
+    
+    <table class="tabel-kosong">
+        <thead>
+            <tr>
+                <th style="width: 20%;">Kelas Ke-</th>
+                <th style="width: 50%;">Rentang Nilai (Batas Bawah &minus; Atas)</th>
+                <th style="width: 30%;">Frekuensi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>... &minus; ...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>... &minus; ...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>... &minus; ...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>... &minus; ...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>... &minus; ...</td>
+                <td>...</td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+                <td colspan="2" style="text-align: right; font-weight: bold;">Total Data (n) :</td>
+                <td><strong>...</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3 style="margin-top: 40px;">C. REFLEKSI HARI INI</h3>
+    <div class="refleksi-box">
+        <div class="instruksi" style="margin-top: 0;">(Pilih kalimat yang paling sesuai dengan kondisimu, lalu salin ke buku catatan beserta angka pilihannya!)</div>
+        
+        <ol style="margin-bottom: 20px; line-height: 1.6;">
+            <li>Saya sudah paham sepenuhnya tentang J, k, c dan bisa membuat tabelnya sendiri.</li>
+            <li>Saya sudah bisa menghitung J, k, c, tetapi masih bingung saat menghitung rentang batas di dalam tabel.</li>
+            <li>Saya masih bingung membedakan antara pembulatan k (kelas) dan pembulatan c (aturan angkot).</li>
+            <li>Saya masih kesulitan saat harus memecah dan menjumlahkan logaritma manual.</li>
+        </ol>
+
+        <p style="font-weight: bold; margin-bottom: 5px;">Pilihan Saya (Tuliskan Kalimatnya):</p>
+        <p>...</p>
+
+        <p style="font-weight: bold; margin-top: 20px; margin-bottom: 5px;">Hal yang masih ingin saya tanyakan ke Guru (Tulis di sini):</p>
+        <p>...</p>
+    </div>
+
+</div>
+
+</body>
+</html>
