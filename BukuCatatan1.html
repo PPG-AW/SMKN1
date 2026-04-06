@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Format Catatan Statistika</title>
+    <style>
+        .catatan-container {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #ffffff;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 40px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            color: #333;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        .judul-utama {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0056b3;
+            border-bottom: 3px double #0056b3;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        .identitas-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border: 1px dashed #666;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        .identitas-baris { margin-bottom: 8px; }
+        .titik-titik {
+            display: inline-block;
+            min-width: 150px;
+            border-bottom: 1px dotted #333;
+        }
+        .titik-panjang {
+            display: inline-block;
+            min-width: 300px;
+            border-bottom: 1px dotted #333;
+        }
+        h3 {
+            color: #d32f2f;
+            border-left: 5px solid #d32f2f;
+            padding-left: 10px;
+            background-color: #fce4e4;
+            padding: 8px 10px;
+            margin-top: 35px;
+        }
+        .instruksi {
+            font-style: italic;
+            color: #555;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        .tabel-catatan {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .tabel-catatan th, .tabel-catatan td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: left;
+        }
+        .tabel-catatan th { background-color: #e0e0e0; text-align: center;}
+        .area-gambar {
+            height: 200px;
+            border: 2px dashed #999;
+            background-image: linear-gradient(#f0f0f0 1px, transparent 1px), linear-gradient(90deg, #f0f0f0 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        .refleksi-box {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #b8daff;
+        }
+        ul, ol { margin-top: 5px; }
+        
+        @media (max-width: 600px) {
+            .catatan-container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="catatan-container">
+    
+    <div class="identitas-box">
+        <div class="identitas-baris">Nama Lengkap &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="titik-panjang"></span></div>
+        <div class="identitas-baris">Kelas / Jurusan &nbsp;&nbsp;: <span class="titik-panjang"></span></div>
+        <div class="identitas-baris">Hari / Tanggal &nbsp;&nbsp;&nbsp;&nbsp;: <span class="titik-panjang"></span></div>
+    </div>
+
+    <div class="judul-utama">Catatan Statistika Dasar</div>
+
+    <h3>A. KONSEP & KAMUS MINI</h3>
+    <div class="instruksi">(Lengkapi titik-titik di bawah ini dengan mengingat kembali materi di web latihan!)</div>
+    <ol>
+        <li><strong>Tujuan Statistika:</strong> Merapikan data mentah yang berantakan menjadi tabel atau diagram agar lebih mudah <span class="titik-titik"></span> dan dipahami dengan cepat.</li>
+        <li style="margin-top: 8px;"><strong>Sumbu X (Garis Mendatar):</strong> Tempat untuk menuliskan nama <span class="titik-titik"></span> secara berurutan (Misalnya: nama Hari, Waktu, atau jenis Barang).</li>
+        <li style="margin-top: 8px;"><strong>Sumbu Y (Garis Tegak):</strong> Tempat untuk menuliskan <span class="titik-titik"></span> Skala yang memiliki kelipatan tetap (Misalnya kelipatan: 0, 4, 8, 12).</li>
+        <li style="margin-top: 8px;"><strong>Titik Koordinat:</strong> Titik pertemuan yang pas (presisi) antara Sumbu X dan Sumbu <span class="titik-titik"></span>.</li>
+        <li style="margin-top: 8px;"><strong>Garis Zigzag:</strong> Digambar di pangkal Sumbu Y sebagai tanda adanya angka yang <span class="titik-titik"></span> (karena angka awalnya sangat besar, misalnya dari 0 langsung lompat ke angka 28).</li>
+    </ol>
+
+    <h3>B. LANGKAH-LANGKAH MEMBUAT DIAGRAM</h3>
+    <div class="instruksi">(Pilih dan salin urutan langkah yang benar dari kata dalam kurung: Tentukan Titik Koordinat / Buat Tabel Distribusi / Gambar Diagram / Buat Garis Sumbu & Label)</div>
+    <ul style="list-style-type: none; padding-left: 0;">
+        <li style="margin-bottom: 10px;">- <strong>Langkah 1 :</strong> <span class="titik-panjang"></span></li>
+        <li style="margin-bottom: 10px;">- <strong>Langkah 2 :</strong> <span class="titik-panjang"></span></li>
+        <li style="margin-bottom: 10px;">- <strong>Langkah 3 :</strong> <span class="titik-panjang"></span></li>
+        <li style="margin-bottom: 10px;">- <strong>Langkah 4 :</strong> <span class="titik-panjang"></span></li>
+    </ul>
+
+    <h3>C. LATIHAN KASUS UNIT PRODUKSI</h3>
+    <p><strong>Kasus:</strong> Kantin UP mencatat pesanan <em>snack</em> pagi ini dengan data mentah: <br>
+    <em>Sosis, Donat, Sosis, Roti, Lemper, Sosis, Donat, Roti, Sosis, Lemper.</em></p>
+
+    <p><strong>1. Pindahkan ke Tabel</strong><br>
+    <span class="instruksi">(Hitung jumlahnya dari data mentah di atas!)</span></p>
+    
+    <table class="tabel-catatan">
+        <thead>
+            <tr>
+                <th style="width: 60%;">Nama Snack</th>
+                <th style="width: 40%;">Jumlah (Frekuensi)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1. Sosis</td>
+                <td style="text-align: center;"><span class="titik-titik"></span></td>
+            </tr>
+            <tr>
+                <td>2. <span class="titik-titik"></span></td>
+                <td style="text-align: center;"><span class="titik-titik"></span></td>
+            </tr>
+            <tr>
+                <td>3. <span class="titik-titik"></span></td>
+                <td style="text-align: center;"><span class="titik-titik"></span></td>
+            </tr>
+            <tr>
+                <td>4. <span class="titik-titik"></span></td>
+                <td style="text-align: center;"><span class="titik-titik"></span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><strong>2. Gambar Diagram Batangnya di Bawah Ini!</strong><br>
+    <span class="instruksi">(Gunakan penggaris. Jangan lupa beri nama label di Sumbu X dan angka skala di Sumbu Y)</span></p>
+    
+    <div class="area-gambar">
+        (Kosongkan sekitar 10-15 baris di buku tulismu untuk menggambar diagram di sini)
+    </div>
+
+    <h3>D. REFLEKSI HARI INI</h3>
+    <div class="refleksi-box">
+        <div class="instruksi" style="margin-top: 0;">(Tulis salah satu kalimat di bawah ini yang paling sesuai dengan perasaanmu di buku catatan)</div>
+        <ol>
+            <li>Saya sudah paham dan bisa menggambar sendiri!</li>
+            <li>Saya lumayan paham, tapi kadang masih tertukar antara Sumbu X dan Y.</li>
+            <li>Saya masih bingung dan butuh bantuan Guru.</li>
+        </ol>
+        <p style="font-weight: bold; margin-top: 15px;">Pilihan Saya: <span class="titik-panjang"></span></p>
+    </div>
+
+</div>
+
+</body>
+</html>
