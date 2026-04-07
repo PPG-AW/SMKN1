@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Interaktif - Praktik Histogram & Poligon</title>
+    <style>
+        /* =========================================
+           STYLE KONSISTEN & RAMAH HP
+           ========================================= */
+        body { font-family: 'Calibri', Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; color: #333; line-height: 1.6; }
+        .top-nav { background: #2c3e50; color: white; padding: 12px; text-align: center; position: fixed; width: 100%; top: 0; z-index: 1000; font-weight: bold; letter-spacing: 1px;}
+        .top-nav button { background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 8px 20px; cursor: pointer; border-radius: 4px; font-size: 14px; margin: 0 10px; transition: 0.3s;}
+        .top-nav button:hover { background: #7f8c8d; }
+
+        .app-container { background-color: #fff; max-width: 900px; margin: 65px auto 30px auto; border: 1px solid #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-height: 85vh; }
+        
+        .tab-menu { display: flex; flex-wrap: wrap; background: #e0e0e0; border-bottom: 3px solid #0056b3; }
+        .tab-button { flex: 1; padding: 14px 5px; border: none; background: #e0e0e0; cursor: pointer; font-weight: bold; font-size: 14px; color: #555; text-align: center; min-width: 100px; transition: 0.3s;}
+        .tab-button:hover { background: #d0d0d0; }
+        .tab-button.active { background: #0056b3; color: white; }
+
+        .tab-content { display: none; padding: 25px; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h2 { font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 0; color: #333;}
+        .dictionary-box { background: #fdfdfd; border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .soal-box { background: #e8f4f8; border-left: 5px solid #17a2b8; padding: 15px; margin-bottom: 15px; font-size: 15px; line-height: 1.5; border-radius: 0 4px 4px 0;}
+        .raw-data { background: #fff; border: 1px dashed #666; padding: 15px; font-family: monospace; font-size: 16px; text-align: center; letter-spacing: 2px; margin-bottom: 15px; line-height: 2;}
+        
+        /* STYLE PECAHAN VERTIKAL */
+        .fraction { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 5px; font-weight: bold; font-family: monospace; font-size: 15px; color: #0056b3;}
+        .fraction .numerator { border-bottom: 2px solid #333; padding: 0 6px; line-height: 1.3; }
+        .fraction .denominator { padding: 0 6px; line-height: 1.3; }
+
+        .table-responsive { width: 100%; overflow-x: auto; margin: 15px 0; border: 1px solid #ddd; border-radius: 6px;}
+        table { width: 100%; min-width: 600px; border-collapse: collapse; background: #fff; font-size: 14px;}
+        th, td { border: 1px solid #ccc; padding: 12px 10px; text-align: center; vertical-align: middle; }
+        th { background-color: #f0f0f0; }
+        
+        .table-input { width: 65px; text-align: center; padding: 6px; border: 2px solid #ccc; border-radius: 4px; font-weight: bold; font-size: 14px; transition: 0.3s;}
+        .table-input:focus { outline: none; border-color: #0056b3; box-shadow: 0 0 5px rgba(0,86,179,0.3);}
+        .table-input.correct { border-color: #28a745; background-color: #e8f5e9; color: #155724;}
+        .table-input.wrong { border-color: #dc3545; background-color: #f8d7da; color: #721c24;}
+
+        .interactive-section { display: none; margin-top: 25px; border-top: 2px dashed #ccc; padding-top: 20px; }
+        
+        /* KANVAS & GRID */
+        .canvas-container { 
+            width: 100%; 
+            max-width: 550px; 
+            margin: 10px auto 20px auto; 
+            text-align: center; 
+            border: 2px solid #333; 
+            padding: 0; 
+            background: #fff; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05); 
+            touch-action: none; /* Cegah scroll saat klik di HP */
+            border-radius: 4px;
+        }
+        canvas { background-color: #fcfcfc; width: 100%; height: auto; display: block; cursor: crosshair; }
+        
+        .controls { text-align: center; margin-top: 15px; display: flex; flex-direction: column; gap: 8px;}
+        .step-btn { padding: 12px 15px; cursor: pointer; border: 1px solid #999; background: #f8f8f8; font-weight: bold; font-size: 14px; border-radius: 4px; transition: 0.2s;}
+        .step-btn.btn-cek { background-color: #28a745; color: white; border-color: #1e7e34; margin-top:10px; width:100%; max-width: 300px; }
+        .step-btn.btn-cek:hover { background-color: #218838; }
+        .step-btn.btn-ganti { background-color: #0056b3; color: white; border-color: #004085; }
+        .step-btn.btn-ganti:hover { background-color: #004085; }
+        .step-btn.active-step { background-color: #ffc107; color: #333; border-color: #d39e00; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .step-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .tools-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 15px;}
+        
+        /* SISTEM FEEDBACK EKSKLUSIF */
+        .feedback-box { display: none; padding: 15px; margin: 15px 0; border-radius: 6px; font-weight: bold; text-align: center; font-size: 15px; line-height: 1.6;}
+        .feedback-box.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .feedback-box.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .feedback-box.info { background-color: #e8f4f8; color: #0056b3; border: 1px solid #b8daff; }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            75% { transform: translateX(-8px); }
+            100% { transform: translateX(0); }
+        }
+        .shake { animation: shake 0.4s ease-in-out; }
+
+        @media (max-width: 600px) {
+            .tab-button { font-size: 12px; padding: 12px 5px; min-width: 30%; }
+            .tools-header { flex-direction: column; gap: 10px; text-align: center;}
+            .app-container { margin-top: 60px; }
+            .fraction { font-size: 13px; }
+            .top-nav button { padding: 6px 12px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <button onclick="window.close()" style="float:left;">Tutup Materi</button>
+        <button onclick="window.open(window.location.href, '_blank')" style="float:right;">Buka Tab Baru</button>
+    </div>
+
+    <div class="app-container">
+        <div class="tab-menu">
+            <button class="tab-button active" onclick="openTab(event, 'tab-materi')">1. Pengantar</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-hist'); initLatihan('hist')">2. Latihan Histogram</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-poly'); initLatihan('poly')">3. Latihan Poligon</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-mentah'); initLatihan('mentah')">4. Tantangan Data Mentah</button>
+            <button class="tab-button" onclick="openTab(event, 'tab-rangkuman')">5. Rangkuman</button>
+        </div>
+
+        <div id="tab-materi" class="tab-content active">
+            <h2>A. Visualisasi Data Kelompok</h2>
+            <p>Di tempat kerja, tabel data angka seringkali sulit dibaca dengan cepat. Kita menggunakan grafik visual agar pimpinan bisa melihat tren data secara instan.</p>
+
+            <h2>B. Rumus Inti Hari Ini</h2>
+            <div class="dictionary-box">
+                <ul style="margin:0; padding-left: 20px;">
+                    <li><strong>Histogram (Batang Menempel):</strong> Membutuhkan <strong>Tepi Kelas</strong>.<br>
+                        <div style="margin-top: 5px; color:#d32f2f;"><strong>Tepi Bawah</strong> = Angka Kiri - 0,5</div>
+                        <div style="margin-top: 5px; color:#28a745;"><strong>Tepi Atas</strong> = Angka Kanan + 0,5</div>
+                    </li>
+                    <hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">
+                    <li><strong>Poligon (Garis Lurus):</strong> Membutuhkan <strong>Titik Tengah</strong>.<br>
+                        <div style="display: flex; align-items: center; margin-top: 8px;">
+                            <span>Titik Tengah = </span>
+                            <span class="fraction" style="margin-left: 8px;">
+                                <span class="numerator">Angka Kiri + Angka Kanan</span>
+                                <span class="denominator">2</span>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <h2>C. Petunjuk Latihan Interaktif</h2>
+            <p>Sistem ini akan menguji pemahamanmu langkah demi langkah:</p>
+            <ol>
+                <li>Soal cerita, rentang kelas interval, dan frekuensi akan selalu berubah-ubah jika kamu menekan tombol "Acak Angka & Cerita".</li>
+                <li>Isi kotak kosong sesuai rumus. <strong>WAJIB gunakan tanda koma ( , )</strong> untuk bilangan desimal (contoh: 40,5). Jangan pakai titik!</li>
+                <li>Setelah perhitungan tabel disetujui, kamu akan berlatih menandai titik di atas <strong>Grid Kanvas</strong> secara berurutan, layaknya menggambar di buku kotak-kotak.</li>
+            </ol>
+        </div>
+
+        <div id="tab-hist" class="tab-content">
+            <div class="tools-header">
+                <h1 style="font-size: 18px; margin:0; color:#0056b3;">LATIHAN HISTOGRAM (TEPI KELAS)</h1>
+                <button onclick="initLatihan('hist')" class="step-btn btn-ganti">Acak Angka & Cerita</button>
+            </div>
+            
+            <div class="soal-box" id="soal-teks-hist"></div>
+            <div class="feedback-box info" style="display:block;">Langkah 1: Hitung Tepi Bawah (Kiri - 0,5) dan Tepi Atas (Kanan + 0,5). Gunakan koma ( , )!</div>
+            
+            <div class="table-responsive">
+                <table id="tabel-hist"></table>
+            </div>
+            
+            <div id="feedback-hist" class="feedback-box"></div>
+            <div style="text-align: center;"><button class="step-btn btn-cek" id="btnCek-hist" onclick="cekTabel('hist')">Cek Hitungan Tepi Kelas</button></div>
+
+            <div class="interactive-section" id="interaktif-hist">
+                <div class="feedback-box success" id="guide-hist" style="display:block;">Hitungan Tepat! Klik tombol "1. Buat Sumbu & Grid" untuk mulai menggambar.</div>
+                <div class="canvas-container">
+                    <canvas id="canvas-hist" width="550" height="400"></canvas>
+                </div>
+                <div class="controls" id="controls-hist">
+                    <button class="step-btn active-step" id="btn-hist-1" onclick="startSim('hist', 1)">1. Buat Sumbu X, Y, & Grid Panduan</button>
+                    <button class="step-btn" id="btn-hist-2" onclick="startSim('hist', 2)" disabled>2. Tandai Koordinat (Kerjakan per Kelas!)</button>
+                    <button class="step-btn" id="btn-hist-3" onclick="startSim('hist', 3)" disabled>3. Hubungkan Menjadi Kotak Histogram</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-poly" class="tab-content">
+            <div class="tools-header">
+                <h1 style="font-size: 18px; margin:0; color:#0056b3;">LATIHAN POLIGON (TITIK TENGAH)</h1>
+                <button onclick="initLatihan('poly')" class="step-btn btn-ganti">Acak Angka & Cerita</button>
+            </div>
+            
+            <div class="soal-box" id="soal-teks-poly"></div>
+            <div class="feedback-box info" style="display:block;">Langkah 1: Hitung Titik Tengah. Rumus: (Kiri + Kanan) dibagi 2. Gunakan koma ( , )!</div>
+            
+            <div class="table-responsive">
+                <table id="tabel-poly"></table>
+            </div>
+            
+            <div id="feedback-poly" class="feedback-box"></div>
+            <div style="text-align: center;"><button class="step-btn btn-cek" id="btnCek-poly" onclick="cekTabel('poly')">Cek Hitungan Titik Tengah</button></div>
+
+            <div class="interactive-section" id="interaktif-poly">
+                <div class="feedback-box success" id="guide-poly" style="display:block;">Hitungan Tepat! Klik tombol "1. Buat Sumbu & Grid" untuk mulai.</div>
+                <div class="canvas-container">
+                    <canvas id="canvas-poly" width="550" height="400"></canvas>
+                </div>
+                <div class="controls" id="controls-poly">
+                    <button class="step-btn active-step" id="btn-poly-1" onclick="startSim('poly', 1)">1. Buat Sumbu X, Y, & Grid Panduan</button>
+                    <button class="step-btn" id="btn-poly-2" onclick="startSim('poly', 2)" disabled>2. Tandai Titik Puncak (Kerjakan per Kelas!)</button>
+                    <button class="step-btn" id="btn-poly-3" onclick="startSim('poly', 3)" disabled>3. Tarik Garis Puncak & Tutup ke Lantai (Nol)</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-mentah" class="tab-content">
+            <div class="tools-header">
+                <h1 style="font-size: 18px; margin:0; color: #dc3545;">TANTANGAN DATA MENTAH</h1>
+                <button onclick="initLatihan('mentah')" class="step-btn btn-ganti" style="background-color: #dc3545; border-color: #c82333;">Acak Angka & Cerita</button>
+            </div>
+            
+            <div class="soal-box" id="soal-teks-mentah" style="border-left-color: #dc3545; background: #fdf5f6;"></div>
+            <div class="feedback-box info" style="display:block; color: #dc3545; background: #fdf5f6; border-color: #f5c6cb;">Langkah 1: Kelompokkan data mentah di atas ke dalam kelas, lalu lengkapi tabelnya!</div>
+            
+            <div class="table-responsive">
+                <table id="tabel-mentah"></table>
+            </div>
+            
+            <div id="feedback-mentah" class="feedback-box"></div>
+            <div style="text-align: center;"><button class="step-btn btn-cek" id="btnCek-mentah" onclick="cekTabel('mentah')">Cek Seluruh Analisismu</button></div>
+
+            <div class="interactive-section" id="interaktif-mentah">
+                <div class="feedback-box success" id="guide-mentah" style="display:block;">Hitungan Sempurna! Klik "1. Buat Sumbu & Grid" untuk mulai.</div>
+                <div class="canvas-container">
+                    <canvas id="canvas-mentah" width="550" height="400"></canvas>
+                </div>
+                <div class="controls" id="controls-mentah">
+                    <button class="step-btn active-step" id="btn-mentah-1" onclick="startSim('mentah', 1)">1. Buat Sumbu X, Y, & Grid Panduan</button>
+                    <button class="step-btn" id="btn-mentah-2" onclick="startSim('mentah', 2)" disabled>2. Tandai Koordinat Histogram (Kelas per Kelas)</button>
+                    <button class="step-btn" id="btn-mentah-3" onclick="startSim('mentah', 3)" disabled>3. Bangun Kotak Histogram</button>
+                    <button class="step-btn" id="btn-mentah-4" onclick="startSim('mentah', 4)" disabled>4. Tandai Titik Puncak Poligon (Kelas per Kelas)</button>
+                    <button class="step-btn" id="btn-mentah-5" onclick="startSim('mentah', 5)" disabled>5. Tarik Garis Poligon & Selesaikan!</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-rangkuman" class="tab-content">
+            <h2 style="color: #28a745;">Rangkuman Praktik Visualisasi</h2>
+            <div class="dictionary-box" style="background: #e8f5e9; border-color: #c3e6cb;">
+                <h3 style="color:#155724; font-size:16px; margin-top:0;">1. Mengapa Perlu Tepi Kelas & Titik Tengah?</h3>
+                <ul style="font-size: 15px; line-height: 1.8;">
+                    <li><strong>Histogram:</strong> Harus menggunakan <strong>Tepi Kelas (-0,5 dan +0,5)</strong> agar dinding kotaknya menempel rapat tanpa celah. Hal ini menunjukkan bahwa data kelompok adalah data yang saling berkelanjutan (kontinu). Setiap kelas butuh <strong>2 titik koordinat sudut atas</strong>.</li>
+                    <li><strong>Poligon Frekuensi:</strong> Menggunakan <strong>Titik Tengah (Kiri + Kanan dibagi 2)</strong> untuk merepresentasikan puncak rata-rata dari setiap kelas. Setiap kelas hanya butuh <strong>1 titik koordinat puncak</strong>.</li>
+                </ul>
+
+                <h3 style="color:#155724; font-size:16px;">2. Aturan Emas Menggambar Poligon</h3>
+                <ul style="font-size: 15px; line-height: 1.8;">
+                    <li>Ujung garis awal dan akhir Poligon <strong>WAJIB ditarik mendarat ke lantai</strong> (berfrekuensi 0). Ini membedakannya dari diagram garis biasa yang dibiarkan menggantung.</li>
+                    <li>Titik awal ditarik ke persimpangan Sumbu X dan Y (titik nol), dan titik akhir ditarik ke tepi batas terluar Sumbu X.</li>
+                </ul>
+
+                <h3 style="color:#155724; font-size:16px;">3. Tahapan Manual yang Benar</h3>
+                <ul style="font-size: 15px; line-height: 1.8;">
+                    <li><strong>Gunakan Buku Kotak-Kotak:</strong> Selalu gambar Sumbu X dan Y dengan garis bantu grid.</li>
+                    <li><strong>Tandai Titik Dahulu:</strong> Jangan asal menarik garis/kotak! Cari perpotongan angka Sumbu X dan Y, lalu beri tanda titik tebal.</li>
+                    <li><strong>Hubungkan:</strong> Setelah titiknya siap, gunakan penggaris untuk menyambungkan titik-titik tersebut.</li>
+                </ul>
+            </div>
+            <p style="text-align: center; font-weight: bold; color: #0056b3;">Selamat! Kamu telah menguasai teknik visualisasi data kelompok.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // State Management
+        let activeData = { hist: [], poly: [], mentah: [] };
+        let currentStep = { hist: 0, poly: 0, mentah: 0 };
+        let userPoints = { hist: [], poly: [], mentah: [] };
+        let expectedPoints = { hist: [], poly: [], mentah: [] };
+        
+        // PENGATURAN KELAS AKTIF (Untuk Mengerjakan per Kelas)
+        let activeClassTracker = { hist: 0, poly: 0, mentah: 0 };
+        
+        // Warna cerah untuk membedakan kelas
+        const colors = ["#d32f2f", "#2e7d32", "#1565c0", "#ef6c00"];
+        const colorNames = ["Merah", "Hijau", "Biru", "Oranye"];
+
+        // Konfigurasi Skala Kanvas
+        const originX = 60, originY = 320, scaleY = 25, barW = 85;
+
+        function openTab(evt, tabName) {
+            document.querySelectorAll(".tab-content").forEach(t => t.style.display = "none");
+            document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.classList.add("active");
+        }
+
+        function formatLocal(num) { return num.toString().replace('.', ','); }
+        function parseLocalFloat(str) { 
+            if(!str) return NaN; 
+            return parseFloat(str.replace(',', '.')); 
+        }
+
+        // Feedback Dinamis Anti-Alert
+        function showFeedback(type, isSuccess, message) {
+            const box = document.getElementById(`feedback-${type}`);
+            box.style.display = 'block';
+            box.className = `feedback-box ${isSuccess ? 'success' : 'error'}`;
+            box.innerHTML = message;
+            
+            if(!isSuccess) {
+                box.classList.remove('shake');
+                void box.offsetWidth; 
+                box.classList.add('shake');
+            }
+        }
+
+        // =====================================
+        // DATA GENERATORS (DYNAMIC)
+        // =====================================
+        function genHistogramData() {
+            const pools = [
+                { title: "Penjualan Kemeja (pcs)", start: 31, gaps: [10, 5] },
+                { title: "Nilai Ujian Praktik", start: 41, gaps: [10, 8] },
+                { title: "Berat Badan Pasien (kg)", start: 36, gaps: [5, 4] },
+                { title: "Tinggi Badan Siswa (cm)", start: 141, gaps: [5, 10] }
+            ];
+            let p = pools[Math.floor(Math.random() * pools.length)];
+            let gap = p.gaps[Math.floor(Math.random() * p.gaps.length)];
+            let classes = [];
+            let current = p.start;
+            
+            for(let i=0; i<4; i++) { 
+                let batasBawah = current;
+                let batasAtas = current + gap - 1;
+                let frek = Math.floor(Math.random() * 8) + 2; 
+                
+                classes.push({
+                    bawah: batasBawah, atas: batasAtas, label: `${batasBawah} - ${batasAtas}`,
+                    f: frek, tb: batasBawah - 0.5, ta: batasAtas + 0.5
+                });
+                current += gap;
+            }
+            
+            return { teks: `Data <strong>${p.title}</strong> telah terkumpul. Sajikan data ini ke dalam bentuk <strong>Histogram</strong>.`, classes: classes };
+        }
+
+        function genPoligonData() {
+            const pools = [
+                { title: "Kecepatan Motor (km/jam)", start: 21, gaps: [10, 5] },
+                { title: "Tinggi Tanaman Hias (cm)", start: 10, gaps: [5, 4] },
+                { title: "Waktu Pengiriman Paket (menit)", start: 15, gaps: [5, 8] },
+                { title: "Tarif Sewa Bengkel (Ribu Rp)", start: 50, gaps: [10] }
+            ];
+            let p = pools[Math.floor(Math.random() * pools.length)];
+            let gap = p.gaps[Math.floor(Math.random() * p.gaps.length)];
+            let classes = [];
+            let current = p.start;
+            
+            for(let i=0; i<4; i++) {
+                let batasBawah = current;
+                let batasAtas = current + gap - 1;
+                let frek = Math.floor(Math.random() * 8) + 2;
+                
+                classes.push({
+                    bawah: batasBawah, atas: batasAtas, label: `${batasBawah} - ${batasAtas}`,
+                    f: frek, xi: (batasBawah + batasAtas) / 2
+                });
+                current += gap;
+            }
+            
+            return { teks: `Divisi Riset merekap <strong>${p.title}</strong>. Sajikan tren data ini ke dalam bentuk <strong>Poligon Frekuensi</strong>.`, classes: classes };
+        }
+
+        function genMentahData() {
+            const pools = [
+                { title: "Pemungutan Suara Angka", start: 61, gaps: [10, 5] },
+                { title: "Pendataan Ukuran Sepatu", start: 36, gaps: [5] }
+            ];
+            let p = pools[Math.floor(Math.random() * pools.length)];
+            let gap = p.gaps[Math.floor(Math.random() * p.gaps.length)];
+            
+            let rawNumbers = [];
+            let classes = [];
+            let current = p.start;
+
+            for(let i=0; i<3; i++) { 
+                let batasBawah = current;
+                let batasAtas = current + gap - 1;
+                let frek = Math.floor(Math.random() * 4) + 3; 
+                
+                for(let k=0; k<frek; k++) {
+                    rawNumbers.push(Math.floor(Math.random() * (batasAtas - batasBawah + 1)) + batasBawah);
+                }
+
+                classes.push({
+                    bawah: batasBawah, atas: batasAtas, label: `${batasBawah} - ${batasAtas}`,
+                    expectedF: frek, tb: batasBawah - 0.5, ta: batasAtas + 0.5, xi: (batasBawah + batasAtas) / 2
+                });
+                current += gap;
+            }
+
+            rawNumbers.sort(() => Math.random() - 0.5);
+
+            return {
+                teks: `Hasil pencatatan <strong>${p.title}</strong> secara acak:<br> <div class='raw-data'>${rawNumbers.join(", ")}</div>`,
+                classes: classes
+            };
+        }
+
+        // =====================================
+        // INITIALIZE TABS & TABLES
+        // =====================================
+        function initLatihan(type) {
+            let obj;
+            if(type === 'hist') obj = genHistogramData();
+            else if(type === 'poly') obj = genPoligonData();
+            else obj = genMentahData();
+
+            let data = obj.classes;
+            activeData[type] = data;
+            document.getElementById(`soal-teks-${type}`).innerHTML = obj.teks;
+
+            let tableHtml = `<tr><th>Kelas Interval</th>`;
+            if(type === 'mentah') {
+                tableHtml += `<th>Frekuensi</th><th>Tepi Bawah (-0,5)</th><th>Tepi Atas (+0,5)</th><th>Titik Tengah (Bagi 2)</th></tr>`;
+            } else if (type === 'hist') {
+                tableHtml += `<th>Frekuensi (f)</th><th>Proses Tepi Bawah<br>(Kiri - 0,5)</th><th>Proses Tepi Atas<br>(Kanan + 0,5)</th></tr>`;
+            } else {
+                tableHtml += `<th>Frekuensi (f)</th><th>Rumus Titik Tengah<br>(Kiri + Kanan) / 2</th><th>Hasil Akhir</th></tr>`;
+            }
+
+            data.forEach((c, i) => {
+                let nums = c.label.split('-');
+                tableHtml += `<tr>
+                    <td><strong>${c.label}</strong></td>`;
+                
+                if(type === 'mentah') {
+                    tableHtml += `<td><input type="number" class="table-input inp-${type}" data-idx="${i}" data-field="f" placeholder="f"></td>
+                    <td><input type="text" class="table-input inp-${type}" data-idx="${i}" data-field="tb" placeholder="Tb"></td>
+                    <td><input type="text" class="table-input inp-${type}" data-idx="${i}" data-field="ta" placeholder="Ta"></td>
+                    <td><input type="text" class="table-input inp-${type}" data-idx="${i}" data-field="xi" placeholder="xi"></td>`;
+                } else if (type === 'hist') {
+                    tableHtml += `
+                    <td style="color:${colors[i]}; font-weight:bold; font-size:16px;">${c.f}</td>
+                    <td style="text-align:left; font-family:monospace; font-size:13px; padding-left:15px;">
+                        T<sub>b</sub> = ${nums[0]} - 0,5<br>
+                        <input type="text" class="table-input inp-${type}" data-idx="${i}" data-field="tb" placeholder="..." style="margin-top:4px;">
+                    </td>
+                    <td style="text-align:left; font-family:monospace; font-size:13px; padding-left:15px;">
+                        T<sub>a</sub> = ${nums[1]} + 0,5<br>
+                        <input type="text" class="table-input inp-${type}" data-idx="${i}" data-field="ta" placeholder="..." style="margin-top:4px;">
+                    </td>`;
+                } else {
+                    tableHtml += `
+                    <td style="color:${colors[i]}; font-weight:bold; font-size:16px;">${c.f}</td>
+                    <td>
+                        <div class="fraction">
+                            <span class="numerator">${nums[0]} + ${nums[1]}</span>
+                            <span class="denominator">2</span>
+                        </div>
+                    </td>
+                    <td><input type="text" class="table-input inp-${type}" data-idx="${i}" data-field="xi" placeholder="..."></td>`;
+                }
+                tableHtml += `</tr>`;
+            });
+            document.getElementById(`tabel-${type}`).innerHTML = tableHtml;
+
+            // Generate Target Points
+            userPoints[type] = [];
+            expectedPoints[type] = [];
+            currentStep[type] = 0;
+            activeClassTracker[type] = 0;
+            
+            if(type === 'hist') {
+                data.forEach((d, i) => {
+                    let x1 = originX + (i * barW);
+                    let x2 = x1 + barW;
+                    let y = originY - (d.f * scaleY);
+                    expectedPoints.hist.push({x: x1, y: y, classIdx: i, expectedF: d.f, labelX: d.tb, mode: 'hist', found: false});
+                    expectedPoints.hist.push({x: x2, y: y, classIdx: i, expectedF: d.f, labelX: d.ta, mode: 'hist', found: false});
+                });
+            } else if (type === 'poly') {
+                data.forEach((d, i) => {
+                    let x = originX + (i * barW) + barW/2;
+                    let y = originY - (d.f * scaleY);
+                    expectedPoints.poly.push({x: x, y: y, classIdx: i, expectedF: d.f, labelX: d.xi, mode: 'poly', found: false});
+                });
+            } else if (type === 'mentah') {
+                // Untuk Mentah kita simpan titik hist dan poly sekaligus
+                data.forEach((d, i) => {
+                    let x1 = originX + (i * barW);
+                    let x2 = x1 + barW;
+                    let y = originY - (d.expectedF * scaleY);
+                    let xCenter = x1 + (barW / 2);
+                    
+                    expectedPoints.mentah.push({x: x1, y: y, classIdx: i, expectedF: d.expectedF, labelX: d.tb, mode: 'hist', found: false});
+                    expectedPoints.mentah.push({x: x2, y: y, classIdx: i, expectedF: d.expectedF, labelX: d.ta, mode: 'hist', found: false});
+                    expectedPoints.mentah.push({x: xCenter, y: y, classIdx: i, expectedF: d.expectedF, labelX: d.xi, mode: 'poly', found: false});
+                });
+            }
+
+            // Reset UI
+            document.getElementById(`feedback-${type}`).style.display = "none";
+            document.getElementById(`interaktif-${type}`).style.display = "none";
+            document.getElementById(`btnCek-${type}`).disabled = false;
+            
+            let btnCount = type === 'mentah' ? 5 : 3;
+            for(let step=1; step<=btnCount; step++) {
+                let btn = document.getElementById(`btn-${type}-${step}`);
+                if(btn) {
+                    btn.disabled = step !== 1;
+                    btn.className = step === 1 ? "step-btn active-step" : "step-btn";
+                }
+            }
+            
+            const canvas = document.getElementById(`canvas-${type}`);
+            if(canvas) canvas.getContext('2d').clearRect(0,0, canvas.width, canvas.height);
+        }
+
+        // =====================================
+        // VALIDASI TABEL 
+        // =====================================
+        function cekTabel(type) {
+            let inputs = document.querySelectorAll(`.inp-${type}`);
+            let allCorrect = true;
+            let errorMsg = "";
+            
+            inputs.forEach(input => {
+                input.classList.remove('correct', 'wrong');
+                let idx = input.getAttribute('data-idx');
+                let field = input.getAttribute('data-field');
+                let expected;
+                
+                if (field === 'tb') expected = activeData[type][idx].tb;
+                else if (field === 'ta') expected = activeData[type][idx].ta;
+                else if (field === 'xi') expected = activeData[type][idx].xi;
+                else if (field === 'f') expected = activeData[type][idx].expectedF || activeData[type][idx].f;
+
+                if(input.value.includes('.')) {
+                    errorMsg = "Sistem menolak! <strong>Gunakan tanda koma ( , )</strong> untuk bilangan desimal, BUKAN tanda titik ( . ).";
+                    input.classList.add('wrong');
+                    allCorrect = false;
+                    return; 
+                }
+
+                let userVal = parseLocalFloat(input.value);
+
+                if(userVal === expected) {
+                    input.classList.add('correct');
+                } else {
+                    input.classList.add('wrong');
+                    allCorrect = false;
+                    if(!errorMsg) {
+                        let labelKelas = activeData[type][idx].label;
+                        if(field === 'tb') errorMsg = `Cek kembali hitungan <strong>Tepi Bawah</strong> pada kelas ${labelKelas} (Angka Kiri dikurangi 0,5).`;
+                        else if(field === 'ta') errorMsg = `Cek kembali hitungan <strong>Tepi Atas</strong> pada kelas ${labelKelas} (Angka Kanan ditambah 0,5).`;
+                        else if(field === 'xi') errorMsg = `Cek kembali hitungan <strong>Titik Tengah</strong> pada kelas ${labelKelas} (Kiri ditambah Kanan lalu dibagi 2).`;
+                        else if(field === 'f') errorMsg = `Hitungan <strong>Frekuensi</strong> pada kelas ${labelKelas} belum tepat sesuai data mentah di atas.`;
+                    }
+                }
+            });
+
+            if (allCorrect) {
+                showFeedback(type, true, "Luar Biasa! Semua perhitungan tabelmu sudah tepat.");
+                document.getElementById(`interaktif-${type}`).style.display = "block";
+                document.getElementById(`btnCek-${type}`).disabled = true;
+            } else {
+                showFeedback(type, false, "<strong>Ada kotak merah!</strong> " + errorMsg);
+            }
+        }
+
+        // =====================================
+        // KANVAS GAMBAR & GRID
+        // =====================================
+        function drawGrid(ctx, type) {
+            let totalKelas = activeData[type].length;
+            let extX = (type === 'mentah') ? 20 : 50; // Mentah canvas might need slightly less/more padding
+
+            // Y Grid
+            ctx.strokeStyle = "#e0e0e0"; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+            for(let i=1; i<=10; i++) { 
+                let y = originY - (i * scaleY);
+                ctx.beginPath(); ctx.moveTo(originX, y); ctx.lineTo(originX + (totalKelas * barW) + extX, y); ctx.stroke();
+            }
+            
+            // X Grid
+            if(type === 'hist' || type === 'mentah') {
+                for(let i=0; i<=totalKelas; i++) { 
+                    let x = originX + (i * barW);
+                    ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, originY); ctx.stroke();
+                }
+            } else {
+                for(let i=0; i<totalKelas; i++) { 
+                    let x = originX + (i * barW) + barW/2;
+                    ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, originY); ctx.stroke();
+                }
+            }
+            ctx.setLineDash([]);
+        }
+
+        // =====================================
+        // FUNGSI UPDATE PANDUAN INSTRUKTUR STEP 2/4 (TITIK PER TITIK)
+        // =====================================
+        function updateStep2Guide(type, status, targetMode = type) {
+            let guide = document.getElementById(`guide-${type}`);
+            let activeIdx = activeClassTracker[type];
+            
+            if (activeIdx >= activeData[type].length) return; 
+
+            let cName = colorNames[activeIdx];
+            let allPtsInClass = expectedPoints[type].filter(pt => pt.classIdx === activeIdx && pt.mode === targetMode);
+            let validPtsForActive = allPtsInClass.filter(pt => !pt.found);
+            
+            // 1. Jika User Salah Klik (Error)
+            if (status === 'error') {
+                let targetHint = validPtsForActive[0]; 
+                let hintX = formatLocal(targetHint.labelX);
+                let hintY = targetHint.expectedF;
+                
+                guide.innerHTML = `<strong>Titik meleset!</strong> Kita sedang fokus di <strong>Kelas ke-${activeIdx+1} (Warna ${cName})</strong>.<br>
+                Tandai pertemuan Sumbu X angka <strong>${hintX}</strong> dengan Sumbu Y frekuensi <strong>${hintY}</strong>.`;
+                
+                guide.className = "feedback-box error";
+                guide.classList.remove('shake');
+                void guide.offsetWidth;
+                guide.classList.add('shake');
+                return;
+            }
+
+            // 2. Jika Lanjut dengan Benar
+            let prefix = (status === 'next_point' || status === 'next_class') ? "<span style='color:#155724;'>Bagus sekali!</span><br>" : "";
+
+            if (targetMode === 'hist') {
+                if (validPtsForActive.length === 2) { 
+                    let pt = validPtsForActive[0];
+                    guide.innerHTML = `${prefix}Fokus <strong>Kelas ke-${activeIdx+1} (Warna ${cName})</strong>.<br>Temukan dan KLIK pertemuan Sumbu X angka <strong>${formatLocal(pt.labelX)}</strong> dengan Sumbu Y frekuensi <strong>${pt.expectedF}</strong>.`;
+                    guide.className = "feedback-box info";
+                } else if (validPtsForActive.length === 1) { 
+                    let pt = validPtsForActive[0];
+                    guide.innerHTML = `<span style='color:#155724;'>Titik pertama kelas ini benar!</span><br>Sekarang KLIK <strong>titik kedua</strong> di pertemuan Sumbu X angka <strong>${formatLocal(pt.labelX)}</strong> dengan Sumbu Y frekuensi <strong>${pt.expectedF}</strong>.`;
+                    guide.className = "feedback-box info";
+                }
+            } else if (targetMode === 'poly') {
+                let pt = validPtsForActive[0]; 
+                guide.innerHTML = `${prefix}Fokus <strong>Kelas ke-${activeIdx+1} (Warna ${cName})</strong>.<br>Temukan dan KLIK persimpangan Titik Tengah (X) <strong>${formatLocal(pt.labelX)}</strong> dengan Frekuensi (Y) <strong>${pt.expectedF}</strong>.`;
+                guide.className = "feedback-box info";
+            }
+        }
+
+        // =====================================
+        // CORE SIMULATION LOGIC
+        // =====================================
+        function startSim(type, step) {
+            currentStep[type] = step;
+            const canvas = document.getElementById(`canvas-${type}`);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            
+            let data = activeData[type];
+            let totalKelas = data.length;
+
+            // DRAW BASE (Grid + Axis + Labels)
+            if (step >= 1) {
+                drawGrid(ctx, type);
+
+                ctx.beginPath();
+                ctx.moveTo(originX, 20); ctx.lineTo(originX, originY); 
+                let extX = (type === 'mentah') ? 20 : 50;
+                ctx.lineTo(originX + (totalKelas * barW) + extX, originY); 
+                ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
+
+                ctx.fillStyle = '#333'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'right';
+                for(let i=0; i<=10; i+=2) {
+                    let y = originY - (i * scaleY);
+                    ctx.fillText(i, originX - 10, y + 5);
+                    ctx.beginPath(); ctx.moveTo(originX - 6, y); ctx.lineTo(originX, y); ctx.lineWidth = 2; ctx.stroke();
+                }
+                ctx.fillText("0", originX - 10, originY + 5);
+
+                ctx.textAlign = 'center';
+                if(type === 'hist' || type === 'mentah') {
+                    for(let i=0; i<=totalKelas; i++) {
+                        let x = originX + (i * barW);
+                        let label = i < totalKelas ? data[i].tb : data[i-1].ta;
+                        
+                        ctx.save(); ctx.translate(x, originY + 20); ctx.rotate(-Math.PI / 6); 
+                        ctx.fillStyle = '#333'; ctx.font = 'bold 13px Arial'; ctx.fillText(formatLocal(label), 0, 0); ctx.restore();
+                        ctx.beginPath(); ctx.moveTo(x, originY); ctx.lineTo(x, originY + 5); ctx.stroke();
+                    }
+                } else {
+                    data.forEach((d, i) => {
+                        let x = originX + (i * barW) + barW/2;
+                        ctx.save(); ctx.translate(x, originY + 20); ctx.rotate(-Math.PI / 6); 
+                        ctx.fillStyle = '#333'; ctx.font = 'bold 13px Arial'; ctx.fillText(formatLocal(d.xi), 0, 0); ctx.restore();
+                        ctx.beginPath(); ctx.moveTo(x, originY); ctx.lineTo(x, originY + 5); ctx.stroke();
+                    });
+                }
+            }
+
+            let guide = document.getElementById(`guide-${type}`);
+
+            // --- HANDLING MENTAH SPECIAL STEPS ---
+            if (type === 'mentah') {
+                if (step === 1) {
+                    guide.innerHTML = "Grid Buku Kotak-Kotak siap! Klik tombol <strong>2. Tandai Koordinat Histogram</strong>.";
+                    guide.className = "feedback-box info";
+                    document.getElementById(`btn-mentah-2`).disabled = false;
+                    document.getElementById(`btn-mentah-1`).classList.remove('active-step');
+                    document.getElementById(`btn-mentah-2`).classList.add('active-step');
+                    
+                    activeClassTracker[type] = 0; 
+                    userPoints[type] = [];
+                    expectedPoints[type].forEach(pt => pt.found = false);
+                }
+                if (step === 2) {
+                    updateStep2Guide(type, 'start', 'hist');
+                    userPoints[type].filter(pt => pt.mode === 'hist').forEach(pt => {
+                        ctx.fillStyle = colors[pt.classIdx % colors.length];
+                        ctx.beginPath(); ctx.arc(pt.x, pt.y, 6, 0, Math.PI*2); ctx.fill();
+                        ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+                    });
+                    canvas.onclick = (e) => handleCanvasClick(e, type, ctx);
+                } else if (step === 3) {
+                    canvas.onclick = null;
+                    document.getElementById(`btn-mentah-3`).classList.remove('active-step');
+                    document.getElementById(`btn-mentah-4`).disabled = false;
+                    document.getElementById(`btn-mentah-4`).classList.add('active-step');
+                    guide.innerHTML = "Histogram Selesai! Lanjutkan klik <strong>4. Tandai Puncak Poligon</strong>.";
+                    guide.className = "feedback-box success";
+                    drawFinalShape('mentah_hist', ctx, type);
+                } else if (step === 4) {
+                    activeClassTracker[type] = 0; // Reset class tracker for polygon phase
+                    drawFinalShape('mentah_hist', ctx, type); // Keep hist as background
+                    updateStep2Guide(type, 'start', 'poly');
+                    userPoints[type].filter(pt => pt.mode === 'poly').forEach(pt => {
+                        ctx.fillStyle = colors[pt.classIdx % colors.length];
+                        ctx.beginPath(); ctx.arc(pt.x, pt.y, 6, 0, Math.PI*2); ctx.fill();
+                        ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+                    });
+                    canvas.onclick = (e) => handleCanvasClick(e, type, ctx);
+                } else if (step === 5) {
+                    canvas.onclick = null;
+                    document.getElementById(`btn-mentah-5`).classList.remove('active-step');
+                    guide.innerHTML = "<strong>Sempurna!</strong> Kamu telah menggambar kombinasi Histogram dan Poligon dari data mentah secara lengkap.";
+                    guide.className = "feedback-box success";
+                    drawFinalShape('mentah_full', ctx, type);
+                }
+                return; // Stop here for mentah
+            }
+
+            // --- HANDLING NORMAL STEPS (HIST / POLY) ---
+            if (step === 1) {
+                guide.innerHTML = "Sumbu dan Grid Panduan (Garis Putus-putus) sudah siap! Klik tombol <strong>Langkah 2</strong>.";
+                guide.className = "feedback-box info";
+                document.getElementById(`btn-${type}-2`).disabled = false;
+                document.getElementById(`btn-${type}-1`).classList.remove('active-step');
+                document.getElementById(`btn-${type}-2`).classList.add('active-step');
+                
+                activeClassTracker[type] = 0; // Reset ke kelas pertama
+                userPoints[type] = [];
+                expectedPoints[type].forEach(pt => pt.found = false);
+            }
+            if (step === 2) {
+                let targetMode = (type === 'hist') ? 'hist' : 'poly';
+                updateStep2Guide(type, 'start', targetMode);
+                
+                userPoints[type].forEach(pt => {
+                    ctx.fillStyle = colors[pt.classIdx % colors.length];
+                    ctx.beginPath(); ctx.arc(pt.x, pt.y, 6, 0, Math.PI*2); ctx.fill();
+                    ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+                });
+                canvas.onclick = (e) => handleCanvasClick(e, type, ctx);
+            } else {
+                canvas.onclick = null; 
+            }
+
+            if (step === 3) {
+                document.getElementById(`btn-${type}-3`).classList.remove('active-step');
+                if(type === 'hist') {
+                    guide.innerHTML = "<strong>Perhatikan:</strong> Titik-titik dihubungkan menjadi kotak. Karena letak Tepi Kelas saling berbagi batas, kotak-kotaknya otomatis <strong>MENEMPEL</strong> tanpa celah!";
+                } else {
+                    guide.innerHTML = "<strong>Perhatikan:</strong> Garis ditarik menyambungkan semua titik puncak. Lalu ujung awal dan akhirnya <strong>WAJIB ditarik mendarat ke lantai</strong> (frekuensi nol)!";
+                }
+                guide.className = "feedback-box success";
+                drawFinalShape(type, ctx, type);
+            }
+        }
+
+        function handleCanvasClick(e, type, ctx) {
+            let targetMode = type;
+            if (type === 'mentah') {
+                if (currentStep[type] === 2) targetMode = 'hist';
+                else if (currentStep[type] === 4) targetMode = 'poly';
+                else return;
+            } else {
+                if(currentStep[type] !== 2) return;
+            }
+            
+            const canvas = document.getElementById(`canvas-${type}`);
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+
+            let activeIdx = activeClassTracker[type];
+            let allPtsInClass = expectedPoints[type].filter(pt => pt.classIdx === activeIdx && pt.mode === targetMode);
+            let validPtsForActive = allPtsInClass.filter(pt => !pt.found);
+
+            // Toleransi klik: 18px (Cukup aman untuk layar HP tapi sangat ketat tidak melompat grid)
+            let clickedPt = validPtsForActive.find(pt => Math.abs(pt.x - x) < 18 && Math.abs(pt.y - y) < 18);
+
+            let guide = document.getElementById(`guide-${type}`);
+
+            if(clickedPt) {
+                // TITIK BENAR
+                clickedPt.found = true;
+                userPoints[type].push(clickedPt);
+
+                // Render instan titik warna kelas
+                let color = colors[clickedPt.classIdx % colors.length];
+                ctx.fillStyle = color;
+                ctx.beginPath(); ctx.arc(clickedPt.x, clickedPt.y, 7, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+
+                let sisaDiKelas = expectedPoints[type].filter(pt => pt.classIdx === activeIdx && pt.mode === targetMode && !pt.found).length;
+                
+                if (sisaDiKelas === 0) {
+                    activeClassTracker[type]++;
+                    let nextIdx = activeClassTracker[type];
+                    let totalKelas = activeData[type].length;
+
+                    if (nextIdx >= totalKelas) {
+                        // Selesai Semua untuk Fase ini
+                        if (type === 'hist' || type === 'poly') {
+                            document.getElementById(`btn-${type}-3`).disabled = false;
+                            document.getElementById(`btn-${type}-3`).classList.add('active-step');
+                            document.getElementById(`btn-${type}-2`).classList.remove('active-step');
+                            guide.innerHTML = "Luar Biasa! Semua koordinat sudah lengkap. Klik <strong>Langkah 3</strong> untuk menggambar grafiknya.";
+                        } else if (type === 'mentah') {
+                            if (targetMode === 'hist') {
+                                document.getElementById(`btn-mentah-3`).disabled = false;
+                                document.getElementById(`btn-mentah-3`).classList.add('active-step');
+                                document.getElementById(`btn-mentah-2`).classList.remove('active-step');
+                                guide.innerHTML = "Bagus! Titik sudut Histogram lengkap. Klik <strong>3. Bangun Kotak Histogram</strong>.";
+                            } else {
+                                document.getElementById(`btn-mentah-5`).disabled = false;
+                                document.getElementById(`btn-mentah-5`).classList.add('active-step');
+                                document.getElementById(`btn-mentah-4`).classList.remove('active-step');
+                                guide.innerHTML = "Luar biasa! Titik puncak Poligon sudah ketemu. Klik <strong>5. Tarik Garis Poligon</strong>.";
+                            }
+                        }
+                        guide.className = "feedback-box success";
+                    } else {
+                        updateStep2Guide(type, 'next_class', targetMode);
+                    }
+                } else {
+                    updateStep2Guide(type, 'next_point', targetMode);
+                }
+            } else {
+                let clickedWrongClass = expectedPoints[type].find(pt => !pt.found && pt.mode === targetMode && pt.classIdx !== activeIdx && Math.abs(pt.x - x) < 18 && Math.abs(pt.y - y) < 18);
+
+                if (clickedWrongClass) {
+                    guide.innerHTML = `Sabar! Kamu mengklik koordinat milik kelas lain. Selesaikan dulu <strong>Kelas ke-${activeIdx+1}</strong>!`;
+                    guide.className = "feedback-box error";
+                    guide.classList.remove('shake');
+                    void guide.offsetWidth;
+                    guide.classList.add('shake');
+                } else {
+                    updateStep2Guide(type, 'error', targetMode);
+                }
+            }
+        }
+
+        // DRAWING HASIL AKHIR MENGGUNAKAN GLOBAL ALPHA
+        function drawFinalShape(drawType, ctx, mainType) {
+            let data = activeData[mainType];
+            ctx.lineWidth = 3;
+
+            // DRAW HISTOGRAM BOXES
+            if(drawType === 'hist' || drawType === 'mentah_hist' || drawType === 'mentah_full') {
+                data.forEach((d, i) => {
+                    let x = originX + (i * barW);
+                    let h = (d.expectedF || d.f) * scaleY;
+                    let c = colors[i % colors.length];
+                    
+                    // Transparansi aman untuk semua HP
+                    ctx.globalAlpha = 0.4;
+                    ctx.fillStyle = c; 
+                    ctx.fillRect(x, originY - h, barW, h);
+                    
+                    // Border Solid
+                    ctx.globalAlpha = 1.0;
+                    ctx.strokeStyle = c;
+                    ctx.strokeRect(x, originY - h, barW, h);
+
+                    // Teks Frekuensi (hanya jika bukan mode mentah full yang akan ditimpa polygon)
+                    if (drawType !== 'mentah_full') {
+                        ctx.fillStyle = c;
+                        ctx.font = "bold 15px Arial";
+                        ctx.textAlign = "center";
+                        ctx.fillText(d.expectedF || d.f, x + barW/2, originY - h - 10);
+                    }
+                });
+            } 
+            
+            // DRAW POLYGON LINES
+            if(drawType === 'poly' || drawType === 'mentah_full') {
+                ctx.globalAlpha = 1.0;
+                ctx.strokeStyle = "#444";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                
+                // Mendarat di titik Nol persimpangan Sumbu X dan Y (Bebas Bug memotong sumbu Y)
+                let startX = originX;
+                ctx.moveTo(startX, originY); 
+
+                data.forEach((d, i) => {
+                    let x = originX + (i * barW) + barW/2;
+                    let h = (d.expectedF || d.f) * scaleY;
+                    ctx.lineTo(x, originY - h);
+                });
+
+                // Mendarat di batas ujung sumbu X
+                let endX = originX + (data.length * barW);
+                ctx.lineTo(endX, originY); 
+                ctx.stroke();
+
+                // Timpa dengan Titik Warna
+                data.forEach((d, i) => {
+                    let x = originX + (i * barW) + barW/2;
+                    let h = (d.expectedF || d.f) * scaleY;
+                    
+                    ctx.fillStyle = colors[i % colors.length]; 
+                    ctx.beginPath(); ctx.arc(x, originY - h, 7, 0, Math.PI*2); ctx.fill();
+                    ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+                    
+                    ctx.fillStyle = colors[i % colors.length];
+                    ctx.font = "bold 15px Arial";
+                    ctx.textAlign = "center";
+                    ctx.fillText(d.expectedF || d.f, x, originY - h - 12);
+                });
+
+                // Titik lantai 0 (Kiri dan Kanan)
+                ctx.fillStyle = "#333";
+                ctx.beginPath(); ctx.arc(startX, originY, 5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(endX, originY, 5, 0, Math.PI*2); ctx.fill();
+            }
+        }
+
+    </script>
+</body>
+</html>

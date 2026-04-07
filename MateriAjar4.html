@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi Ajar - Statistika (Histogram & Poligon)</title>
+    <style>
+        /* =========================================
+           STYLE KONSISTEN & RAMAH HP (MOBILE-FRIENDLY)
+           ========================================= */
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #e0e0e0;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .btn-new-tab { background-color: #0056b3; color: white; }
+        .btn-close { background-color: #dc3545; color: white; }
+
+        .document-container {
+            background-color: #ffffff;
+            max-width: 800px;
+            margin: 60px auto 30px auto; 
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+        }
+        @media (max-width: 600px) {
+            .document-container { padding: 15px; margin: 55px 10px 20px 10px; }
+            h1 { font-size: 16px !important; }
+            h2 { font-size: 15px !important; }
+        }
+
+        h1 { text-align: center; font-size: 18px; margin-bottom: 5px; text-transform: uppercase; color: #0056b3;}
+        h2 { font-size: 16px; margin-top: 35px; border-bottom: 2px solid #333; padding-bottom: 5px; color: #333; }
+        
+        .dictionary-box {
+            background-color: #fdfdfd;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .dictionary-box ul { margin: 0; padding-left: 20px; }
+        .dictionary-box li { margin-bottom: 10px; }
+        
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+        }
+        table {
+            width: 100%;
+            min-width: 300px; 
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td { border: 1px solid #333; padding: 10px; text-align: center; vertical-align: middle; }
+        th { background-color: #f0f0f0; }
+
+        .step-box {
+            background-color: #f9f9fa;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .step-item {
+            margin-bottom: 30px;
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 25px;
+        }
+        .step-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+        
+        .soal-box {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 15px;
+        }
+
+        .calc-box {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 14px;
+        }
+        .calc-box strong { color: #0056b3; }
+        .highlight-red { color: #dc3545; font-weight: bold; }
+        .highlight-green { color: #28a745; font-weight: bold; }
+
+        .instruction-list {
+            margin-top: 10px;
+            padding-left: 20px;
+            color: #444;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .instruction-list li { margin-bottom: 8px; }
+
+        /* =========================================
+           STYLE KANVAS RESPONSIF
+           ========================================= */
+        .canvas-visual-container {
+            text-align: left; 
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            width: 100%; 
+            max-width: 500px; 
+            margin: 15px auto; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+        .canvas-desc {
+            font-size: 14px;
+            color: #444;
+            margin-top: 15px;
+            line-height: 1.5;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #17a2b8;
+        }
+        canvas { 
+            background-color: white; 
+            width: 100%; 
+            height: auto; 
+            border: 1px solid #f0f0f0;
+            display: block;
+        }
+        
+        /* =========================================
+           STYLE UNTUK RUMUS PECAHAN (ATAS/BAWAH)
+           ========================================= */
+        .formula-inline-box {
+            background-color: #e8f4f8;
+            padding: 15px 20px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: bold;
+            color: #0056b3;
+            border: 2px dashed #17a2b8;
+            margin: 15px auto;
+            max-width: fit-content;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            font-weight: bold;
+        }
+        .fraction .numerator {
+            border-bottom: 2px solid #0056b3;
+            padding: 0 5px;
+            line-height: 1.3;
+        }
+        .fraction .denominator {
+            padding: 0 5px;
+            line-height: 1.3;
+        }
+        .fraction-inline {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 5px;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 15px;
+        }
+        .fraction-inline .numerator {
+            border-bottom: 1px solid #333;
+            padding: 0 2px;
+            line-height: 1.2;
+        }
+        .fraction-inline .denominator {
+            padding: 0 2px;
+            line-height: 1.2;
+        }
+
+        /* Style Khusus Rumus di Rangkuman */
+        .formula-summary {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+            border: 1px dashed #0056b3;
+            margin-top: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        
+        /* =========================================
+           MEDIA QUERY: OPTIMASI LAYAR HP (MENCEGAH TERPOTONG)
+           ========================================= */
+        @media (max-width: 600px) {
+            /* Menumpuk teks "Titik Tengah =" ke atas pecahan agar tidak melebar */
+            .formula-inline-box {
+                flex-direction: column;
+                font-size: 14px;
+                padding: 10px;
+                gap: 5px;
+                text-align: center;
+            }
+            .formula-summary {
+                font-size: 13px;
+                padding: 12px 5px;
+            }
+            .fraction .numerator, .fraction .denominator {
+                font-size: 13px;
+                padding: 0 3px;
+            }
+            .fraction-inline .numerator, .fraction-inline .denominator {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <button class="btn btn-new-tab" onclick="openInNewTab()">Buka di Tab Baru</button>
+        <button class="btn btn-close" onclick="closeTab()">Tutup Materi</button>
+    </div>
+
+    <div class="document-container">
+        <h1>MATA PELAJARAN MATEMATIKA - KELAS X SMK</h1>
+        <h1 style="color: #333; font-size: 16px;">Penyajian Data: Histogram & Poligon</h1>
+
+        <h2>A. Mari Kita Mengingat Kembali!</h2>
+        <p>Halo semuanya! Pada pertemuan kemarin, kita sudah berhasil merapikan data acak menjadi sebuah <strong>Tabel Distribusi Frekuensi</strong> yang rapi.</p>
+        <p>Tapi, membaca tumpukan angka di tabel kadang membosankan, bukan? Agar laporan kita terlihat menarik dan mudah dipahami, kita harus mengubah tabel tersebut menjadi <strong>gambar grafik visual</strong>.</p>
+        <p>Hari ini kita akan belajar menggambar dua jenis grafik yang paling sering digunakan, yaitu <strong>Histogram</strong> dan <strong>Poligon</strong>.</p>
+
+        <h2>B. Kamus Mini (Mengenal Alat Gambarnya)</h2>
+        <div class="dictionary-box">
+            <ul>
+                <li><strong>Histogram:</strong> Gambar grafik yang bentuknya seperti kotak-kotak gedung yang saling menempel rapat.</li>
+                <li><strong>Poligon:</strong> Gambar grafik berupa garis lurus murni yang menghubungkan titik-titik puncak data.</li>
+                <li><strong>Tepi Bawah (T<sub>b</sub>):</strong> Angka Kiri di tabel <strong>dikurangi 0,5</strong>. Digunakan sebagai batas kiri kotak Histogram.</li>
+                <li><strong>Tepi Atas (T<sub>a</sub>):</strong> Angka Kanan di tabel <strong>ditambah 0,5</strong>. Digunakan sebagai batas kanan kotak Histogram.</li>
+                <li><strong>Titik Tengah (x<sub>i</sub>):</strong> Nilai pas di tengah antara Angka Kiri dan Kanan. Digunakan sebagai titik koordinat untuk Poligon.</li>
+            </ul>
+        </div>
+
+        <h2>C. Praktik 1: Membuat Histogram (Grafik Kotak Menempel)</h2>
+        <p>Ayo kita mulai pelan-pelan. Perhatikan tabel nilai ujian di bawah ini. Kita akan menggambarnya menjadi Histogram melalui 4 langkah mudah.</p>
+        
+        <div class="soal-box">
+            <strong>Data Kasus Kita Hari Ini:</strong>
+        </div>
+        
+        <div class="table-responsive">
+            <table>
+                <tr>
+                    <th>Kelas (Nilai)</th>
+                    <th>Frekuensi (Jumlah Siswa)</th>
+                </tr>
+                <tr><td>41 - 50</td><td>5</td></tr>
+                <tr><td>51 - 60</td><td>8</td></tr>
+                <tr><td>61 - 70</td><td>10</td></tr>
+                <tr><td>71 - 80</td><td>7</td></tr>
+            </table>
+        </div>
+
+        <div class="step-box">
+            <div class="step-item">
+                <p><strong>Langkah 1: Menentukan Tepi Bawah dan Tepi Atas</strong></p>
+                <p style="font-size: 14px; color: #555;">Langkah pertama adalah mencari ukuran alas untuk kotak kita. Caranya sangat mudah: Angka tabel di sebelah kiri selalu dikurangi 0,5, dan angka di sebelah kanan selalu ditambah 0,5. Lakukan ini untuk semua baris kelas.</p>
+                
+                <div class="calc-box">
+                    <strong>Kelas Pertama (41 - 50):</strong><br>
+                    <span style="display:inline-block; margin-top:5px;">
+                        Tepi Bawah (T<sub>b</sub>) = 41 <span class="highlight-red">- 0,5</span> = <strong>40,5</strong><br>
+                        Tepi Atas (T<sub>a</sub>) = 50 <span class="highlight-green">+ 0,5</span> = <strong>50,5</strong>
+                    </span>
+                </div>
+                
+                <div class="calc-box">
+                    <strong>Kelas Kedua (51 - 60):</strong><br>
+                    <span style="display:inline-block; margin-top:5px;">
+                        Tepi Bawah (T<sub>b</sub>) = 51 <span class="highlight-red">- 0,5</span> = <strong>50,5</strong><br>
+                        Tepi Atas (T<sub>a</sub>) = 60 <span class="highlight-green">+ 0,5</span> = <strong>60,5</strong>
+                    </span>
+                    <hr style="border: 0; border-top: 1px dashed #ccc; margin: 10px 0;">
+                    <em style="color: #666; font-size: 13px;">Coba perhatikan! Tepi Bawah kelas kedua (50,5) angkanya sama persis dengan Tepi Atas kelas pertama. Inilah yang membuat gambar batangnya nanti saling menempel!</em>
+                </div>
+
+                <div class="calc-box">
+                    <strong>Kelas Ketiga (61 - 70):</strong><br>
+                    <span style="display:inline-block; margin-top:5px;">
+                        Tepi Bawah (T<sub>b</sub>) = 61 <span class="highlight-red">- 0,5</span> = <strong>60,5</strong><br>
+                        Tepi Atas (T<sub>a</sub>) = 70 <span class="highlight-green">+ 0,5</span> = <strong>70,5</strong>
+                    </span>
+                </div>
+                
+                <div class="calc-box">
+                    <strong>Kelas Keempat (71 - 80):</strong><br>
+                    <span style="display:inline-block; margin-top:5px;">
+                        Tepi Bawah (T<sub>b</sub>) = 71 <span class="highlight-red">- 0,5</span> = <strong>70,5</strong><br>
+                        Tepi Atas (T<sub>a</sub>) = 80 <span class="highlight-green">+ 0,5</span> = <strong>80,5</strong>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <p><strong>Langkah 2: Menentukan Semua Titik Koordinat Sekaligus</strong></p>
+                <p style="font-size: 14px; color: #555;">Jangan langsung membuat kotak! Agar gambar lebih mudah dan rapi, kita akan menandai titik pertemuannya untuk <strong>seluruh kelas</strong> terlebih dahulu.</p>
+                <ol class="instruction-list">
+                    <li>Siapkan penggaris. Lihat garis mendatar di bawah (Sumbu X) dan garis tegak di samping (Sumbu Y).</li>
+                    <li>Kita mulai dari kelas pertama. Cari angka Tepi Bawah (40,5) dan Tepi Atas (50,5). Lalu cari angka frekuensinya (5) di Sumbu Y.</li>
+                    <li>Tarik garis putus-putus ke atas dan ke samping. Beri tanda <strong>dua titik merah</strong> di sudut pertemuannya.</li>
+                    <li>Jangan buat kotak dulu! Sekarang pindah ke kelas kedua. Tarik garis dari tepi 50,5 dan 60,5 menuju frekuensi 8. Beri dua titik merah lagi.</li>
+                    <li>Lanjutkan untuk semua kelas sampai kerangka titik-titik merahmu selesai!</li>
+                </ol>
+
+                <div class="canvas-visual-container">
+                    <canvas id="hist_1" width="350" height="250"></canvas>
+                    <div class="canvas-desc"><strong>Visualisasi Langkah 2:</strong> Kita sudah membuat seluruh "pondasi" titik merah dan garis putus-putus untuk semua kelas. Sekarang bayangan wujud Histogram sudah mulai terlihat!</div>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 3: Membangun Kotak Kelas Pertama</strong></p>
+                <p style="font-size: 14px; color: #555;">Karena semua titik sudut sudah siap, pekerjaan kita sekarang tinggal menghubungkan garis-garis tersebut.</p>
+                <ol class="instruction-list">
+                    <li>Fokus pada dua titik merah milik kelas pertama (frekuensi 5).</li>
+                    <li>Ambil penggaris, tarik garis tebal yang menghubungkan titik kiri dan titik kanan. Ini menjadi "atap" kotak kita.</li>
+                    <li>Tarik garis lurus dari titik kiri ke arah bawah sampai menyentuh lantai (Sumbu X).</li>
+                    <li>Tarik garis lurus dari titik kanan ke arah bawah sampai menyentuh lantai. Kotak pertama sudah jadi!</li>
+                </ol>
+
+                <div class="canvas-visual-container">
+                    <canvas id="hist_2" width="350" height="250"></canvas>
+                    <div class="canvas-desc"><strong>Visualisasi Langkah 3:</strong> Mengubah sepasang titik merah pertama menjadi sebuah bangunan kotak yang kokoh. Titik-titik lainnya tetap menunggu gilirannya.</div>
+                </div>
+            </div>
+
+            <div class="step-item" style="border-bottom: none;">
+                <p><strong>Langkah 4: Menyelesaikan Seluruh Kotak Histogram</strong></p>
+                <p style="font-size: 14px; color: #555;">Satu kotak saja belum cukup. Kita selesaikan bangunan grafiknya!</p>
+                <ol class="instruction-list">
+                    <li>Lanjutkan menggambar atap dan dinding untuk titik-titik milik kelas kedua (frekuensi 8).</li>
+                    <li>Perhatikan saat kamu menarik dinding sebelah kiri untuk kelas kedua: dinding itu akan jatuh tepat di garis tepi 50,5 (yang merupakan dinding kanan kelas pertama).</li>
+                    <li>Inilah alasan mengapa kotak Histogram selalu <strong>menempel rapat tanpa celah</strong>!</li>
+                    <li>Selesaikan menggambar kotak untuk kelas ketiga dan keempat. Warnai agar lebih menarik!</li>
+                </ol>
+
+                <div class="canvas-visual-container">
+                    <canvas id="hist_3" width="350" height="250"></canvas>
+                    <div class="canvas-desc"><strong>Visualisasi Langkah 4 (Hasil Akhir):</strong> Semua titik merah telah dihubungkan menjadi kotak. Histogram kita sudah selesai dengan sempurna!</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>D. Praktik 2: Membuat Poligon (Grafik Garis)</h2>
+        <p>Terkadang atasan kita meminta laporan dalam bentuk garis murni untuk melihat tren naik-turunnya suatu data. Syarat utama menggambar Poligon adalah kita wajib mencari <strong>Titik Tengah</strong> dari setiap kelas nilainya.</p>
+        
+        <div class="formula-inline-box">
+            <div>Titik Tengah (x<sub>i</sub>) = </div>
+            <div class="fraction">
+                <span class="numerator">Angka Kiri + Angka Kanan</span>
+                <span class="denominator">2</span>
+            </div>
+        </div>
+
+        <div class="soal-box" style="background-color: #e2e3e5; border-left-color: #6c757d;">
+            <strong style="color: #333;">💡 Info Penting: Apa Bedanya Poligon dan Diagram Garis Biasa?</strong><br>
+            <p style="margin-bottom: 5px; margin-top: 5px;">Meskipun sama-sama berupa garis, mereka itu sangat berbeda, lho!</p>
+            <ul style="margin-top: 0; padding-left: 20px;">
+                <li><strong>Diagram Garis Biasa:</strong> Ujung awal dan akhir garisnya <strong>dibiarkan menggantung</strong> di udara.</li>
+                <li><strong>Poligon Frekuensi:</strong> Ujung awal dan akhir garisnya <strong>wajib ditutup</strong> dan ditarik lurus ke bawah hingga menyentuh lantai dasar (frekuensi 0).</li>
+            </ul>
+        </div>
+
+        <div class="step-box" style="border-left-color: #17a2b8;">
+            <div class="step-item">
+                <p><strong>Langkah 1: Menentukan Titik Tengah (x<sub>i</sub>)</strong></p>
+                <p style="font-size: 14px; color: #555;">Kita jumlahkan dulu Angka Kiri dan Kanan (yang ada di tabel), lalu hasilnya kita bagi dengan 2. Hitung semuanya satu per satu secara teliti.</p>
+
+                <div class="calc-box" style="border-color: #b8daff;">
+                    <strong>Kelas Pertama (41 - 50):</strong>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                        <span class="fraction-inline"><span class="numerator">41 + 50</span><span class="denominator">2</span></span> = 
+                        <span class="fraction-inline"><span class="numerator">91</span><span class="denominator">2</span></span> = 
+                        <strong style="color: #0056b3; font-size: 16px;">45,5</strong>
+                    </div>
+                </div>
+                
+                <div class="calc-box" style="border-color: #b8daff;">
+                    <strong>Kelas Kedua (51 - 60):</strong>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                        <span class="fraction-inline"><span class="numerator">51 + 60</span><span class="denominator">2</span></span> = 
+                        <span class="fraction-inline"><span class="numerator">111</span><span class="denominator">2</span></span> = 
+                        <strong style="color: #0056b3; font-size: 16px;">55,5</strong>
+                    </div>
+                </div>
+
+                <div class="calc-box" style="border-color: #b8daff;">
+                    <strong>Kelas Ketiga (61 - 70):</strong>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                        <span class="fraction-inline"><span class="numerator">61 + 70</span><span class="denominator">2</span></span> = 
+                        <span class="fraction-inline"><span class="numerator">131</span><span class="denominator">2</span></span> = 
+                        <strong style="color: #0056b3; font-size: 16px;">65,5</strong>
+                    </div>
+                </div>
+
+                <div class="calc-box" style="border-color: #b8daff;">
+                    <strong>Kelas Keempat (71 - 80):</strong>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                        <span class="fraction-inline"><span class="numerator">71 + 80</span><span class="denominator">2</span></span> = 
+                        <span class="fraction-inline"><span class="numerator">151</span><span class="denominator">2</span></span> = 
+                        <strong style="color: #0056b3; font-size: 16px;">75,5</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <p><strong>Langkah 2: Menentukan Seluruh Titik Koordinat</strong></p>
+                <p style="font-size: 14px; color: #555;">Sama seperti Histogram, kita akan membuat semua panduan titiknya sekaligus di atas kertas yang kosong.</p>
+                <ol class="instruction-list">
+                    <li>Lihat garis lantai mendatar di bawah (Sumbu X). Temukan letak angka <strong>Titik Tengah</strong> kelas pertama, yaitu angka <strong>45,5</strong>.</li>
+                    <li>Lihat garis tegak lurus di samping (Sumbu Y). Temukan angka Frekuensi kelas pertama, yaitu angka <strong>5</strong>.</li>
+                    <li>Tarik garis bayangan putus-putus ke atas dari angka 45,5, dan garis menyamping dari angka 5. </li>
+                    <li>Berikan sebuah <strong>titik merah tebal</strong> tepat di persimpangan tersebut. Ingat, poligon hanya butuh 1 titik di tengah!</li>
+                    <li>Ulangi langkah di atas untuk kelas kedua, ketiga, dan keempat.</li>
+                </ol>
+
+                <div class="canvas-visual-container">
+                    <canvas id="poly_1" width="350" height="250"></canvas>
+                    <div class="canvas-desc"><strong>Visualisasi Langkah 2:</strong> Seluruh Titik Tengah dan Frekuensinya sudah dipertemukan menjadi titik-titik merah penyusun garis.</div>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <p><strong>Langkah 3: Menghubungkan Titik Menjadi Garis</strong></p>
+                <p style="font-size: 14px; color: #555;">Sekarang saatnya menghubungkan kumpulan titik yang melayang tersebut menjadi sebuah grafik.</p>
+                <ol class="instruction-list">
+                    <li>Siapkan penggarismu agar garis yang dihasilkan lurus dan rapi. Jangan menarik garis sembarangan dengan tangan!</li>
+                    <li>Tarik garis tebal dari titik merah pertama (kelas ke-1) secara langsung menuju titik merah kedua (kelas ke-2).</li>
+                    <li>Lanjutkan menyambung garis dari titik merah kedua menuju titik merah ketiga.</li>
+                    <li>Terakhir, sambungkan garis dari titik merah ketiga menuju titik merah keempat. Sekarang grafiknya sudah memperlihatkan tren naik atau turun.</li>
+                </ol>
+
+                <div class="canvas-visual-container">
+                    <canvas id="poly_2" width="350" height="250"></canvas>
+                    <div class="canvas-desc"><strong>Visualisasi Langkah 3:</strong> Titik-titik tersebut saling dihubungkan secara berurutan membentuk grafik garis. Namun, perhatikan ujungnya masih menggantung!</div>
+                </div>
+            </div>
+
+            <div class="step-item" style="border-bottom: none;">
+                <p><strong>Langkah 4: Menutup Garis ke Lantai (Titik Nol)</strong></p>
+                <p style="font-size: 14px; color: #555;">Sebuah grafik Poligon Frekuensi tidak boleh membiarkan ujungnya menggantung di udara. Kita harus menutupnya ke lantai (frekuensi 0).</p>
+                <ol class="instruction-list">
+                    <li>Buat satu buah <strong>titik khayalan di sebelah kiri</strong> titik pertama. Letakkan titik ini pas menempel di garis lantai (Sumbu X).</li>
+                    <li>Ambil penggaris, lalu tarik garis miring dari titik merah pertama turun menuju titik khayalan tersebut.</li>
+                    <li>Buat satu buah <strong>titik khayalan lagi di sebelah kanan</strong> titik terakhir. Letakkan titik ini pas menempel di garis lantai juga.</li>
+                    <li>Tarik garis miring dari titik merah terakhir turun menuju titik khayalan di sebelah kanan tersebut.</li>
+                </ol>
+
+                <div class="canvas-visual-container">
+                    <canvas id="poly_3" width="350" height="250"></canvas>
+                    <div class="canvas-desc"><strong>Visualisasi Langkah 4 (Hasil Akhir):</strong> Poligonmu kini sudah tertutup sempurna seperti sebuah gunung! Ini membedakannya dari diagram garis biasa.</div>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border: 1px solid #ccc; margin: 40px 0;">
+
+        <h2>E. Kesimpulan & Rangkuman Penting!</h2>
+        <div class="dictionary-box" style="background-color: #fff; border: 2px solid #0056b3; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <h3 style="margin-top: 0; color: #0056b3; border-left: 4px solid #0056b3; padding-left: 10px; background: none;">1. Definisi dan Bentuk</h3>
+            <ul style="color: #333;">
+                <li><strong>Histogram:</strong> Diagram berbentuk kotak/gedung yang dindingnya saling <strong>menempel rapat</strong> tanpa celah.</li>
+                <li><strong>Poligon Frekuensi:</strong> Diagram berbentuk <strong>garis lurus</strong> yang menghubungkan titik-titik puncak data dan <strong>wajib ditutup</strong> hingga menyentuh garis bawah (nol).</li>
+            </ul>
+
+            <h3 style="color: #0056b3; border-left: 4px solid #0056b3; padding-left: 10px; background: none; margin-top: 20px;">2. Rumus Wajib (Perbedaan Komponen)</h3>
+            <ul style="color: #333; list-style: none; padding-left: 0;">
+                
+                <li style="margin-bottom: 20px;">
+                    <strong>🔹 Rumus Histogram:</strong> Wajib menggunakan <strong>Tepi Kelas</strong>.<br>
+                    <div class="formula-summary">
+                        <strong style="color: #d32f2f;">Tepi Bawah</strong><br>
+                        T<sub>b</sub> = Angka Kiri - 0,5
+                        <br><br>
+                        <strong style="color: #28a745;">Tepi Atas</strong><br>
+                        T<sub>a</sub> = Angka Kanan + 0,5
+                    </div>
+                </li>
+                
+                <li>
+                    <strong>🔹 Rumus Poligon:</strong> Wajib menggunakan <strong>Titik Tengah (x<sub>i</sub>)</strong>.<br>
+                    <div class="formula-summary" style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="margin-bottom: 8px;">Titik Tengah (x<sub>i</sub>) = </div>
+                        <div class="fraction">
+                            <span class="numerator">Angka Kiri + Angka Kanan</span>
+                            <span class="denominator">2</span>
+                        </div>
+                    </div>
+                </li>
+                
+            </ul>
+
+            <h3 style="color: #0056b3; border-left: 4px solid #0056b3; padding-left: 10px; background: none; margin-top: 20px;">3. Cara Menggambar yang Benar</h3>
+            <ul style="color: #333;">
+                <li>Jangan pernah menggambar kotak/garis secara langsung dengan menebak-nebak posisinya.</li>
+                <li>Selalu mulai dengan mencari angka di sumbu X (Tepi/Titik Tengah) dan sumbu Y (Frekuensi).</li>
+                <li>Tarik garis putus-putus dan <strong>buatlah titik koordinat merah</strong> terlebih dahulu sebagai panduan pondasi.</li>
+                <li>Gunakan penggaris untuk menghubungkan titik-titik tersebut menjadi kotak (Histogram) atau garis (Poligon).</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        function openInNewTab() { window.open(window.location.href, '_blank'); }
+        function closeTab() {
+            window.close();
+            document.body.innerHTML = `
+                <div style="text-align: center; margin-top: 50px; font-family: Calibri, sans-serif;">
+                    <h2 style="color: #0056b3;">Materi telah ditutup.</h2>
+                    <p>Silakan kembali ke halaman utama LMS Bapak/Ibu.</p>
+                </div>
+            `;
+        }
+
+        // =====================================
+        // FUNGSI MENGGAMBAR HISTOGRAM 
+        // =====================================
+        function drawHist(canvasId, steps) {
+            const canvas = document.getElementById(canvasId);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            const originX = 40;
+            const originY = 210; 
+            const barWidth = 50;
+            const scaleY = 15; 
+
+            const data = [
+                { tb: "40,5", f: 5 },
+                { tb: "50,5", f: 8 },
+                { tb: "60,5", f: 10 },
+                { tb: "70,5", f: 7 },
+                { tb: "80,5", f: 0 } 
+            ];
+
+            // 1. Gambar Sumbu X dan Y
+            ctx.beginPath();
+            ctx.moveTo(originX, 20); ctx.lineTo(originX, originY); 
+            ctx.lineTo(320, originY); 
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
+
+            // 2. Label Sumbu Y
+            ctx.fillStyle = '#333'; ctx.font = '12px Arial'; ctx.textAlign = 'right';
+            for(let i=0; i<=12; i+=2) {
+                let y = originY - (i * scaleY);
+                ctx.fillText(i, originX - 5, y + 4);
+                ctx.beginPath(); ctx.moveTo(originX - 4, y); ctx.lineTo(originX, y);
+                ctx.lineWidth = 1; ctx.stroke();
+            }
+
+            // Print All Labels Sumbu X
+            ctx.textAlign = 'center';
+            for(let i=0; i<data.length; i++) {
+                let x = originX + 15 + (i * barWidth);
+                ctx.save();
+                ctx.translate(x, originY + 15);
+                ctx.rotate(-Math.PI / 8); 
+                ctx.fillStyle = '#333';
+                ctx.fillText(data[i].tb, 0, 0);
+                ctx.restore();
+            }
+
+            // Loop untuk menggambar titik dan kotak
+            for(let i=0; i<data.length - 1; i++) {
+                let x = originX + 15 + (i * barWidth);
+                let nextX = x + barWidth; 
+                let yPos = originY - (data[i].f * scaleY);
+                
+                // --- STEP 0: Tampilkan SEMUA Titik Koordinat dan Garis Putus ---
+                if (steps === 0 || (steps === 1 && i > 0)) {
+                    ctx.setLineDash([5, 5]);
+                    ctx.strokeStyle = '#999';
+                    ctx.beginPath();
+                    ctx.moveTo(x, originY); ctx.lineTo(x, yPos);           
+                    ctx.moveTo(nextX, originY); ctx.lineTo(nextX, yPos);   
+                    ctx.moveTo(originX, yPos); ctx.lineTo(nextX, yPos);    
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    ctx.fillStyle = 'red';
+                    ctx.beginPath(); ctx.arc(x, yPos, 4.5, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(nextX, yPos, 4.5, 0, Math.PI*2); ctx.fill();
+
+                    ctx.fillStyle = '#0056b3';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.fillText(data[i].f, x + (barWidth/2), yPos - 10);
+                }
+
+                // --- STEP 1: Kotak Pertama ---
+                if (steps === 1 && i === 0) {
+                    drawBar(ctx, x, originY, barWidth, data[i].f, scaleY, '#0056b3');
+                } 
+                // --- STEP 2: Semua Kotak ---
+                else if (steps >= 2) {
+                    drawBar(ctx, x, originY, barWidth, data[i].f, scaleY, '#0056b3');
+                }
+            }
+        }
+
+        function drawBar(ctx, x, originY, width, f, scale, color) {
+            let height = f * scale;
+            ctx.fillStyle = color;
+            ctx.fillRect(x, originY - height, width, height);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x, originY - height, width, height);
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 13px Arial';
+            ctx.fillText(f, x + (width/2), originY - height + 18);
+        }
+
+        // =====================================
+        // FUNGSI MENGGAMBAR POLIGON MURNI 
+        // =====================================
+        function drawPoly(canvasId, steps) {
+            const canvas = document.getElementById(canvasId);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            const originX = 40;
+            const originY = 210;
+            const spaceX = 50; 
+            const scaleY = 15;
+
+            const data = [
+                { xi: "35,5", f: 0 },   
+                { xi: "45,5", f: 5 },   
+                { xi: "55,5", f: 8 },   
+                { xi: "65,5", f: 10 },  
+                { xi: "75,5", f: 7 },   
+                { xi: "85,5", f: 0 }    
+            ];
+
+            ctx.beginPath();
+            ctx.moveTo(originX, 20); ctx.lineTo(originX, originY);
+            ctx.lineTo(320, originY);
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
+
+            ctx.fillStyle = '#333'; ctx.font = '12px Arial'; ctx.textAlign = 'right';
+            for(let i=0; i<=12; i+=2) {
+                let y = originY - (i * scaleY);
+                ctx.fillText(i, originX - 5, y + 4);
+                ctx.beginPath(); ctx.moveTo(originX - 4, y); ctx.lineTo(originX, y);
+                ctx.lineWidth = 1; ctx.stroke();
+            }
+
+            ctx.textAlign = 'center';
+            let points = [];
+
+            for(let i=0; i<data.length; i++) {
+                let xCenter = originX + 15 + (i * spaceX);
+                let yCenter = originY - (data[i].f * scaleY);
+                points.push({x: xCenter, y: yCenter});
+                
+                ctx.save();
+                ctx.translate(xCenter, originY + 15);
+                ctx.rotate(-Math.PI / 8); 
+                ctx.fillStyle = '#333';
+                ctx.fillText(data[i].xi, 0, 0);
+                ctx.restore();
+            }
+
+            // --- STEP 0: Tampilkan SEMUA Koordinat Utama ---
+            if (steps >= 0) {
+                for(let i=1; i<data.length-1; i++) {
+                    let pt = points[i];
+                    
+                    if(steps === 0) {
+                        ctx.setLineDash([5, 5]);
+                        ctx.strokeStyle = '#999';
+                        ctx.beginPath();
+                        ctx.moveTo(pt.x, originY); ctx.lineTo(pt.x, pt.y); 
+                        ctx.moveTo(originX, pt.y); ctx.lineTo(pt.x, pt.y); 
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, 5, 0, 2*Math.PI);
+                    ctx.fillStyle = '#dc3545';
+                    ctx.fill();
+
+                    ctx.fillStyle = '#0056b3';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.fillText(data[i].f, pt.x, pt.y - 12);
+                }
+            }
+
+            // --- STEP 1: Hubungkan Antar Titik Utama ---
+            if (steps >= 1) {
+                ctx.beginPath();
+                ctx.moveTo(points[1].x, points[1].y);
+                for(let i=2; i<points.length-1; i++) {
+                    ctx.lineTo(points[i].x, points[i].y);
+                }
+                ctx.strokeStyle = '#dc3545'; 
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+            }
+
+            // --- STEP 2: Tutup Poligon ke Lantai ---
+            if (steps === 2) {
+                ctx.beginPath(); ctx.arc(points[0].x, points[0].y, 5, 0, 2*Math.PI); ctx.fill();
+                ctx.beginPath(); ctx.arc(points[5].x, points[5].y, 5, 0, 2*Math.PI); ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(points[0].x, points[0].y);
+                ctx.lineTo(points[1].x, points[1].y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(points[4].x, points[4].y);
+                ctx.lineTo(points[5].x, points[5].y);
+                ctx.stroke();
+            }
+        }
+
+        // --- Panggil Penggambaran Histogram (Langkah 2 - 4) ---
+        // step 0 = Semua Titik, step 1 = Kotak 1, step 2 = Semua Kotak
+        drawHist('hist_1', 0); 
+        drawHist('hist_2', 1); 
+        drawHist('hist_3', 2); 
+
+        // --- Panggil Penggambaran Poligon (Langkah 2 - 4) ---
+        // step 0 = Semua Titik, step 1 = Hubungkan Garis Atas, step 2 = Tutup ke Lantai
+        drawPoly('poly_1', 0); 
+        drawPoly('poly_2', 1); 
+        drawPoly('poly_3', 2); 
+
+    </script>
+</body>
+</html>

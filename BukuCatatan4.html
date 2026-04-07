@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Format Catatan - Histogram & Poligon</title>
+    <style>
+        .catatan-container {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #ffffff;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            color: #333;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        .judul-utama {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #0056b3;
+            border-bottom: 3px double #0056b3;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        /* Kotak Instruksi Pengganti Identitas */
+        .instruksi-box {
+            background-color: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-radius: 6px;
+            color: #856404;
+        }
+        .instruksi-hint {
+            display: block;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #ffeeba;
+            font-size: 14px;
+            color: #664d03;
+            font-style: italic;
+        }
+
+        h3 {
+            color: #d32f2f;
+            border-left: 5px solid #d32f2f;
+            padding-left: 10px;
+            background-color: #fce4e4;
+            padding: 8px 10px;
+            margin-top: 35px;
+            font-size: 16px;
+        }
+        .instruksi {
+            font-style: italic;
+            color: #555;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        
+        .refleksi-box {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #b8daff;
+        }
+        ul, ol { margin-top: 5px; padding-left: 20px;}
+        
+        .math-box {
+            background-color: #fdfdfd;
+            border: 1px dashed #999;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 6px;
+        }
+
+        /* Tabel Laporan Resmi Kosong */
+        .tabel-kosong {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .tabel-kosong th, .tabel-kosong td {
+            border: 1px solid #333;
+            padding: 12px;
+            text-align: center;
+        }
+        .tabel-kosong th {
+            background-color: #e0e0e0;
+        }
+        
+        .fraction-inline { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 5px; font-weight: bold; font-family: monospace; font-size: 15px; color: #0056b3;}
+        .fraction-inline .numerator { border-bottom: 1px solid #333; padding: 0 4px; line-height: 1.2; }
+        .fraction-inline .denominator { padding: 0 4px; line-height: 1.2; }
+
+        /* Container Grafik Referensi */
+        .charts-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .chart-box {
+            flex: 1;
+            min-width: 300px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fff;
+            text-align: center;
+        }
+        .chart-title {
+            font-weight: bold;
+            color: #0056b3;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        svg {
+            width: 100%;
+            height: auto;
+            max-width: 350px;
+            background: #fdfdfd;
+            border-bottom: 1px solid #eee;
+            border-left: 1px solid #eee;
+        }
+
+        @media (max-width: 600px) {
+            .catatan-container { padding: 15px; }
+            .charts-container { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="catatan-container">
+    
+    <div class="judul-utama">Catatan: Histogram & Poligon</div>
+
+    <div class="instruksi-box">
+        <strong style="font-size: 16px;">📌 PENGUMUMAN PENTING:</strong><br>
+        Catatlah seluruh materi di bawah ini ke dalam buku catatan matematikamu secara rapi.<br>
+        <strong>Buku catatan ini akan dikumpulkan kepada Guru dan dinilai sebagai Nilai Tugas!</strong>
+        <span class="instruksi-hint">💡 <strong>Petunjuk:</strong> Lengkapi bagian yang titik-titik (...) berdasarkan ingatanmu dari latihan web interaktif sebelumnya.</span>
+    </div>
+
+    <h3>A. KONSEP & RUMUS RAHASIA</h3>
+    <div class="instruksi">(Lengkapi titik-titik di bawah ini dengan kata/angka yang tepat!)</div>
+    <ol>
+        <li><strong>Histogram:</strong> Adalah grafik yang batangnya saling <strong>...</strong> (menempel) rapat. Grafik ini wajib digambar menggunakan titik koordinat dari <strong>...</strong> Kelas.</li>
+        <li style="margin-top: 8px;"><strong>Poligon Frekuensi:</strong> Adalah grafik berupa <strong>...</strong> lurus. Grafik ini wajib digambar menggunakan titik koordinat dari <strong>...</strong> Tengah.</li>
+        <li style="margin-top: 8px;"><strong>Aturan Mendarat Poligon:</strong> Ujung awal dan akhir dari garis poligon wajib ditarik ke bawah menyentuh <strong>...</strong> (frekuensi 0).</li>
+        <li style="margin-top: 8px;"><strong>Rumus Tepi Bawah (Tb):</strong> Angka di tabel sebelah Kiri selalu dikurangi <strong>...</strong></li>
+        <li style="margin-top: 8px;"><strong>Rumus Tepi Atas (Ta):</strong> Angka di tabel sebelah Kanan selalu ditambah <strong>...</strong></li>
+    </ol>
+
+    <div class="math-box">
+        <strong>✨ Trik Rumus Titik Tengah (x<sub>i</sub>):</strong><br>
+        Untuk mencari titik puncak poligon, jumlahkan angka kiri dan kanan, lalu hasilnya dibagi 2.<br><br>
+        <span style="color:#0056b3; font-weight:bold;">Titik Tengah = </span>
+        <span class="fraction-inline">
+            <span class="numerator">Angka Kiri + Angka Kanan</span>
+            <span class="denominator">...</span>
+        </span>
+    </div>
+
+    <h3>B. LATIHAN PERHITUNGAN TABEL & GRAFIK</h3>
+    <p><strong>Kasus:</strong> Berikut adalah data nilai ujian Matematika dari 18 siswa. Lengkapilah kolom Tepi Kelas dan Titik Tengahnya, lalu pelajari hasil grafiknya!</p>
+
+    <p><strong>1. Contoh Perhitungan Kelas Pertama (41 - 50)</strong><br>
+    <span class="instruksi">(Isilah titik perhitungan di bawah ini sebagai panduanmu!)</span></p>
+    
+    <div class="math-box" style="line-height: 2;">
+        <strong>Menghitung Tepi Kelas:</strong><br>
+        Tepi Bawah (T<sub>b</sub>) = 41 &minus; 0,5 = <strong>...</strong> <br>
+        Tepi Atas (T<sub>a</sub>) = 50 + 0,5 = <strong>...</strong> <br><br>
+        
+        <strong>Menghitung Titik Tengah (x<sub>i</sub>):</strong><br>
+        x<sub>i</sub> = (41 + 50) &divide; 2<br>
+        x<sub>i</sub> = ... &divide; 2<br>
+        x<sub>i</sub> = <strong>...</strong>
+    </div>
+
+    <p style="margin-top: 30px;"><strong>2. Laporan Tabel Resmi</strong><br>
+    <span class="instruksi">(Isilah kotak yang kosong pada tabel di bawah ini sesuai dengan cara di atas!)</span></p>
+    
+    <table class="tabel-kosong">
+        <thead>
+            <tr>
+                <th style="width: 25%;">Kelas (Nilai)</th>
+                <th style="width: 15%;">Frekuensi</th>
+                <th style="width: 30%;">Tepi Bawah & Atas</th>
+                <th style="width: 30%;">Titik Tengah (x<sub>i</sub>)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>41 &minus; 50</strong></td>
+                <td>4</td>
+                <td>... &nbsp;dan&nbsp; ...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <td><strong>51 &minus; 60</strong></td>
+                <td>6</td>
+                <td>... &nbsp;dan&nbsp; ...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <td><strong>61 &minus; 70</strong></td>
+                <td>5</td>
+                <td>... &nbsp;dan&nbsp; ...</td>
+                <td>...</td>
+            </tr>
+            <tr>
+                <td><strong>71 &minus; 80</strong></td>
+                <td>3</td>
+                <td>... &nbsp;dan&nbsp; ...</td>
+                <td>...</td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+                <td style="text-align: right; font-weight: bold;">Total Data :</td>
+                <td><strong>18</strong></td>
+                <td colspan="2" style="color: #666; font-style: italic;">(Siap untuk digambar ke kanvas)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p style="margin-top: 30px;"><strong>3. Referensi Gambar Grafik</strong><br>
+    <span class="instruksi">Perhatikan bagaimana nilai Tepi Kelas digunakan pada sumbu X Histogram (menempel), dan Titik Tengah digunakan pada sumbu X Poligon (berada di puncak).</span></p>
+
+    <div class="charts-container">
+        <div class="chart-box">
+            <div class="chart-title">Visualisasi Histogram</div>
+            <svg viewBox="0 0 400 280">
+                <line x1="40" y1="210" x2="380" y2="210" stroke="#ccc" stroke-dasharray="4" />
+                <line x1="40" y1="160" x2="380" y2="160" stroke="#ccc" stroke-dasharray="4" />
+                <line x1="40" y1="110" x2="380" y2="110" stroke="#ccc" stroke-dasharray="4" />
+                <line x1="40" y1="60" x2="380" y2="60" stroke="#ccc" stroke-dasharray="4" />
+                
+                <line x1="40" y1="20" x2="40" y2="210" stroke="#333" stroke-width="2" />
+                <text x="30" y="214" font-size="12" font-weight="bold" fill="#333" text-anchor="end">0</text>
+                <text x="30" y="164" font-size="12" font-weight="bold" fill="#333" text-anchor="end">2</text>
+                <text x="30" y="114" font-size="12" font-weight="bold" fill="#333" text-anchor="end">4</text>
+                <text x="30" y="64" font-size="12" font-weight="bold" fill="#333" text-anchor="end">6</text>
+                
+                <line x1="40" y1="210" x2="380" y2="210" stroke="#333" stroke-width="2" />
+                
+                <rect x="40" y="110" width="80" height="100" fill="#d32f2f" fill-opacity="0.4" stroke="#d32f2f" stroke-width="2" />
+                <text x="80" y="100" font-size="14" font-weight="bold" fill="#d32f2f" text-anchor="middle">4</text>
+                <rect x="120" y="60" width="80" height="150" fill="#2e7d32" fill-opacity="0.4" stroke="#2e7d32" stroke-width="2" />
+                <text x="160" y="50" font-size="14" font-weight="bold" fill="#2e7d32" text-anchor="middle">6</text>
+                <rect x="200" y="85" width="80" height="125" fill="#1565c0" fill-opacity="0.4" stroke="#1565c0" stroke-width="2" />
+                <text x="240" y="75" font-size="14" font-weight="bold" fill="#1565c0" text-anchor="middle">5</text>
+                <rect x="280" y="135" width="80" height="75" fill="#ef6c00" fill-opacity="0.4" stroke="#ef6c00" stroke-width="2" />
+                <text x="320" y="125" font-size="14" font-weight="bold" fill="#ef6c00" text-anchor="middle">3</text>
+                
+                <text x="40" y="230" font-size="12" fill="#333" text-anchor="middle">40,5</text>
+                <text x="120" y="230" font-size="12" fill="#333" text-anchor="middle">50,5</text>
+                <text x="200" y="230" font-size="12" fill="#333" text-anchor="middle">60,5</text>
+                <text x="280" y="230" font-size="12" fill="#333" text-anchor="middle">70,5</text>
+                <text x="360" y="230" font-size="12" fill="#333" text-anchor="middle">80,5</text>
+            </svg>
+        </div>
+
+        <div class="chart-box">
+            <div class="chart-title">Visualisasi Poligon Frekuensi</div>
+            <svg viewBox="0 0 400 280">
+                <line x1="40" y1="210" x2="380" y2="210" stroke="#ccc" stroke-dasharray="4" />
+                <line x1="40" y1="160" x2="380" y2="160" stroke="#ccc" stroke-dasharray="4" />
+                <line x1="40" y1="110" x2="380" y2="110" stroke="#ccc" stroke-dasharray="4" />
+                <line x1="40" y1="60" x2="380" y2="60" stroke="#ccc" stroke-dasharray="4" />
+                
+                <line x1="40" y1="20" x2="40" y2="210" stroke="#333" stroke-width="2" />
+                <text x="30" y="214" font-size="12" font-weight="bold" fill="#333" text-anchor="end">0</text>
+                <text x="30" y="164" font-size="12" font-weight="bold" fill="#333" text-anchor="end">2</text>
+                <text x="30" y="114" font-size="12" font-weight="bold" fill="#333" text-anchor="end">4</text>
+                <text x="30" y="64" font-size="12" font-weight="bold" fill="#333" text-anchor="end">6</text>
+                
+                <line x1="40" y1="210" x2="380" y2="210" stroke="#333" stroke-width="2" />
+
+                <polyline points="40,210 100,110 160,60 220,85 280,135 340,210" fill="none" stroke="#444" stroke-width="3" />
+                
+                <circle cx="40" cy="210" r="5" fill="#333" />
+                <circle cx="100" cy="110" r="6" fill="#d32f2f" stroke="#fff" stroke-width="1.5" />
+                <text x="100" y="95" font-size="14" font-weight="bold" fill="#d32f2f" text-anchor="middle">4</text>
+                <circle cx="160" cy="60" r="6" fill="#2e7d32" stroke="#fff" stroke-width="1.5" />
+                <text x="160" y="45" font-size="14" font-weight="bold" fill="#2e7d32" text-anchor="middle">6</text>
+                <circle cx="220" cy="85" r="6" fill="#1565c0" stroke="#fff" stroke-width="1.5" />
+                <text x="220" y="70" font-size="14" font-weight="bold" fill="#1565c0" text-anchor="middle">5</text>
+                <circle cx="280" cy="135" r="6" fill="#ef6c00" stroke="#fff" stroke-width="1.5" />
+                <text x="280" y="120" font-size="14" font-weight="bold" fill="#ef6c00" text-anchor="middle">3</text>
+                <circle cx="340" cy="210" r="5" fill="#333" />
+
+                <text x="40" y="230" font-size="12" fill="#333" text-anchor="middle">35,5</text>
+                <text x="100" y="230" font-size="12" fill="#333" text-anchor="middle">45,5</text>
+                <text x="160" y="230" font-size="12" fill="#333" text-anchor="middle">55,5</text>
+                <text x="220" y="230" font-size="12" fill="#333" text-anchor="middle">65,5</text>
+                <text x="280" y="230" font-size="12" fill="#333" text-anchor="middle">75,5</text>
+                <text x="340" y="230" font-size="12" fill="#333" text-anchor="middle">85,5</text>
+            </svg>
+        </div>
+    </div>
+
+    <h3 style="margin-top: 40px;">C. REFLEKSI HARI INI</h3>
+    <div class="refleksi-box">
+        <div class="instruksi" style="margin-top: 0;">(Pilih kalimat yang paling sesuai dengan kondisimu, lalu salin ke buku catatan beserta angka pilihannya!)</div>
+        
+        <ol style="margin-bottom: 20px; line-height: 1.6;">
+            <li>Saya sudah paham sepenuhnya cara menghitung Tepi Kelas, Titik Tengah, dan bisa menggambarnya di buku kotak-kotak.</li>
+            <li>Saya sudah bisa menghitung rumusnya, tetapi masih agak bingung saat harus menentukan titik koordinat pada sumbu X dan Y.</li>
+            <li>Saya sering tertukar antara rumus milik Histogram (dikurang/ditambah 0,5) dan rumus milik Poligon (dibagi 2).</li>
+            <li>Saya masih sering keliru dan salah hitung saat mengurangkan atau menjumlahkan angka dengan bilangan desimal koma (0,5).</li>
+        </ol>
+
+        <p style="font-weight: bold; margin-bottom: 5px;">Pilihan Saya (Tuliskan Kalimatnya):</p>
+        <p>...</p>
+
+        <p style="font-weight: bold; margin-top: 20px; margin-bottom: 5px;">Hal yang masih ingin saya tanyakan ke Guru (Tulis di sini):</p>
+        <p>...</p>
+    </div>
+
+</div>
+
+</body>
+</html>

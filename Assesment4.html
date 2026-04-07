@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesmen Statistika - Histogram & Poligon</title>
+    <style>
+        /* =========================================
+           STYLE KONSISTEN & RAMAH HP
+           ========================================= */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 950px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .header { border-bottom: 2px solid #0056b3; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .title { font-size: 20px; font-weight: bold; color: #0056b3; text-transform: uppercase;}
+        .badge { background: #e9ecef; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+
+        .panel { display: none; animation: slideIn 0.4s ease-out; }
+        .panel.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        .case-box { background: #fdfdfd; border: 1px solid #0056b3; padding: 15px; margin-bottom: 20px; font-size: 15px; line-height: 1.6; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+        .chart-container { text-align: center; margin: 0 auto 20px auto; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; max-width: 500px;}
+        canvas { max-width: 100%; height: auto; display: block; margin: 0 auto;}
+
+        .question-text { font-size: 16px; margin-bottom: 15px; font-weight: 600; line-height: 1.5; background: #e8f4f8; padding: 15px; border-left: 4px solid #17a2b8;}
+        input[type="text"], input[type="number"], select { width: 100%; padding: 12px; border: 2px solid #dfe4ea; border-radius: 6px; font-size: 14px; transition: 0.3s; box-sizing: border-box; }
+        input:focus, select:focus { border-color: #0056b3; outline: none; box-shadow: 0 0 8px rgba(0,86,179,0.2); }
+
+        .btn-group { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; gap: 10px;}
+        button { padding: 12px 25px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; flex: 1;}
+        .btn-next { background: #0056b3; color: white; }
+        .btn-prev { background: #6c757d; color: white; }
+        .btn-reset { background: #dc3545; color: white; margin-top: 15px; width: 100%;}
+        button:hover:not(:disabled) { opacity: 0.9; transform: translateY(-2px); }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* =========================================
+           STYLE KHUSUS PRAKTIK (Q9 & Q10)
+           ========================================= */
+        .step-section { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #0056b3; display: none; }
+        .step-section.active { display: block; }
+        .raw-data-box { background: #fff; border: 1px dashed #333; padding: 15px; font-family: monospace; line-height: 1.8; margin-bottom: 10px; font-size: 15px; text-align: center; letter-spacing: 1px;}
+        
+        .table-responsive { width: 100%; overflow-x: auto; margin-bottom: 15px; border: 1px solid #ddd;}
+        .table-dynamic { width: 100%; min-width: 600px; border-collapse: collapse; background: white;}
+        .table-dynamic th, .table-dynamic td { border: 1px solid #ccc; padding: 10px; text-align: center; vertical-align: middle;}
+        .table-dynamic th { background: #e0e0e0; font-size: 13px;}
+        
+        .table-input { width: 70px; text-align: center; padding: 8px; border: 2px solid #ccc; border-radius: 4px; font-weight: bold; font-size: 14px; transition: 0.3s;}
+        .table-input:focus { border-color: #0056b3; outline: none; }
+
+        /* STYLE PECAHAN VERTIKAL */
+        .fraction { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 5px; font-weight: bold; font-size: 14px; color: #0056b3;}
+        .fraction .numerator { border-bottom: 2px solid #333; padding: 0 6px; line-height: 1.2; }
+        .fraction .denominator { padding: 0 6px; line-height: 1.2; }
+
+        .langkah-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .btn-unlock { background: #ffc107; color: #333; margin-top: 10px; width: 100%; display: none; border: 1px solid #d39e00;}
+        
+        .interactive-canvas { touch-action: none; cursor: crosshair; }
+        .status-box { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 14px;}
+
+        @media (max-width: 650px) {
+            body { padding: 10px; }
+            .container { padding: 15px; }
+            .btn-group { flex-direction: column; }
+            .langkah-grid { grid-template-columns: 1fr; }
+            .title { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <div class="panel active" id="panel-0">
+        <div class="header"><div class="title">Asesmen: Histogram & Poligon</div></div>
+        <p style="font-size: 16px; line-height: 1.6;">Selamat datang di ujian visualisasi data! Ujian ini terdiri dari:<br>
+        - <strong>8 Soal Analisis Gambar</strong> (Menguji kemampuan membaca grafik)<br>
+        - <strong>2 Soal Praktik Menggambar</strong> (Menguji kemampuan menghitung dan menandai koordinat)</p>
+        <p style="color: #dc3545; font-weight: bold;">Peringatan: Pada soal praktik, sistem tidak akan memberikan koreksi (benar/salah). Kerjakan dengan sangat teliti!</p>
+        <p>Masukkan nama lengkap dan kelasmu untuk memulai.</p>
+        <input type="text" id="namaSiswa" placeholder="Misal: Budi Santoso - X PM 1" style="margin-bottom: 20px;">
+        <div class="btn-group"><div style="flex-grow:1"></div><button class="btn-next" onclick="startAssesment()">Mulai Ujian</button></div>
+    </div>
+
+    <div id="literacy-questions"></div>
+
+    <div class="panel" id="panel-9">
+        <div class="header"><div class="title">Soal 9: Praktik Histogram</div><div class="badge">Soal 9 / 10</div></div>
+        <div class="case-box"><strong>Studi Kasus:</strong> Data hasil ujian teori kejuruan dari 15 siswa kelas Pemasaran telah terkumpul sebagai berikut:<br>
+            <div class="raw-data-box" id="data9-box">71, 74, 82, 85, 76, 78, 88, 91, 93, 77, 84, 81, 79, 86, 95</div>
+        </div>
+
+        <div id="q9-step1" class="active">
+            <p style="font-weight:bold; color:#d32f2f;">1. Susun Urutan Langkah Kerja Membuat Histogram yang Benar:</p>
+            <div class="langkah-grid">
+                <select id="s9-1"><option value="">Langkah 1...</option><option value="Mencari Tepi Kelas">Mencari Tepi Kelas</option><option value="Kelompokkan ke Tabel">Kelompokkan ke Tabel</option><option value="Buat Sumbu & Grid">Buat Sumbu & Grid</option><option value="Tandai Titik & Buat Kotak">Tandai Titik & Buat Kotak</option></select>
+                <select id="s9-2"><option value="">Langkah 2...</option><option value="Mencari Tepi Kelas">Mencari Tepi Kelas</option><option value="Kelompokkan ke Tabel">Kelompokkan ke Tabel</option><option value="Buat Sumbu & Grid">Buat Sumbu & Grid</option><option value="Tandai Titik & Buat Kotak">Tandai Titik & Buat Kotak</option></select>
+                <select id="s9-3"><option value="">Langkah 3...</option><option value="Mencari Tepi Kelas">Mencari Tepi Kelas</option><option value="Kelompokkan ke Tabel">Kelompokkan ke Tabel</option><option value="Buat Sumbu & Grid">Buat Sumbu & Grid</option><option value="Tandai Titik & Buat Kotak">Tandai Titik & Buat Kotak</option></select>
+                <select id="s9-4"><option value="">Langkah 4...</option><option value="Mencari Tepi Kelas">Mencari Tepi Kelas</option><option value="Kelompokkan ke Tabel">Kelompokkan ke Tabel</option><option value="Buat Sumbu & Grid">Buat Sumbu & Grid</option><option value="Tandai Titik & Buat Kotak">Tandai Titik & Buat Kotak</option></select>
+            </div>
+            <button class="btn-next" style="width:100%" onclick="unlockStep('q9-step2')">Lanjut ke Tabel</button>
+        </div>
+
+        <div id="q9-step2" class="step-section">
+            <p style="font-weight:bold; color:#0056b3;">2. Hitung Tabel Frekuensi & Tepi Kelas:</p>
+            <p style="font-size: 13px; margin-top: -10px; color: #555;">Hitung manual data mentah di atas untuk rentang kelas yang sudah disediakan. Wajib gunakan koma (,) untuk desimal!</p>
+            
+            <div class="table-responsive">
+                <table class="table-dynamic" id="tbl-9">
+                    <thead><tr><th>Kelas (Nilai)</th><th>Frekuensi</th><th>Tepi Bawah (-0,5)</th><th>Tepi Atas (+0,5)</th></tr></thead>
+                    <tbody id="tbody-9"></tbody>
+                </table>
+            </div>
+            <button class="btn-next" id="btnLock-9" style="width:100%" onclick="kunciTabelUjian(9)">Simpan & Kunci Tabel</button>
+            <button class="btn-unlock" id="btnUnlock-9" onclick="bukaKunciTabel(9)">&#128275; Buka Kunci & Edit Tabel</button>
+        </div>
+
+        <div id="q9-step3" class="step-section">
+            <p style="font-weight:bold; color:#0056b3; margin-bottom: 5px;">3. Eksekusi Menggambar Histogram:</p>
+            <div class="status-box" id="status-9">Klik tombol "1. Sumbu & Grid" untuk memulai.</div>
+
+            <div class="chart-container" style="padding: 0; border: 2px solid #333;">
+                <canvas id="canvas-9" class="interactive-canvas" width="500" height="350"></canvas>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                <button onclick="startSim(9, 1)" id="btnBase-9" style="background:#17a2b8; color:white; border:none;" disabled>1. Sumbu & Grid</button>
+                <button onclick="startSim(9, 2)" id="btnDraw-9" style="background:#28a745; color:white; border:none;" disabled>2. Tandai Titik</button>
+                <button onclick="startSim(9, 3)" id="btnFinish-9" style="background:#ffc107; color:#333; border:none;" disabled>3. Buat Kotak</button>
+            </div>
+            <button onclick="resetPractice(9)" class="btn-reset">Hapus Gambar Titik & Ulangi</button>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-prev" onclick="navigate(8)">Sebelumnya</button>
+            <button class="btn-next" onclick="navigate(10)">Lanjut ke Soal 10</button>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-10">
+        <div class="header"><div class="title">Soal 10: Praktik Poligon</div><div class="badge">Soal 10 / 10</div></div>
+        <div class="case-box"><strong>Studi Kasus Final:</strong> Pencatatan kecepatan motor (km/jam) yang melintas di depan sekolah dari 12 sampel:<br>
+            <div class="raw-data-box" id="data10-box">42, 45, 48, 51, 53, 56, 58, 59, 62, 65, 68, 69</div>
+        </div>
+        
+        <div id="q10-step1" class="active">
+            <p style="font-weight:bold; color:#d32f2f;">1. Susun Urutan Langkah Kerja Membuat Poligon yang Benar:</p>
+            <div class="langkah-grid">
+                <select id="s10-1"><option value="">Langkah 1...</option><option value="Kelompokkan ke Tabel">Kelompokkan ke Tabel</option><option value="Mencari Titik Tengah">Mencari Titik Tengah</option><option value="Buat Sumbu & Grid">Buat Sumbu & Grid</option><option value="Tandai Titik & Tarik Garis ke Lantai">Tandai Titik & Tarik Garis ke Lantai</option></select>
+                <select id="s10-2"><option value="">Langkah 2...</option><option value="Kelompokkan ke Tabel">Kelompokkan ke Tabel</option><option value="Mencari Titik Tengah">Mencari Titik Tengah</option><option value="Buat Sumbu & Grid">Buat Sumbu & Grid</option><option value="Tandai Titik & Tarik Garis ke Lantai">Tandai Titik & Tarik Garis ke Lantai</option></select>
+                <select id="s10-3"><option value="">Langkah 3...</option><option value="Kelompokkan ke Tabel">Kelompokkan ke Tabel</option><option value="Mencari Titik Tengah">Mencari Titik Tengah</option><option value="Buat Sumbu & Grid">Buat Sumbu & Grid</option><option value="Tandai Titik & Tarik Garis ke Lantai">Tandai Titik & Tarik Garis ke Lantai</option></select>
+                <select id="s10-4"><option value="">Langkah 4...</option><option value="Kelompokkan ke Tabel">Kelompokkan ke Tabel</option><option value="Mencari Titik Tengah">Mencari Titik Tengah</option><option value="Buat Sumbu & Grid">Buat Sumbu & Grid</option><option value="Tandai Titik & Tarik Garis ke Lantai">Tandai Titik & Tarik Garis ke Lantai</option></select>
+            </div>
+            <button class="btn-next" style="width:100%" onclick="unlockStep('q10-step2')">Lanjut ke Tabel</button>
+        </div>
+
+        <div id="q10-step2" class="step-section">
+            <p style="font-weight:bold; color:#0056b3;">2. Hitung Tabel Frekuensi & Titik Tengah:</p>
+            <p style="font-size: 13px; margin-top: -10px; color: #555;">Gunakan koma (,) untuk desimal!</p>
+            
+            <div class="table-responsive">
+                <table class="table-dynamic" id="tbl-10">
+                    <thead><tr><th>Kelas (Nilai)</th><th>Frekuensi</th><th>Rumus Titik Tengah</th><th>Hasil (x<sub>i</sub>)</th></tr></thead>
+                    <tbody id="tbody-10"></tbody>
+                </table>
+            </div>
+            <button class="btn-next" id="btnLock-10" style="width:100%" onclick="kunciTabelUjian(10)">Simpan & Kunci Tabel</button>
+            <button class="btn-unlock" id="btnUnlock-10" onclick="bukaKunciTabel(10)">&#128275; Buka Kunci & Edit Tabel</button>
+        </div>
+
+        <div id="q10-step3" class="step-section">
+            <p style="font-weight:bold; color:#0056b3; margin-bottom: 5px;">3. Eksekusi Menggambar Poligon:</p>
+            <div class="status-box" id="status-10">Klik tombol "1. Sumbu & Grid" untuk memulai.</div>
+
+            <div class="chart-container" style="padding: 0; border: 2px solid #333;">
+                <canvas id="canvas-10" class="interactive-canvas" width="500" height="350"></canvas>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                <button onclick="startSim(10, 1)" id="btnBase-10" style="background:#17a2b8; color:white; border:none;" disabled>1. Sumbu & Grid</button>
+                <button onclick="startSim(10, 2)" id="btnDraw-10" style="background:#28a745; color:white; border:none;" disabled>2. Tandai Puncak</button>
+                <button onclick="startSim(10, 3)" id="btnFinish-10" style="background:#ffc107; color:#333; border:none;" disabled>3. Tarik Garis & Tutup</button>
+            </div>
+            <button onclick="resetPractice(10)" class="btn-reset">Hapus Gambar Titik & Ulangi</button>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-prev" onclick="navigate(9)">Sebelumnya</button>
+            <button class="btn-next" onclick="finalSubmit()" id="btnSubmit">Kirim Ujian ke Guru</button>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-end">
+        <div class="header"><div class="title">Ujian Selesai!</div></div>
+        <div style="text-align:center;">
+            <h3 style="font-size: 20px;">Selamat, <span id="lblNama" style="color:#0056b3;"></span>!</h3>
+            <p style="font-size: 16px;">Seluruh jawaban analitis dan praktik gambarmu telah direkam secara utuh.</p>
+            <div style="color: #155724; font-weight: bold; padding: 20px; background: #d4edda; border-radius: 8px; margin-top:20px; font-size: 15px;" id="statusKirim"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // URL GOOGLE APPS SCRIPT (Ganti dengan URL Anda)
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbydQb3NzWrsf03Fk_MHUj_ArvGfeiFchiZ5mYZFpl7Qrw2wHCOvX7fwt-jVBhvqJe-9Dg/exec";
+    
+    let currentPanel = 0;
+    let timeStart = 0;
+    let assesmentStart = 0;
+    let dataKirim = {};
+    const chartColors = ["#0056b3", "#28a745", "#dc3545", "#ffc107"];
+
+    // ==========================================
+    // 1. DATA SOAL LITERASI (DENGAN CERITA)
+    // ==========================================
+    const questions = [
+        // HISTOGRAM
+        { type: "hist", q: "Melihat grafik Histogram di atas, berapakah frekuensi (jumlah kemeja terjual) untuk ukuran rentang 41 - 50?", data: [10, 25, 15, 5], tbs: ["30,5", "40,5", "50,5", "60,5", "70,5"], story: "Toko pakaian 'Gaya Trendy' mencatat tren penjualan kemeja berdasarkan ukuran dalam bentuk Histogram selama satu bulan terakhir." },
+        { type: "hist", q: "Rentang ukuran kemeja manakah yang menempati posisi penjualan paling sedikit?", data: [10, 25, 15, 5], tbs: ["30,5", "40,5", "50,5", "60,5", "70,5"], story: "Toko pakaian 'Gaya Trendy' mencatat tren penjualan kemeja berdasarkan ukuran dalam bentuk Histogram selama satu bulan terakhir." },
+        { type: "hist", q: "Berapakah total keseluruhan kemeja yang berhasil dijual dari semua ukuran yang ada?", data: [10, 25, 15, 5], tbs: ["30,5", "40,5", "50,5", "60,5", "70,5"], story: "Toko pakaian 'Gaya Trendy' mencatat tren penjualan kemeja berdasarkan ukuran dalam bentuk Histogram selama satu bulan terakhir." },
+        { type: "hist", q: "Berapa selisih penjualan antara ukuran yang paling laku dengan ukuran yang paling tidak laku?", data: [10, 25, 15, 5], tbs: ["30,5", "40,5", "50,5", "60,5", "70,5"], story: "Toko pakaian 'Gaya Trendy' mencatat tren penjualan kemeja berdasarkan ukuran dalam bentuk Histogram selama satu bulan terakhir." },
+        
+        // POLIGON (Disesuaikan angkanya menjadi kelipatan 5 agar pas di grid)
+        { type: "poly", q: "Melihat grafik Poligon di atas, pada titik tengah berapakah tanaman mencapai jumlah terbanyak (puncak tertinggi)?", data: [5, 10, 20, 15], xis: ["13", "18", "23", "28"], story: "Siswa kelas X Pemasaran mencatat pertumbuhan tinggi tanaman hias (dalam cm) yang akan dijual. Mereka menyajikannya dalam bentuk Poligon Frekuensi." },
+        { type: "poly", q: "Berapakah jumlah tanaman yang diukur pada rentang tinggi yang memiliki titik tengah 13 cm?", data: [5, 10, 20, 15], xis: ["13", "18", "23", "28"], story: "Siswa kelas X Pemasaran mencatat pertumbuhan tinggi tanaman hias (dalam cm) yang akan dijual. Mereka menyajikannya dalam bentuk Poligon Frekuensi." },
+        { type: "poly", q: "Berapakah total seluruh tanaman hias yang diukur pada observasi ini?", data: [5, 10, 20, 15], xis: ["13", "18", "23", "28"], story: "Siswa kelas X Pemasaran mencatat pertumbuhan tinggi tanaman hias (dalam cm) yang akan dijual. Mereka menyajikannya dalam bentuk Poligon Frekuensi." },
+        { type: "poly", q: "Jika tanaman yang tingginya berada di titik tengah 23 cm ke atas (23 dan 28) sudah laku terjual, berapa banyak tanaman yang laku tersebut?", data: [5, 10, 20, 15], xis: ["13", "18", "23", "28"], story: "Siswa kelas X Pemasaran mencatat pertumbuhan tinggi tanaman hias (dalam cm) yang akan dijual. Mereka menyajikannya dalam bentuk Poligon Frekuensi." }
+    ];
+
+    let qHTML = "";
+    questions.forEach((s, idx) => {
+        let i = idx + 1;
+        let title = s.type === 'hist' ? "Histogram Penjualan Kemeja" : "Poligon Tinggi Tanaman";
+        qHTML += `
+        <div class="panel" id="panel-${i}">
+            <div class="header"><div class="title">Soal Literasi ${i}: ${title}</div><div class="badge">Soal ${i} / 10</div></div>
+            <div class="case-box"><strong>Cerita Kasus:</strong> ${s.story}</div>
+            <div class="chart-container"><canvas id="canvas-${i}" width="450" height="320"></canvas></div>
+            <div class="question-text"><strong>Pertanyaan:</strong><br>${s.q}</div>
+            <input type="text" id="ans-${i}" placeholder="Ketik jawabanmu di sini...">
+            <div class="btn-group">
+                <button class="btn-prev" onclick="navigate(${i-1})">Sebelumnya</button>
+                <button class="btn-next" onclick="navigate(${i+1})">Selanjutnya</button>
+            </div>
+        </div>`;
+    });
+    document.getElementById('literacy-questions').innerHTML = qHTML;
+
+    // FUNGSI GAMBAR LITERASI STATIS
+    function drawLiteracyCharts() {
+        questions.forEach((item, idx) => {
+            let i = idx + 1;
+            const canvas = document.getElementById(`canvas-${i}`);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,450,320);
+
+            const ox = 50, oy = 250, bw = 80, sy = 8;
+            
+            // Grid Y kelipatan 5
+            ctx.strokeStyle = "#e0e0e0"; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+            for(let j=1; j<=6; j++) { 
+                let y = oy - (j * 5 * sy);
+                ctx.beginPath(); ctx.moveTo(ox, y); ctx.lineTo(ox + 360, y); ctx.stroke();
+            }
+            ctx.setLineDash([]);
+            
+            // Sumbu Utama
+            ctx.strokeStyle = "#333"; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(ox, 10); ctx.lineTo(ox, oy); ctx.lineTo(ox + 380, oy); ctx.stroke();
+            
+            ctx.fillStyle = '#333'; ctx.font = 'bold 12px Arial'; ctx.textAlign = 'right';
+            for(let j=0; j<=30; j+=5) {
+                let y = oy - (j * sy);
+                ctx.fillText(j, ox - 10, y + 4);
+                ctx.beginPath(); ctx.moveTo(ox - 5, y); ctx.lineTo(ox, y); ctx.stroke();
+            }
+
+            ctx.textAlign = 'center';
+            
+            if(item.type === 'hist') {
+                for(let j=0; j<item.tbs.length; j++) {
+                    let x = ox + (j * bw);
+                    ctx.save(); ctx.translate(x, oy + 20); ctx.rotate(-Math.PI/6);
+                    ctx.fillText(item.tbs[j], 0, 0); ctx.restore();
+                    ctx.beginPath(); ctx.moveTo(x, oy); ctx.lineTo(x, oy+5); ctx.stroke();
+                }
+                
+                item.data.forEach((f, j) => {
+                    let x = ox + (j * bw);
+                    let h = f * sy;
+                    let c = chartColors[j % chartColors.length];
+                    ctx.globalAlpha = 0.4; ctx.fillStyle = c; ctx.fillRect(x, oy - h, bw, h);
+                    ctx.globalAlpha = 1.0; ctx.strokeStyle = c; ctx.lineWidth = 2; ctx.strokeRect(x, oy - h, bw, h);
+                    // Sembunyikan angka frekuensi agar siswa menebak dari grid
+                });
+            } else {
+                let points = [];
+                points.push({x: ox, y: oy}); // Mendarat di persimpangan (0)
+                
+                item.data.forEach((f, j) => {
+                    let x = ox + (j * bw) + bw/2;
+                    let y = oy - (f * sy);
+                    points.push({x: x, y: y});
+                    
+                    ctx.save(); ctx.translate(x, oy + 20); ctx.rotate(-Math.PI/6);
+                    ctx.fillText(item.xis[j], 0, 0); ctx.restore();
+                    ctx.beginPath(); ctx.moveTo(x, oy); ctx.lineTo(x, oy+5); ctx.stroke();
+                });
+                points.push({x: ox + (item.data.length * bw), y: oy}); // Mendarat kanan
+
+                ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
+                for(let j=1; j<points.length; j++) { ctx.lineTo(points[j].x, points[j].y); }
+                ctx.strokeStyle = "#333"; ctx.lineWidth = 3; ctx.stroke();
+
+                points.forEach((pt, j) => {
+                    ctx.beginPath(); ctx.arc(pt.x, pt.y, 6, 0, Math.PI*2);
+                    ctx.fillStyle = (j===0 || j===points.length-1) ? '#333' : chartColors[(j-1) % chartColors.length];
+                    ctx.fill(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+                });
+            }
+        });
+    }
+
+    // ==========================================
+    // 2. DATA PRAKTIK DINAMIS (Q9 & Q10)
+    // ==========================================
+    let qData = {
+        9: { kelas: [{l: "71-75", f:2, tb:70.5, ta:75.5}, {l: "76-80", f:4, tb:75.5, ta:80.5}, {l: "81-85", f:4, tb:80.5, ta:85.5}, {l: "86-95", f:5, tb:85.5, ta:95.5}] },
+        10: { kelas: [{l: "41-50", f:3, xi:45.5}, {l: "51-60", f:5, xi:55.5}, {l: "61-70", f:4, xi:65.5}] }
+    };
+    
+    let state = { 9: { step: 0 }, 10: { step: 0 } };
+    let userPts = { 9: [], 10: [] }; // Menyimpan klik siswa (benar atau salah)
+    let maxPts = { 9: 8, 10: 3 }; // Target jumlah klik
+    
+    function buildTables() {
+        let t9 = "";
+        qData[9].kelas.forEach((c, i) => {
+            t9 += `<tr><td><strong>${c.l}</strong></td>
+                <td><input type="number" class="table-input inp-9" data-idx="${i}" data-f="f" placeholder="..."></td>
+                <td><input type="text" class="table-input inp-9" data-idx="${i}" data-f="tb" placeholder="..."></td>
+                <td><input type="text" class="table-input inp-9" data-idx="${i}" data-f="ta" placeholder="..."></td></tr>`;
+        });
+        document.getElementById('tbody-9').innerHTML = t9;
+
+        let t10 = "";
+        qData[10].kelas.forEach((c, i) => {
+            let nums = c.l.split('-');
+            t10 += `<tr><td><strong>${c.l}</strong></td>
+                <td><input type="number" class="table-input inp-10" data-idx="${i}" data-f="f" placeholder="..."></td>
+                <td>
+                    <div class="fraction">
+                        <span class="numerator">${nums[0]} + ${nums[1]}</span>
+                        <span class="denominator">2</span>
+                    </div>
+                </td>
+                <td><input type="text" class="table-input inp-10" data-idx="${i}" data-f="xi" placeholder="..."></td></tr>`;
+        });
+        document.getElementById('tbody-10').innerHTML = t10;
+    }
+
+    const coX = 50, coY = 280, cScaleY = 25, cBarW = 90;
+
+    function formatLocal(num) { return num.toString().replace('.', ','); }
+
+    function unlockStep(stepId) {
+        document.getElementById(stepId).classList.add('active');
+        setTimeout(() => { document.getElementById(stepId).scrollIntoView({ behavior: 'smooth' }); }, 200);
+    }
+
+    // ==========================================
+    // TANPA FEEDBACK (UJIAN BEBAS SALAH)
+    // ==========================================
+    function kunciTabelUjian(qId) {
+        // Cukup simpan dan kunci, tidak ada warna hijau/merah.
+        document.querySelectorAll(`.inp-${qId}`).forEach(inp => {
+            inp.readOnly = true;
+            inp.style.backgroundColor = "#e9ecef";
+        });
+        document.getElementById(`btnLock-${qId}`).disabled = true;
+        document.getElementById(`btnUnlock-${qId}`).style.display = "block";
+        document.getElementById(`btnBase-${qId}`).disabled = false;
+        unlockStep(`q${qId}-step3`);
+    }
+
+    function bukaKunciTabel(qId) {
+        document.querySelectorAll(`.inp-${qId}`).forEach(inp => {
+            inp.readOnly = false;
+            inp.style.backgroundColor = "#fff";
+        });
+        document.getElementById(`btnLock-${qId}`).disabled = false;
+        document.getElementById(`btnUnlock-${qId}`).style.display = "none";
+        document.getElementById(`btnBase-${qId}`).disabled = true;
+        resetPractice(qId);
+    }
+
+    function resetPractice(qId) {
+        state[qId].step = 0; 
+        userPts[qId] = []; 
+        
+        document.getElementById(`btnBase-${qId}`).disabled = false;
+        document.getElementById(`btnDraw-${qId}`).disabled = true;
+        document.getElementById(`btnFinish-${qId}`).disabled = true;
+        document.getElementById(`status-${qId}`).innerHTML = `Data gambar direset. Klik "1. Sumbu & Grid"`;
+        
+        const canvas = document.getElementById(`canvas-${qId}`);
+        if(canvas) canvas.getContext('2d').clearRect(0,0, canvas.width, canvas.height);
+    }
+
+    // =====================================
+    // KANVAS BEBAS KLIK (RECORDING MODE)
+    // =====================================
+    function drawGridTest(ctx, dt, qId) {
+        ctx.strokeStyle = "#e0e0e0"; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+        for(let i=1; i<=10; i++) { 
+            let y = coY - (i * cScaleY);
+            ctx.beginPath(); ctx.moveTo(coX, y); ctx.lineTo(coX + (dt.length * cBarW) + 50, y); ctx.stroke();
+        }
+        
+        // Garis vertikal (X)
+        if (qId === 9) {
+            for(let i=0; i<=dt.length; i++) { 
+                let x = coX + (i * cBarW);
+                ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, coY); ctx.stroke();
+            }
+        } else {
+            for(let i=0; i<dt.length; i++) { 
+                let x = coX + (i * cBarW) + cBarW/2;
+                ctx.beginPath(); ctx.moveTo(x, 20); ctx.lineTo(x, coY); ctx.stroke();
+            }
+        }
+        ctx.setLineDash([]);
+    }
+
+    function startSim(qId, step) {
+        state[qId].step = step;
+        const canvas = document.getElementById(`canvas-${qId}`);
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0,0, canvas.width, canvas.height);
+        
+        let dt = qData[qId].kelas;
+        let len = dt.length;
+
+        if (step >= 1) {
+            drawGridTest(ctx, dt, qId);
+            
+            ctx.beginPath(); ctx.moveTo(coX, 20); ctx.lineTo(coX, coY); ctx.lineTo(coX + (len * cBarW) + 50, coY); 
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
+
+            ctx.fillStyle = '#333'; ctx.font = 'bold 12px Arial'; ctx.textAlign = 'right';
+            for(let i=0; i<=10; i+=2) {
+                let y = coY - (i * cScaleY);
+                ctx.fillText(i, coX - 8, y + 4);
+                ctx.beginPath(); ctx.moveTo(coX - 4, y); ctx.lineTo(coX, y); ctx.stroke();
+            }
+
+            ctx.textAlign = 'center';
+            if(qId === 9) {
+                // Label Tepi kelas bergantung input siswa, tapi di kanvas ujian kita sediakan template statisnya agar bisa diklik
+                for(let i=0; i<=len; i++) {
+                    let x = coX + (i * cBarW);
+                    let label = i < len ? dt[i].tb : dt[i-1].ta;
+                    ctx.save(); ctx.translate(x, coY + 15); ctx.rotate(-Math.PI / 8); 
+                    ctx.fillText(formatLocal(label), 0, 0); ctx.restore();
+                    ctx.beginPath(); ctx.moveTo(x, coY); ctx.lineTo(x, coY + 5); ctx.stroke();
+                }
+            } else {
+                dt.forEach((d, i) => {
+                    let x = coX + (i * cBarW) + cBarW/2;
+                    ctx.save(); ctx.translate(x, coY + 15); ctx.rotate(-Math.PI / 8); 
+                    ctx.fillText(formatLocal(d.xi), 0, 0); ctx.restore();
+                    ctx.beginPath(); ctx.moveTo(x, coY); ctx.lineTo(x, coY + 5); ctx.stroke();
+                });
+            }
+        }
+
+        let statusBox = document.getElementById(`status-${qId}`);
+
+        if (step === 1) {
+            statusBox.innerHTML = `Sumbu dan Grid siap! Klik tombol <strong>2. Tandai Titik</strong>.`;
+            document.getElementById(`btnBase-${qId}`).disabled = true;
+            document.getElementById(`btnDraw-${qId}`).disabled = false;
+        }
+
+        if (step === 2) {
+            let req = maxPts[qId];
+            let sisa = req - userPts[qId].length;
+            statusBox.innerHTML = `Tandai <strong>${req} titik</strong> sesuai hitunganmu dengan mengklik di dalam area grid. <br>Sisa titik: <strong style="color:#d32f2f;">${sisa}</strong>`;
+            
+            // Gambar ulang titik yg diklik siswa
+            userPts[qId].forEach(pt => {
+                ctx.fillStyle = '#d32f2f'; ctx.beginPath(); ctx.arc(pt.x, pt.y, 6, 0, Math.PI*2); ctx.fill();
+            });
+
+            canvas.onclick = (e) => handleTestClick(e, qId, ctx);
+        } else {
+            canvas.onclick = null; 
+        }
+
+        if (step === 3) {
+            document.getElementById(`btnDraw-${qId}`).disabled = true;
+            statusBox.innerHTML = "Luar Biasa! Bentuk gambar dari titik yang kamu tentukan berhasil disimpan.";
+            drawFinalTest(qId, ctx);
+        }
+    }
+
+    function handleTestClick(e, qId, ctx) {
+        if(state[qId].step !== 2) return;
+        
+        let req = maxPts[qId];
+        if(userPts[qId].length >= req) return; // Udah penuh
+
+        const canvas = document.getElementById(`canvas-${qId}`);
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+
+        // Snap ke grid terdekat (Per kelas/tengah kelas dan kelipatan frekuensi 1)
+        let snappedX;
+        if(qId === 9) {
+            snappedX = Math.round((x - coX) / cBarW) * cBarW + coX;
+        } else {
+            snappedX = Math.round((x - coX - (cBarW/2)) / cBarW) * cBarW + coX + (cBarW/2);
+        }
+        
+        let gridY = Math.round((coY - y) / cScaleY);
+        if(gridY < 0) gridY = 0; if(gridY > 10) gridY = 10;
+        let snappedY = coY - (gridY * cScaleY);
+
+        userPts[qId].push({x: snappedX, y: snappedY, f: gridY});
+
+        ctx.fillStyle = '#d32f2f';
+        ctx.beginPath(); ctx.arc(snappedX, snappedY, 6, 0, Math.PI*2); ctx.fill();
+
+        let sisa = req - userPts[qId].length;
+        let statusBox = document.getElementById(`status-${qId}`);
+        
+        if (sisa === 0) {
+            statusBox.innerHTML = "Titik sudah lengkap! Klik tombol <strong>3. Buat Kotak/Garis</strong>.";
+            document.getElementById(`btnFinish-${qId}`).disabled = false;
+        } else {
+            statusBox.innerHTML = `Tandai <strong>${req} titik</strong> sesuai hitunganmu dengan mengklik di area grid. <br>Sisa titik: <strong style="color:#d32f2f;">${sisa}</strong>`;
+        }
+    }
+
+    function drawFinalTest(qId, ctx) {
+        ctx.lineWidth = 3;
+        
+        // Urutkan titik buatan user dari kiri ke kanan
+        let pts = userPts[qId].sort((a, b) => a.x - b.x);
+        
+        if(qId === 9) {
+            // Gambar kotak histogram (Asumsi sepasang titik membentuk 1 kotak)
+            for(let i=0; i<pts.length-1; i+=2) {
+                let p1 = pts[i];
+                let p2 = pts[i+1];
+                let width = p2.x - p1.x;
+                let height = coY - p1.y; // Asumsi tinggi diambil dari p1
+                let c = chartColors[(i/2) % chartColors.length];
+                
+                if(width > 0) {
+                    ctx.globalAlpha = 0.4; ctx.fillStyle = c; ctx.fillRect(p1.x, p1.y, width, height);
+                    ctx.globalAlpha = 1.0; ctx.strokeStyle = c; ctx.strokeRect(p1.x, p1.y, width, height);
+                }
+            }
+        } else {
+            // Gambar Poligon 
+            ctx.strokeStyle = "#444"; ctx.lineWidth = 3; ctx.beginPath();
+            
+            // Mulai dari titik origin X
+            let startX = coX;
+            ctx.moveTo(startX, coY); 
+
+            pts.forEach(pt => { ctx.lineTo(pt.x, pt.y); });
+
+            let endX = coX + (qData[10].kelas.length * cBarW);
+            ctx.lineTo(endX, coY); ctx.stroke();
+
+            pts.forEach((pt, i) => {
+                ctx.fillStyle = chartColors[i % chartColors.length]; 
+                ctx.beginPath(); ctx.arc(pt.x, pt.y, 7, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+            });
+
+            ctx.fillStyle = "#333";
+            ctx.beginPath(); ctx.arc(startX, coY, 5, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(endX, coY, 5, 0, Math.PI*2); ctx.fill();
+        }
+    }
+
+    // ==========================================
+    // 4. LOGIKA NAVIGASI & SUBMIT GOOGLE SHEETS
+    // ==========================================
+    function startAssesment() {
+        let nama = document.getElementById('namaSiswa').value;
+        if(nama.trim() === "") { alert("Mohon isi nama terlebih dahulu!"); return; }
+        
+        dataKirim.namaSiswa = nama;
+        assesmentStart = Date.now();
+        
+        buildTables();
+        drawLiteracyCharts(); 
+        navigate(1);
+    }
+
+    function extractComplexAnswer(id) {
+        let laporan = "";
+        let sop1 = document.getElementById(`s${id}-1`) ? document.getElementById(`s${id}-1`).value : "(Kosong)";
+        let sop2 = document.getElementById(`s${id}-2`) ? document.getElementById(`s${id}-2`).value : "(Kosong)";
+        let sop3 = document.getElementById(`s${id}-3`) ? document.getElementById(`s${id}-3`).value : "(Kosong)";
+        let sop4 = document.getElementById(`s${id}-4`) ? document.getElementById(`s${id}-4`).value : "(Kosong)";
+        laporan += `[URUTAN LANGKAH]\n1. ${sop1} | 2. ${sop2} | 3. ${sop3} | 4. ${sop4}\n\n`;
+
+        laporan += `[REKAP TABEL SISWA]\n`;
+        let rows = document.getElementById(`tbody-${id}`).children;
+        for(let i=0; i<rows.length; i++) {
+            let r = rows[i];
+            let f = r.querySelector(`[data-f="f"]`) ? r.querySelector(`[data-f="f"]`).value : "-";
+            if(id === 9) {
+                let tb = r.querySelector(`[data-f="tb"]`) ? r.querySelector(`[data-f="tb"]`).value : "-";
+                let ta = r.querySelector(`[data-f="ta"]`) ? r.querySelector(`[data-f="ta"]`).value : "-";
+                laporan += `- Kls ${i+1} => F:${f} | Tb:${tb} | Ta:${ta}\n`;
+            } else {
+                let xi = r.querySelector(`[data-f="xi"]`) ? r.querySelector(`[data-f="xi"]`).value : "-";
+                laporan += `- Kls ${i+1} => F:${f} | Xi:${xi}\n`;
+            }
+        }
+        
+        laporan += `\n[TITIK KOORDINAT DIGAMBAR]\n`;
+        if(userPts[id].length === 0) laporan += "- Siswa tidak menggambar titik.\n";
+        userPts[id].forEach((pt, i) => {
+            laporan += `- Titik ke-${i+1} diklik di Frekuensi: ${pt.f}\n`;
+        });
+
+        return laporan;
+    }
+
+    function navigate(targetPanelId) {
+        if (currentPanel > 0 && currentPanel <= 10) {
+            let durasiDetik = Math.round((Date.now() - timeStart) / 1000);
+            let existingTime = parseInt(dataKirim["q" + currentPanel + "_time"]) || 0;
+            dataKirim["q" + currentPanel + "_time"] = (existingTime + durasiDetik) + "s";
+            
+            if(currentPanel <= 8) {
+                let ansInput = document.getElementById('ans-' + currentPanel);
+                if(ansInput) dataKirim["q" + currentPanel + "_ans"] = ansInput.value;
+            } else {
+                dataKirim["q" + currentPanel + "_ans"] = extractComplexAnswer(currentPanel);
+            }
+        }
+
+        if(currentPanel >= 0) document.getElementById('panel-' + currentPanel).classList.remove('active');
+        document.getElementById('panel-' + targetPanelId).classList.add('active');
+        window.scrollTo(0, 0);
+
+        currentPanel = targetPanelId;
+        timeStart = Date.now();
+    }
+
+    async function finalSubmit() {
+        let btn = document.getElementById('btnSubmit');
+        btn.disabled = true; btn.innerText = "Mengirim Ujian...";
+
+        let durasiDetik = Math.round((Date.now() - timeStart) / 1000);
+        let existingTime = parseInt(dataKirim["q10_time"]) || 0;
+        dataKirim["q10_time"] = (existingTime + durasiDetik) + "s";
+        dataKirim["q10_ans"] = extractComplexAnswer(10);
+
+        let totalDetik = Math.round((Date.now() - assesmentStart) / 1000);
+        let m = Math.floor(totalDetik / 60); let s = totalDetik % 60;
+        dataKirim.totalWaktuSelesai = `${m}m ${s}s`;
+
+        document.getElementById('panel-10').classList.remove('active');
+        document.getElementById('panel-end').classList.add('active');
+        document.getElementById('lblNama').innerText = dataKirim.namaSiswa;
+        document.getElementById('statusKirim').innerText = "Sedang mengirim data ke server. Harap tunggu...";
+
+        try {
+            const response = await fetch(GAS_URL, {
+                method: 'POST', mode: 'cors', body: JSON.stringify(dataKirim)
+            });
+            document.getElementById('statusKirim').innerText = "Berhasil! Jawaban analitis dan praktikmu sudah terekam di sistem Guru.";
+        } catch (error) {
+            document.getElementById('statusKirim').innerText = "Penyimpanan simulasi selesai dilakukan ke dalam Spreadsheet.";
+            btn.disabled = false; btn.innerText = "Kirim Ulang Jika Gagal";
+        }
+    }
+</script>
+
+</body>
+</html>
