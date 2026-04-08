@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angket Kemandirian Belajar</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f2f5; 
+            margin: 0; 
+            padding: 15px; 
+            color: #333; 
+            line-height: 1.5;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: auto; 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+        }
+        h2 { text-align: center; color: #2c3e50; font-size: 22px; margin-bottom: 5px; }
+        p.subtitle { text-align: center; font-size: 15px; color: #555; margin-bottom: 25px; font-weight: bold;}
+        
+        .petunjuk-box { 
+            background: #e9f5ff; 
+            padding: 15px 20px; 
+            border-left: 5px solid #007bff; 
+            border-radius: 5px; 
+            font-size: 14px; 
+            margin-bottom: 20px; 
+        }
+        .petunjuk-box h3 { margin-top: 0; font-size: 16px; color: #0056b3; }
+        .petunjuk-box ul { padding-left: 20px; margin-bottom: 0; }
+        .petunjuk-box li { margin-bottom: 8px; }
+        .petunjuk-box ul ul { margin-top: 5px; list-style-type: disc; }
+        
+        .form-group { margin-bottom: 15px; }
+        label.bold { font-weight: bold; display: block; margin-bottom: 5px; }
+        input[type="text"] { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            box-sizing: border-box; 
+            font-size: 15px;
+        }
+        
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px; 
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 10px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+        }
+        td.text-left { text-align: left; font-size: 14px; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f1f1f1; }
+        
+        input[type="radio"] {
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            background: #28a745; 
+            color: #fff; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            margin-top: 25px;
+        }
+        button:hover { background: #218838; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+
+        #statusMessage {
+            display: none;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>ANGKET KEMANDIRIAN BELAJAR SISWA</h2>
+    <p class="subtitle">KELAS X-PM-1 SMK NEGERI 1 SALATIGA</p>
+
+    <div class="petunjuk-box">
+        <h3>II. Petunjuk Pengisian Angket</h3>
+        <ul>
+            <li>Bacalah setiap pertanyaan dan pernyataan dengan baik.</li>
+            <li>Jawablah sesuai dengan keadaan dan pendapat Anda dengan memberikan tanda centang (pilih lingkaran) pada kolom yang tersedia.</li>
+            <li>Jawaban Anda tidak ada yang benar atau salah, karena ini bukan merupakan tes atau ulangan.</li>
+            <li>Kriteria Penggunaan kata-kata "Selalu (SL)", "Sering (SR)", "Kadang-kadang (KD)", dan "Tidak Pernah (TP)", dengan ketentuan sebagai berikut:
+                <ul>
+                    <li><strong>Selalu (SL)</strong>: persentase >75-100%</li>
+                    <li><strong>Sering (SR)</strong>: persentase >50-75%</li>
+                    <li><strong>Kadang-kadang (KD)</strong>: persentase >25-50%</li>
+                    <li><strong>Tidak Pernah (TP)</strong>: persentase >0-25%</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <form id="angketForm">
+        <div class="form-group">
+            <label class="bold">Nama Lengkap:</label>
+            <input type="text" id="nama" name="nama" required placeholder="Masukkan nama lengkap Anda...">
+        </div>
+        <div class="form-group">
+            <label class="bold">Kelas:</label>
+            <input type="text" id="kelas" name="kelas" required value="X-PM-1" readonly>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="5%">No</th>
+                        <th width="55%">Pernyataan</th>
+                        <th width="10%">SL</th>
+                        <th width="10%">SR</th>
+                        <th width="10%">KD</th>
+                        <th width="10%">TP</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    </tbody>
+            </table>
+        </div>
+
+        <button type="submit" id="submitBtn">Kirim Jawaban</button>
+        <div id="statusMessage"></div>
+    </form>
+</div>
+
+<script>
+    // URL Web App Anda
+    const scriptURL = 'https://script.google.com/macros/s/AKfycby98Iu_hrLWw8pWy-_KzbdK82Zif9wPhieTc1jQ0kLkTDacfVkONc_0HF7Wa4-NE2in/exec'; 
+
+    const questions = [
+        { id: 1, text: "Saya membuat jadwal belajar dan saya belajar secara rutin setiap hari.", type: "pos" },
+        { id: 2, text: "Setiap belajar saya membaca dan mempelajari materi pelajaran yang akan disampaikan oleh guru.", type: "pos" },
+        { id: 3, text: "Saya mengerjakan tugas/ pekerjaan rumah (PR), dengan demikian saya beranggapan sudah belajar.", type: "neg" },
+        { id: 4, text: "Lama saya belajar di rumah kurang lebih 2 jam setiap hari.", type: "pos" },
+        { id: 5, text: "Saya belajar setiap hari di rumah atas kemauan saya sendiri, tanpa disuruh orang lain.", type: "pos" },
+        { id: 6, text: "Bila ada jam pelajaran kosong / waktu senggang saya pergunakan untuk belajar tentang materi yang belum saya pahami.", type: "pos" },
+        { id: 7, text: "Saya membuat ringkasan materi untuk mempermudah saya dalam belajar.", type: "pos" },
+        { id: 8, text: "Saya tetap percaya pada jawaban sendiri meskipun berbeda dengan jawaban teman yang lain.", type: "pos" },
+        { id: 9, text: "Setelah saya mendengarkan penjelasan guru mengenai materi pelajaran, saya yakin dapat menguasai pelajaran dengan baik.", type: "pos" },
+        { id: 10, text: "Setiap ada PR maka saya akan kerjakan sendiri.", type: "pos" },
+        { id: 11, text: "Saya belajar dengan bersungguh-sungguh untuk persiapan ulangan.", type: "pos" },
+        { id: 12, text: "Ketika ulangan saya mengerjakan tanpa bertanya teman karena saya sudah belajar dengan sungguh-sungguh.", type: "pos" },
+        { id: 13, text: "Saya berusaha berkonsentrasi memperhatikan guru saat menjelaskan materi agar saya paham.", type: "pos" },
+        { id: 14, text: "Saya sering belum menguasai materi pelajaran saat ulangan diadakan.", type: "neg" },
+        { id: 15, text: "Saya ragu dapat menjawab dengan benar soal-soal pelajaran yang diberikan oleh guru.", type: "neg" },
+        { id: 16, text: "Ketika saya menemui kesulitan dalam belajar, saya akan berusaha dengan kemampuan yang saya miliki.", type: "pos" },
+        { id: 17, text: "Meskipun sulit, saya percaya bahwa saya dapat menyelesaikan tugas dengan baik.", type: "pos" },
+        { id: 18, text: "Saya bertanya pada guru jika ada materi yang belum jelas.", type: "pos" },
+        { id: 19, text: "Saya mudah merasa malas jika timbul kesulitan dalam belajar.", type: "neg" },
+        { id: 20, text: "Saya merasa waktu belajar saya masih kurang untuk persiapan akan ulangan.", type: "neg" },
+        { id: 21, text: "Keberhasilan adalah tanggung jawab saya, jadi saya harus giat belajar.", type: "pos" },
+        { id: 22, text: "Ketika ada tugas dari guru saya akan kerjakan sebaik mungkin.", type: "pos" },
+        { id: 23, text: "Meskipun nilai ulangan saya selalu bagus, saya tetap belajar untuk mempertahankan nilai saya.", type: "pos" },
+        { id: 24, text: "Saya lebih bangga mendapat nilai jelek hasil kerja saya sendiri dari pada nilai saya bagus tetapi mencontek.", type: "pos" },
+        { id: 25, text: "Dalam setiap tugas, bila merasa kesulitan saya akan memilih untuk meniru pekerjaan teman.", type: "neg" },
+        { id: 26, text: "Pada saat tes atau ulangan, walaupun tidak diawasi saya akan mengerjakan tes dengan jujur.", type: "pos" },
+        { id: 27, text: "Saya mengetahui materi pelajaran yang saya anggap sulit.", type: "pos" },
+        { id: 28, text: "Saya akan berusaha mencari jawaban dari soal-soal ulangan, setelah ulangan selesai diadakan.", type: "pos" },
+        { id: 29, text: "Saya yakin bahwa saya bisa mengerjakan soal-soal yang diberikan oleh guru.", type: "pos" },
+        { id: 30, text: "Saya yakin nilai yang saya peroleh adalah usaha keras saya sendiri dalam belajar.", type: "pos" }
+    ];
+
+    const tbody = document.getElementById('table-body');
+
+    questions.forEach((q, index) => {
+        // Logika Skoring Positif vs Negatif
+        const valSL = q.type === 'pos' ? 4 : 1;
+        const valSR = q.type === 'pos' ? 3 : 2;
+        const valKD = q.type === 'pos' ? 2 : 3;
+        const valTP = q.type === 'pos' ? 1 : 4;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td class="text-left">${q.text}</td>
+            <td><input type="radio" name="p${q.id}" value="${valSL}" required></td>
+            <td><input type="radio" name="p${q.id}" value="${valSR}"></td>
+            <td><input type="radio" name="p${q.id}" value="${valKD}"></td>
+            <td><input type="radio" name="p${q.id}" value="${valTP}"></td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    const form = document.getElementById('angketForm');
+    const statusMsg = document.getElementById('statusMessage');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault(); 
+        const btn = document.getElementById('submitBtn');
+        btn.innerHTML = 'Sedang Mengirim Data...';
+        btn.disabled = true;
+        
+        statusMsg.style.display = 'none';
+        statusMsg.className = '';
+
+        // Penggunaan mode: 'no-cors' agar lolos dari pemblokiran keamanan browser
+        fetch(scriptURL, { 
+            method: 'POST', 
+            body: new FormData(form),
+            mode: 'no-cors'
+        })
+        .then(() => {
+            statusMsg.textContent = "✅ Terima kasih! Jawaban Anda telah berhasil tersimpan.";
+            statusMsg.className = "success";
+            statusMsg.style.display = "block";
+            
+            form.reset(); 
+            btn.innerHTML = 'Kirim Jawaban';
+            btn.disabled = false;
+        })
+        .catch(error => {
+            statusMsg.textContent = "❌ Gagal mengirim. Periksa koneksi internet Anda.";
+            statusMsg.className = "error";
+            statusMsg.style.display = "block";
+            
+            console.error('Error!', error);
+            btn.innerHTML = 'Coba Kirim Lagi';
+            btn.disabled = false;
+        });
+    });
+</script>
+
+</body>
+</html>
