@@ -20,7 +20,6 @@
         .log-board h3 { margin-top: 0; color: #2b6cb0; font-size: 16px; text-align: center; border-bottom: 1px solid #4299e1; padding-bottom: 5px; }
         .log-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-family: monospace; font-size: 14px; }
         
-        /* Modifikasi Tabel: Kolom Nilai Tengah Dihapus */
         .tdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; display: none; }
         .tdf-table th, .tdf-table td { border: 1px solid #cbd5e0; padding: 12px; text-align: center; font-size: 16px;}
         .tdf-table th { background: #4a5568; color: white; }
@@ -152,10 +151,15 @@
         
         let manualLogN = baseLogs[multiplier] + 1.00;
         let k_desimal = 1 + (3.3 * manualLogN);
-        let k_bulat = Math.ceil(k_desimal); 
+        
+        // --- PERUBAHAN: Banyak Kelas (k) menggunakan pembulatan biasa ---
+        let k_bulat = Math.round(k_desimal); 
+
         let p_desimal = jangkauan / k_bulat; 
+        // --- TETAP: Panjang Kelas (p) wajib bulat ke atas ---
         let p_bulat = Math.ceil(p_desimal); 
 
+        // Sinkronisasi data agar X-max selalu masuk
         if (min + (k_bulat * p_bulat) - 1 < max) {
             p_bulat += 1;
         }
@@ -174,7 +178,6 @@
     }
 
     function generateQuestions() {
-        // Ambil data frekuensi dari interval untuk soal no 14 & 15
         let freqs = statData.intervals.map(i => i.freq);
         let maxFreq = Math.max(...freqs);
         let minFreq = Math.min(...freqs);
@@ -186,21 +189,24 @@
             { topic: "Mencari Jumlah Data", text: "Hitunglah ada berapa banyak total angka (n) dalam papan data di atas!", answer: statData.n, options: generateOptions(statData.n, 10) },
             { topic: "Logaritma Hafalan", text: `Berapakah nilai log(${statData.n})? (Gunakan tabel bantuan logaritma yang tersedia di samping data!)`, answer: statData.logN, options: generateLogOptions(statData.logN) },
             { topic: "Aturan Sturges", text: `Hitunglah k = 1 + 3,3 log(n). Gunakan nilai log yang sudah Anda temukan tadi. Berapa hasil k dalam bentuk desimal?`, answer: statData.k_desimal.toFixed(2), options: generateOptionsDec(statData.k_desimal, 0.5) },
-            { topic: "Pembulatan Kelas (k)", text: `Sesuai aturan pembuatan TDF, nilai k (Banyak Kelas) harus <strong>dibulatkan ke ATAS</strong>. Berapa k bulat yang digunakan?`, answer: statData.k_bulat, options: [statData.k_bulat, statData.k_bulat - 1, statData.k_bulat - 2, statData.k_bulat + 1].sort(() => Math.random() - 0.5) },
+            
+            // --- PERUBAHAN TEKS SOAL (Pembulatan k) ---
+            { topic: "Pembulatan Kelas (k)", text: `Nilai k (Banyak Kelas) harus dibulatkan menggunakan <strong>aturan desimal biasa</strong> (jika di bawah 0,5 bulatkan ke bawah, jika 0,5 ke atas bulatkan ke atas). Berapa k bulat yang Anda peroleh?`, answer: statData.k_bulat, options: [statData.k_bulat, statData.k_bulat - 1, statData.k_bulat + 1, statData.k_bulat + 2].sort(() => Math.random() - 0.5) },
+            
             { topic: "Panjang Interval (p)", text: `Berapakah hasil dari Jangkauan (J) dibagi Banyak Kelas (k bulat) dalam bentuk desimal?`, answer: statData.p_desimal.toFixed(2), options: generateOptionsDec(statData.p_desimal, 0.4) },
-            { topic: "Pembulatan Interval (p)", text: `Panjang Kelas (p) wajib <strong>dibulatkan ke ATAS</strong> agar seluruh data tertampung. Berapa p bulat yang akan digunakan?`, answer: statData.p_bulat, options: generateOptions(statData.p_bulat, 1) },
+            
+            // --- PENEKASAN TEKS SOAL (Pembulatan p tetap ke atas) ---
+            { topic: "Pembulatan Interval (p)", text: `Perhatian! Khusus untuk Panjang Kelas (p) <strong>selalu dibulatkan ke ATAS</strong> agar seluruh data tertampung, berapapun desimalnya. Berapa p bulat yang akan digunakan?`, answer: statData.p_bulat, options: generateOptions(statData.p_bulat, 1) },
+            
             { topic: "Penyusunan Kelas 1", text: `Kelas 1 dimulai dari Min (${statData.min}) dengan panjang kelas ${statData.p_bulat}. Bagaimana penulisan rentang interval kelas pertama?`, answer: `${statData.intervals[0].bb} - ${statData.intervals[0].ba}`, options: generateIntervalOptions(0) },
             { topic: "Penyusunan Kelas 2", text: `Melanjutkan kelas pertama, tuliskan rentang interval untuk kelas kedua!`, answer: `${statData.intervals[1].bb} - ${statData.intervals[1].ba}`, options: generateIntervalOptions(1) },
             { topic: "Frekuensi Kelas 1", text: `Berapakah frekuensi (fi) atau jumlah data yang masuk dalam rentang Kelas Pertama (${statData.intervals[0].bb} - ${statData.intervals[0].ba})?`, answer: statData.intervals[0].freq, options: generateOptions(statData.intervals[0].freq, 1) },
             { topic: "Frekuensi Kelas 2", text: `Berapakah frekuensi (fi) untuk rentang Kelas Kedua (${statData.intervals[1].bb} - ${statData.intervals[1].ba})?`, answer: statData.intervals[1].freq, options: generateOptions(statData.intervals[1].freq, 1) },
-            
-            // Soal 14 & 15 sudah diubah fokusnya murni ke Analisis Frekuensi
             { topic: "Analisis Frekuensi Tertinggi", text: `(Lihat Tabel Distribusi di atas). Berapakah jumlah frekuensi paling tinggi (hari terbanyak) yang tercatat pada satu rentang kelas?`, answer: maxFreq, options: generateOptions(maxFreq, 2) },
             { topic: "Analisis Selisih Frekuensi", text: `Berdasarkan tabel TDF tersebut, berapakah selisih antara frekuensi tertinggi dan frekuensi terendah?`, answer: (maxFreq - minFreq), options: generateOptions((maxFreq - minFreq), 2) }
         ];
     }
 
-    // Generator opsi (menghindari opsi bernilai negatif)
     function generateOptions(correct, variance) {
         let opts = [correct];
         while(opts.length < 4) {
@@ -262,7 +268,6 @@
         rawData.forEach(num => { board.innerHTML += `<div class="data-item">${num}</div>`; });
     }
 
-    // Render Tabel HANYA Rentang dan Frekuensi
     function renderTDFTable() {
         let tbody = document.getElementById('tdf-body');
         tbody.innerHTML = '';
