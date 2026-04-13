@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soal Konsekuensi: Histogram & Poligon (X-PM1)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff5f5; color: #333; padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #e53e3e; }
+        h1, h2 { color: #c53030; text-align: center; margin-bottom: 5px; }
+        h3 { text-align: center; color: #4a5568; margin-top: 0; }
+        h2 { border-bottom: 2px solid #feb2b2; padding-bottom: 10px; margin-bottom: 20px; margin-top: 20px;}
+        
+        .warning-text { color: #c53030; font-weight: bold; background: #fff5f5; padding: 10px; border-radius: 5px; border: 1px solid #feb2b2; margin-top: 10px; text-align: center; }
+        
+        /* Layout Grafik */
+        .chart-container { background: #f7fafc; border: 2px solid #cbd5e0; border-radius: 8px; padding: 20px; display: none; text-align: center; margin-bottom: 20px; position: relative; }
+        .chart-title { font-weight: bold; color: #2d3748; margin-bottom: 15px; font-size: 18px; text-transform: uppercase;}
+        svg { width: 100%; height: 250px; background: white; border: 1px solid #e2e8f0; border-radius: 4px; overflow: visible;}
+
+        /* Layout Tabel TDF */
+        .tdf-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; display: none; background: white;}
+        .tdf-table th, .tdf-table td { border: 1px solid #cbd5e0; padding: 12px; text-align: center; font-size: 16px;}
+        .tdf-table th { background: #4a5568; color: white; }
+        .tdf-table tr:nth-child(even) { background-color: #edf2f7; }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group input { padding: 12px; width: 100%; box-sizing: border-box; border: 2px solid #cbd5e0; border-radius: 6px; font-size:16px;}
+        
+        .question-box { background: #fff; padding: 20px; border-radius: 8px; border-left: 5px solid #e53e3e; margin-bottom: 20px; font-size: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .options { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .option { background: #f7fafc; padding: 14px 18px; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; border: 1px solid #e2e8f0; }
+        .option:hover { background: #edf2f7; border-color: #cbd5e0; }
+        .option input { margin-right: 15px; transform: scale(1.3); }
+        
+        button { background: #e53e3e; color: white; border: none; padding: 14px 25px; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; transition: 0.3s; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        button:hover { background: #c53030; }
+        
+        #timer-box { font-size: 16px; font-weight: bold; color: #c53030; text-align: right; margin-bottom: -20px; }
+        .badge { background: #718096; color: white; padding: 5px 12px; border-radius: 12px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="login-screen">
+    <h1>Soal Konsekuensi Visualisasi Data</h1>
+    <h3>SMK Negeri 1 Salatiga - Kelas X-PM1</h3>
+    <div class="warning-text">Materi: Membaca Grafik Histogram & Poligon</div>
+    <p style="text-align:center; color:#718096; margin-top:20px;">
+        <strong>Aturan Ketat:</strong> Jika Anda salah menjawab 1 soal saja, Anda akan di-reset mengulang ke Tahap 1 dengan data dan grafik yang baru!
+    </p>
+    
+    <div class="input-group" style="margin-top:20px;">
+        <label>Nama Lengkap Siswa:</label>
+        <input type="text" id="siswaNama" placeholder="Masukkan nama...">
+    </div>
+    <div class="input-group">
+        <label>Kelas:</label>
+        <input type="text" id="siswaKelas" value="X-PM1" readonly>
+    </div>
+    <button onclick="startQuiz()">Mulai Konsekuensi</button>
+</div>
+
+<div class="container" id="quiz-screen" style="display: none;">
+    <div id="timer-box">Waktu: <span id="time-sec">0</span>s</div>
+    
+    <h2>Tahap <span id="current-q-num">1</span> / 15: <span id="q-topic" class="badge">Teori</span></h2>
+    
+    <table class="tdf-table" id="tdf-table">
+        <thead>
+            <tr>
+                <th>Rentang Pendapatan (Kelas Interval)</th>
+                <th>Frekuensi (fi)</th>
+            </tr>
+        </thead>
+        <tbody id="tdf-body"></tbody>
+    </table>
+
+    <div class="chart-container" id="chart-container">
+        <div class="chart-title" id="chart-title">Grafik Visual</div>
+        <div id="svg-wrapper"></div>
+    </div>
+    
+    <div id="question-container" class="question-box"></div>
+    
+    <button onclick="checkAnswer()">Kunci Jawaban & Lanjut</button>
+</div>
+
+<div class="container" id="result-screen" style="display: none;">
+    <h1>Konsekuensi Tuntas!</h1>
+    <p style="text-align: center; font-size: 18px; color:#2d3748;">Anda telah berhasil melalui 15 Tahapan Analisis Grafik tanpa kesalahan.</p>
+    <div style="background:#f7fafc; padding:20px; border-radius:8px; margin:20px 0; text-align:center;">
+        <p>Waktu Penyelesaian: <strong id="total-time-display"></strong> detik</p>
+    </div>
+    <button id="submit-btn" onclick="submitToSpreadsheet()" style="background: #38a169;">Kirim Laporan ke Guru</button>
+    <p id="loading-msg" style="display:none; text-align:center; color:#e67e22; font-weight:bold;">Menyambungkan ke database...</p>
+</div>
+
+<script>
+    // --- GANTI URL INI DENGAN URL APPS SCRIPT ANDA DARI SPREADSHEET ---
+    const APPS_SCRIPT_URL = "URL_APPS_SCRIPT_ANDA_DISINI"; 
+
+    let currentQ = 0;
+    let questions = [];
+    let timerInterval;
+    let startTimeQuiz;
+    let startTimeSoal;
+    let waktuPerSoal = [];
+    let logSalah = [];
+    
+    let statData = {};
+    let randomChartType = ""; 
+
+    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+    function generateDataset() {
+        let k = randInt(5, 6); 
+        let p = randInt(5, 10);
+        let currentBB = randInt(10, 20);
+        let intervals = [];
+
+        for(let i=0; i<k; i++) {
+            let bb = currentBB;
+            let ba = currentBB + p - 1;
+            let tb = bb - 0.5;
+            let ta = ba + 0.5;
+            let xi = (bb + ba) / 2;
+            let freq = randInt(5, 30); 
+            
+            intervals.push({ kelas: i+1, bb, ba, tb, ta, xi, freq });
+            currentBB = ba + 1;
+        }
+
+        let freqs = intervals.map(i => i.freq);
+        let maxFi = Math.max(...freqs);
+        let minFi = Math.min(...freqs);
+        let maxFiClass = intervals.find(i => i.freq === maxFi);
+        let minFiClass = intervals.find(i => i.freq === minFi);
+
+        statData = { k, p, intervals, maxFi, minFi, maxFiClass, minFiClass };
+        
+        // Acak untuk tebakan gambar No. 1
+        randomChartType = Math.random() > 0.5 ? "Histogram" : "Poligon";
+    }
+
+    function generateQuestions() {
+        // Ambil kelas acak untuk dijadikan studi kasus di soal hitungan (jangan ambil kelas pertama/terakhir biar aman di opsi)
+        let rIdx = randInt(1, statData.intervals.length - 2); 
+        let cSample = statData.intervals[rIdx]; 
+
+        questions = [
+            // LEVEL 1: IDENTIFIKASI & TEORI (Soal 1-3)
+            { topic: "Identifikasi Gambar", text: `Perhatikan gambar grafik di atas. Berdasarkan bentuk visualnya, grafik penyajian data tersebut dikenal dengan sebutan...`, answer: randomChartType, options: ["Histogram", "Poligon", "Diagram Batang", "Diagram Garis"].sort(() => Math.random() - 0.5) },
+            { topic: "Anatomi Sumbu X (Histogram)", text: `Jika kita ingin menggambar Histogram dengan benar, angka-angka statistik apa yang harus kita tuliskan pada sumbu mendatar (Sumbu X)?`, answer: "Tepi Bawah dan Tepi Atas Kelas", options: ["Tepi Bawah dan Tepi Atas Kelas", "Batas Bawah dan Batas Atas Kelas", "Titik Tengah Kelas", "Frekuensi Kumulatif"] },
+            { topic: "Anatomi Sumbu X (Poligon)", text: `Sebaliknya, jika kita ingin menggambar grafik garis Poligon, titik-titik koordinat mendatar (Sumbu X) berpatokan pada nilai...`, answer: "Titik Tengah Kelas (xi)", options: ["Titik Tengah Kelas (xi)", "Tepi Kelas", "Rentang Kelas", "Frekuensi Data"] },
+            
+            // LEVEL 2: PERHITUNGAN KOMPONEN BERDASARKAN TABEL (Soal 4-7)
+            { topic: "Menghitung Tepi Bawah", text: `Perhatikan Tabel Distribusi Frekuensi di atas. Fokus pada kelas interval <strong>${cSample.bb} - ${cSample.ba}</strong>. Berapakah nilai Tepi Bawah dari kelas tersebut?`, answer: cSample.tb, options: [cSample.tb, cSample.bb + 0.5, cSample.bb, cSample.tb - 1].sort(() => Math.random() - 0.5) },
+            { topic: "Menghitung Tepi Atas", text: `Masih pada tabel yang sama, berapakah nilai Tepi Atas dari kelas interval <strong>${cSample.bb} - ${cSample.ba}</strong>?`, answer: cSample.ta, options: [cSample.ta, cSample.ba - 0.5, cSample.ta + 1, cSample.ba].sort(() => Math.random() - 0.5) },
+            { topic: "Menghitung Titik Tengah", text: `Berdasarkan tabel di atas, berapakah nilai Titik Tengah (xi) untuk kelas interval <strong>${cSample.bb} - ${cSample.ba}</strong>?`, answer: cSample.xi, options: [cSample.xi, cSample.xi - 0.5, cSample.xi + 0.5, cSample.xi + 1].sort(() => Math.random() - 0.5) },
+            { topic: "Menghitung Rentang (Panjang)", text: `Berapakah Panjang Kelas (p) atau rentang interval yang digunakan pada Tabel Distribusi Frekuensi tersebut?`, answer: statData.p, options: [statData.p, statData.p - 1, statData.p + 1, statData.p + 0.5].sort(() => Math.random() - 0.5) },
+            
+            // LEVEL 3: LOGIKA KOORDINAT (Soal 8-10)
+            { topic: "Koordinat Histogram", text: `Untuk menggambar SATU tiang (batang) utuh pada Histogram, batas sisi kiri dan batas sisi kanan penyangga tiang tersebut diletakkan tepat pada angka...`, answer: "Tepi Bawah dan Tepi Atas", options: ["Tepi Bawah dan Tepi Atas", "Batas Bawah dan Titik Tengah", "Titik Tengah dan Tepi Atas", "Angka 0 dan Frekuensi"] },
+            { topic: "Koordinat Poligon", text: `Untuk meletakkan SATU titik lengkung pada grafik Poligon, titik koordinatnya dibentuk dari pertemuan dua sumbu, yaitu...`, answer: "Titik Tengah (X) dan Frekuensi (Y)", options: ["Titik Tengah (X) dan Frekuensi (Y)", "Tepi Kelas (X) dan Frekuensi (Y)", "Batas Bawah (X) dan Batas Atas (Y)", "Frekuensi (X) dan Panjang Kelas (Y)"] },
+            { topic: "Menutup Garis Poligon", text: `Agar garis grafik Poligon menjadi bentuk kurva tertutup yang menyentuh sumbu X di bagian awal dan akhir, nilai frekuensi pada ujung-ujungnya harus ditarik ke angka...`, answer: "0 (Nol)", options: ["0 (Nol)", "1 (Satu)", "Sama dengan frekuensi terendah", "Titik tengah kelas sebelumnya"] },
+            
+            // LEVEL 4: ANALISIS GRAFIK TAMPIL (Soal 11-15)
+            { topic: "Analisis Histogram (Tertinggi)", text: `(Perhatikan gambar Histogram di atas). Berdasarkan visual tersebut, pada rentang Tepi Kelas manakah omzet penjualan paling tinggi (laris) terjadi?`, answer: `${statData.maxFiClass.tb} - ${statData.maxFiClass.ta}`, options: [
+                `${statData.maxFiClass.tb} - ${statData.maxFiClass.ta}`,
+                `${statData.intervals[0].tb} - ${statData.intervals[0].ta}`,
+                `${statData.minFiClass.tb} - ${statData.minFiClass.ta}`,
+                `${statData.maxFiClass.bb} - ${statData.maxFiClass.ba}`
+            ].sort(() => Math.random() - 0.5) },
+            
+            { topic: "Analisis Histogram (Kumulatif)", text: `(Masih pada Histogram). Berapakah jumlah total frekuensi (hari) dari <strong>2 kelas pertama</strong> pada grafik tersebut?`, answer: statData.intervals[0].freq + statData.intervals[1].freq, options: [
+                statData.intervals[0].freq + statData.intervals[1].freq,
+                statData.intervals[0].freq + statData.intervals[1].freq + 5,
+                statData.intervals[1].freq,
+                statData.intervals[0].freq + statData.intervals[1].freq - 2
+            ].sort(() => Math.random() - 0.5) },
+
+            { topic: "Analisis Poligon (Terendah)", text: `(Perhatikan gambar Poligon di atas). Berdasarkan titik puncaknya (abaikan titik 0 di ujung sumbu yang menyentuh garis bawah), pada nilai Titik Tengah berapakah omzet paling sepi terjadi?`, answer: statData.minFiClass.xi, options: [
+                statData.minFiClass.xi,
+                statData.maxFiClass.xi,
+                statData.intervals[0].xi,
+                statData.minFiClass.tb
+            ].sort(() => Math.random() - 0.5) },
+
+            { topic: "Analisis Poligon (Selisih)", text: `(Masih pada Poligon). Berapakah selisih frekuensi antara titik puncak tertinggi dan titik frekuensi terendah dari grafik tersebut?`, answer: statData.maxFi - statData.minFi, options: [
+                statData.maxFi - statData.minFi,
+                statData.maxFi,
+                statData.maxFi - statData.minFi + 3,
+                statData.maxFi - statData.minFi - 2
+            ].sort(() => Math.random() - 0.5) },
+
+            { topic: "Integrasi Histogram & Poligon", text: `(Perhatikan gambar Histogram di atas). Jika Anda diminta untuk menggambar Poligon Frekuensi langsung menimpa (di atas) Histogram tersebut, cara yang paling tepat adalah...`, answer: "Menghubungkan Titik Tengah pada bagian atas setiap tiang batang dengan garis lurus.", options: [
+                "Menghubungkan Titik Tengah pada bagian atas setiap tiang batang dengan garis lurus.",
+                "Menghubungkan sudut-sudut kiri atas setiap tiang batang.",
+                "Menggambar tiang-tiang baru di celah antara tiang Histogram.",
+                "Melingkari tiang batang yang frekuensinya paling tinggi saja."
+            ]}
+        ];
+    }
+
+    // --- RENDER TABEL ---
+    function renderTDFTable() {
+        let tbody = document.getElementById('tdf-body');
+        tbody.innerHTML = '';
+        statData.intervals.forEach(i => {
+            tbody.innerHTML += `<tr><td style="font-weight:bold;">${i.bb} - ${i.ba}</td><td>${i.freq}</td></tr>`;
+        });
+    }
+
+    // --- ENGINE PENGGAMBAR GRAFIK (SVG) ---
+    function drawHistogram(hideName = false) {
+        let maxH = statData.maxFi + 5; 
+        let svgW = 800; let svgH = 200;
+        let barW = svgW / statData.k;
+        
+        let svgHTML = `<svg viewBox="0 -10 ${svgW} ${svgH + 40}">`;
+        
+        statData.intervals.forEach((intv, i) => {
+            let x = i * barW;
+            let barHeight = (intv.freq / maxH) * svgH;
+            let y = svgH - barHeight;
+            
+            svgHTML += `<rect x="${x}" y="${y}" width="${barW}" height="${barHeight}" fill="#4299e1" stroke="#2b6cb0" stroke-width="2"/>`;
+            svgHTML += `<text x="${x + barW/2}" y="${y - 5}" font-size="16" fill="#2d3748" text-anchor="middle" font-weight="bold">${intv.freq}</text>`;
+            svgHTML += `<text x="${x}" y="${svgH + 20}" font-size="14" fill="#4a5568" text-anchor="middle">${intv.tb}</text>`;
+        });
+        svgHTML += `<text x="${svgW}" y="${svgH + 20}" font-size="14" fill="#4a5568" text-anchor="middle">${statData.intervals[statData.k-1].ta}</text>`;
+        
+        svgHTML += `</svg>`;
+        document.getElementById('svg-wrapper').innerHTML = svgHTML;
+        document.getElementById('chart-title').innerText = hideName ? "Grafik Penjualan Harian" : "Grafik Histogram Penjualan";
+    }
+
+    function drawPolygon(hideName = false) {
+        let maxH = statData.maxFi + 5; 
+        let svgW = 800; let svgH = 200;
+        let pointSpace = svgW / (statData.k + 1); 
+        
+        let pointsStr = "";
+        let svgHTML = `<svg viewBox="-20 -10 ${svgW + 40} ${svgH + 40}">`;
+        
+        let xFik1 = 0; let yFik1 = svgH;
+        pointsStr += `${xFik1},${yFik1} `;
+        svgHTML += `<text x="${xFik1}" y="${svgH + 20}" font-size="14" fill="#a0aec0" text-anchor="middle">${statData.intervals[0].xi - statData.p}</text>`;
+        svgHTML += `<circle cx="${xFik1}" cy="${yFik1}" r="4" fill="#cbd5e0"/>`;
+
+        statData.intervals.forEach((intv, i) => {
+            let x = (i + 1) * pointSpace;
+            let y = svgH - ((intv.freq / maxH) * svgH);
+            pointsStr += `${x},${y} `;
+            
+            svgHTML += `<text x="${x}" y="${y - 10}" font-size="16" fill="#2d3748" text-anchor="middle" font-weight="bold">${intv.freq}</text>`;
+            svgHTML += `<text x="${x}" y="${svgH + 20}" font-size="14" fill="#e53e3e" text-anchor="middle" font-weight="bold">${intv.xi}</text>`;
+            svgHTML += `<circle cx="${x}" cy="${y}" r="6" fill="#ed8936" stroke="#c05621" stroke-width="2"/>`;
+        });
+
+        let xFik2 = (statData.k + 1) * pointSpace; let yFik2 = svgH;
+        pointsStr += `${xFik2},${yFik2}`;
+        svgHTML += `<text x="${xFik2}" y="${svgH + 20}" font-size="14" fill="#a0aec0" text-anchor="middle">${statData.intervals[statData.k-1].xi + statData.p}</text>`;
+        svgHTML += `<circle cx="${xFik2}" cy="${yFik2}" r="4" fill="#cbd5e0"/>`;
+
+        svgHTML = `<svg viewBox="-20 -10 ${svgW + 40} ${svgH + 40}">` + 
+                  `<polyline points="${pointsStr}" fill="none" stroke="#ed8936" stroke-width="4"/>` + 
+                  svgHTML.replace(`<svg viewBox="-20 -10 ${svgW + 40} ${svgH + 40}">`, "");
+        
+        document.getElementById('svg-wrapper').innerHTML = svgHTML;
+        document.getElementById('chart-title').innerText = hideName ? "Grafik Penjualan Harian" : "Grafik Poligon Frekuensi";
+    }
+
+
+    // --- ALUR UI KUIS ---
+    function startQuiz() {
+        let nama = document.getElementById('siswaNama').value;
+        if(!nama) return alert("Isi nama sebelum memulai konsekuensi!");
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        startTimeQuiz = Date.now();
+        initStage();
+    }
+
+    function initStage() {
+        generateDataset();
+        generateQuestions();
+        currentQ = 0;
+        loadQuestionUI();
+    }
+
+    function loadQuestionUI() {
+        startTimeSoal = Date.now();
+        let q = questions[currentQ];
+        
+        document.getElementById('current-q-num').innerText = currentQ + 1;
+        document.getElementById('q-topic').innerText = q.topic;
+        
+        let chartContainer = document.getElementById('chart-container');
+        let tdfTable = document.getElementById('tdf-table');
+        
+        // Reset Display
+        chartContainer.style.display = 'none';
+        tdfTable.style.display = 'none';
+
+        // Atur Kapan Grafik atau Tabel Muncul
+        if(currentQ === 0) {
+            // Soal 1: Tebak Gambar (Judul disembunyikan/hideName = true)
+            chartContainer.style.display = 'block';
+            randomChartType === "Histogram" ? drawHistogram(true) : drawPolygon(true);
+        } 
+        else if (currentQ >= 3 && currentQ <= 6) {
+            // Soal 4-7: Perhitungan Tepi/Titik Tengah, Munculkan Tabel
+            tdfTable.style.display = 'table';
+            renderTDFTable();
+        }
+        else if (currentQ === 10 || currentQ === 11 || currentQ === 14) {
+            // Soal 11, 12, dan 15: Analisis Histogram
+            chartContainer.style.display = 'block';
+            drawHistogram(false);
+        }
+        else if (currentQ === 12 || currentQ === 13) {
+            // Soal 13, 14: Analisis Poligon
+            chartContainer.style.display = 'block';
+            drawPolygon(false);
+        }
+
+        // Render Pilihan Ganda
+        let qHTML = `<div style="margin-bottom:15px; font-weight:500;">${q.text}</div><div class="options">`;
+        q.options.forEach(opt => {
+            qHTML += `<label class="option"><input type="radio" name="answer" value="${opt}"> ${opt}</label>`;
+        });
+        qHTML += `</div>`;
+        document.getElementById('question-container').innerHTML = qHTML;
+
+        // Timer
+        let sec = 0;
+        clearInterval(timerInterval);
+        document.getElementById('time-sec').innerText = "0";
+        timerInterval = setInterval(() => { sec++; document.getElementById('time-sec').innerText = sec; }, 1000);
+    }
+
+    function checkAnswer() {
+        let selected = document.querySelector('input[name="answer"]:checked');
+        if(!selected) return alert("Pilih jawaban Anda!");
+
+        let waktuDiSoal = Math.floor((Date.now() - startTimeSoal)/1000);
+        let userAns = selected.value;
+        let trueAns = String(questions[currentQ].answer);
+
+        waktuPerSoal.push(`Tahap ${currentQ+1}: ${waktuDiSoal}s`);
+
+        if(userAns === trueAns) {
+            currentQ++;
+            if(currentQ < questions.length) loadQuestionUI();
+            else finishQuiz();
+        } else {
+            logSalah.push(`Gagal Tahap ${currentQ+1} (${questions[currentQ].topic})`);
+            alert(`KESALAHAN TERDETEKSI!\n\nAnda salah pada materi: ${questions[currentQ].topic}.\nSebagai konsekuensi, Anda dikembalikan ke Nomor 1 dengan Soal/Grafik yang diacak ulang.`);
+            waktuPerSoal = []; 
+            initStage(); 
+        }
+    }
+
+    function finishQuiz() {
+        clearInterval(timerInterval);
+        let totalWaktu = Math.floor((Date.now() - startTimeQuiz) / 1000);
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('total-time-display').innerText = totalWaktu;
+    }
+
+    function submitToSpreadsheet() {
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('loading-msg').style.display = 'block';
+        let totalWaktu = Math.floor((Date.now() - startTimeQuiz) / 1000);
+        
+        let payload = {
+            nama: document.getElementById('siswaNama').value,
+            kelas: document.getElementById('siswaKelas').value,
+            totalWaktu: totalWaktu,
+            waktuPerSoal: waktuPerSoal,
+            soalSalah: logSalah.length === 0 ? ["Lulus Tanpa Reset"] : logSalah
+        };
+
+        fetch(APPS_SCRIPT_URL, {
+            method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            document.getElementById('loading-msg').style.display = 'none';
+            document.getElementById('result-screen').innerHTML += `<p style="color:#2b6cb0; font-weight:bold; margin-top:20px;">Laporan terkirim ke Server Guru.</p>`;
+        }).catch(err => {
+            alert("Gagal mengirim laporan. Cek internet Anda.");
+            document.getElementById('loading-msg').style.display = 'none';
+            document.getElementById('submit-btn').style.display = 'inline-block';
+        });
+    }
+</script>
+
+</body>
+</html>
