@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soal Konsekuensi Statistika - X-PM1</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fff5f5; color: #333; padding: 20px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #e53e3e; }
+        h1, h2 { color: #c53030; text-align: center; }
+        h2 { border-bottom: 2px solid #feb2b2; padding-bottom: 10px; margin-bottom: 20px; }
+        
+        .top-panel { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+        
+        .data-board { flex: 2; background: #fffaf0; border: 2px dashed #ed8936; padding: 15px; border-radius: 8px; text-align: center; display: none; min-width: 300px;}
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; margin-top: 10px; }
+        .data-item { background: #fff; border: 1px solid #ed8936; padding: 8px; border-radius: 4px; font-weight: bold; color: #c05621; }
+        
+        .log-board { flex: 1; background: #ebf8ff; border: 2px solid #4299e1; padding: 15px; border-radius: 8px; display: none; min-width: 200px; height: fit-content; }
+        .log-board h3 { margin-top: 0; color: #2b6cb0; font-size: 16px; text-align: center; border-bottom: 1px solid #4299e1; padding-bottom: 5px; }
+        .log-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-family: monospace; font-size: 14px; }
+        
+        /* Modifikasi Tabel: Kolom Nilai Tengah Dihapus */
+        .tdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; display: none; }
+        .tdf-table th, .tdf-table td { border: 1px solid #cbd5e0; padding: 12px; text-align: center; font-size: 16px;}
+        .tdf-table th { background: #4a5568; color: white; }
+        .tdf-table tr:nth-child(even) { background-color: #edf2f7; }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group input { padding: 12px; width: 100%; box-sizing: border-box; border: 2px solid #cbd5e0; border-radius: 6px; font-size:16px;}
+        
+        .question-box { background: #fff; padding: 20px; border-radius: 8px; border-left: 5px solid #e53e3e; margin-bottom: 20px; font-size: 18px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        .options { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .option { background: #f7fafc; padding: 14px 18px; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; border: 1px solid #e2e8f0; }
+        .option:hover { background: #edf2f7; border-color: #cbd5e0; }
+        .option input { margin-right: 15px; transform: scale(1.3); }
+        
+        button { background: #e53e3e; color: white; border: none; padding: 14px 25px; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; transition: 0.3s; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        button:hover { background: #c53030; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        #timer-box { font-size: 16px; font-weight: bold; color: #c53030; text-align: right; margin-bottom: -20px; }
+        .badge { background: #718096; color: white; padding: 5px 12px; border-radius: 12px; font-size: 14px; }
+        .warning-text { color: #c53030; font-weight: bold; background: #fff5f5; padding: 10px; border-radius: 5px; border: 1px solid #feb2b2; margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="login-screen">
+    <h1>Soal Konsekuensi Statistika</h1>
+    <h3 style="text-align:center; color:#4a5568;">SMK Negeri 1 Salatiga - Kelas X-PM1</h3>
+    
+    <div class="warning-text">
+        Tugas ini diberikan sebagai konsekuensi karena tidak mengerjakan tugas tepat waktu.
+    </div>
+
+    <p style="text-align:center; color:#718096; margin-top:20px;">
+        <strong>Aturan Ketat:</strong> Salah menjawab 1 soal saja, sistem otomatis mereset kembali ke Tahap 1 dengan <strong>Data Angka Baru</strong>. Kerjakan dengan teliti di lembar buram!
+    </p>
+    
+    <div class="input-group" style="margin-top:20px;">
+        <label>Nama Lengkap Siswa:</label>
+        <input type="text" id="siswaNama" placeholder="Masukkan nama sesuai presensi...">
+    </div>
+    <div class="input-group">
+        <label>Program Keahlian:</label>
+        <input type="text" id="siswaKelas" value="Pemasaran (X-PM1)" readonly>
+    </div>
+    <button onclick="startQuiz()">Mulai Pengerjaan Konsekuensi</button>
+</div>
+
+<div class="container" id="quiz-screen" style="display: none;">
+    <div id="timer-box">Waktu: <span id="time-sec">0</span> detik</div>
+    
+    <h2>Tahap <span id="current-q-num">1</span> / 15: <span id="q-topic" class="badge">Analisis Data</span></h2>
+    
+    <div class="top-panel">
+        <div class="data-board" id="data-board">
+            <strong>Data Penjualan Harian Unit Produksi (Puluhan Ribu Rp)</strong>
+            <div class="data-grid" id="data-grid"></div>
+        </div>
+
+        <div class="log-board" id="log-board">
+            <h3>Tabel Bantuan Logaritma</h3>
+            <div class="log-grid">
+                <div>log 2 = 0.30</div><div>log 6 = 0.78</div>
+                <div>log 3 = 0.48</div><div>log 7 = 0.85</div>
+                <div>log 4 = 0.60</div><div>log 8 = 0.90</div>
+                <div>log 5 = 0.70</div><div>log 9 = 0.95</div>
+                <div style="grid-column: span 2; text-align:center; margin-top:5px; font-weight:bold;">log 10 = 1.00</div>
+            </div>
+        </div>
+    </div>
+
+    <table class="tdf-table" id="tdf-table">
+        <thead>
+            <tr>
+                <th>Rentang Pendapatan (Kelas Interval)</th>
+                <th>Frekuensi (fi)</th>
+            </tr>
+        </thead>
+        <tbody id="tdf-body"></tbody>
+    </table>
+    
+    <div id="question-container" class="question-box"></div>
+    
+    <button onclick="checkAnswer()">Kunci & Lanjutkan Tahap Berikutnya</button>
+</div>
+
+<div class="container" id="result-screen" style="display: none;">
+    <h1>Konsekuensi Selesai</h1>
+    <p style="text-align: center; font-size: 18px; color:#2d3748;">Anda telah berhasil melalui 15 Tahapan Analisis Distribusi Frekuensi tanpa kesalahan.</p>
+    <div style="background:#f7fafc; padding:20px; border-radius:8px; margin:20px 0; text-align:center;">
+        <p>Total Waktu Penyelesaian: <strong id="total-time-display"></strong> detik</p>
+        <p>Status: <strong style="color:#38a169;">Tuntas</strong></p>
+    </div>
+    
+    <button id="submit-btn" onclick="submitToSpreadsheet()" style="background: #38a169;">Kirim Laporan Pengerjaan ke Server Guru</button>
+    <p id="loading-msg" style="display:none; text-align:center; color:#e67e22; font-weight:bold;">Menyambungkan ke database, jangan tutup halaman...</p>
+</div>
+
+<script>
+    // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI BAWAH INI:
+    const APPS_SCRIPT_URL = "URL_APPS_SCRIPT_ANDA_DISINI"; 
+
+    let currentQ = 0;
+    let questions = [];
+    let timerInterval;
+    let startTimeQuiz;
+    let startTimeSoal;
+    let waktuPerSoal = [];
+    let logSalah = [];
+    
+    let rawData = [];
+    let statData = {};
+
+    const baseLogs = { 2: 0.30, 3: 0.48, 4: 0.60, 5: 0.70, 6: 0.78, 7: 0.85, 8: 0.90, 9: 0.95, 10: 1.00 };
+
+    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+    function generateDataset() {
+        rawData = [];
+        let multiplier = randInt(3, 9); 
+        let nData = multiplier * 10; 
+        
+        for(let i=0; i<nData; i++) {
+            rawData.push(randInt(15, 95));
+        }
+        
+        let max = Math.max(...rawData);
+        let min = Math.min(...rawData);
+        let jangkauan = max - min;
+        
+        let manualLogN = baseLogs[multiplier] + 1.00;
+        let k_desimal = 1 + (3.3 * manualLogN);
+        let k_bulat = Math.ceil(k_desimal); 
+        let p_desimal = jangkauan / k_bulat; 
+        let p_bulat = Math.ceil(p_desimal); 
+
+        if (min + (k_bulat * p_bulat) - 1 < max) {
+            p_bulat += 1;
+        }
+
+        let intervals = [];
+        let currentBB = min;
+        for(let i=0; i<k_bulat; i++) {
+            let batasBawah = currentBB;
+            let batasAtas = currentBB + p_bulat - 1;
+            let freq = rawData.filter(x => x >= batasBawah && x <= batasAtas).length;
+            intervals.push({ kelas: i+1, bb: batasBawah, ba: batasAtas, freq: freq });
+            currentBB = batasAtas + 1;
+        }
+
+        statData = { max, min, jangkauan, n: nData, logN: manualLogN.toFixed(2), k_desimal, k_bulat, p_desimal, p_bulat, intervals };
+    }
+
+    function generateQuestions() {
+        // Ambil data frekuensi dari interval untuk soal no 14 & 15
+        let freqs = statData.intervals.map(i => i.freq);
+        let maxFreq = Math.max(...freqs);
+        let minFreq = Math.min(...freqs);
+
+        questions = [
+            { topic: "Mencari Max", text: "Perhatikan data mentah di atas. Berapakah nilai penjualan paling tinggi (Max) yang tercatat?", answer: statData.max, options: generateOptions(statData.max, 3) },
+            { topic: "Mencari Min", text: "Berapakah nilai penjualan paling rendah (Min) dari kumpulan data tersebut?", answer: statData.min, options: generateOptions(statData.min, 2) },
+            { topic: "Menghitung Jangkauan", text: `Gunakan rumus J = Max - Min. Berapakah nilai Jangkauan (J) untuk data tersebut?`, answer: statData.jangkauan, options: generateOptions(statData.jangkauan, 5) },
+            { topic: "Mencari Jumlah Data", text: "Hitunglah ada berapa banyak total angka (n) dalam papan data di atas!", answer: statData.n, options: generateOptions(statData.n, 10) },
+            { topic: "Logaritma Hafalan", text: `Berapakah nilai log(${statData.n})? (Gunakan tabel bantuan logaritma yang tersedia di samping data!)`, answer: statData.logN, options: generateLogOptions(statData.logN) },
+            { topic: "Aturan Sturges", text: `Hitunglah k = 1 + 3,3 log(n). Gunakan nilai log yang sudah Anda temukan tadi. Berapa hasil k dalam bentuk desimal?`, answer: statData.k_desimal.toFixed(2), options: generateOptionsDec(statData.k_desimal, 0.5) },
+            { topic: "Pembulatan Kelas (k)", text: `Sesuai aturan pembuatan TDF, nilai k (Banyak Kelas) harus <strong>dibulatkan ke ATAS</strong>. Berapa k bulat yang digunakan?`, answer: statData.k_bulat, options: [statData.k_bulat, statData.k_bulat - 1, statData.k_bulat - 2, statData.k_bulat + 1].sort(() => Math.random() - 0.5) },
+            { topic: "Panjang Interval (p)", text: `Berapakah hasil dari Jangkauan (J) dibagi Banyak Kelas (k bulat) dalam bentuk desimal?`, answer: statData.p_desimal.toFixed(2), options: generateOptionsDec(statData.p_desimal, 0.4) },
+            { topic: "Pembulatan Interval (p)", text: `Panjang Kelas (p) wajib <strong>dibulatkan ke ATAS</strong> agar seluruh data tertampung. Berapa p bulat yang akan digunakan?`, answer: statData.p_bulat, options: generateOptions(statData.p_bulat, 1) },
+            { topic: "Penyusunan Kelas 1", text: `Kelas 1 dimulai dari Min (${statData.min}) dengan panjang kelas ${statData.p_bulat}. Bagaimana penulisan rentang interval kelas pertama?`, answer: `${statData.intervals[0].bb} - ${statData.intervals[0].ba}`, options: generateIntervalOptions(0) },
+            { topic: "Penyusunan Kelas 2", text: `Melanjutkan kelas pertama, tuliskan rentang interval untuk kelas kedua!`, answer: `${statData.intervals[1].bb} - ${statData.intervals[1].ba}`, options: generateIntervalOptions(1) },
+            { topic: "Frekuensi Kelas 1", text: `Berapakah frekuensi (fi) atau jumlah data yang masuk dalam rentang Kelas Pertama (${statData.intervals[0].bb} - ${statData.intervals[0].ba})?`, answer: statData.intervals[0].freq, options: generateOptions(statData.intervals[0].freq, 1) },
+            { topic: "Frekuensi Kelas 2", text: `Berapakah frekuensi (fi) untuk rentang Kelas Kedua (${statData.intervals[1].bb} - ${statData.intervals[1].ba})?`, answer: statData.intervals[1].freq, options: generateOptions(statData.intervals[1].freq, 1) },
+            
+            // Soal 14 & 15 sudah diubah fokusnya murni ke Analisis Frekuensi
+            { topic: "Analisis Frekuensi Tertinggi", text: `(Lihat Tabel Distribusi di atas). Berapakah jumlah frekuensi paling tinggi (hari terbanyak) yang tercatat pada satu rentang kelas?`, answer: maxFreq, options: generateOptions(maxFreq, 2) },
+            { topic: "Analisis Selisih Frekuensi", text: `Berdasarkan tabel TDF tersebut, berapakah selisih antara frekuensi tertinggi dan frekuensi terendah?`, answer: (maxFreq - minFreq), options: generateOptions((maxFreq - minFreq), 2) }
+        ];
+    }
+
+    // Generator opsi (menghindari opsi bernilai negatif)
+    function generateOptions(correct, variance) {
+        let opts = [correct];
+        while(opts.length < 4) {
+            let fake = correct + randInt(-variance - 2, variance + 2);
+            if(!opts.includes(fake) && fake >= 0) opts.push(fake);
+        }
+        return opts.sort(() => Math.random() - 0.5);
+    }
+    
+    function generateOptionsDec(correct, variance) {
+        let opts = [correct.toFixed(2)];
+        while(opts.length < 4) {
+            let fake = (correct + (Math.random() * variance * 2 - variance)).toFixed(2);
+            if(!opts.includes(fake) && parseFloat(fake) >= 0) opts.push(fake);
+        }
+        return opts.sort(() => Math.random() - 0.5);
+    }
+
+    function generateLogOptions(correct) {
+        let val = parseFloat(correct);
+        let opts = [correct];
+        opts.push((val + 0.30).toFixed(2)); 
+        opts.push((val - 0.10).toFixed(2));
+        opts.push((val + 1.00).toFixed(2)); 
+        return opts.sort(() => Math.random() - 0.5);
+    }
+
+    function generateIntervalOptions(index) {
+        let correct = `${statData.intervals[index].bb} - ${statData.intervals[index].ba}`;
+        let opts = [correct];
+        let p = statData.p_bulat;
+        let bb = statData.intervals[index].bb;
+        opts.push(`${bb} - ${bb + p}`); 
+        opts.push(`${bb + 1} - ${bb + p}`); 
+        opts.push(`${bb} - ${bb + p - 2}`); 
+        return opts.sort(() => Math.random() - 0.5);
+    }
+
+    function startQuiz() {
+        let nama = document.getElementById('siswaNama').value;
+        if(!nama) return alert("Identitas Nama wajib diisi sebelum memulai konsekuensi!");
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        startTimeQuiz = Date.now();
+        initStage();
+    }
+
+    function initStage() {
+        generateDataset();
+        generateQuestions();
+        currentQ = 0;
+        renderDataBoard();
+        loadQuestionUI();
+    }
+
+    function renderDataBoard() {
+        let board = document.getElementById('data-grid');
+        board.innerHTML = '';
+        rawData.forEach(num => { board.innerHTML += `<div class="data-item">${num}</div>`; });
+    }
+
+    // Render Tabel HANYA Rentang dan Frekuensi
+    function renderTDFTable() {
+        let tbody = document.getElementById('tdf-body');
+        tbody.innerHTML = '';
+        statData.intervals.forEach(i => {
+            tbody.innerHTML += `<tr><td style="font-weight:bold;">${i.bb} - ${i.ba}</td><td>${i.freq}</td></tr>`;
+        });
+    }
+
+    function loadQuestionUI() {
+        startTimeSoal = Date.now();
+        let q = questions[currentQ];
+        
+        document.getElementById('current-q-num').innerText = currentQ + 1;
+        document.getElementById('q-topic').innerText = q.topic;
+        
+        if(currentQ < 13) {
+            document.getElementById('data-board').style.display = 'block';
+            document.getElementById('tdf-table').style.display = 'none';
+        } else {
+            document.getElementById('data-board').style.display = 'none';
+            document.getElementById('tdf-table').style.display = 'table';
+            renderTDFTable();
+        }
+
+        if(currentQ === 4 || currentQ === 5) {
+            document.getElementById('log-board').style.display = 'block';
+        } else {
+            document.getElementById('log-board').style.display = 'none';
+        }
+
+        let qHTML = `<div style="margin-bottom:15px; font-weight:500;">${q.text}</div><div class="options">`;
+        q.options.forEach((opt) => {
+            qHTML += `<label class="option"><input type="radio" name="answer" value="${opt}"> ${opt}</label>`;
+        });
+        qHTML += `</div>`;
+        
+        document.getElementById('question-container').innerHTML = qHTML;
+
+        let sec = 0;
+        clearInterval(timerInterval);
+        document.getElementById('time-sec').innerText = "0";
+        timerInterval = setInterval(() => {
+            sec++;
+            document.getElementById('time-sec').innerText = sec;
+        }, 1000);
+    }
+
+    function checkAnswer() {
+        let selected = document.querySelector('input[name="answer"]:checked');
+        if(!selected) return alert("Pilih jawaban Anda!");
+
+        let waktuDiSoal = Math.floor((Date.now() - startTimeSoal)/1000);
+        let userAns = selected.value;
+        let trueAns = String(questions[currentQ].answer);
+
+        waktuPerSoal.push(`Tahap ${currentQ+1}: ${waktuDiSoal}s`);
+
+        if(userAns === trueAns) {
+            currentQ++;
+            if(currentQ < questions.length) loadQuestionUI();
+            else finishQuiz();
+        } else {
+            logSalah.push(`Gagal Tahap ${currentQ+1} (${questions[currentQ].topic})`);
+            alert(`KESALAHAN TERDETEKSI!\n\nAnda salah menjawab pada ${questions[currentQ].topic}.\n\nSebagai konsekuensi, sistem akan mengulang ke Tahap 1 dan mengganti seluruh data angka. Silakan lebih teliti!`);
+            waktuPerSoal = []; 
+            initStage(); 
+        }
+    }
+
+    function finishQuiz() {
+        clearInterval(timerInterval);
+        let totalWaktu = Math.floor((Date.now() - startTimeQuiz) / 1000);
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('total-time-display').innerText = totalWaktu;
+    }
+
+    function submitToSpreadsheet() {
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('loading-msg').style.display = 'block';
+        let totalWaktu = Math.floor((Date.now() - startTimeQuiz) / 1000);
+        let payload = {
+            nama: document.getElementById('siswaNama').value,
+            kelas: document.getElementById('siswaKelas').value,
+            totalWaktu: totalWaktu,
+            waktuPerSoal: waktuPerSoal,
+            soalSalah: logSalah.length === 0 ? ["Lulus Mulus Tanpa Reset"] : logSalah
+        };
+
+        fetch(APPS_SCRIPT_URL, {
+            method: 'POST', mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            document.getElementById('loading-msg').style.display = 'none';
+            document.getElementById('result-screen').innerHTML += `<p style="color:#2b6cb0; font-weight:bold; margin-top:20px;">Laporan konsekuensi berhasil dikirim. Silakan melapor ke Guru.</p>`;
+        }).catch(err => {
+            alert("Gagal mengirim laporan. Pastikan koneksi internet stabil.");
+            document.getElementById('loading-msg').style.display = 'none';
+            document.getElementById('submit-btn').style.display = 'inline-block';
+        });
+    }
+</script>
+
+</body>
+</html>
