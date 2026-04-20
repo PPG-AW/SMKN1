@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Materi Ajar: Konsep & Hitung Data Tunggal Terlengkap</title>
+    <style>
+        :root {
+            --primary: #2563eb; --primary-dark: #1d4ed8;
+            --bg-color: #f8fafc; --card-bg: #ffffff;
+            --text-main: #1e293b; --text-muted: #64748b;
+            --border: #e2e8f0; --success: #059669; --danger: #dc2626;
+            --warning: #d97706;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.7; display: flex; justify-content: center; scroll-behavior: smooth; }
+        .app-container { width: 100%; max-width: 650px; background: var(--card-bg); min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; }
+        
+        /* HEADER & KONTROL TAB GLOBAL */
+        .header { background: var(--primary); color: white; padding: 18px 20px; text-align: center; position: sticky; top: 0; z-index: 20; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+        .header-title { font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 16px; margin-bottom: 12px;}
+        .header-controls { display: flex; justify-content: center; gap: 10px; }
+        .btn-tab-global { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-tab-global:hover { background: white; color: var(--primary); }
+
+        .content { padding: 25px 20px; flex: 1; padding-bottom: 90px; }
+
+        /* Panel Gate (Login) */
+        #gate-panel { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 75vh; text-align: center; }
+        .gate-box { background: #f1f5f9; padding: 35px 25px; border-radius: 12px; border: 2px dashed #cbd5e1; width: 100%; }
+        .input-nama { width: 100%; padding: 14px; margin: 20px 0; border: 2px solid var(--border); border-radius: 8px; font-size: 16px; text-align: center; font-weight: bold; }
+        .input-nama:focus { border-color: var(--primary); outline: none; }
+
+        /* Sistem Tab Akordeon */
+        .tab-wrapper { margin-bottom: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+        .tab-header { background: var(--primary-dark); color: white; padding: 16px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.3s; user-select: none; }
+        .tab-header:hover { background: #1e40af; }
+        .tab-header.closed { border-radius: 8px; }
+        .tab-header:not(.closed) { border-radius: 8px 8px 0 0; }
+        .tab-icon { font-family: monospace; font-size: 14px; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px;}
+        .tab-content { background: white; padding: 25px 20px; border-radius: 0 0 8px 8px; display: block; }
+        .tab-content.hidden { display: none; }
+
+        /* Typography & Layout Materi */
+        .section-title { color: var(--primary-dark); font-size: 18px; font-weight: bold; margin: 30px 0 15px 0; padding-bottom: 8px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        p { margin-bottom: 18px; font-size: 15px; color: #334155; text-align: justify; }
+        ul { margin-left: 22px; margin-bottom: 18px; font-size: 15px; color: #334155; text-align: justify;}
+        li { margin-bottom: 10px; }
+        
+        /* Box Styles */
+        .highlight-box { background: #eff6ff; border-left: 5px solid var(--primary); padding: 18px; border-radius: 0 8px 8px 0; margin-bottom: 22px; font-size: 15px; }
+        .warning-box { background: #fffbeb; border-left: 5px solid var(--warning); padding: 18px; border-radius: 0 8px 8px 0; margin-bottom: 22px; font-size: 15px; }
+        .example-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 20px 18px; margin-bottom: 22px; font-size: 15px; }
+        .kesimpulan-box { margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--border); font-weight: bold; color: var(--primary-dark); }
+        
+        /* Pecahan (Fraction) Standar Matematika */
+        .frac-container { display: inline-flex; align-items: center; vertical-align: middle; }
+        .frac { display: inline-flex; flex-direction: column; vertical-align: middle; margin: 0 6px; text-align: center; font-size: 15px; font-weight: bold; color: var(--primary-dark);}
+        .frac > span.top { padding: 0 6px; border-bottom: 2px solid var(--primary-dark); line-height: 1.2; padding-bottom: 2px;}
+        .frac > span.bottom { padding: 0 6px; line-height: 1.2; padding-top: 2px;}
+
+        /* Visualisasi Kotak Data (Median) */
+        .visual-data-row { display: flex; justify-content: center; gap: 8px; margin: 20px 0 10px 0; flex-wrap: wrap; }
+        .data-box { border: 2px solid var(--border); background: white; padding: 10px 15px; border-radius: 8px; font-weight: bold; font-size: 16px; color: var(--text-main); transition: 0.3s;}
+        .data-box.highlight { background: var(--primary); color: white; border-color: var(--primary-dark); transform: scale(1.15); box-shadow: 0 6px 12px rgba(0,0,0,0.15); z-index: 2; position: relative;}
+
+        /* Tabel Data */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; font-size: 15px; background: white;}
+        .data-table th, .data-table td { border: 1px solid #cbd5e1; padding: 10px; text-align: center; }
+        .data-table th { background: #e2e8f0; color: #0f172a;}
+        
+        .math-inline { font-family: monospace; font-size: 15px; font-weight: bold; color: var(--primary-dark); background: #f1f5f9; padding: 3px 8px; border-radius: 4px; letter-spacing: 1px;}
+
+        /* Kuis Checkpoint */
+        .kuis-box { background: #f8fafc; border: 2px solid var(--primary); padding: 22px; border-radius: 8px; margin: 30px 0; transition: border-color 0.3s; }
+        .kuis-title { color: var(--primary-dark); font-weight: bold; margin-bottom: 12px; font-size: 15px; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 8px;}
+        .btn-jawaban { background: white; color: var(--text-main); border: 2px solid var(--border); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; text-align: left; margin-bottom: 10px; font-size: 15px; line-height: 1.4;}
+        .btn-jawaban:hover:not(:disabled) { background: #f1f5f9; }
+        .btn-jawaban:active:not(:disabled) { background: #e2e8f0; }
+        .btn-jawaban:disabled { background: #f8fafc; color: #94a3b8; cursor: not-allowed; border-color: #cbd5e1; }
+        .btn-correct { background: #d1fae5 !important; border-color: #059669 !important; color: #065f46 !important; }
+        .kuis-feedback { margin-top: 18px; font-weight: bold; font-size: 15px; display: none; padding: 14px; border-radius: 8px; line-height: 1.5;}
+
+        /* Scroll to Top Button */
+        #btn-top { display: none; position: fixed; bottom: 90px; right: 20px; z-index: 99; border: none; outline: none; background-color: var(--primary-dark); color: white; cursor: pointer; padding: 12px 16px; border-radius: 50%; font-size: 18px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: 0.3s; }
+        #btn-top:hover { background-color: #0f172a; }
+
+        /* Bottom Action Bar */
+        .bottom-bar { position: fixed; bottom: 0; width: 100%; max-width: 650px; background: white; padding: 18px 20px; border-top: 1px solid var(--border); display: none; z-index: 30; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); }
+        button.btn-utama { background: var(--primary); color: white; border: none; padding: 16px 20px; border-radius: 8px; font-weight: bold; font-size: 17px; width: 100%; cursor: pointer; }
+        button.btn-utama:disabled { background: #94a3b8; cursor: not-allowed; }
+
+        #end-panel { display: none; flex-direction: column; justify-content: center; align-items: center; min-height: 75vh; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div class="header" id="main-header">
+        <div class="header-title">Materi: Pemusatan Data Tunggal</div>
+        <div class="header-controls" id="header-controls" style="display: none;">
+            <button class="btn-tab-global" onclick="kontrolSemuaTab(true)">[+] Buka Semua Tab</button>
+            <button class="btn-tab-global" onclick="kontrolSemuaTab(false)">[-] Tutup Semua Tab</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div id="gate-panel">
+            <div class="gate-box">
+                <h2 style="color: var(--primary-dark); margin-bottom: 15px;">Masuk ke Materi Pembelajaran</h2>
+                <p style="font-size: 15px; color: #475569;">Masukkan nama lengkap Anda di bawah ini. Sistem akan merekam durasi fokus Anda dalam membaca dan mengerjakan uji pemahaman secara otomatis.</p>
+                <input type="text" id="namaSiswa" class="input-nama" placeholder="Tuliskan Nama Lengkap Anda">
+                <button class="btn-utama" onclick="mulaiBelajar()">Mulai Membaca Materi</button>
+            </div>
+        </div>
+
+        <div id="materi-panel" style="display: none;">
+            
+            <div class="tab-wrapper" id="wrap-intro">
+                <div class="tab-header" onclick="toggleTab('content-intro', this)">
+                    <div>Pengantar Konsep</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-intro">
+                    <p>Dalam ilmu statistika, kita sering kali dihadapkan pada kumpulan data yang sangat banyak. Jika pimpinan perusahaan bertanya tentang kondisi penjualan bulanan, kita tentu tidak mungkin membacakan ribuan angka tersebut satu per satu.</p>
+                    <p>Oleh karena itu, kita harus mencari <strong>satu angka tunggal</strong> yang mampu mewakili keseluruhan data tersebut secara adil dan akurat. Angka perwakilan inilah yang dikenal sebagai <strong>Ukuran Pemusatan Data</strong>.</p>
+                    <p>Terdapat tiga metode perhitungan utama yang dapat digunakan, yaitu Mean, Median, dan Modus. Masing-masing memiliki sifat dan kegunaan yang berbeda-beda. Mari kita pelajari definisi, kegunaan, dan cara perhitungannya satu per satu secara terperinci.</p>
+                </div>
+            </div>
+
+            <div class="tab-wrapper" id="wrap-mean">
+                <div class="tab-header" onclick="toggleTab('content-mean', this)">
+                    <div>1. Mean (Rata-Rata)</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-mean">
+                    
+                    <div class="highlight-box">
+                        <strong>Definisi:</strong> Mean adalah hasil pembagian antara jumlah seluruh nilai data dengan banyaknya data yang ada. Mean membagi sebuah beban nilai secara merata kepada seluruh anggota kelompok.
+                    </div>
+                    
+                    <ul>
+                        <li><strong>Di Kehidupan Sehari-hari:</strong> Bayangkan kamu makan bersama 4 temanmu di restoran. Ada yang memesan makanan mahal, ada yang murah. Saat tagihan datang, kalian sepakat untuk "patungan" dengan jumlah uang yang sama persis. Angka patungan itulah yang disebut Mean.</li>
+                        <li><strong>Cocok Untuk Data Apa?</strong> Mean sangat cocok untuk data yang angkanya berdekatan atau stabil. Contohnya nilai ulangan harian yang berkisar antara 70 hingga 90, atau menghitung rata-rata curah hujan bulanan.</li>
+                    </ul>
+
+                    <div class="section-title">A. Menghitung Mean dari Data Mentah</div>
+                    <p>Untuk sekumpulan data mentah yang masih teracak, rumus matematis untuk mencari rata-rata (Mean) dituliskan dengan simbol <span class="math-inline">x&#772;</span> (dibaca: x bar) sebagai berikut:</p>
+                    
+                    <div class="example-box" style="text-align: center; padding: 25px 15px;">
+                        <div class="frac-container">
+                            <span style="font-size:18px; font-weight:bold; margin-right:5px;">x&#772; = </span>
+                            <div class="frac">
+                                <span class="top">&sum; x<sub>i</sub></span>
+                                <span class="bottom">n</span>
+                            </div>
+                        </div>
+                        <div style="text-align: left; font-size: 13px; margin-top:15px; border-top: 1px dashed var(--border); padding-top:10px; color: var(--text-muted);">
+                            <strong>Keterangan:</strong><br>
+                            x&#772; = Mean atau Rata-rata<br>
+                            &sum; x<sub>i</sub> = Jumlah seluruh nilai data<br>
+                            n = Banyaknya data
+                        </div>
+                    </div>
+                    
+                    <div class="example-box">
+                        <strong>Contoh Soal Data Mentah:</strong><br>
+                        Hitunglah nilai rata-rata (Mean) dari hasil ulangan seorang siswa berikut: <span class="math-inline">60, 70, 80, 70, 90</span>.<br><br>
+                        <strong>Langkah Penyelesaian:</strong><br>
+                        1. Jumlahkan seluruh angka nilai (&sum; x<sub>i</sub>) : 60 + 70 + 80 + 70 + 90 = 370.<br>
+                        2. Hitung jumlah atau banyaknya data (n): Ada 5 buah data nilai.<br>
+                        3. Lakukan proses pembagian total nilai dengan banyaknya data:
+                        <div class="frac-container" style="margin-top: 15px; margin-bottom: 10px;">
+                            x&#772; = 
+                            <div class="frac">
+                                <span class="top">370</span>
+                                <span class="bottom">5</span>
+                            </div>
+                            = <strong>74</strong>
+                        </div>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Rata-rata nilai ulangan siswa tersebut adalah 74.
+                        </div>
+                    </div>
+
+                    <div class="section-title">B. Menghitung Mean dari Tabel Frekuensi</div>
+                    <p>Apabila jumlah data sudah sangat banyak dan dikelompokkan ke dalam tabel distribusi frekuensi tunggal, menjumlahkan angka secara manual akan membuang waktu. Rumus matematis penyelesaiannya adalah:</p>
+                    
+                    <div class="example-box" style="text-align: center; padding: 25px 15px;">
+                        <div class="frac-container">
+                            <span style="font-size:18px; font-weight:bold; margin-right:5px;">x&#772; = </span>
+                            <div class="frac">
+                                <span class="top">&sum; (f<sub>i</sub> &times; x<sub>i</sub>)</span>
+                                <span class="bottom">&sum; f<sub>i</sub></span>
+                            </div>
+                        </div>
+                        <div style="text-align: left; font-size: 13px; margin-top:15px; border-top: 1px dashed var(--border); padding-top:10px; color: var(--text-muted);">
+                            <strong>Keterangan:</strong><br>
+                            &sum; (f<sub>i</sub> &times; x<sub>i</sub>) = Jumlah total dari hasil kali antara nilai dengan frekuensinya<br>
+                            &sum; f<sub>i</sub> = Jumlah total frekuensi (banyaknya data)
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Contoh Soal Tabel Frekuensi:</strong><br>
+                        <table class="data-table">
+                            <thead><tr><th>Nilai Ujian (x)</th><th>Frekuensi (f)</th></tr></thead>
+                            <tbody>
+                                <tr><td>60</td><td>2</td></tr>
+                                <tr><td>70</td><td>5</td></tr>
+                                <tr style="background:#e2e8f0; font-weight:bold;"><td>Total Frekuensi</td><td>7</td></tr>
+                            </tbody>
+                        </table>
+                        <strong>Langkah Penyelesaian Secara Sistematis:</strong><br>
+                        1. Kalikan secara mendatar setiap baris Nilai (x) dengan Frekuensinya (f) masing-masing.<br>
+                        - Baris pertama: 60 &times; 2 = 120<br>
+                        - Baris kedua: 70 &times; 5 = 350<br><br>
+                        2. Jumlahkan seluruh hasil perkalian pada langkah pertama: 120 + 350 = 470.<br><br>
+                        3. Bagikan angka hasil jumlah tersebut dengan Total Frekuensi yang ada di tabel (yaitu 7):
+                        <div class="frac-container" style="margin-top: 15px; margin-bottom: 10px;">
+                            x&#772; = 
+                            <div class="frac">
+                                <span class="top">470</span>
+                                <span class="bottom">7</span>
+                            </div>
+                            = <strong>67,14</strong>
+                        </div>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Rata-rata nilai dari seluruh siswa di tabel tersebut adalah 67,14.
+                        </div>
+                    </div>
+
+                    <div class="section-title">C. Menghitung Rata-Rata Gabungan (Combined Mean)</div>
+                    <p>Sering kali, kita dihadapkan pada kasus di mana dua kelompok yang sudah memiliki rata-rata masing-masing, ingin digabungkan menjadi satu kelompok besar. Untuk mencari rata-rata kelompok baru tersebut, kita menggunakan rumus Rata-Rata Gabungan:</p>
+
+                    <div class="example-box" style="text-align: center; padding: 25px 15px;">
+                        <div class="frac-container">
+                            <span style="font-size:18px; font-weight:bold; margin-right:5px;">x&#772;<sub>gab</sub> = </span>
+                            <div class="frac">
+                                <span class="top">(n<sub>1</sub> &times; x&#772;<sub>1</sub>) + (n<sub>2</sub> &times; x&#772;<sub>2</sub>)</span>
+                                <span class="bottom">n<sub>1</sub> + n<sub>2</sub></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Contoh Soal Rata-Rata Gabungan:</strong><br>
+                        Kelas A memiliki 20 siswa dengan nilai rata-rata ulangan 80. Kelas B memiliki 30 siswa dengan nilai rata-rata ulangan 75. Jika nilai kedua kelas tersebut digabungkan, berapakah rata-rata gabungannya?<br><br>
+                        <strong>Langkah Penyelesaian:</strong><br>
+                        Diketahui:<br>
+                        n<sub>1</sub> (siswa kelas A) = 20, dan x&#772;<sub>1</sub> = 80<br>
+                        n<sub>2</sub> (siswa kelas B) = 30, dan x&#772;<sub>2</sub> = 75<br><br>
+                        1. Hitung total nilai masing-masing kelompok:<br>
+                        - Total nilai A = 20 &times; 80 = 1600<br>
+                        - Total nilai B = 30 &times; 75 = 2250<br><br>
+                        2. Masukkan ke dalam rumus pembagian:
+                        <div class="frac-container" style="margin-top: 15px; margin-bottom: 10px;">
+                            x&#772;<sub>gab</sub> = 
+                            <div class="frac">
+                                <span class="top">1600 + 2250</span>
+                                <span class="bottom">20 + 30</span>
+                            </div>
+                            =
+                            <div class="frac">
+                                <span class="top">3850</span>
+                                <span class="bottom">50</span>
+                            </div>
+                            = <strong>77</strong>
+                        </div>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Rata-rata gabungan dari kedua kelas tersebut adalah 77.
+                        </div>
+                    </div>
+
+                    <div id="kuis-1" class="kuis-box">
+                        <div class="kuis-title">UJI PEMAHAMAN 1: PENGHITUNGAN MEAN</div>
+                        <p>Berdasarkan langkah perhitungan dari tabel distribusi frekuensi data tunggal di atas, tahapan krusial pertama yang wajib dilakukan oleh seorang analis data sebelum mengeksekusi rumus pembagian akhir adalah...</p>
+                        <button class="btn-jawaban" id="btn-1A" onclick="cekJawaban(1, 'A', false, this)">A. Menjumlahkan seluruh angka frekuensi tanpa mempedulikan bobot nilainya</button>
+                        <button class="btn-jawaban" id="btn-1B" onclick="cekJawaban(1, 'B', true, this)">B. Mengalikan setiap baris Nilai (x) dengan Frekuensinya (f) masing-masing</button>
+                        <button class="btn-jawaban" id="btn-1C" onclick="cekJawaban(1, 'C', false, this)">C. Mencari angka frekuensi yang paling tinggi di dalam tabel tersebut</button>
+                        <div id="feedback-1" class="kuis-feedback"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-wrapper" id="wrap-median" style="display: none;">
+                <div class="tab-header" onclick="toggleTab('content-median', this)">
+                    <div>2. Median (Nilai Tengah)</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-median">
+                    
+                    <div class="warning-box">
+                        <strong>Definisi Mutlak:</strong> Median (Me) adalah nilai yang letaknya tepat berada di pusat atau tengah-tengah sekumpulan data. <strong>Syarat hukum matematis yang sama sekali tidak boleh dilanggar adalah: Data tersebut wajib diurutkan terlebih dahulu dari angka terkecil ke angka terbesar.</strong>
+                    </div>
+                    
+                    <ul>
+                        <li><strong>Di Kehidupan Sehari-hari:</strong> Jika kamu ingin tahu standar gaji di suatu perusahaan, menggunakan Mean bisa sangat menipu. Mengapa? Jika ada 9 staf bergaji 4 juta, dan 1 Direktur bergaji 1 Miliar, maka rata-rata (Mean) gajinya menjadi ratusan juta! Apakah itu mewakili staf? Tidak. Jika kita urutkan gajinya dari yang terkecil ke besar, orang yang berdiri di posisi tengah pasti bergaji 4 juta. Angka inilah yang jujur (Median).</li>
+                        <li><strong>Cocok Untuk Data Apa?</strong> Median sangat wajib digunakan apabila di dalam data tersebut terdeteksi adanya "Pencilan" atau nilai ekstrem (nilai anomali yang angkanya terlalu tinggi atau terlalu rendah sendirian yang dapat merusak objektivitas keseimbangan Mean).</li>
+                    </ul>
+
+                    <div class="section-title">Rumus Matematis Median Berdasarkan Jumlah Data</div>
+                    <p>Sebelum kita menghitung dan mencari angka Median, kita wajib terlebih dahulu merumuskan "Di posisi manakah letak titik tengah tersebut berada?". Rumus pencariannya terbagi menjadi dua kondisi:</p>
+
+                    <div class="example-box">
+                        <strong>1. Rumus Median Jika Jumlah Data (n) Ganjil:</strong>
+                        <div class="frac-container" style="margin-top: 10px; margin-bottom: 10px;">
+                            Me = Data urutan ke- 
+                            <div class="frac" style="margin-left: 10px;">
+                                <span class="top">n + 1</span>
+                                <span class="bottom">2</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; color: var(--text-muted);">
+                            Artinya: Titik tengah absolut jatuh pada satu data tunggal.
+                        </div>
+                        <br>
+                        <strong>2. Rumus Median Jika Jumlah Data (n) Genap:</strong><br>
+                        <div class="frac-container" style="margin-top: 10px; margin-bottom: 10px;">
+                            Me = 
+                            <div class="frac" style="margin-left: 10px;">
+                                <span class="top">
+                                    Data urutan ke- <div class="frac" style="font-size:13px;"><span class="top">n</span><span class="bottom">2</span></div> 
+                                    + 
+                                    Data urutan ke- <div class="frac-container"><div class="frac" style="font-size:13px;"><span class="top">n</span><span class="bottom">2</span></div> <span> + 1</span></div>
+                                </span>
+                                <span class="bottom">2</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; color: var(--text-muted);">
+                            Artinya: Letak pusat terbelah menjadi dua data yang saling berdampingan, yang keduanya harus dijumlahkan lalu dibagi dua.
+                        </div>
+                    </div>
+
+                    <div class="section-title">A. Menghitung Median dari Data Mentah</div>
+                    
+                    <div class="example-box">
+                        <strong>Contoh Soal Data Mentah (Jumlah Ganjil):</strong><br>
+                        Diberikan barisan data awal yang masih teracak: <span class="math-inline">80, 60, 90, 70, 70</span>.<br><br>
+                        <strong>Langkah Penyelesaian:</strong><br>
+                        1. Terapkan syarat mutlak. Lakukan pengurutan data dari kecil ke besar.<br>
+                        Susunan data berubah menjadi: <span class="math-inline">60, 70, 70, 80, 90</span>.<br><br>
+                        2. Masukkan jumlah total keseluruhan data (n = 5) ke dalam rumus ganjil.<br>
+                        <div class="frac-container" style="margin-top: 10px; margin-bottom: 10px;">
+                            Letak Me = Data ke- 
+                            <div class="frac">
+                                <span class="top">5 + 1</span>
+                                <span class="bottom">2</span>
+                            </div>
+                            = Data urutan ke-3.
+                        </div>
+                        
+                        <div class="visual-data-row">
+                            <div class="data-box">60</div>
+                            <div class="data-box">70</div>
+                            <div class="data-box highlight">70</div>
+                            <div class="data-box">80</div>
+                            <div class="data-box">90</div>
+                        </div>
+                        <div style="text-align: center; font-size: 14px; color: var(--primary-dark); font-weight: bold; margin-bottom: 15px;">
+                            &#8593;<br>Tepat data ke-3 membagi barisan secara seimbang.
+                        </div>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Nilai Median dari data tersebut adalah 70.
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Contoh Soal Data Mentah (Jumlah Genap):</strong><br>
+                        Diberikan barisan data awal yang masih teracak: <span class="math-inline">80, 60, 90, 70, 70, 100</span>.<br><br>
+                        <strong>Langkah Penyelesaian:</strong><br>
+                        1. Terapkan syarat mutlak pengurutan data dari kecil ke besar.<br>
+                        Susunan data berubah menjadi: <span class="math-inline">60, 70, 70, 80, 90, 100</span>.<br><br>
+                        2. Masukkan total data (n = 6) ke rumus genap.<br>
+                        Kita harus mencari data urutan ke-(6/2) yaitu urutan ke-3, dan urutan setelahnya yaitu urutan ke-4.<br>
+
+                        <div class="visual-data-row">
+                            <div class="data-box">60</div>
+                            <div class="data-box">70</div>
+                            <div class="data-box highlight">70</div>
+                            <div class="data-box highlight">80</div>
+                            <div class="data-box">90</div>
+                            <div class="data-box">100</div>
+                        </div>
+                        <div style="text-align: center; font-size: 14px; color: var(--primary-dark); font-weight: bold; margin-bottom: 15px; margin-top: 5px;">
+                            &#8593; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#8593;<br>Data urutan ke-3 dan data urutan ke-4.
+                        </div>
+                        
+                        3. Terapkan ke dalam rumus pembagian akhir:
+                        <div class="frac-container" style="margin-top: 15px; margin-bottom: 10px;">
+                            Me = 
+                            <div class="frac">
+                                <span class="top">Data ke-3 + Data ke-4</span>
+                                <span class="bottom">2</span>
+                            </div>
+                            = 
+                            <div class="frac">
+                                <span class="top">70 + 80</span>
+                                <span class="bottom">2</span>
+                            </div>
+                            = 
+                            <div class="frac">
+                                <span class="top">150</span>
+                                <span class="bottom">2</span>
+                            </div>
+                            = <strong>75</strong>
+                        </div>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Nilai Median dari data tersebut adalah 75.
+                        </div>
+                    </div>
+
+                    <div class="section-title">B. Menghitung Median dari Tabel Frekuensi</div>
+                    <p>Jika data disajikan di dalam struktur tabel, kita tidak perlu mengurutkannya secara manual. Sebagai gantinya, kita wajib menambahkan kolom baru bernama <strong>Frekuensi Kumulatif (Fk)</strong> dan sebuah kolom penjelas <strong>Posisi Letak Data</strong> untuk menelusuri secara presisi posisi letak nilai tengah.</p>
+
+                    <div class="example-box">
+                        <strong>Contoh Soal Tabel Frekuensi (Total Ganjil):</strong><br>
+                        <table class="data-table" style="margin-top: 10px;">
+                            <thead><tr><th>Nilai</th><th>Frek (f)</th><th>Fk</th><th>Posisi Letak Data</th></tr></thead>
+                            <tbody>
+                                <tr><td>60</td><td>2</td><td>2</td><td>Data urutan ke-1 hingga ke-2</td></tr>
+                                <tr><td>70</td><td>3</td><td>5</td><td>Data urutan ke-3 hingga ke-5</td></tr>
+                                <tr><td>80</td><td>2</td><td>7</td><td>Data urutan ke-6 hingga ke-7</td></tr>
+                                <tr style="background:#e2e8f0; font-weight:bold;"><td colspan="2">Total (n) = 7</td><td></td><td></td></tr>
+                            </tbody>
+                        </table>
+                        <strong>Langkah Penyelesaian:</strong><br>
+                        1. Lakukan kalkulasi penentuan letak tengah menggunakan rumus data ganjil (n = 7).<br>
+                        <div class="frac-container" style="margin-top: 10px; margin-bottom: 10px;">
+                            Letak Me = Data urutan ke-
+                            <div class="frac">
+                                <span class="top">7 + 1</span>
+                                <span class="bottom">2</span>
+                            </div>
+                            = Data urutan ke-<strong>4</strong>
+                        </div>
+                        2. Lakukan pengamatan pada kolom Posisi Letak Data. Posisi urutan ke-4 secara logis berada di dalam jangkauan rentang "Data urutan ke-3 hingga ke-5". Baris rentang tersebut sejajar dengan nilai Fk 5, yang merupakan milik baris Nilai 70.<br>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Nilai Median dari tabel frekuensi tersebut adalah 70.
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Contoh Soal Tabel Frekuensi (Total Genap):</strong><br>
+                        <table class="data-table" style="margin-top: 10px;">
+                            <thead><tr><th>Nilai</th><th>Frek (f)</th><th>Fk</th><th>Posisi Letak Data</th></tr></thead>
+                            <tbody>
+                                <tr><td>60</td><td>2</td><td>2</td><td>Data urutan ke-1 hingga ke-2</td></tr>
+                                <tr><td>70</td><td>4</td><td>6</td><td>Data urutan ke-3 hingga ke-6</td></tr>
+                                <tr><td>80</td><td>2</td><td>8</td><td>Data urutan ke-7 hingga ke-8</td></tr>
+                                <tr style="background:#e2e8f0; font-weight:bold;"><td colspan="2">Total (n) = 8</td><td></td><td></td></tr>
+                            </tbody>
+                        </table>
+                        <strong>Langkah Penyelesaian:</strong><br>
+                        1. Terapkan rumus letak tengah untuk data genap (n = 8). Posisi pusat berada di urutan ke-(8/2) yaitu urutan ke-4, dan data setelahnya yaitu urutan ke-5.<br><br>
+                        2. Amati secara teliti pada kolom Posisi Letak Data.<br>
+                        - Data urutan ke-4 berada di baris rentang "Data urutan ke-3 hingga ke-6" (Fk 6), yang merupakan milik Nilai 70.<br>
+                        - Data urutan ke-5 ternyata juga masih masuk di dalam rentang baris tersebut.<br><br>
+                        3. Masukkan ke dalam rumus Median genap:
+                        <div class="frac-container" style="margin-top: 15px; margin-bottom: 10px;">
+                            Me = 
+                            <div class="frac">
+                                <span class="top">Data ke-4 + Data ke-5</span>
+                                <span class="bottom">2</span>
+                            </div>
+                            =
+                            <div class="frac">
+                                <span class="top">70 + 70</span>
+                                <span class="bottom">2</span>
+                            </div>
+                            = <strong>70</strong>
+                        </div>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Nilai Median dari tabel frekuensi tersebut adalah 70.
+                        </div>
+                    </div>
+
+                    <div id="kuis-2" class="kuis-box">
+                        <div class="kuis-title">UJI PEMAHAMAN 2: PENGHITUNGAN MEDIAN</div>
+                        <p>Berdasarkan penjabaran rumus menghitung Median data yang jumlah akhirnya bernilai genap, prosedur wajib tahap akhir yang harus dipatuhi ketika kamu telah memegang dua angka yang menempati posisi sentral barisan adalah...</p>
+                        <button class="btn-jawaban" id="btn-2A" onclick="cekJawaban(2, 'A', false, this)">A. Memilih secara sepihak salah satu angka yang secara nominal memiliki nilai yang lebih besar</button>
+                        <button class="btn-jawaban" id="btn-2B" onclick="cekJawaban(2, 'B', true, this)">B. Menjumlahkan kedua angka tersebut terlebih dahulu, barulah kemudian dibagi dua</button>
+                        <button class="btn-jawaban" id="btn-2C" onclick="cekJawaban(2, 'C', false, this)">C. Mengurangkan angka yang nilainya besar dengan angka yang nilainya kecil</button>
+                        <div id="feedback-2" class="kuis-feedback"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-wrapper" id="wrap-modus" style="display: none;">
+                <div class="tab-header" onclick="toggleTab('content-modus', this)">
+                    <div>3. Modus & Kesimpulan</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-modus">
+                    
+                    <div class="highlight-box" style="border-left-color: var(--success); background: #f0fdf4;">
+                        <strong>Definisi Konseptual:</strong> Modus (Mo) adalah nilai tunggal atau bagian dari data yang memegang rekor tingkat frekuensi kemunculan yang paling tinggi (terbanyak) apabila dibandingkan dengan semua data lainnya di dalam satu kelompok eksperimen yang sama.
+                    </div>
+                    
+                    <ul>
+                        <li><strong>Di Kehidupan Sehari-hari:</strong> Modus dikenal sebagai parameter sahabat sejati bagi para pedagang dan analis industri pasar. Jika kamu membuka gerai toko sepatu bergengsi, kamu tidak mungkin bertindak irasional dengan menyetok sepatu berdasarkan ukuran "rata-rata" pembelian (karena ukuran sepatu 40,3 jelas tidak akan pernah diproduksi pabrik). Secara mutlak, kamu akan mengevaluasi catatan data penjualan, untuk kemudian mengutamakan persediaan pada ukuran sepatu yang <strong>paling rutin dan sering dibeli oleh pelanggan</strong> (misalnya ukuran 41).</li>
+                        <li><strong>Cocok Untuk Data Apa?</strong> Perlu dicatat dengan tinta tebal bahwa Modus memegang keistimewaan mutlak sebagai satu-satunya ukuran tendensi pusat yang diakui validitasnya untuk pengolahan data kategori (kualitatif yang bukan berupa metrik angka berurutan), seperti pemetaan sampel warna baju favorit audiens, dominasi merek kendaran motor yang berlalu lalang di jalan, atau dalam menetapkan hasil akhir kemenangan kandidat dalam pemilihan ketua kelas.</li>
+                    </ul>
+
+                    <div class="section-title">A. Menghitung Modus dari Data Mentah</div>
+                    <p>Perhitungan Modus adalah analisis yang paling sederhana karena tidak memerlukan rumus pembagian yang rumit, melainkan hanya membutuhkan pengamatan visual yang teliti.</p>
+                    
+                    <div class="example-box">
+                        <strong>Contoh Soal Data Mentah (Modus Tunggal):</strong><br>
+                        Tersedia sekumpulan pemetaan data mentah acak: <span class="math-inline">60, 70, 80, 70, 90, 80, 70</span>.<br><br>
+                        <strong>Langkah Penyelesaian Berdasarkan Pengamatan Visual:</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Angka <strong>60</strong> dan <strong>90</strong> masing-masing muncul sebanyak <strong>1 kali</strong>.</li>
+                            <li>Angka <strong>80</strong> berulang kemunculannya hingga <strong>2 kali</strong>.</li>
+                            <li>Angka <strong>70</strong> mendominasi dan berulang kemunculannya hingga puncaknya <strong>3 kali</strong>.</li>
+                        </ul>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Modus (Mo) dari himpunan data tersebut adalah 70.
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Contoh Soal Data Mentah (Modus Ganda / Bimodal):</strong><br>
+                        Diberikan pemetaan data mentah acak berikut: <span class="math-inline">60, 70, 80, 70, 90, 80</span>.<br><br>
+                        <strong>Langkah Penyelesaian Berdasarkan Pengamatan Visual:</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Angka <strong>60</strong> dan <strong>90</strong> muncul sebanyak <strong>1 kali</strong>.</li>
+                            <li>Angka <strong>70</strong> muncul sebanyak <strong>2 kali</strong>.</li>
+                            <li>Angka <strong>80</strong> muncul sebanyak <strong>2 kali</strong>.</li>
+                        </ul>
+                        Berdasarkan pengamatan, terdapat dua buah nilai yang sama-sama memegang rekor frekuensi tertinggi secara bersamaan (yaitu 2 kali). Oleh karenanya, himpunan data ini memiliki dua buah modus secara sah.<br>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Himpunan data ini memiliki modus ganda (Bimodal), yaitu 70 dan 80.
+                        </div>
+                    </div>
+
+                    <div class="section-title">B. Menghitung Modus dari Tabel Frekuensi Data Tunggal</div>
+                    <p>Menentukan letak Modus dari data yang sudah dikelompokkan ke dalam tabel distribusi frekuensi jauh lebih mudah, sistematis, dan menghemat energi pencarian.</p>
+                    
+                    <div class="example-box">
+                        <strong>Contoh Soal Tabel Frekuensi (Modus Tunggal):</strong><br>
+                        <table class="data-table" style="margin-top: 10px;">
+                            <thead><tr><th>Nilai Numerik (x)</th><th>Frekuensi Distribusi (f)</th></tr></thead>
+                            <tbody>
+                                <tr><td>60</td><td>2</td></tr>
+                                <tr><td>70</td><td>8</td></tr>
+                                <tr><td>80</td><td>5</td></tr>
+                            </tbody>
+                        </table>
+                        <strong>Langkah Penyelesaian:</strong><br>
+                        1. Fokuskan pandangan mata pada kolom vertikal Frekuensi Distribusi (f).<br>
+                        2. Lakukan pencarian angka yang bernilai paling tinggi di kolom tersebut. Terlihat jelas bahwa frekuensi terbesar bernilai 8.<br>
+                        3. Lihat secara mendatar ke kiri untuk mengetahui Nilai Numerik (x) apa yang memiliki frekuensi 8 tersebut. Angka tersebut adalah milik Nilai 70.<br>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Modus (Mo) dari tabel frekuensi tersebut adalah 70.
+                        </div>
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Contoh Soal Tabel Frekuensi (Modus Ganda / Multimodal):</strong><br>
+                        <table class="data-table" style="margin-top: 10px;">
+                            <thead><tr><th>Nilai Numerik (x)</th><th>Frekuensi Distribusi (f)</th></tr></thead>
+                            <tbody>
+                                <tr><td>60</td><td>3</td></tr>
+                                <tr><td>70</td><td>8</td></tr>
+                                <tr><td>80</td><td>8</td></tr>
+                                <tr><td>90</td><td>5</td></tr>
+                            </tbody>
+                        </table>
+                        <strong>Langkah Penyelesaian:</strong><br>
+                        1. Fokuskan pengamatan pada kolom Frekuensi Distribusi (f).<br>
+                        2. Angka frekuensi terbesar yang tercatat di dalam tabel adalah 8.<br>
+                        3. Namun, dapat diamati dengan jelas bahwa frekuensi 8 tersebut dimiliki oleh dua buah nilai secara bersamaan, yakni Nilai 70 dan Nilai 80.<br>
+                        <div class="kesimpulan-box">
+                            Kesimpulan: Himpunan tabel ini memiliki Modus ganda (Bimodal), yaitu 70 dan 80.
+                        </div>
+                    </div>
+
+                    <div class="section-title" style="margin-top: 45px; font-size: 20px; color: #0f172a; border-bottom: 3px solid var(--primary);">Kesimpulan Analisis Komprehensif</div>
+                    <p>Setelah menuntaskan bedah analisis matematis ini, disimpulkan bahwa ketiga klasifikasi pilar parameter ukuran ini pada prinsipnya sama-sama dibentuk oleh ilmu statistik demi meraih obyektivitas dan mengincar proyeksi titik "pusat sentral" dari ruang lingkup sebuah ekosistem data. Masing-masing fondasi metodenya memancarkan sudut pandang yang sama sekali berbeda.</p>
+                    <p>Sebagai seorang pembaca arsitektur data profesional, tugas utamamu bukanlah hanya menghafal cara menghitung rumus, melainkan puncaknya ditentukan oleh sejauh mana <strong>kapasitas kebijaksanaan serta daya analisa kritis kamu dapat bekerja memilah dalam menobatkan rumus pemusatan manakah yang memiliki derajat kesesuaian paling presisi</strong> untuk diaplikasikan ke lapangan permasalahan data di dunia nyata.</p>
+                    
+                    <div class="example-box" style="background: #f8fafc; border-color: var(--primary); padding: 30px 25px;">
+                        <strong>Peta Ringkasan Panduan Strategi Pemilihan Alat Ukur Pemusatan:</strong><br><br>
+                        <ul style="margin-bottom: 0;">
+                            <li style="margin-bottom: 15px;">Apabila susunan data didominasi oleh teks kategori, pelabelan nama benda, warna absolut, atau skenario pencarian tren pemenang mutlak yang disukai mayoritas: Maka instrumen pengukuran yang wajib digunakan secara teknis adalah <strong>Modus</strong>.</li>
+                            <li style="margin-bottom: 15px;">Apabila jajaran angka memuat nilai nominal yang sangat kuantitatif, namun terdeteksi bersemayam angka ekstrem berupa pencilan (anomali yang sangat besar/kecil yang dapat merusak keseimbangan Mean): Maka demi melindungi integritas pusat data, Anda mutlak mendelegasikan perhitungan pada metode penengah <strong>Median</strong>.</li>
+                            <li>Apabila realita komposisi data primer berwujud parameter angka yang stabil, harmonis berjejer dari kecil ke besar, dan terbukti aman dari ancaman lonjakan nilai ekstrem: Maka instrumen perhitungan yang paling presisi tajam dan diutamakan untuk pemerataan adalah rumusan <strong>Mean</strong>.</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #f0fdf4; border: 1px solid var(--success); border-radius: 8px; padding: 25px; margin-top: 40px; text-align: left;">
+                        <h4 style="color: var(--success); margin-bottom: 15px; font-size: 16px; text-align: center; text-transform: uppercase;">Status Penyelesaian Modul</h4>
+                        <p style="color: #064e3b; font-size: 15px; margin-bottom: 15px;">Materi Pemusatan Data Tunggal telah selesai dipelajari. Langkah yang harus Anda lakukan saat ini adalah:</p>
+                        <ul style="color: #064e3b; font-size: 15px; margin-bottom: 10px;">
+                            <li>Pastikan seluruh panel Uji Pemahaman telah dikerjakan dengan status valid (Benar).</li>
+                            <li>Klik tombol komando di bawah untuk memvalidasi rekaman akhir Anda.</li>
+                            <li>Tunggu hingga layar menampilkan notifikasi sinkronisasi berhasil.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="end-panel">
+            <h2 style="color: var(--success); margin-bottom: 15px; font-size: 24px; text-transform: uppercase;">Sesi Pembelajaran Selesai</h2>
+            <p style="font-size: 16px; line-height: 1.6; color: #334155; padding: 0 20px;">Data aktivitas pembelajaran Anda pada materi ini telah berhasil direkam dan disinkronisasikan secara akurat ke dalam Spreadsheet sistem Guru.</p>
+            <div style="background: #f1f5f9; padding: 25px; border-radius: 12px; display: inline-block; margin-top: 25px; border: 2px solid var(--border); width: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                <span style="font-size: 15px; color: #475569; display: block; margin-bottom: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Total Durasi Waktu Pelaksanaan:</span>
+                <strong style="font-size: 32px; color: var(--primary-dark); font-family: monospace; letter-spacing: -1px; text-shadow: 1px 1px 0 rgba(0,0,0,0.1);" id="durasi-tampil">0 Menit 0 Detik</strong>
+            </div>
+        </div>
+    </div>
+
+    <button onclick="scrollToTop()" id="btn-top" title="Kembali ke Atas">&#8679;</button>
+
+    <div class="bottom-bar" id="bottom-bar">
+        <button class="btn-utama" id="btn-selesai" onclick="selesaiBelajar()">Lakukan Validasi Pengakhiran Sesi & Rekam Waktu</button>
+    </div>
+</div>
+
+<script>
+    // --- KONFIGURASI URL APPS SCRIPT ---
+    const GAS_URL = "URL_WEB_APP_ANDA_PASTE_DISINI";
+    
+    let namaSiswa = "";
+    let waktuMulai = 0;
+    let waktuAktivitasTerakhir = 0;
+    let timerAutoSave;
+    const BATAS_IDLE_MS = 30 * 60 * 1000; 
+
+    // Fitur Scroll to Top Button
+    window.onscroll = function() {
+        let btnTop = document.getElementById("btn-top");
+        if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+            btnTop.style.display = "block";
+        } else {
+            btnTop.style.display = "none";
+        }
+    };
+
+    function scrollToTop() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    ['scroll', 'touchstart', 'mousemove', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, () => {
+            if(waktuMulai > 0) waktuAktivitasTerakhir = Date.now();
+        });
+    });
+
+    function kontrolSemuaTab(buka) {
+        const tabs = document.querySelectorAll('.tab-content');
+        const headers = document.querySelectorAll('.tab-header');
+        
+        tabs.forEach((tab, index) => {
+            if (tab.parentElement.style.display !== 'none') {
+                if (buka) {
+                    tab.classList.remove('hidden');
+                    headers[index].classList.remove('closed');
+                    headers[index].querySelector('.tab-icon').innerText = '[-] Tutup';
+                } else {
+                    tab.classList.add('hidden');
+                    headers[index].classList.add('closed');
+                    headers[index].querySelector('.tab-icon').innerText = '[+] Buka';
+                }
+            }
+        });
+    }
+
+    function toggleTab(contentId, headerElement) {
+        const content = document.getElementById(contentId);
+        const icon = headerElement.querySelector('.tab-icon');
+        
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            headerElement.classList.remove('closed');
+            icon.innerText = '[-] Tutup';
+        } else {
+            content.classList.add('hidden');
+            headerElement.classList.add('closed');
+            icon.innerText = '[+] Buka';
+        }
+    }
+
+    function mulaiBelajar() {
+        const input = document.getElementById('namaSiswa');
+        if(input.value.trim() === "") {
+            alert("Sistem membutuhkan identitas. Mohon lengkapi pengisian nama lengkap Anda terlebih dahulu.");
+            return;
+        }
+
+        namaSiswa = input.value;
+        waktuMulai = Date.now(); 
+        waktuAktivitasTerakhir = Date.now();
+
+        document.getElementById('gate-panel').style.display = 'none';
+        document.getElementById('materi-panel').style.display = 'block';
+        document.getElementById('bottom-bar').style.display = 'block';
+        document.getElementById('header-controls').style.display = 'flex';
+        
+        if(localStorage.getItem("kuis1_dtt_lulus_final") === "true") {
+            kunciKuisVisual(1, "B. Mengalikan setiap baris Nilai (x) dengan Frekuensinya (f) masing-masing");
+            document.getElementById("wrap-median").style.display = "block";
+            document.getElementById("content-median").classList.remove('hidden');
+            document.querySelector("#wrap-median .tab-header").classList.remove('closed');
+        }
+        
+        if(localStorage.getItem("kuis2_dtt_lulus_final") === "true") {
+            kunciKuisVisual(2, "B. Menjumlahkan kedua angka tersebut terlebih dahulu, barulah kemudian dibagi dua");
+            document.getElementById("wrap-modus").style.display = "block";
+            document.getElementById("content-modus").classList.remove('hidden');
+            document.querySelector("#wrap-modus .tab-header").classList.remove('closed');
+        }
+
+        timerAutoSave = setInterval(() => kirimDataWaktu("Penyimpanan Berjalan Latar Belakang (Auto-Save 5 Menit)"), 300000); 
+    }
+
+    function kunciKuisVisual(kuisId, teksBenar) {
+        let btns = document.querySelectorAll(`#kuis-${kuisId} .btn-jawaban`);
+        btns.forEach(btn => btn.disabled = true);
+        
+        let containerEl = document.getElementById(`kuis-${kuisId}`);
+        containerEl.style.borderColor = "#059669";
+        
+        let feedbackEl = document.getElementById(`feedback-${kuisId}`);
+        feedbackEl.style.display = "block";
+        feedbackEl.style.background = "#d1fae5";
+        feedbackEl.style.color = "#065f46";
+        feedbackEl.innerText = `[ VALIDASI MEMORI BERHASIL ] Sistem mencatat bahwa Anda sebelumnya telah menuntaskan evaluasi kuis ini dengan jawaban benar: "${teksBenar}".`;
+    }
+
+    async function cekJawaban(kuisId, jawabanTeks, apakahBenar, btnElement) {
+        let feedbackEl = document.getElementById(`feedback-${kuisId}`);
+        feedbackEl.style.display = "block";
+
+        const dataKuis = {
+            jenis: "kuis",
+            namaSiswa: namaSiswa,
+            idSoal: `Kuis Data Tunggal Keseluruhan Bagian Ke-${kuisId}`,
+            jawabanSiswa: jawabanTeks,
+            statusJawaban: apakahBenar ? "Valid Benar" : "Salah Eksekusi Analisa"
+        };
+        fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dataKuis) });
+
+        if (apakahBenar) {
+            let btns = document.querySelectorAll(`#kuis-${kuisId} .btn-jawaban`);
+            btns.forEach(btn => btn.disabled = true);
+            btnElement.classList.add("btn-correct");
+            
+            let containerEl = document.getElementById(`kuis-${kuisId}`);
+            containerEl.style.borderColor = "#059669";
+
+            feedbackEl.style.background = "#d1fae5";
+            feedbackEl.style.color = "#065f46";
+
+            if (kuisId === 1) {
+                feedbackEl.innerText = "[ VALIDASI BENAR ] Eksekusi logika matematika yang akurat. Bagian pembedahan konsep Median kini telah tersingkap untuk Anda pelajari di bawah ini.";
+                localStorage.setItem("kuis1_dtt_lulus_final", "true");
+                
+                let nextWrap = document.getElementById("wrap-median");
+                nextWrap.style.display = "block";
+                document.getElementById("content-median").classList.remove('hidden');
+                document.querySelector("#wrap-median .tab-header").classList.remove('closed');
+                
+                setTimeout(() => {
+                    nextWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 800);
+
+            } else if (kuisId === 2) {
+                feedbackEl.innerText = "[ VALIDASI BENAR ] Analisis pemecahan masalah yang presisi. Tahapan akhir pembelajaran mengenai klasifikasi Modus kini telah tersedia di hadapan Anda.";
+                localStorage.setItem("kuis2_dtt_lulus_final", "true");
+                
+                let nextWrap = document.getElementById("wrap-modus");
+                nextWrap.style.display = "block";
+                document.getElementById("content-modus").classList.remove('hidden');
+                document.querySelector("#wrap-modus .tab-header").classList.remove('closed');
+                
+                setTimeout(() => {
+                    nextWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 800);
+            }
+        } else {
+            feedbackEl.style.background = "#fee2e2";
+            feedbackEl.style.color = "#991b1b";
+            feedbackEl.innerText = "[ VALIDASI SALAH ] Hasil identifikasi analisis pilihan Anda terdeteksi meleset dari kaidah hukum statistik yang berlaku. Silakan evaluasi kembali.";
+        }
+    }
+
+    async function kirimDataWaktu(statusSesi) {
+        let sekarang = Date.now();
+        let durasiKirimMs = sekarang - waktuMulai;
+
+        if (sekarang - waktuAktivitasTerakhir > BATAS_IDLE_MS) {
+            durasiKirimMs = waktuAktivitasTerakhir - waktuMulai;
+            clearInterval(timerAutoSave); 
+        }
+
+        if (durasiKirimMs <= 0) return;
+
+        let detik = Math.round(durasiKirimMs / 1000);
+
+        const dataWaktu = {
+            jenis: "waktu",
+            namaSiswa: namaSiswa,
+            komponen: "Materi Terpadu Pemusatan Data Tunggal Terlengkap",
+            durasiDetik: detik,
+            status: statusSesi
+        };
+
+        fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dataWaktu) });
+
+        waktuMulai = sekarang; 
+        return detik; 
+    }
+
+    function selesaiBelajar() {
+        const btn = document.getElementById('btn-selesai');
+        btn.disabled = true;
+        btn.innerText = "Sistem Sedang Menjalankan Sinkronisasi Akhir Transmisi Data...";
+
+        clearInterval(timerAutoSave);
+        
+        let sisaDetik = kirimDataWaktu("Sesi Ditutup (Rekaman Final)");
+        
+        let menitAkhir = Math.floor(sisaDetik / 60);
+        let detikAkhir = sisaDetik % 60;
+
+        document.getElementById('materi-panel').style.display = 'none';
+        document.getElementById('bottom-bar').style.display = 'none';
+        document.getElementById('header-controls').style.display = 'none';
+        document.getElementById('end-panel').style.display = 'flex';
+        document.getElementById('durasi-tampil').innerText = `${menitAkhir} Menit ${detikAkhir} Detik`;
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
