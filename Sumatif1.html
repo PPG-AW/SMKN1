@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Soal Statistika - X PM 1</title>
+    <style>
+        /* =========================================
+           1. PENGATURAN DASAR & ANTI-SALIN MOBILE
+           ========================================= */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            line-height: 1.6;
+            color: #222;
+            margin: 0;
+            padding: 10px; /* Padding tipis untuk memaksimalkan layar HP */
+            background-color: #f4f6f9;
+            font-size: 15px; 
+            -webkit-user-select: none; 
+            -ms-user-select: none; 
+            user-select: none; 
+            -webkit-touch-callout: none; /* Cegah pop-up saat tahan layar di iOS/Android */
+            -webkit-tap-highlight-color: transparent; /* Hilangkan blok biru saat disentuh */
+        }
+
+        /* ANTI-CETAK */
+        @media print {
+            html, body { display: none !important; }
+        }
+
+        /* =========================================
+           2. TATA LETAK (UI/UX)
+           ========================================= */
+        .page {
+            max-width: 100%;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #b30000;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 { font-size: 18px; margin: 0 0 5px 0; color: #111; }
+        .header p { font-size: 13px; color: #666; margin: 0; line-height: 1.4; }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 15px;
+            background-color: #b30000;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 25px 0 15px 0;
+            box-shadow: 0 2px 4px rgba(179,0,0,0.2);
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .question-text { display: flex; }
+        .question-number { width: 25px; flex-shrink: 0; font-weight: bold; font-size: 16px; color: #b30000;}
+        .question-content { width: 100%; }
+
+        /* =========================================
+           3. GRAFIK & TABEL RESPONSIF (MOBILE)
+           ========================================= */
+        .svg-container {
+            width: 100%;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        /* Membuat SVG otomatis menyesuaikan layar HP */
+        svg { 
+            width: 100%; 
+            height: auto; 
+            max-width: 500px; /* Batas maksimal di tablet/PC */
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Pembungkus agar tabel tidak terpotong di HP kecil */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin: 15px 0;
+            -webkit-overflow-scrolling: touch; /* Halus saat di-scroll di iOS */
+        }
+
+        .table-data {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 300px; /* Minimal lebar tabel */
+            font-size: 13px;
+        }
+        .table-data th, .table-data td {
+            border: 1px solid #ccc;
+            padding: 8px 5px;
+            text-align: center;
+        }
+        .table-data th { background-color: #f8f9fa; color: #333;}
+
+        .note {
+            font-style: italic;
+            color: #777;
+            font-size: 12px;
+            margin-top: 8px;
+            display: block;
+            background: #fff9e6;
+            padding: 8px;
+            border-left: 3px solid #ffc107;
+            border-radius: 3px;
+        }
+
+        .highlight { font-weight: bold; background-color: #ffffcc; padding: 0 4px;}
+
+        /* =========================================
+           4. LAYAR ANTI-KECURANGAN
+           ========================================= */
+        #cheat-warning {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(179, 0, 0, 0.98);
+            color: white;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #cheat-warning h1 { font-size: 20px; margin-bottom: 10px; border-bottom: 2px solid white; padding-bottom: 8px;}
+        #cheat-warning p { font-size: 14px; margin-bottom: 25px; line-height: 1.6; }
+        
+        .input-kode {
+            padding: 14px;
+            font-size: 18px;
+            text-align: center;
+            border-radius: 8px;
+            border: none;
+            background-color: #fff;
+            width: 100%;
+            max-width: 250px;
+            margin-bottom: 15px;
+            outline: none;
+            font-family: monospace;
+            letter-spacing: 3px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-kembali {
+            padding: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 250px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+        }
+
+        .btn-kembali:active { transform: translateY(2px); box-shadow: none; }
+
+        #error-msg {
+            color: #ffcccc;
+            font-size: 13px;
+            margin-top: 12px;
+            display: none;
+            font-weight: bold;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cheat-warning">
+        <h1 id="cheat-title">PELANGGARAN TERDETEKSI!</h1>
+        <p id="cheat-message">Fokus layar hilang. Anda terdeteksi keluar dari layar ujian.<br><br><b>Silakan panggil Guru untuk membuka layar.</b></p>
+        
+        <div id="unlock-section" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <input type="tel" id="input-kode-guru" class="input-kode" placeholder="KODE GURU" autocomplete="off" maxlength="6">
+            <button class="btn-kembali" onclick="bukaKunci()">Buka Layar</button>
+            <span id="error-msg">Kode salah! Layar tetap terkunci.</span>
+        </div>
+    </div>
+
+    <div class="page" id="lembar-soal">
+
+        <div class="header">
+            <h1>PENILAIAN STATISTIKA - X PM 1</h1>
+            <p>Silakan baca soal di perangkat ini dan kerjakan langkah penyelesaiannya di buku tugas Anda.</p>
+        </div>
+
+        <div class="section-title">A. SOAL ISIAN SINGKAT</div>
+
+        <div class="question-block">
+            <div class="question-text">
+                <div class="question-number">1.</div>
+                <div class="question-content">
+                    Perhatikan diagram garis yang menunjukkan tren omset mingguan aktivitas Unit Produksi (UP) X-PM1. Titik data tepat berada pada garis skala.
+                    <div class="svg-container">
+                        <svg viewBox="0 0 450 220" style="border: 1px solid #ccc; background-color: #fafafa; border-radius: 4px;">
+                            <line x1="60" y1="180" x2="430" y2="180" stroke="#000" stroke-width="1.5" />
+                            <line x1="60" y1="140" x2="430" y2="140" stroke="#a0a0a0" stroke-dasharray="4" />
+                            <line x1="60" y1="100" x2="430" y2="100" stroke="#a0a0a0" stroke-dasharray="4" />
+                            <line x1="60" y1="60" x2="430" y2="60" stroke="#a0a0a0" stroke-dasharray="4" />
+                            <line x1="120" y1="20" x2="120" y2="180" stroke="#e0e0e0" />
+                            <line x1="210" y1="20" x2="210" y2="180" stroke="#e0e0e0" />
+                            <line x1="300" y1="20" x2="300" y2="180" stroke="#e0e0e0" />
+                            <line x1="390" y1="20" x2="390" y2="180" stroke="#e0e0e0" />
+                            <line x1="60" y1="10" x2="60" y2="180" stroke="#000" stroke-width="2"/>
+                            
+                            <text x="50" y="185" text-anchor="end" font-size="14">0</text>
+                            <text x="50" y="145" text-anchor="end" font-size="14">100k</text>
+                            <text x="50" y="105" text-anchor="end" font-size="14">200k</text>
+                            <text x="50" y="65" text-anchor="end" font-size="14">300k</text>
+                            
+                            <text x="120" y="205" text-anchor="middle" font-size="14">Mgg 1</text>
+                            <text x="210" y="205" text-anchor="middle" font-size="14">Mgg 2</text>
+                            <text x="300" y="205" text-anchor="middle" font-size="14">Mgg 3</text>
+                            <text x="390" y="205" text-anchor="middle" font-size="14">Mgg 4</text>
+                            
+                            <polyline points="120,140 210,100 300,140 390,60" fill="none" stroke="#b30000" stroke-width="3"/>
+                            <circle cx="120" cy="140" r="5" fill="#b30000"/>
+                            <circle cx="210" cy="100" r="5" fill="#b30000"/>
+                            <circle cx="300" cy="140" r="5" fill="#b30000"/>
+                            <circle cx="390" cy="60" r="5" fill="#b30000"/>
+                        </svg>
+                    </div>
+                    Berdasarkan diagram garis di atas, <span class="highlight">pada minggu ke berapakah UP mencapai omset tertinggi</span>, dan <span class="highlight">berapakah nilai omset pada minggu tersebut</span>?
+                </div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">
+                <div class="question-number">2.</div>
+                <div class="question-content">
+                    Diagram lingkaran berikut menggambarkan persentase produk yang dipasarkan siswa X-PM1. Diketahui total keseluruhan produk yang terjual adalah <b>400 unit</b>.
+                    <div class="svg-container" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 15px; background: #fafafa; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+                        <svg viewBox="0 0 32 32" style="width: 120px; height: 120px; transform: rotate(-90deg); border-radius: 50%;">
+                            <circle r="16" cx="16" cy="16" fill="#ddd" stroke="#fff" stroke-width="0.5" stroke-dasharray="100 100" />
+                            <circle r="16" cx="16" cy="16" fill="transparent" stroke="#aaa" stroke-width="32" stroke-dasharray="45 100" />
+                            <circle r="16" cx="16" cy="16" fill="transparent" stroke="#666" stroke-width="32" stroke-dasharray="25 100" stroke-dashoffset="-45" />
+                            <circle r="16" cx="16" cy="16" fill="transparent" stroke="#333" stroke-width="32" stroke-dasharray="20 100" stroke-dashoffset="-70" />
+                            <circle r="16" cx="16" cy="16" fill="transparent" stroke="#b30000" stroke-width="32" stroke-dasharray="10 100" stroke-dashoffset="-90" />
+                        </svg>
+                        <div style="font-size: 13px; text-align: left; line-height: 1.5;">
+                            <b>Keterangan:</b><br>
+                            <span style="color:#aaa;">&#9632;</span> Mak. Ringan (45%)<br>
+                            <span style="color:#666;">&#9632;</span> Minuman (25%)<br>
+                            <span style="color:#333;">&#9632;</span> Alat Tulis (20%)<br>
+                            <span style="color:#b30000;">&#9632;</span> Lainnya (10%)
+                        </div>
+                    </div>
+                    Berdasarkan diagram tersebut, <span class="highlight">produk apakah yang paling banyak terjual</span> dan <span class="highlight">berapakah jumlah unit yang terjual</span> untuk produk tersebut?
+                </div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">
+                <div class="question-number">3.</div>
+                <div class="question-content">
+                    Dalam sebuah proses asesmen kompetensi yang diikuti oleh 40 siswa, tercatat perolehan nilai paling rendah adalah 42 dan nilai paling tinggi adalah 96. Tentukan nilai <span class="highlight">Jangkauan (Range)</span> dari keseluruhan data tersebut!
+                </div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">
+                <div class="question-number">4.</div>
+                <div class="question-content">
+                    Perhatikan Histogram data nilai ujian praktik siswa di bawah ini. Tinggi setiap batang tepat menunjukkan frekuensi pada sumbu vertikal.
+                    <div class="svg-container">
+                        <svg viewBox="0 0 400 220" style="border: 1px solid #ccc; background-color: #fafafa; border-radius: 4px;">
+                            <line x1="40" y1="180" x2="380" y2="180" stroke="#000" stroke-width="1.5"/>
+                            <line x1="40" y1="140" x2="380" y2="140" stroke="#a0a0a0" stroke-dasharray="4" />
+                            <line x1="40" y1="100" x2="380" y2="100" stroke="#a0a0a0" stroke-dasharray="4" />
+                            <line x1="40" y1="60" x2="380" y2="60" stroke="#a0a0a0" stroke-dasharray="4" />
+                            <line x1="40" y1="20" x2="380" y2="20" stroke="#a0a0a0" stroke-dasharray="4" />
+                            <line x1="40" y1="10" x2="40" y2="180" stroke="#000" stroke-width="2"/>
+                            
+                            <text x="30" y="185" text-anchor="end" font-size="12">0</text>
+                            <text x="30" y="145" text-anchor="end" font-size="12">4</text>
+                            <text x="30" y="105" text-anchor="end" font-size="12">8</text>
+                            <text x="30" y="65" text-anchor="end" font-size="12">12</text>
+                            <text x="30" y="25" text-anchor="end" font-size="12">16</text>
+                            
+                            <rect x="60" y="140" width="50" height="40" fill="#aecbfa" stroke="#000" stroke-width="1"/> 
+                            <rect x="110" y="40" width="50" height="140" fill="#aecbfa" stroke="#000" stroke-width="1"/> 
+                            <rect x="160" y="20" width="50" height="160" fill="#aecbfa" stroke="#000" stroke-width="1"/> 
+                            <rect x="210" y="80" width="50" height="100" fill="#aecbfa" stroke="#000" stroke-width="1"/> 
+                            <rect x="260" y="120" width="50" height="60" fill="#aecbfa" stroke="#000" stroke-width="1"/> 
+                            
+                            <text x="60" y="200" text-anchor="middle" font-size="11">50,5</text>
+                            <text x="110" y="200" text-anchor="middle" font-size="11">60,5</text>
+                            <text x="160" y="200" text-anchor="middle" font-size="11">70,5</text>
+                            <text x="210" y="200" text-anchor="middle" font-size="11">80,5</text>
+                            <text x="260" y="200" text-anchor="middle" font-size="11">90,5</text>
+                            <text x="310" y="200" text-anchor="middle" font-size="11">100,5</text>
+                        </svg>
+                    </div>
+                    Berdasarkan histogram di atas, tentukan <span class="highlight">rentang interval kelas</span> (misalnya: 51 - 60) yang memiliki jumlah siswa terbanyak!
+                </div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">
+                <div class="question-number">5.</div>
+                <div class="question-content">
+                    Diberikan poligon frekuensi data waktu tempuh (menit) siswa menuju sekolah. Titik mendatar mewakili titik tengah interval kelas.
+                    <div class="svg-container">
+                        <svg viewBox="0 0 400 200" style="border: 1px solid #ccc; background-color: #fafafa; border-radius: 4px;">
+                            <line x1="40" y1="150" x2="380" y2="150" stroke="#000" stroke-width="1.5"/> 
+                            <line x1="40" y1="120" x2="380" y2="120" stroke="#a0a0a0" stroke-dasharray="4" />
+                            <line x1="40" y1="90" x2="380" y2="90" stroke="#a0a0a0" stroke-dasharray="4" />
+                            <line x1="40" y1="60" x2="380" y2="60" stroke="#a0a0a0" stroke-dasharray="4" />
+                            <line x1="40" y1="30" x2="380" y2="30" stroke="#a0a0a0" stroke-dasharray="4" />
+                            
+                            <line x1="70" y1="20" x2="70" y2="150" stroke="#e0e0e0" />
+                            <line x1="120" y1="20" x2="120" y2="150" stroke="#e0e0e0" />
+                            <line x1="170" y1="20" x2="170" y2="150" stroke="#e0e0e0" />
+                            <line x1="220" y1="20" x2="220" y2="150" stroke="#e0e0e0" />
+                            <line x1="270" y1="20" x2="270" y2="150" stroke="#e0e0e0" />
+                            <line x1="320" y1="20" x2="320" y2="150" stroke="#e0e0e0" />
+                            <line x1="370" y1="20" x2="370" y2="150" stroke="#e0e0e0" />
+                            
+                            <line x1="40" y1="10" x2="40" y2="150" stroke="#000" stroke-width="2"/>
+                            
+                            <text x="30" y="154" text-anchor="end" font-size="12">0</text>
+                            <text x="30" y="124" text-anchor="end" font-size="12">4</text>
+                            <text x="30" y="94" text-anchor="end" font-size="12">8</text>
+                            <text x="30" y="64" text-anchor="end" font-size="12">12</text>
+                            <text x="30" y="34" text-anchor="end" font-size="12">16</text>
+                            
+                            <text x="70" y="170" text-anchor="middle" font-size="12">5</text>
+                            <text x="120" y="170" text-anchor="middle" font-size="12">15</text>
+                            <text x="170" y="170" text-anchor="middle" font-size="12">25</text>
+                            <text x="220" y="170" text-anchor="middle" font-size="12">35</text>
+                            <text x="270" y="170" text-anchor="middle" font-size="12">45</text>
+                            <text x="320" y="170" text-anchor="middle" font-size="12">55</text>
+                            <text x="370" y="170" text-anchor="middle" font-size="12">65</text>
+                            
+                            <polyline points="70,150 120,120 170,90 220,60 270,105 320,135 370,150" fill="none" stroke="#28a745" stroke-width="2"/>
+                            <circle cx="70" cy="150" r="4" fill="#28a745"/>
+                            <circle cx="120" cy="120" r="4" fill="#28a745"/>
+                            <circle cx="170" cy="90" r="4" fill="#28a745"/>
+                            <circle cx="220" cy="60" r="4" fill="#28a745"/>
+                            <circle cx="270" cy="105" r="4" fill="#28a745"/>
+                            <circle cx="320" cy="135" r="4" fill="#28a745"/>
+                            <circle cx="370" cy="150" r="4" fill="#28a745"/>
+                        </svg>
+                    </div>
+                    Berdasarkan grafik di atas, <span class="highlight">berapakah jumlah siswa secara keseluruhan</span> yang waktu tempuhnya <b>di atas 25 menit</b>?
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">B. TUGAS PRAKTIK / URAIAN</div>
+
+        <div class="question-block">
+            <div class="question-text">
+                <div class="question-number">6.</div>
+                <div class="question-content">
+                    <b>Mempraktikkan Gambar Diagram Lingkaran</b><br>
+                    Data kehadiran Unit Produksi (UP) dengan total 40 data menunjukkan proporsi berikut:
+                    <ul style="margin: 5px 0 10px 0; padding-left: 20px;">
+                        <li>Hadir Tepat Waktu: <b>20 siswa</b></li>
+                        <li>Hadir Terlambat: <b>8 siswa</b></li>
+                        <li>Izin Terencana: <b>8 siswa</b></li>
+                        <li>Sakit: <b>4 siswa</b></li>
+                    </ul>
+                    Lakukan perhitungan matematis untuk mengonversi data ke dalam persentase dan derajat, lalu sajikan ke dalam sketsa <b>Diagram Lingkaran</b>!<br>
+                    <span class="note">*Jika tidak membawa busur derajat, silakan gambar garis sektornya dengan dikira-kira secara proporsional.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-text">
+                <div class="question-number">7.</div>
+                <div class="question-content">
+                    <b>Menyusun Tabel Distribusi Frekuensi (TDF)</b><br>
+                    Berikut data mentah uji kompetensi dari 30 siswa X-PM1:
+                    
+                    <div class="table-responsive">
+                        <table class="table-data">
+                            <tr><td>65</td><td>72</td><td>88</td><td>61</td><td>75</td><td>80</td></tr>
+                            <tr><td>58</td><td>92</td><td>70</td><td>85</td><td>68</td><td>73</td></tr>
+                            <tr><td>78</td><td>82</td><td>64</td><td>90</td><td>76</td><td>66</td></tr>
+                            <tr><td>55</td><td>86</td><td>74</td><td>69</td><td>83</td><td>77</td></tr>
+                            <tr><td>81</td><td>62</td><td>89</td><td>71</td><td>79</td><td>67</td></tr>
+                        </table>
+                    </div>
+                    
+                    Aplikasikan prosedur statistika untuk menyusun TDF. Tunjukkan urutan langkahnya:<br>
+                    1. Jangkauan (Range)<br>
+                    2. Banyak Kelas (k dibulatkan terdekat)<br>
+                    3. Panjang Kelas (c)<br>
+                    4. Tabel Distribusi Frekuensi (beserta turusnya).
+                </div>
+            </div>
+        </div>
+
+        <div class="question-block" style="border-bottom: none;">
+            <div class="question-text">
+                <div class="question-number">8.</div>
+                <div class="question-content">
+                    <b>Mempraktikkan Gambar Poligon Frekuensi</b><br>
+                    Disajikan TDF rumpang dari data omset harian. Tentukan batas tepi kelas dan titik tengah (Xi) untuk melengkapi tabel ini, lalu gambarkan <b>Poligon Frekuensinya</b> di bidang koordinat!<br>
+                    <span class="note">*Jangan lupa tambahkan titik imajiner awal dan akhir agar poligon tertutup rapat di sumbu mendatar.</span>
+                    
+                    <div class="table-responsive">
+                        <table class="table-data">
+                            <tr>
+                                <th>Interval</th>
+                                <th>Frekuensi (fi)</th>
+                                <th>Tepi Bawah</th>
+                                <th>Tepi Atas</th>
+                                <th>Titik Tengah</th>
+                            </tr>
+                            <tr><td>31 - 40</td><td>3</td><td>...</td><td>...</td><td>...</td></tr>
+                            <tr><td>41 - 50</td><td>7</td><td>...</td><td>...</td><td>...</td></tr>
+                            <tr><td>51 - 60</td><td>12</td><td>...</td><td>...</td><td>...</td></tr>
+                            <tr><td>61 - 70</td><td>6</td><td>...</td><td>...</td><td>...</td></tr>
+                            <tr><td>71 - 80</td><td>2</td><td>...</td><td>...</td><td>...</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // KODE GURU (Silakan ubah jika diperlukan)
+        const KODE_RAHASIA = "123456";
+
+        // 1. Matikan Klik Kanan & Shortcut Keyboard
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey || e.key === 'PrintScreen' || e.key === 'F5') {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('copy', e => e.preventDefault());
+        document.addEventListener('cut', e => e.preventDefault());
+        document.addEventListener('paste', e => e.preventDefault());
+
+        // 2. SISTEM MEMORI (LocalStorage)
+        let cheatCount = parseInt(localStorage.getItem('cheat_XPM1')) || 0;
+        let isBanned = localStorage.getItem('banned_XPM1') === 'true';
+        const maxCheats = 3;
+
+        const warningScreen = document.getElementById('cheat-warning');
+        const cheatMessage = document.getElementById('cheat-message');
+        const lembarSoal = document.getElementById('lembar-soal');
+        const cheatTitle = document.getElementById('cheat-title');
+        const unlockSection = document.getElementById('unlock-section');
+        const inputKode = document.getElementById('input-kode-guru');
+        const errorMsg = document.getElementById('error-msg');
+
+        // CEK SAAT HALAMAN DIBUKA (Agar sistem tahan Refresh/Reload)
+        if (isBanned) {
+            eksekusiBanned();
+        } else if (cheatCount > 0) {
+            tampilkanGembok();
+        }
+
+        function eksekusiBanned() {
+            cheatTitle.innerHTML = "UJIAN DIBATALKAN";
+            cheatMessage.innerHTML = "Anda telah melampaui batas maksimal pelanggaran sistem. Ujian tidak dapat dilanjutkan.<br><br><b>Laporkan hal ini kepada Guru.</b>";
+            unlockSection.style.display = 'none'; 
+            warningScreen.style.backgroundColor = 'rgba(150, 0, 0, 1)';
+            warningScreen.style.display = 'flex';
+            lembarSoal.style.filter = 'blur(20px)';
+        }
+
+        function tampilkanGembok() {
+            cheatMessage.innerHTML = `Fokus layar hilang! Anda terdeteksi keluar dari layar ujian.<br><br><b>Pelanggaran ke-${cheatCount} dari maksimal ${maxCheats} kali.</b><br><br>Panggil Guru Anda untuk membuka gembok ini.`;
+            inputKode.value = ""; 
+            errorMsg.style.display = "none";
+            warningScreen.style.display = 'flex';
+            lembarSoal.style.filter = 'blur(20px)';
+        }
+
+        function tanganiPelanggaran() {
+            if (isBanned) return; // Abaikan jika sudah status banned
+
+            cheatCount++;
+            localStorage.setItem('cheat_XPM1', cheatCount);
+
+            if (cheatCount > maxCheats) {
+                localStorage.setItem('banned_XPM1', 'true');
+                isBanned = true;
+                eksekusiBanned();
+            } else {
+                tampilkanGembok();
+            }
+        }
+
+        function bukaKunci() {
+            if (inputKode.value === KODE_RAHASIA) {
+                warningScreen.style.display = 'none';
+                lembarSoal.style.filter = 'none';
+                // Opsional: Hapus komentar di bawah jika ingin mereset nyawa siswa setelah dibuka
+                // cheatCount = 0; 
+                // localStorage.setItem('cheat_XPM1', 0);
+            } else {
+                errorMsg.style.display = 'block';
+                inputKode.value = ""; 
+            }
+        }
+
+        // Trigger: Meminimalkan HP atau Pindah Tab
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && warningScreen.style.display !== 'flex' && !isBanned) {
+                tanganiPelanggaran();
+            }
+        });
+
+        // Trigger: Notifikasi mengambang, Split-Screen, dll
+        window.addEventListener('blur', () => {
+            setTimeout(() => {
+                // Jangan hukum jika yang difokuskan adalah kolom input kode sendiri
+                if(document.activeElement.id !== 'input-kode-guru' && warningScreen.style.display !== 'flex' && !isBanned) {
+                    tanganiPelanggaran();
+                }
+            }, 250);
+        });
+    </script>
+</body>
+</html>
