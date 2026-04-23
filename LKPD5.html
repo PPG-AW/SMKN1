@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LKPD Statistika</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #27ae60; --bg: #f8f9fa; --text: #333; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; font-size: 15px;}
+        .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .hidden { display: none !important; }
+        
+        input.login-input, select.login-input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 1rem;}
+        button { width: 100%; padding: 14px; background: var(--secondary); color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer;}
+        
+        .soal-box { border-left: 5px solid var(--primary); padding-left: 12px; margin-bottom: 30px; }
+        .soal-title { color: var(--primary); margin: 0 0 8px 0; font-size: 1.1rem;}
+        .step-text { font-size: 0.9rem; color: #555; line-height: 1.5; margin-bottom: 15px; background: #e9ecef; padding: 10px; border-radius: 6px;}
+        
+        .input-group { margin-top: 10px; padding: 10px; background: #fff; border-radius: 6px; border: 1px solid #dee2e6; position: relative;}
+        .input-group label { font-size: 0.85rem; color: #495057; font-weight: 600; display: block; margin-bottom: 5px;}
+        .input-micro { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; transition: 0.3s;}
+        
+        .badge { font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; position: absolute; right: 10px; top: 10px; color: white; z-index: 2;}
+        .badge-editor { background: #6c757d; }
+        .badge-typing { background: #e74c3c; animation: pulse 1s infinite; }
+        .locked-input { background-color: #fcf8e3 !important; border-color: #f1c40f !important; color: #8a6d3b; pointer-events: none;}
+        .status-bar { text-align: center; font-size: 0.85rem; padding: 8px; background: #d4edda; color: #155724; border-radius: 5px; margin-bottom: 15px; font-weight: bold;}
+        
+        /* Penyesuaian Tabel Interaktif */
+        .table-container { overflow-x: auto; margin-bottom: 15px; }
+        .table-soal { width: 100%; border-collapse: collapse; font-size: 0.9rem; background: white;}
+        .table-soal th, .table-soal td { border: 1px solid #ced4da; padding: 10px; text-align: center; vertical-align: middle;}
+        .table-soal th { background: #e2e8f0; color: #2c3e50; font-weight: bold;}
+        .table-soal tr:nth-child(even) { background-color: #f8f9fa; }
+        
+        /* CSS Khusus Input dalam Tabel */
+        .td-input { position: relative; padding: 22px 8px 8px 8px !important; vertical-align: bottom;}
+        .table-input { width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; text-align: center; font-weight: bold;}
+        .badge-table { top: 3px !important; right: 3px !important; font-size: 0.55rem !important; }
+        .row-total { background-color: #e9ecef !important; font-weight: bold; }
+        
+        /* CSS Penambahan Panel Info Anggota */
+        .info-panel { background: #e2e8f0; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 0.85rem; border: 1px solid #cbd5e1; color: #334155;}
+        .member-list { font-weight: bold; color: #0f172a; }
+        
+        /* CSS Penambahan Timer & Submit */
+        .timer-box { position: sticky; top: 10px; background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-weight: bold; font-size: 1.2rem; text-align: center; border: 2px solid var(--primary); z-index: 1000; margin-bottom: 20px;}
+        .timer-overtime { background: #ffebee; border-color: #e74c3c; color: #c0392b;}
+        .locked-page { background: #ecf0f1 !important; }
+        button.btn-submit { background: #e74c3c; margin-top: 20px; font-size: 1.2rem; padding: 18px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); transition: 0.3s;}
+        button.btn-submit:hover { background: #c0392b; transform: scale(0.98);}
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div id="loginPage" class="card">
+    <h2 style="color:var(--primary); text-align:center;">LKPD Statistika</h2>
+    <input type="text" id="namaSiswa" class="login-input" placeholder="Masukkan Nama Lengkap">
+    <select id="pilihanKelompok" class="login-input">
+        <option value="">-- Pilih Kelompok Anda --</option>
+        <option value="Kelompok 1">Kelompok 1</option>
+        <option value="Kelompok 2">Kelompok 2</option>
+        <option value="Kelompok 3">Kelompok 3</option>
+        <option value="Kelompok 4">Kelompok 4</option>
+        <option value="Kelompok 5">Kelompok 5</option>
+		<option value="Kelompok 5">Kelompok 6</option>
+		<option value="Kelompok 5">Kelompok 7</option>
+		<option value="Kelompok 5">Kelompok 8</option>
+		<option value="Kelompok 5">Kelompok 9</option>
+		<option value="Kelompok 5">Kelompok 10</option>
+    </select>
+    <button onclick="cekLogin()">Masuk Ruang Diskusi</button>
+</div>
+
+<div id="lkpdPage" class="hidden">
+    
+    <div id="timerDisplay" class="timer-box">Waktu: Menghitung...</div>
+
+    <div class="card" style="background: var(--primary); color: white;">
+        <h3 style="margin:0;">Ruang Kolaborasi Kelompok</h3>
+        <p id="infoUser" style="margin:5px 0 0 0; font-size: 0.9rem; font-weight:bold;"></p>
+    </div>
+    
+    <div class="info-panel">
+        <div>Anggota Kelompok: <span id="memberList" class="member-list">Memuat daftar anggota...</span></div>
+    </div>
+
+    <div class="status-bar" id="syncStatus">Status: Terkoneksi & Auto-Save Aktif</div>
+
+    <div class="card" id="wadahSoal">
+        
+        <div class="soal-box">
+            <h4 class="soal-title">1. Mean Data Mentah</h4>
+            <div class="step-text">
+                Diketahui data hasil pengamatan sebagai berikut:<br>
+                <b>78, 85, 92, 76, 88, 90, 84, 79, 85, 93</b>
+            </div>
+            
+            <div class="input-group"><span class="badge badge-editor" id="info_q1_sum">-</span><label>A. Jumlah Total Seluruh Data (Σx)</label><input type="number" id="q1_sum" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q1_n">-</span><label>B. Banyaknya Data (n)</label><input type="number" id="q1_n" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q1_mean">-</span><label>C. Rata-rata (Mean)</label><input type="number" step="0.1" id="q1_mean" class="input-micro"></div>
+        </div>
+
+        <div class="soal-box">
+            <h4 class="soal-title">2. Mean Tabel Frekuensi</h4>
+            <div class="step-text">Lengkapi tabel distribusi frekuensi di bawah ini untuk mencari nilai Rata-rata (Mean).</div>
+            <div class="table-container">
+                <table class="table-soal">
+                    <tr><th>Nilai (x)</th><th>Frekuensi (f)</th><th>Hasil Kali (f • x)</th></tr>
+                    <tr>
+                        <td>10</td><td>5</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q2_fx1">-</span><input type="number" id="q2_fx1" class="input-micro table-input"></td>
+                    </tr>
+                    <tr>
+                        <td>20</td><td>8</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q2_fx2">-</span><input type="number" id="q2_fx2" class="input-micro table-input"></td>
+                    </tr>
+                    <tr>
+                        <td>30</td><td>2</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q2_fx3">-</span><input type="number" id="q2_fx3" class="input-micro table-input"></td>
+                    </tr>
+                    <tr class="row-total">
+                        <td>Total (Σ)</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q2_sumf">-</span><input type="number" id="q2_sumf" class="input-micro table-input"></td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q2_sumfx">-</span><input type="number" id="q2_sumfx" class="input-micro table-input"></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="input-group"><span class="badge badge-editor" id="info_q2_mean">-</span><label>Berdasarkan tabel di atas, berapakah Nilai Mean-nya?</label><input type="number" step="0.1" id="q2_mean" class="input-micro"></div>
+        </div>
+
+        <div class="soal-box">
+            <h4 class="soal-title">3. Mean Gabungan</h4>
+            <div class="step-text">
+                Rata-rata nilai pengujian kelompok A yang terdiri dari 24 siswa adalah 76,5.<br>
+                Rata-rata nilai pengujian kelompok B yang terdiri dari 16 siswa adalah 82,0.<br>
+                Tentukan rata-rata nilai gabungan dari kedua kelompok tersebut.
+            </div>
+            
+            <div class="input-group"><span class="badge badge-editor" id="info_q3_totA">-</span><label>A. Total Nilai Kelompok A</label><input type="number" step="0.1" id="q3_totA" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q3_totB">-</span><label>B. Total Nilai Kelompok B</label><input type="number" step="0.1" id="q3_totB" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q3_meangab">-</span><label>C. Rata-rata Gabungan</label><input type="number" step="0.1" id="q3_meangab" class="input-micro"></div>
+        </div>
+
+        <div class="soal-box">
+            <h4 class="soal-title">4. Median Data Mentah (Ganjil)</h4>
+            <div class="step-text">
+                Diberikan sekumpulan data acak sebagai berikut:<br>
+                <b>45, 67, 52, 78, 41, 59, 83, 64, 55, 71, 48</b>
+            </div>
+            
+            <div class="input-group"><span class="badge badge-editor" id="info_q4_sort">-</span><label>A. Urutkan data dari nilai terkecil ke terbesar</label><input type="text" id="q4_sort" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q4_pos">-</span><label>B. Letak Median berada di data ke-</label><input type="number" id="q4_pos" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q4_med">-</span><label>C. Nilai Median</label><input type="number" id="q4_med" class="input-micro"></div>
+        </div>
+
+        <div class="soal-box">
+            <h4 class="soal-title">5. Median Data Mentah (Genap)</h4>
+            <div class="step-text">
+                Diketahui data hasil pencatatan sebagai berikut:<br>
+                <b>124, 115, 132, 140, 128, 119, 136, 122, 145, 130, 125, 118</b>
+            </div>
+            
+            <div class="input-group"><span class="badge badge-editor" id="info_q5_sort">-</span><label>A. Urutkan data dari nilai terkecil ke terbesar</label><input type="text" id="q5_sort" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q5_pos">-</span><label>B. Letak Median di antara data ke-</label><input type="text" id="q5_pos" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q5_med">-</span><label>C. Nilai Median</label><input type="number" step="0.1" id="q5_med" class="input-micro"></div>
+        </div>
+
+        <div class="soal-box">
+            <h4 class="soal-title">6. Median Tabel Frekuensi (Ganjil)</h4>
+            <div class="step-text">Lengkapi kolom Frekuensi Kumulatif (Fk) pada tabel distribusi data berjumlah 45 ini.</div>
+            <div class="table-container">
+                <table class="table-soal">
+                    <tr><th>Nilai</th><th>Frekuensi (f)</th><th>F. Kumulatif (Fk)</th></tr>
+                    <tr>
+                        <td>60</td><td>10</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q6_fk1">-</span><input type="number" id="q6_fk1" class="input-micro table-input"></td>
+                    </tr>
+                    <tr>
+                        <td>70</td><td>15</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q6_fk2">-</span><input type="number" id="q6_fk2" class="input-micro table-input"></td>
+                    </tr>
+                    <tr>
+                        <td>80</td><td>16</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q6_fk3">-</span><input type="number" id="q6_fk3" class="input-micro table-input"></td>
+                    </tr>
+                    <tr>
+                        <td>90</td><td>4</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q6_fk4">-</span><input type="number" id="q6_fk4" class="input-micro table-input"></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="input-group"><span class="badge badge-editor" id="info_q6_pos">-</span><label>A. Letak Median berada pada data ke-</label><input type="number" id="q6_pos" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q6_med">-</span><label>B. Nilai Median (Amati Fk di tabel)</label><input type="number" id="q6_med" class="input-micro"></div>
+        </div>
+
+        <div class="soal-box">
+            <h4 class="soal-title">7. Median Tabel Frekuensi (Genap)</h4>
+            <div class="step-text">Lengkapi kolom Frekuensi Kumulatif (Fk) dari 50 observasi data berikut.</div>
+            <div class="table-container">
+                <table class="table-soal">
+                    <tr><th>Nilai Observasi</th><th>Frekuensi (f)</th><th>F. Kumulatif (Fk)</th></tr>
+                    <tr>
+                        <td>6</td><td>12</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q7_fk1">-</span><input type="number" id="q7_fk1" class="input-micro table-input"></td>
+                    </tr>
+                    <tr>
+                        <td>7</td><td>18</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q7_fk2">-</span><input type="number" id="q7_fk2" class="input-micro table-input"></td>
+                    </tr>
+                    <tr>
+                        <td>8</td><td>20</td>
+                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q7_fk3">-</span><input type="number" id="q7_fk3" class="input-micro table-input"></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="input-group"><span class="badge badge-editor" id="info_q7_pos">-</span><label>A. Letak data tengah berada pada urutan ke-</label><input type="text" id="q7_pos" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q7_med">-</span><label>B. Nilai Median</label><input type="number" step="0.1" id="q7_med" class="input-micro"></div>
+        </div>
+
+        <div class="soal-box">
+            <h4 class="soal-title">8. Modus Data Mentah</h4>
+            <div class="step-text">
+                Diberikan kumpulan angka sebagai berikut:<br>
+                <b>8, 7, 9, 6, 8, 7, 8, 10, 7, 8, 6, 9, 8, 7, 9</b>
+            </div>
+            
+            <div class="input-group"><span class="badge badge-editor" id="info_q8_freq">-</span><label>A. Lakukan observasi, angka berapakah yang paling dominan muncul dan sebutkan frekuensinya</label><input type="text" id="q8_freq" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q8_mod">-</span><label>B. Nilai Modus</label><input type="number" id="q8_mod" class="input-micro"></div>
+        </div>
+
+        <div class="soal-box">
+            <h4 class="soal-title">9. Modus Tabel Frekuensi</h4>
+            <div class="step-text">Perhatikan tabel distribusi berikut ini.</div>
+            <div class="table-container">
+                <table class="table-soal">
+                    <tr><th>Kelas Data</th><th>Frekuensi (f)</th></tr>
+                    <tr><td>40</td><td>12</td></tr>
+                    <tr><td>45</td><td>18</td></tr>
+                    <tr><td>50</td><td>25</td></tr>
+                    <tr><td>55</td><td>24</td></tr>
+                    <tr><td>60</td><td>16</td></tr>
+                    <tr><td>65</td><td>9</td></tr>
+                </table>
+            </div>
+            
+            <div class="input-group"><span class="badge badge-editor" id="info_q9_maxf">-</span><label>A. Tentukan angka frekuensi maksimum pada tabel</label><input type="number" id="q9_maxf" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q9_mod">-</span><label>B. Nilai Modus</label><input type="number" id="q9_mod" class="input-micro"></div>
+        </div>
+
+        <div class="soal-box">
+            <h4 class="soal-title">10. Modus Tabel Frekuensi (Multimodal)</h4>
+            <div class="step-text">Perhatikan tabel distribusi data di bawah ini dengan saksama.</div>
+            <div class="table-container">
+                <table class="table-soal">
+                    <tr><th>Kategori Nilai</th><th>Frekuensi (f)</th></tr>
+                    <tr><td>100</td><td>15</td></tr>
+                    <tr><td>110</td><td>28</td></tr>
+                    <tr><td>120</td><td>22</td></tr>
+                    <tr><td>130</td><td>28</td></tr>
+                    <tr><td>140</td><td>19</td></tr>
+                    <tr><td>150</td><td>10</td></tr>
+                </table>
+            </div>
+            
+            <div class="input-group"><span class="badge badge-editor" id="info_q10_freqs">-</span><label>A. Sebutkan angka frekuensi tertinggi yang terjadi lebih dari satu kali</label><input type="number" id="q10_freqs" class="input-micro"></div>
+            <div class="input-group"><span class="badge badge-editor" id="info_q10_mods">-</span><label>B. Sebutkan Nilai Modusnya secara lengkap</label><input type="text" id="q10_mods" class="input-micro"></div>
+        </div>
+
+        <button id="btnSubmit" class="btn-submit" onclick="submitLKPD()">Kumpulkan & Kunci Jawaban</button>
+
+    </div>
+</div>
+
+<script>
+    // MASUKKAN URL DEPLOY APPS SCRIPT ANDA DI SINI
+    const URL_APP = 'https://script.google.com/macros/s/AKfycbw-wHGIRDmGcc2Tai7znK7EWfao3nZOL_Liy-NfVDKcZDzousLoUEFQaHGOFKKoAG3v/exec'; 
+    const WAKTU_MENIT = 30; // Pengaturan durasi waktu (dalam menit)
+   
+    let sNama = "", sKel = "";
+    let inputs = [];
+    let timerInterval;
+    
+    // PENAMBAHAN: Variabel untuk mencatat kapan terakhir kita mengunci kotak
+    let myLocks = {}; 
+
+    function cekLogin() {
+        sNama = document.getElementById('namaSiswa').value;
+        sKel = document.getElementById('pilihanKelompok').value;
+        if(sNama && sKel) {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('lkpdPage').classList.remove('hidden');
+            document.getElementById('infoUser').innerText = "Siswa: " + sNama + " | " + sKel;
+            inisialisasiSistem();
+        } else { alert("Data tidak lengkap. Mohon isi Nama dan pilih Kelompok."); }
+    }
+
+    function inisialisasiSistem() {
+        inputs = Array.from(document.querySelectorAll('.input-micro'));
+        inputs.forEach(el => {
+            el.addEventListener('focus', () => setLock(el.id));
+            el.addEventListener('blur', () => saveData(el, el.id));
+        });
+        
+        mulaiTimer();
+        tarikData(); 
+        setInterval(tarikData, 5000); 
+    }
+
+    function mulaiTimer() {
+        if(localStorage.getItem('lkpd_status_' + sKel) === 'selesai') {
+            kunciLayarSelesai(localStorage.getItem('lkpd_waktuAkhir_' + sKel));
+            return;
+        }
+
+        let startTime = localStorage.getItem('lkpd_startWaktu_' + sKel);
+        if (!startTime) {
+            startTime = Date.now();
+            localStorage.setItem('lkpd_startWaktu_' + sKel, startTime);
+        }
+
+        const totalDetik = WAKTU_MENIT * 60;
+        let timerDisplay = document.getElementById('timerDisplay');
+
+        timerInterval = setInterval(() => {
+            let elapsed = Math.floor((Date.now() - startTime) / 1000);
+            let sisa = totalDetik - elapsed;
+            let absSisa = Math.abs(sisa);
+            
+            let m = Math.floor(absSisa / 60).toString().padStart(2, '0');
+            let s = (absSisa % 60).toString().padStart(2, '0');
+
+            if (sisa >= 0) {
+                timerDisplay.innerText = "Sisa Waktu: " + m + ":" + s;
+                timerDisplay.classList.remove('timer-overtime');
+            } else {
+                timerDisplay.innerText = "Terlambat: -" + m + ":" + s;
+                timerDisplay.classList.add('timer-overtime');
+            }
+        }, 1000);
+    }
+
+    function submitLKPD() {
+        let konfirmasi = confirm("Apakah kelompok Anda yakin ingin mengumpulkan? Jawaban tidak akan bisa diubah lagi.");
+        if (konfirmasi) {
+            clearInterval(timerInterval);
+
+            let startTime = localStorage.getItem('lkpd_startWaktu_' + sKel);
+            let elapsed = Math.floor((Date.now() - startTime) / 1000);
+            let m = Math.floor(elapsed / 60);
+            let s = elapsed % 60;
+            
+            let keteranganWaktu = "";
+            if(elapsed <= (WAKTU_MENIT * 60)){
+                keteranganWaktu = "Tepat Waktu (" + m + "m " + s + "s)";
+            } else {
+                let terlambatM = m - WAKTU_MENIT;
+                keteranganWaktu = "Terlambat " + terlambatM + "m " + s + "s";
+            }
+
+            localStorage.setItem('lkpd_status_' + sKel, 'selesai');
+            localStorage.setItem('lkpd_waktuAkhir_' + sKel, keteranganWaktu);
+
+            let fd = new FormData();
+            fd.append('kelompok', sKel);
+            fd.append('field', 'waktu_selesai'); 
+            fd.append('nilai', keteranganWaktu + " [Oleh: " + sNama + "]");
+            fd.append('nama', sNama);
+            fd.append('action', 'save');
+            
+            fetch(URL_APP, { method: 'POST', body: fd }).then(()=>{
+                kunciLayarSelesai(keteranganWaktu);
+                alert("Berhasil! LKPD telah dikumpulkan.");
+            });
+        }
+    }
+
+    function kunciLayarSelesai(teksWaktu) {
+        document.getElementById('btnSubmit').style.display = "none";
+        document.getElementById('timerDisplay').innerText = "[TERKUNCI] " + teksWaktu;
+        document.getElementById('timerDisplay').classList.remove('timer-overtime');
+        document.getElementById('timerDisplay').style.backgroundColor = "#d4edda";
+        document.getElementById('timerDisplay').style.color = "#155724";
+        document.getElementById('timerDisplay').style.borderColor = "#27ae60";
+        document.getElementById('syncStatus').innerText = "Status: Penilaian Guru";
+        
+        document.body.classList.add('locked-page');
+
+        inputs.forEach(el => {
+            el.disabled = true;
+            el.style.backgroundColor = "#e9ecef";
+        });
+    }
+
+    function setLock(fieldId) {
+        // Jangan mengunci lagi jika kita sudah mengirim kunci dalam 5 detik terakhir (mencegah spam ke server)
+        let now = Date.now();
+        if(myLocks[fieldId] && (now - myLocks[fieldId] < 5000)) return;
+        
+        myLocks[fieldId] = now;
+        
+        let fd = new FormData();
+        fd.append('kelompok', sKel); fd.append('field', fieldId);
+        fd.append('nama', sNama); fd.append('action', 'lock');
+        fetch(URL_APP, { method: 'POST', body: fd });
+    }
+
+    function saveData(el, fieldId) {
+        // Hapus catatan kunci lokal kita saat kursor pindah
+        delete myLocks[fieldId]; 
+        
+        if(!el.value) return; 
+        
+        document.getElementById('syncStatus').innerText = "Status: Menyimpan perubahan...";
+        let fd = new FormData();
+        fd.append('kelompok', sKel); fd.append('field', fieldId);
+        fd.append('nilai', el.value); fd.append('nama', sNama); fd.append('action', 'save');
+        
+        fetch(URL_APP, { method: 'POST', body: fd }).then(()=>{
+            document.getElementById('syncStatus').innerText = "Status: Data Tersimpan";
+            // Langsung tarik data segera setelah menyimpan agar layar teman cepat update
+            tarikData(); 
+        });
+    }
+
+    function tarikData() {
+        if(localStorage.getItem('lkpd_status_' + sKel) === 'selesai') return;
+
+        // Anti-Cache url agar data tidak tertahan
+        let noCacheUrl = URL_APP + '?kelompok=' + sKel + '&t=' + Date.now();
+
+        fetch(noCacheUrl).then(res => res.json()).then(data => {
+            
+            // Penanganan Anggota Kelompok
+            if(data.anggota && data.anggota.length > 0) {
+                document.getElementById('memberList').innerText = data.anggota.join(", ");
+            } else {
+                document.getElementById('memberList').innerText = "Belum ada data dari server.";
+            }
+
+            // Kompatibilitas data
+            let isNewFormat = data.jawaban !== undefined;
+            let jawabanData = isNewFormat ? data.jawaban : data;
+            let kunciData = isNewFormat ? data.Kunci_Sistem : data.locks;
+            let editorData = isNewFormat ? data.Jejak_Editor : data.editors;
+
+            // Kunci Layar jika disubmit teman
+            if(jawabanData && jawabanData['waktu_selesai'] && jawabanData['waktu_selesai'].trim() !== "") {
+                clearInterval(timerInterval);
+                localStorage.setItem('lkpd_status_' + sKel, 'selesai');
+                localStorage.setItem('lkpd_waktuAkhir_' + sKel, jawabanData['waktu_selesai']);
+                kunciLayarSelesai(jawabanData['waktu_selesai']);
+                return; 
+            }
+
+            inputs.forEach(el => {
+                let f = el.id;
+                let badge = document.getElementById('info_' + f);
+                
+                // PERBAIKAN BUG: Hanya tampilkan "Sedang diketik" JIKA:
+                // 1. Ada data kunci dari server
+                // 2. Kunci itu bukan nama kita sendiri
+                // 3. Kita sendiri sedang TIDAK berada (focus) di kotak tersebut.
+                if(kunciData && kunciData[f] && kunciData[f] !== sNama && document.activeElement !== el) {
+                    
+                    // Kita tidak menggunakan "disabled" pada input, agar kalau tabrakan, siswa tetap bisa ngetik
+                    el.classList.add("locked-input"); 
+                    badge.className = "badge badge-typing";
+                    badge.innerText = "Sedang diketik: " + kunciData[f];
+                    
+                } else {
+                    el.classList.remove("locked-input");
+                    
+                    // Update value JIKA kita sedang tidak ngetik di situ
+                    if(document.activeElement !== el && jawabanData && jawabanData[f] !== undefined) {
+                        el.value = jawabanData[f];
+                    }
+                    
+                    // Kembalikan ke mode Editor Terakhir
+                    if(editorData && editorData[f]) {
+                        badge.className = "badge badge-editor";
+                        if(el.classList.contains('table-input')){
+                           badge.innerText = editorData[f]; 
+                        } else {
+                           badge.innerText = "Editor terakhir: " + editorData[f];
+                        }
+                    } else {
+                        badge.className = "badge badge-editor";
+                        badge.innerText = "Belum diisi";
+                    }
+                }
+            });
+        }).catch(err => {
+            console.log("Koneksi tarik data terganggu sementara", err);
+        });
+    }
+</script>
+
+</body>
+</html>
