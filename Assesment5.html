@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Asesmen Formatif Pemusatan Data Tunggal</title>
+    <style>
+        :root { --primary: #0f172a; --primary-light: #1e293b; --accent: #059669; --bg: #f8fafc; --border: #cbd5e1; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: var(--bg); color: #334155; line-height: 1.6; display: flex; justify-content: center; min-height: 100vh;}
+        .app { width: 100%; max-width: 700px; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative;}
+        
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; font-weight: bold; font-size: 18px; letter-spacing: 1px;}
+        .content { padding: 30px 20px; flex: 1; }
+        
+        .input-text { width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 8px; font-size: 15px; margin-bottom: 20px;}
+        .input-text:focus { outline: none; border-color: var(--accent); }
+        
+        .btn-main { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s;}
+        .btn-main:hover { background: #047857; }
+        .btn-alt { background: white; color: var(--primary); border: 2px solid var(--primary); padding: 14px; border-radius: 8px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px;}
+        .btn-nav { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;}
+        
+        #gate-panel, #quiz-panel, #end-panel, #score-panel { display: none; }
+        #gate-panel { display: block; text-align: center; }
+        
+        .progress-bar { background: #e2e8f0; height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden;}
+        .progress-fill { background: var(--accent); height: 100%; width: 0%; transition: 0.3s; }
+        
+        .q-tag { display: inline-block; background: var(--primary); color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-bottom: 15px;}
+        .q-cerita { font-size: 15px; font-weight: 500; color: #1e293b; margin-bottom: 20px; padding: 15px; background: #f1f5f9; border-radius: 8px; border-left: 4px solid var(--primary);}
+        
+        .q-butir-box { background: #fdfdfd; border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 15px;}
+        .q-butir-tanya { font-weight: bold; color: var(--primary-dark); font-size: 14px; margin-bottom: 10px;}
+        
+        /* Input Spesifik */
+        .input-ans { width: 100%; padding: 10px; border: 1px solid #94a3b8; border-radius: 6px; font-size: 14px; background: white;}
+        .input-ans:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.1);}
+        textarea.input-ans { min-height: 60px; resize: vertical; }
+
+        /* Sort Input Grid */
+        .sort-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; margin-bottom: 15px; }
+        .input-sort { width: 100%; padding: 8px; text-align: center; border: 1px solid #94a3b8; border-radius: 4px; font-weight: bold; }
+
+        /* Tables */
+        .display-table, .ans-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13px;}
+        .display-table th, .display-table td, .ans-table th, .ans-table td { border: 1px solid #cbd5e1; padding: 8px; text-align: center; }
+        .display-table th { background: #f1f5f9; }
+        .ans-table th { background: #ecfdf5; color: #065f46; }
+        .input-table { width: 100%; border: 1px solid transparent; text-align: center; font-size: 13px; padding: 4px; outline: none; background: #fff; border-radius: 4px; }
+        .input-table:focus { border-color: var(--accent); }
+        
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 25px;}
+        .score-box { background: #f0fdf4; border: 2px solid #16a34a; border-radius: 8px; padding: 20px; margin-top: 20px;}
+        .score-value { font-size: 40px; font-weight: bold; color: var(--accent); text-align: center; margin: 10px 0;}
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <div class="header">Asesmen Formatif Mandiri</div>
+    
+    <div class="content">
+        <div id="gate-panel">
+            <h2>Evaluasi Pemahaman</h2>
+            <p style="margin-bottom: 25px; font-size: 14px;">Uji sejauh mana kamu menguasai pengolahan data tunggal. Masukkan nama lengkap untuk memulai.</p>
+            <input type="text" id="namaSiswa" class="input-text" placeholder="Nama Lengkap...">
+            <button class="btn-main" onclick="mulaiUjian()">Mulai Kerja</button>
+            <button class="btn-alt" onclick="cekNilai()">Lihat Feedback Guru</button>
+            <div id="login-msg" style="margin-top: 15px; color: #dc2626; font-weight: bold; display: none;"></div>
+        </div>
+
+        <div id="score-panel">
+            <h2 style="text-align: center;">Hasil Belajarmu</h2>
+            <div id="score-content"></div>
+            <button class="btn-alt" style="margin-top: 30px;" onclick="location.reload()">Kembali</button>
+        </div>
+
+        <div id="quiz-panel">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div id="q-container"></div>
+            <div class="nav-buttons">
+                <button class="btn-nav" id="btn-prev" onclick="gantiSoal(-1)">Kembali</button>
+                <button class="btn-nav" id="btn-next" onclick="gantiSoal(1)">Lanjut</button>
+            </div>
+        </div>
+
+        <div id="end-panel" style="text-align: center;">
+            <h2 style="color: var(--accent);">Data Berhasil Terkirim</h2>
+            <p style="margin-top: 15px;">Terima kasih telah mengerjakan dengan jujur. Guru akan memeriksa langkah pengerjaanmu segera.</p>
+            <button class="btn-alt" style="margin-top: 30px;" onclick="location.reload()">Selesai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzbXkvQOdcM65124JH3BuVqAYlWrudnT0Jivoxle6qqjnDHlfEVH9669Q3gNkN6i_pW7w/exec";
+
+    const bankSoal = [
+        {
+            tag: "Kasus 1: Modus",
+            cerita: "Varian rasa minuman yang dibeli 15 pelanggan: Cokelat, Stroberi, Vanilla, Cokelat, Cokelat, Taro, Stroberi, Vanilla, Taro, Cokelat, Cokelat, Vanilla, Taro, Stroberi, Cokelat.",
+            butir: [
+                { id: "q1a", tanya: "Berdasarkan data tersebut, tentukan nilai modusnya!", type: "text", placeholder: "Modus = ..." },
+                { id: "q1b", tanya: "Jelaskan alasan mengapa ukuran pemusatan ini yang paling tepat digunakan untuk kasus di atas!", type: "area", placeholder: "Tuliskan alasanmu di sini..." }
+            ]
+        },
+        {
+            tag: "Kasus 2: Mean Data Mentah",
+            cerita: "Laba bersih harian (ribu Rupiah) selama 10 hari: 120, 150, 100, 180, 150, 140, 160, 130, 170, 150.",
+            butir: [
+                { id: "q2_total", tanya: "Tentukan nilai total penjumlahan seluruh data:", type: "text", placeholder: "Total laba = ..." },
+                { id: "q2_n", tanya: "Tentukan jumlah data (n):", type: "text", placeholder: "n = ..." },
+                { id: "q2_mean", tanya: "Tentukan hasil akhir rata-ratanya:", type: "text", placeholder: "Mean = ..." }
+            ]
+        },
+        {
+            tag: "Kasus 3: Median Ganjil",
+            cerita: "Uang saku 11 siswa (ribu Rupiah): 350, 450, 300, 500, 400, 350, 400, 450, 300, 500, 400.",
+            type: "sort-ganjil",
+            butir: [
+                { id: "q3_letak", tanya: "Di urutan ke berapakah letak nilai tengah berada?", type: "text", placeholder: "Urutan ke-..." },
+                { id: "q3_val", tanya: "Berapakah nilai Mediannya?", type: "text", placeholder: "Median = ..." }
+            ]
+        },
+        {
+            tag: "Kasus 4: Median Genap",
+            cerita: "Kunjungan pelanggan 20 hari: 45, 60, 30, 50, 80, 40, 45, 60, 30, 50, 80, 40, 70, 55, 65, 75, 85, 35, 90, 25.",
+            type: "sort-genap",
+            butir: [
+                { id: "q4_letak", tanya: "Jelaskan data urutan ke berapa saja yang menjadi acuan nilai tengahnya!", type: "text", placeholder: "Antara urutan ke-... dan urutan ke-..." },
+                { id: "q4_val", tanya: "Berapakah nilai Median akhirnya?", type: "text", placeholder: "Median = (... + ...) / 2 = ..." }
+            ]
+        },
+        {
+            tag: "Kasus 5: Mean Tabel",
+            cerita: "Data stok barang di gudang (n=50):",
+            type: "table-mean",
+            soalTabel: [
+                {x: 10, f: 5}, {x: 12, f: 10}, {x: 14, f: 8}, {x: 16, f: 12}, 
+                {x: 18, f: 5}, {x: 20, f: 4}, {x: 22, f: 4}, {x: 24, f: 2}
+            ],
+            butir: [
+                { id: "q5_val", tanya: "Berapakah rata-rata (Mean) barang dari data tabel di atas?", type: "text", placeholder: "Mean = ..." }
+            ]
+        },
+        {
+            tag: "Kasus 6: Rata Gabungan",
+            cerita: "Tim Sales A (12 orang) memiliki rata-rata jual 20 unit. Tim Sales B (8 orang) memiliki rata-rata jual 25 unit.",
+            butir: [
+                { id: "q6_proses", tanya: "Tunjukkan proses penggabungan total nilainya:", type: "area", placeholder: "Total Tim A = ... \nTotal Tim B = ..." },
+                { id: "q6_val", tanya: "Berapakah rata-rata gabungannya?", type: "text", placeholder: "Rata-rata Gabungan = ..." }
+            ]
+        },
+        {
+            tag: "Kasus 7: Analisis Tabel Komplit",
+            cerita: "Data produksi Unit Produksi sekolah selama sebulan (n=40):",
+            type: "table-komplit",
+            soalTabel: [
+                {x: 5, f: 8}, {x: 10, f: 12}, {x: 15, f: 15}, {x: 20, f: 5}
+            ],
+            butir: [
+                { id: "q7_mo", tanya: "Tentukan nilai frekuensi terbanyak dan modusnya!", type: "text", placeholder: "Frekuensi: ..., Modus: ..." },
+                { id: "q7_me_pos", tanya: "Tentukan letak mediannya!", type: "text", placeholder: "Letak Median = ..." },
+                { id: "q7_me_val", tanya: "Berapakah nilai median akhirnya?", type: "text", placeholder: "Nilai Median = ..." }
+            ]
+        }
+    ];
+
+    let currentQ = 0;
+    let namaSiswa = "";
+    let dataJawaban = {};
+    let waktuSoal = new Array(bankSoal.length).fill(0);
+    let waktuMulaiUjian = 0;
+    let waktuMulaiSoal = 0;
+
+    function mulaiUjian() {
+        let n = document.getElementById("namaSiswa").value.trim();
+        if(!n) return alert("Masukkan namamu!");
+        namaSiswa = n;
+        document.getElementById("gate-panel").style.display = "none";
+        document.getElementById("quiz-panel").style.display = "block";
+        waktuMulaiUjian = Date.now();
+        renderSoal();
+    }
+
+    function renderSoal() {
+        waktuMulaiSoal = Date.now();
+        let pct = ((currentQ + 1) / bankSoal.length) * 100;
+        document.getElementById("progress").style.width = pct + "%";
+        
+        let q = bankSoal[currentQ];
+        let html = `<div class="q-tag">${q.tag}</div><div class="q-cerita">${q.cerita}</div>`;
+
+        // BAGIAN TABEL SOAL
+        if(q.soalTabel) {
+            html += `<p style="font-weight:bold; font-size:13px; margin-bottom:5px; color:#334155;">[ Tabel Data Soal ]</p>`;
+            html += `<table class="display-table"><tr><th>Nilai Data (x)</th><th>Frekuensi (f)</th></tr>`;
+            q.soalTabel.forEach(r => html += `<tr><td>${r.x}</td><td>${r.f}</td></tr>`);
+            html += `</table>`;
+        }
+
+        // BAGIAN INPUT SORTIR
+        if(q.type === "sort-ganjil" || q.type === "sort-genap") {
+            let n = q.type === "sort-ganjil" ? 11 : 20;
+            html += `<p class="q-butir-tanya" style="margin-top:15px;">Lakukan pengurutan seluruh data dari yang terkecil di kotak ini:</p><div class="sort-grid">`;
+            for(let i=0; i<n; i++) html += `<input type="text" class="input-sort sort-val" data-idx="${i}" placeholder="Data ${i+1}">`;
+            html += `</div>`;
+        }
+
+        // BAGIAN TABEL KERJA JAWABAN MEAN
+        if(q.type === "table-mean") {
+            html += `<p style="font-weight:bold; font-size:14px; margin-bottom:5px; color:var(--accent); margin-top:20px;">[ Tabel Kerja Jawaban ]</p>`;
+            html += `<p style="font-size:14px; color:#334155; margin-bottom:15px;">Instruksi: Lengkapi tabel jawaban di bawah ini dengan menghitung hasil kali (x &middot; f) di setiap barisnya, lalu jumlahkan hasil akhirnya di baris bawah.</p>`;
+            html += `<table class="ans-table"><tr><th>Nilai (x)</th><th>Frekuensi (f)</th><th>Input Isian (x &middot; f)</th></tr>`;
+            q.soalTabel.forEach((row, i) => {
+                html += `<tr><td>${row.x}</td><td>${row.f}</td><td><input type="text" class="input-table row-ans" data-row="${i}" placeholder="Hitung..."></td></tr>`;
+            });
+            html += `<tr style="background:#f0fdf4"><td colspan="2" style="text-align:right; padding-right:15px; font-weight:bold;">TOTAL (&Sigma; x &middot; f) = </td><td><input type="text" id="total-table" class="input-table" placeholder="Jumlah Total..."></td></tr></table>`;
+        }
+
+        // BAGIAN TABEL KERJA JAWABAN FK
+        if(q.type === "table-komplit") {
+            html += `<p style="font-weight:bold; font-size:14px; margin-bottom:5px; color:var(--accent); margin-top:20px;">[ Tabel Kerja Jawaban ]</p>`;
+            html += `<p style="font-size:14px; color:#334155; margin-bottom:15px;">Instruksi: Hitung dan susunlah angka Frekuensi Kumulatif (Fk) baris demi baris pada tabel di bawah ini.</p>`;
+            html += `<table class="ans-table"><tr><th>Nilai (x)</th><th>Frekuensi (f)</th><th>Input Isian (Fk)</th></tr>`;
+            q.soalTabel.forEach((r, i) => {
+                html += `<tr><td>${r.x}</td><td>${r.f}</td><td><input type="text" class="input-table row-fk" data-idx="${i}" placeholder="Fk Baris ${i+1}..."></td></tr>`;
+            });
+            html += `</table>`;
+        }
+
+        // BUTIR PERTANYAAN
+        q.butir.forEach(b => {
+            html += `<div class="q-butir-box"><div class="q-butir-tanya">${b.tanya}</div>`;
+            if(b.type === "text") html += `<input type="text" id="${b.id}" class="input-ans" placeholder="${b.placeholder}">`;
+            else html += `<textarea id="${b.id}" class="input-ans" placeholder="${b.placeholder}"></textarea>`;
+            html += `</div>`;
+        });
+
+        document.getElementById("q-container").innerHTML = html;
+        document.getElementById("btn-prev").style.visibility = currentQ === 0 ? "hidden" : "visible";
+        document.getElementById("btn-next").innerText = currentQ === bankSoal.length - 1 ? "Kirim Hasil" : "Lanjut";
+        restoreJawaban();
+    }
+
+    function simpanJawaban() {
+        let q = bankSoal[currentQ];
+        let current = {};
+        q.butir.forEach(b => current[b.id] = document.getElementById(b.id).value);
+
+        if(document.querySelector(".sort-val")) {
+            current.sorts = Array.from(document.querySelectorAll(".sort-val")).map(el => el.value);
+        }
+        if(q.type === "table-mean") {
+            current.rows = Array.from(document.querySelectorAll(".row-ans")).map(el => el.value);
+            current.total = document.getElementById("total-table").value;
+        }
+        if(q.type === "table-komplit") {
+            current.fks = Array.from(document.querySelectorAll(".row-fk")).map(el => el.value);
+        }
+
+        dataJawaban[currentQ] = current;
+        waktuSoal[currentQ] += Math.round((Date.now() - waktuMulaiSoal) / 1000);
+    }
+
+    function restoreJawaban() {
+        let saved = dataJawaban[currentQ];
+        if(!saved) return;
+        bankSoal[currentQ].butir.forEach(b => document.getElementById(b.id).value = saved[b.id]);
+        if(saved.sorts) document.querySelectorAll(".sort-val").forEach((el, i) => el.value = saved.sorts[i]);
+        if(saved.rows) {
+            document.querySelectorAll(".row-ans").forEach((el, i) => el.value = saved.rows[i]);
+            document.getElementById("total-table").value = saved.total;
+        }
+        if(saved.fks) document.querySelectorAll(".row-fk").forEach((el, i) => el.value = saved.fks[i]);
+    }
+
+    function gantiSoal(arah) {
+        simpanJawaban();
+        if(arah === 1 && currentQ === bankSoal.length - 1) {
+            kirimData();
+        } else {
+            currentQ += arah;
+            renderSoal();
+        }
+    }
+
+    function kirimData() {
+        document.getElementById("btn-next").innerText = "Proses...";
+        document.getElementById("btn-next").disabled = true;
+
+        let totalDetik = Math.round((Date.now() - waktuMulaiUjian) / 1000);
+        
+        let formatAns = bankSoal.map((q, idx) => {
+            let u = dataJawaban[idx];
+            let s = `[${q.tag}]\n`;
+            if(u.sorts) s += `Urutan: ${u.sorts.join(', ')}\n`;
+            if(u.rows) s += `Tabel Hitung: ${u.rows.join(', ')} | Total: ${u.total}\n`;
+            if(u.fks) s += `Tabel Fk: ${u.fks.join(', ')}\n`;
+            q.butir.forEach(b => s += `${b.tanya}: ${u[b.id] || ""}\n`);
+            return s;
+        });
+
+        fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
+            namaSiswa: namaSiswa,
+            totalWaktu: totalDetik,
+            times: waktuSoal,
+            ans: formatAns
+        })}).then(() => {
+            document.getElementById("quiz-panel").style.display = "none";
+            document.getElementById("end-panel").style.display = "block";
+        }).catch(() => {
+            alert("Terkendala jaringan. Silakan tekan tombol kirim kembali.");
+            document.getElementById("btn-next").innerText = "Kirim Hasil";
+            document.getElementById("btn-next").disabled = false;
+        });
+    }
+
+    async function cekNilai() {
+        let n = document.getElementById("namaSiswa").value.trim();
+        if(!n) { alert("Silakan isi nama terlebih dahulu."); return; }
+        document.getElementById("login-msg").innerText = "Mencari data...";
+        document.getElementById("login-msg").style.display = "block";
+
+        try {
+            let res = await fetch(GAS_URL + "?action=cekNilai&nama=" + encodeURIComponent(n));
+            let d = await res.json();
+            if(d.terdaftar) {
+                document.getElementById("gate-panel").style.display = "none";
+                document.getElementById("score-panel").style.display = "block";
+                document.getElementById("score-content").innerHTML = `
+                    <div class="score-box">
+                        <p style="text-align:center;">Pencapaian Pemahaman:</p>
+                        <h1 style="text-align:center; color:var(--accent);">${d.data.totalSkor} / 100</h1>
+                        <p style="margin-top:15px; font-size:14px;"><strong>Catatan Bimbingan Guru:</strong><br>${d.data.komentar}</p>
+                    </div>`;
+            } else { alert("Data tidak ditemukan."); }
+        } catch(e) { alert("Koneksi gagal."); }
+    }
+</script>
+</body>
+</html>
