@@ -3,504 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LKPD Statistika</title>
+    <title>LKPD Kolaboratif</title>
     <style>
-        :root { --primary: #2c3e50; --secondary: #27ae60; --bg: #f8f9fa; --text: #333; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; font-size: 15px;}
-        .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        :root { --primary: #2c3e50; --secondary: #27ae60; --bg: #f0f2f5; --text: #333; --chat-own: #dcf8c6; --chat-other: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; font-size: 15px; display: flex; flex-direction: column; height: 100vh; box-sizing: border-box;}
+        .card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .hidden { display: none !important; }
         
-        input.login-input, select.login-input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 1rem;}
-        button { width: 100%; padding: 14px; background: var(--secondary); color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer;}
+        input.login-input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 1rem;}
+        button.btn-primary { width: 100%; padding: 14px; background: var(--secondary); color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer;}
         
-        .soal-box { border-left: 5px solid var(--primary); padding-left: 12px; margin-bottom: 30px; }
-        .soal-title { color: var(--primary); margin: 0 0 8px 0; font-size: 1.1rem;}
-        .step-text { font-size: 0.9rem; color: #555; line-height: 1.5; margin-bottom: 15px; background: #e9ecef; padding: 10px; border-radius: 6px;}
+        /* Lobby Table */
+        .lobby-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;}
+        .lobby-table th, .lobby-table td { padding: 12px 8px; border-bottom: 1px solid #eee; text-align: center; }
+        .lobby-table th { background: #f8f9fa; color: var(--primary); }
+        .badge-status { padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; color: white;}
+        .status-open { background: #27ae60; }
+        .status-locked { background: #e74c3c; }
+        .btn-join { padding: 6px 12px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;}
+        .btn-join:disabled { background: #bdc3c7; cursor: not-allowed; }
+
+        /* Diskusi UI */
+        .info-panel { background: #e2e8f0; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-size: 0.85rem; border: 1px solid #cbd5e1; display:flex; justify-content: space-between; align-items: center;}
+        .nav-soal { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 10px; margin-bottom: 10px;}
+        .btn-nav { padding: 8px 15px; background: #e2e8f0; border: none; border-radius: 20px; font-weight: bold; color: var(--primary); cursor: pointer; white-space: nowrap;}
+        .btn-nav.active { background: var(--primary); color: white; }
+        .soal-card { background: #fff3cd; border-left: 5px solid #ffc107; padding: 12px; margin-bottom: 10px; border-radius: 4px; font-size: 0.95rem;}
+        .table-soal { width: 100%; border-collapse: collapse; background: white; border: 1px solid #adb5bd; margin-top: 5px;}
+        .table-soal th, .table-soal td { border: 1px solid #adb5bd; padding: 6px; text-align: center; }
+
+        /* Chat UI */
+        .chat-container { flex-grow: 1; overflow-y: auto; padding: 10px; background: #e5ddd5; border-radius: 8px; display: flex; flex-direction: column; gap: 10px;}
+        .chat-bubble { max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 0.95rem; position: relative; word-wrap: break-word;}
+        .chat-own { background: var(--chat-own); align-self: flex-end; border-bottom-right-radius: 0;}
+        .chat-other { background: var(--chat-other); align-self: flex-start; border-bottom-left-radius: 0;}
+        .chat-sender { font-size: 0.75rem; font-weight: bold; color: var(--primary); margin-bottom: 3px; display: block;}
         
-        .input-group { margin-top: 10px; padding: 10px; background: #fff; border-radius: 6px; border: 1px solid #dee2e6; position: relative;}
-        .input-group label { font-size: 0.85rem; color: #495057; font-weight: 600; display: block; margin-bottom: 5px;}
-        .input-micro { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; transition: 0.3s;}
-        
-        .badge { font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; position: absolute; right: 10px; top: 10px; color: white; z-index: 2;}
-        .badge-editor { background: #6c757d; }
-        .badge-typing { background: #e74c3c; animation: pulse 1s infinite; }
-        .locked-input { background-color: #fcf8e3 !important; border-color: #f1c40f !important; color: #8a6d3b; pointer-events: none;}
-        .status-bar { text-align: center; font-size: 0.85rem; padding: 8px; background: #d4edda; color: #155724; border-radius: 5px; margin-bottom: 15px; font-weight: bold;}
-        
-        /* Penyesuaian Tabel Interaktif */
-        .table-container { overflow-x: auto; margin-bottom: 15px; }
-        .table-soal { width: 100%; border-collapse: collapse; font-size: 0.9rem; background: white;}
-        .table-soal th, .table-soal td { border: 1px solid #ced4da; padding: 10px; text-align: center; vertical-align: middle;}
-        .table-soal th { background: #e2e8f0; color: #2c3e50; font-weight: bold;}
-        .table-soal tr:nth-child(even) { background-color: #f8f9fa; }
-        
-        /* CSS Khusus Input dalam Tabel */
-        .td-input { position: relative; padding: 22px 8px 8px 8px !important; vertical-align: bottom;}
-        .table-input { width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; text-align: center; font-weight: bold;}
-        .badge-table { top: 3px !important; right: 3px !important; font-size: 0.55rem !important; }
-        .row-total { background-color: #e9ecef !important; font-weight: bold; }
-        
-        /* CSS Penambahan Panel Info Anggota */
-        .info-panel { background: #e2e8f0; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 0.85rem; border: 1px solid #cbd5e1; color: #334155;}
-        .member-list { font-weight: bold; color: #0f172a; }
-        
-        /* CSS Penambahan Timer & Submit */
-        .timer-box { position: sticky; top: 10px; background: white; padding: 12px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-weight: bold; font-size: 1.2rem; text-align: center; border: 2px solid var(--primary); z-index: 1000; margin-bottom: 20px;}
-        .timer-overtime { background: #ffebee; border-color: #e74c3c; color: #c0392b;}
-        .locked-page { background: #ecf0f1 !important; }
-        button.btn-submit { background: #e74c3c; margin-top: 20px; font-size: 1.2rem; padding: 18px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); transition: 0.3s;}
-        button.btn-submit:hover { background: #c0392b; transform: scale(0.98);}
-        
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        /* Math Features */
+        .frac { display: inline-block; vertical-align: middle; text-align: center; font-size: 0.9em; margin: 0 4px;}
+        .frac .top { display: block; border-bottom: 1.5px solid var(--text); padding: 0 3px; }
+        .frac .bot { display: block; padding: 0 3px; }
+        .chat-table { border-collapse: collapse; width: 100%; background: white; margin-top: 5px;}
+        .chat-table td { border: 1px solid #7f8c8d; padding: 4px; text-align: center; }
+        .chat-action-btn { background: #3498db; color: white; border: none; padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; cursor: pointer; margin-top: 5px;}
+
+        .input-area { background: white; padding: 10px; border-radius: 8px; margin-top: 10px;}
+        .toolbar { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 5px;}
+        .btn-tool { padding: 6px 10px; background: #f1f3f5; border: 1px solid #ced4da; border-radius: 4px; font-weight: bold; font-size: 0.85rem; white-space: nowrap; cursor: pointer;}
+        .chat-box-editable { flex-grow: 1; padding: 12px; border: 1px solid #ced4da; border-radius: 12px; min-height: 40px; max-height: 100px; overflow-y: auto; background: #fff; outline: none;}
+        .chat-box-editable:empty:before { content: "Ketik pembahasan atau buat tabel..."; color: #95a5a6; }
     </style>
 </head>
 <body>
 
-<div id="loginPage" class="card">
-    <h2 style="color:var(--primary); text-align:center;">LKPD Statistika</h2>
+<div id="namePage" class="card" style="margin: auto; margin-top: 15vh; width: 90%; max-width: 400px;">
+    <h2 style="text-align:center; color:var(--primary);">LKPD Statistika</h2>
     <input type="text" id="namaSiswa" class="login-input" placeholder="Masukkan Nama Lengkap">
-    <select id="pilihanKelompok" class="login-input">
-        <option value="">-- Pilih Kelompok Anda --</option>
-        <option value="Kelompok 1">Kelompok 1</option>
-        <option value="Kelompok 2">Kelompok 2</option>
-        <option value="Kelompok 3">Kelompok 3</option>
-        <option value="Kelompok 4">Kelompok 4</option>
-        <option value="Kelompok 5">Kelompok 5</option>
-		<option value="Kelompok 5">Kelompok 6</option>
-		<option value="Kelompok 5">Kelompok 7</option>
-		<option value="Kelompok 5">Kelompok 8</option>
-		<option value="Kelompok 5">Kelompok 9</option>
-		<option value="Kelompok 5">Kelompok 10</option>
-    </select>
-    <button onclick="cekLogin()">Masuk Ruang Diskusi</button>
+    <button class="btn-primary" onclick="bukaLobby()">Lanjut ke Daftar Kelompok</button>
 </div>
 
-<div id="lkpdPage" class="hidden">
-    
-    <div id="timerDisplay" class="timer-box">Waktu: Menghitung...</div>
+<div id="lobbyPage" class="card hidden" style="margin: auto; margin-top: 5vh; width: 95%; max-width: 500px;">
+    <h3 style="margin-top:0;">Daftar Kelompok</h3>
+    <p style="font-size: 0.85rem; color: #666;">Pilih kelompok yang masih terbuka dan memiliki tempat.</p>
+    <div style="max-height: 60vh; overflow-y: auto;">
+        <table class="lobby-table">
+            <thead><tr><th>Kelompok</th><th>Status</th><th>Siswa</th><th>Aksi</th></tr></thead>
+            <tbody id="lobbyBody"><tr><td colspan="4">Memuat data...</td></tr></tbody>
+        </table>
+    </div>
+    <button class="btn-primary" style="margin-top:15px; background:#95a5a6;" onclick="kembaliKeNama()">Kembali</button>
+</div>
 
-    <div class="card" style="background: var(--primary); color: white;">
-        <h3 style="margin:0;">Ruang Kolaborasi Kelompok</h3>
-        <p id="infoUser" style="margin:5px 0 0 0; font-size: 0.9rem; font-weight:bold;"></p>
+<div id="lkpdPage" class="hidden" style="height: 100%; display: flex; flex-direction: column;">
+    <div class="card" style="padding: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; background: var(--primary); color: white;">
+        <div id="infoUser" style="font-weight: bold;"></div>
+        <div id="timerDisplay" style="font-weight: bold;">30:00</div>
     </div>
     
     <div class="info-panel">
-        <div>Anggota Kelompok: <span id="memberList" class="member-list">Memuat daftar anggota...</span></div>
+        <div>
+            <div style="font-size: 0.75rem;">Status: <span id="statusKelompokBadge" style="font-weight:bold;">-</span> | Anggota: <span id="memberList">...</span></div>
+        </div>
+        <div style="display:flex; gap:5px;">
+            <button class="btn-tool" style="padding:4px 8px; background:#f39c12; color:white; border:none;" id="btnKunci" onclick="toggleKunci()">Kunci Kelp</button>
+            <button class="btn-tool" style="padding:4px 8px; background:#e74c3c; color:white; border:none;" onclick="keluarKelompok()">Keluar</button>
+        </div>
     </div>
 
-    <div class="status-bar" id="syncStatus">Status: Terkoneksi & Auto-Save Aktif</div>
+    <div class="nav-soal" id="navSoal"></div>
+    <div id="teksSoal" class="soal-card"></div>
+    <div class="chat-container" id="chatContainer"></div>
 
-    <div class="card" id="wadahSoal">
-        
-        <div class="soal-box">
-            <h4 class="soal-title">1. Mean Data Mentah</h4>
-            <div class="step-text">
-                Diketahui data hasil pengamatan sebagai berikut:<br>
-                <b>78, 85, 92, 76, 88, 90, 84, 79, 85, 93</b>
-            </div>
-            
-            <div class="input-group"><span class="badge badge-editor" id="info_q1_sum">-</span><label>A. Jumlah Total Seluruh Data (Σx)</label><input type="number" id="q1_sum" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q1_n">-</span><label>B. Banyaknya Data (n)</label><input type="number" id="q1_n" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q1_mean">-</span><label>C. Rata-rata (Mean)</label><input type="number" step="0.1" id="q1_mean" class="input-micro"></div>
+    <div class="input-area">
+        <div class="toolbar">
+            <button class="btn-tool" onclick="sisipPecahan()">[A/B]</button>
+            <button class="btn-tool" onclick="sisipTabel()">[#] Tabel</button>
+            <button class="btn-tool" onclick="sisipSimbol('x̄')">x̄</button>
+            <button class="btn-tool" onclick="sisipSimbol('Σ')">Σ</button>
+            <button class="btn-tool" onclick="sisipSimbol('xᵢ')">xᵢ</button>
+            <button class="btn-tool" onclick="sisipSimbol('fᵢ')">fᵢ</button>
+            <button class="btn-tool" onclick="sisipSimbol('•')">×</button>
         </div>
-
-        <div class="soal-box">
-            <h4 class="soal-title">2. Mean Tabel Frekuensi</h4>
-            <div class="step-text">Lengkapi tabel distribusi frekuensi di bawah ini untuk mencari nilai Rata-rata (Mean).</div>
-            <div class="table-container">
-                <table class="table-soal">
-                    <tr><th>Nilai (x)</th><th>Frekuensi (f)</th><th>Hasil Kali (f • x)</th></tr>
-                    <tr>
-                        <td>10</td><td>5</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q2_fx1">-</span><input type="number" id="q2_fx1" class="input-micro table-input"></td>
-                    </tr>
-                    <tr>
-                        <td>20</td><td>8</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q2_fx2">-</span><input type="number" id="q2_fx2" class="input-micro table-input"></td>
-                    </tr>
-                    <tr>
-                        <td>30</td><td>2</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q2_fx3">-</span><input type="number" id="q2_fx3" class="input-micro table-input"></td>
-                    </tr>
-                    <tr class="row-total">
-                        <td>Total (Σ)</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q2_sumf">-</span><input type="number" id="q2_sumf" class="input-micro table-input"></td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q2_sumfx">-</span><input type="number" id="q2_sumfx" class="input-micro table-input"></td>
-                    </tr>
-                </table>
-            </div>
-            
-            <div class="input-group"><span class="badge badge-editor" id="info_q2_mean">-</span><label>Berdasarkan tabel di atas, berapakah Nilai Mean-nya?</label><input type="number" step="0.1" id="q2_mean" class="input-micro"></div>
+        <div style="display:flex; gap:8px; align-items:flex-end;">
+            <div id="pesanInput" class="chat-box-editable" contenteditable="true"></div>
+            <button class="btn-primary" style="width:60px; height:45px; padding:0;" onclick="kirimPesan()">></button>
         </div>
-
-        <div class="soal-box">
-            <h4 class="soal-title">3. Mean Gabungan</h4>
-            <div class="step-text">
-                Rata-rata nilai pengujian kelompok A yang terdiri dari 24 siswa adalah 76,5.<br>
-                Rata-rata nilai pengujian kelompok B yang terdiri dari 16 siswa adalah 82,0.<br>
-                Tentukan rata-rata nilai gabungan dari kedua kelompok tersebut.
-            </div>
-            
-            <div class="input-group"><span class="badge badge-editor" id="info_q3_totA">-</span><label>A. Total Nilai Kelompok A</label><input type="number" step="0.1" id="q3_totA" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q3_totB">-</span><label>B. Total Nilai Kelompok B</label><input type="number" step="0.1" id="q3_totB" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q3_meangab">-</span><label>C. Rata-rata Gabungan</label><input type="number" step="0.1" id="q3_meangab" class="input-micro"></div>
-        </div>
-
-        <div class="soal-box">
-            <h4 class="soal-title">4. Median Data Mentah (Ganjil)</h4>
-            <div class="step-text">
-                Diberikan sekumpulan data acak sebagai berikut:<br>
-                <b>45, 67, 52, 78, 41, 59, 83, 64, 55, 71, 48</b>
-            </div>
-            
-            <div class="input-group"><span class="badge badge-editor" id="info_q4_sort">-</span><label>A. Urutkan data dari nilai terkecil ke terbesar</label><input type="text" id="q4_sort" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q4_pos">-</span><label>B. Letak Median berada di data ke-</label><input type="number" id="q4_pos" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q4_med">-</span><label>C. Nilai Median</label><input type="number" id="q4_med" class="input-micro"></div>
-        </div>
-
-        <div class="soal-box">
-            <h4 class="soal-title">5. Median Data Mentah (Genap)</h4>
-            <div class="step-text">
-                Diketahui data hasil pencatatan sebagai berikut:<br>
-                <b>124, 115, 132, 140, 128, 119, 136, 122, 145, 130, 125, 118</b>
-            </div>
-            
-            <div class="input-group"><span class="badge badge-editor" id="info_q5_sort">-</span><label>A. Urutkan data dari nilai terkecil ke terbesar</label><input type="text" id="q5_sort" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q5_pos">-</span><label>B. Letak Median di antara data ke-</label><input type="text" id="q5_pos" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q5_med">-</span><label>C. Nilai Median</label><input type="number" step="0.1" id="q5_med" class="input-micro"></div>
-        </div>
-
-        <div class="soal-box">
-            <h4 class="soal-title">6. Median Tabel Frekuensi (Ganjil)</h4>
-            <div class="step-text">Lengkapi kolom Frekuensi Kumulatif (Fk) pada tabel distribusi data berjumlah 45 ini.</div>
-            <div class="table-container">
-                <table class="table-soal">
-                    <tr><th>Nilai</th><th>Frekuensi (f)</th><th>F. Kumulatif (Fk)</th></tr>
-                    <tr>
-                        <td>60</td><td>10</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q6_fk1">-</span><input type="number" id="q6_fk1" class="input-micro table-input"></td>
-                    </tr>
-                    <tr>
-                        <td>70</td><td>15</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q6_fk2">-</span><input type="number" id="q6_fk2" class="input-micro table-input"></td>
-                    </tr>
-                    <tr>
-                        <td>80</td><td>16</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q6_fk3">-</span><input type="number" id="q6_fk3" class="input-micro table-input"></td>
-                    </tr>
-                    <tr>
-                        <td>90</td><td>4</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q6_fk4">-</span><input type="number" id="q6_fk4" class="input-micro table-input"></td>
-                    </tr>
-                </table>
-            </div>
-            
-            <div class="input-group"><span class="badge badge-editor" id="info_q6_pos">-</span><label>A. Letak Median berada pada data ke-</label><input type="number" id="q6_pos" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q6_med">-</span><label>B. Nilai Median (Amati Fk di tabel)</label><input type="number" id="q6_med" class="input-micro"></div>
-        </div>
-
-        <div class="soal-box">
-            <h4 class="soal-title">7. Median Tabel Frekuensi (Genap)</h4>
-            <div class="step-text">Lengkapi kolom Frekuensi Kumulatif (Fk) dari 50 observasi data berikut.</div>
-            <div class="table-container">
-                <table class="table-soal">
-                    <tr><th>Nilai Observasi</th><th>Frekuensi (f)</th><th>F. Kumulatif (Fk)</th></tr>
-                    <tr>
-                        <td>6</td><td>12</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q7_fk1">-</span><input type="number" id="q7_fk1" class="input-micro table-input"></td>
-                    </tr>
-                    <tr>
-                        <td>7</td><td>18</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q7_fk2">-</span><input type="number" id="q7_fk2" class="input-micro table-input"></td>
-                    </tr>
-                    <tr>
-                        <td>8</td><td>20</td>
-                        <td class="td-input"><span class="badge badge-editor badge-table" id="info_q7_fk3">-</span><input type="number" id="q7_fk3" class="input-micro table-input"></td>
-                    </tr>
-                </table>
-            </div>
-            
-            <div class="input-group"><span class="badge badge-editor" id="info_q7_pos">-</span><label>A. Letak data tengah berada pada urutan ke-</label><input type="text" id="q7_pos" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q7_med">-</span><label>B. Nilai Median</label><input type="number" step="0.1" id="q7_med" class="input-micro"></div>
-        </div>
-
-        <div class="soal-box">
-            <h4 class="soal-title">8. Modus Data Mentah</h4>
-            <div class="step-text">
-                Diberikan kumpulan angka sebagai berikut:<br>
-                <b>8, 7, 9, 6, 8, 7, 8, 10, 7, 8, 6, 9, 8, 7, 9</b>
-            </div>
-            
-            <div class="input-group"><span class="badge badge-editor" id="info_q8_freq">-</span><label>A. Lakukan observasi, angka berapakah yang paling dominan muncul dan sebutkan frekuensinya</label><input type="text" id="q8_freq" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q8_mod">-</span><label>B. Nilai Modus</label><input type="number" id="q8_mod" class="input-micro"></div>
-        </div>
-
-        <div class="soal-box">
-            <h4 class="soal-title">9. Modus Tabel Frekuensi</h4>
-            <div class="step-text">Perhatikan tabel distribusi berikut ini.</div>
-            <div class="table-container">
-                <table class="table-soal">
-                    <tr><th>Kelas Data</th><th>Frekuensi (f)</th></tr>
-                    <tr><td>40</td><td>12</td></tr>
-                    <tr><td>45</td><td>18</td></tr>
-                    <tr><td>50</td><td>25</td></tr>
-                    <tr><td>55</td><td>24</td></tr>
-                    <tr><td>60</td><td>16</td></tr>
-                    <tr><td>65</td><td>9</td></tr>
-                </table>
-            </div>
-            
-            <div class="input-group"><span class="badge badge-editor" id="info_q9_maxf">-</span><label>A. Tentukan angka frekuensi maksimum pada tabel</label><input type="number" id="q9_maxf" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q9_mod">-</span><label>B. Nilai Modus</label><input type="number" id="q9_mod" class="input-micro"></div>
-        </div>
-
-        <div class="soal-box">
-            <h4 class="soal-title">10. Modus Tabel Frekuensi (Multimodal)</h4>
-            <div class="step-text">Perhatikan tabel distribusi data di bawah ini dengan saksama.</div>
-            <div class="table-container">
-                <table class="table-soal">
-                    <tr><th>Kategori Nilai</th><th>Frekuensi (f)</th></tr>
-                    <tr><td>100</td><td>15</td></tr>
-                    <tr><td>110</td><td>28</td></tr>
-                    <tr><td>120</td><td>22</td></tr>
-                    <tr><td>130</td><td>28</td></tr>
-                    <tr><td>140</td><td>19</td></tr>
-                    <tr><td>150</td><td>10</td></tr>
-                </table>
-            </div>
-            
-            <div class="input-group"><span class="badge badge-editor" id="info_q10_freqs">-</span><label>A. Sebutkan angka frekuensi tertinggi yang terjadi lebih dari satu kali</label><input type="number" id="q10_freqs" class="input-micro"></div>
-            <div class="input-group"><span class="badge badge-editor" id="info_q10_mods">-</span><label>B. Sebutkan Nilai Modusnya secara lengkap</label><input type="text" id="q10_mods" class="input-micro"></div>
-        </div>
-
-        <button id="btnSubmit" class="btn-submit" onclick="submitLKPD()">Kumpulkan & Kunci Jawaban</button>
-
     </div>
 </div>
 
 <script>
     // MASUKKAN URL DEPLOY APPS SCRIPT ANDA DI SINI
-    const URL_APP = 'https://script.google.com/macros/s/AKfycbw-wHGIRDmGcc2Tai7znK7EWfao3nZOL_Liy-NfVDKcZDzousLoUEFQaHGOFKKoAG3v/exec'; 
-    const WAKTU_MENIT = 30; // Pengaturan durasi waktu (dalam menit)
-   
-    let sNama = "", sKel = "";
-    let inputs = [];
-    let timerInterval;
-    
-    // PENAMBAHAN: Variabel untuk mencatat kapan terakhir kita mengunci kotak
-    let myLocks = {}; 
+    const URL_APP = 'https://script.google.com/macros/s/AKfycbz7Cy90BFhsnyb7yzTpG9zdSqqDys2iWaTCneeJeP5e3-IgssMYW7phHgKkKTnnyQD6/exec'; 
+    const WAKTU_MENIT = 30;
+    let sNama = "", sKel = "", currentSoal = 1, chatInterval;
 
-    function cekLogin() {
-        sNama = document.getElementById('namaSiswa').value;
-        sKel = document.getElementById('pilihanKelompok').value;
-        if(sNama && sKel) {
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('lkpdPage').classList.remove('hidden');
-            document.getElementById('infoUser').innerText = "Siswa: " + sNama + " | " + sKel;
-            inisialisasiSistem();
-        } else { alert("Data tidak lengkap. Mohon isi Nama dan pilih Kelompok."); }
+    const DATA_SOAL = {
+        1: "<b>1. Mean Data Mentah</b><br>Data: 78, 85, 92, 76, 88, 90, 84, 79, 85, 93<br>Diskusikan: Jumlah (Σx), n, dan Mean.",
+        2: "<b>2. Mean Tabel Frekuensi</b><table class='table-soal'><tr><th>x</th><td>10</td><td>20</td><td>30</td></tr><tr><th>f</th><td>5</td><td>8</td><td>2</td></tr></table>Diskusikan: f•x dan total Σfx.",
+        3: "<b>3. Mean Gabungan</b><br>Kelompok A (24 siswa) rata-rata omzet 76,5.<br>Kelompok B (16 siswa) rata-rata omzet 82,0.<br>Tentukan rata-rata gabungan kedua kelompok tersebut.",
+        4: "<b>4. Median Data Mentah (Ganjil)</b><br>Tentukan Median dari: <b>45, 67, 52, 78, 41, 59, 83, 64, 55, 71, 48</b><br><i>Diskusikan urutan datanya dari yang terkecil terlebih dahulu.</i>",
+        5: "<b>5. Median Data Mentah (Genap)</b><br>Tentukan Median dari: <b>124, 115, 132, 140, 128, 119, 136, 122, 145, 130, 125, 118</b>",
+        6: "<b>6. Median Tabel Frekuensi (Ganjil)</b><br>Cari letak dan nilai Median (n=45).<table class='table-soal'><tr><th>Nilai</th><td>60</td><td>70</td><td>80</td><td>90</td></tr><tr><th>Frekuensi (f)</th><td>10</td><td>15</td><td>16</td><td>4</td></tr></table><i>Gunakan fitur tabel untuk Fk.</i>",
+        7: "<b>7. Median Tabel Frekuensi (Genap)</b><br>Cari letak dan nilai Median (n=50).<table class='table-soal'><tr><th>Observasi</th><td>6</td><td>7</td><td>8</td></tr><tr><th>Frekuensi (f)</th><td>12</td><td>18</td><td>20</td></tr></table>",
+        8: "<b>8. Modus Data Mentah</b><br>Tentukan Modus dari: <b>8, 7, 9, 6, 8, 7, 8, 10, 7, 8, 6, 9, 8, 7, 9</b>",
+        9: "<b>9. Modus Tabel Frekuensi</b><br>Tentukan nilai Modus.<table class='table-soal'><tr><th>Kelas</th><td>40</td><td>45</td><td>50</td><td>55</td><td>60</td><td>65</td></tr><tr><th>Frekuensi (f)</th><td>12</td><td>18</td><td>25</td><td>24</td><td>16</td><td>9</td></tr></table>",
+        10: "<b>10. Modus Multimodal</b><br>Sebutkan nilai-nilai Modus yang terjadi lebih dari satu kali.<table class='table-soal'><tr><th>Kategori</th><td>100</td><td>110</td><td>120</td><td>130</td><td>140</td><td>150</td></tr><tr><th>Frekuensi (f)</th><td>15</td><td>28</td><td>22</td><td>28</td><td>19</td><td>10</td></tr></table>"
+    };
+
+    // --- ALUR LOGIN & LOBBY ---
+    function bukaLobby() {
+        sNama = document.getElementById('namaSiswa').value.trim();
+        if(!sNama) { alert("Isi nama lengkap!"); return; }
+        document.getElementById('namePage').classList.add('hidden');
+        document.getElementById('lobbyPage').classList.remove('hidden');
+        refreshLobby();
     }
 
-    function inisialisasiSistem() {
-        inputs = Array.from(document.querySelectorAll('.input-micro'));
-        inputs.forEach(el => {
-            el.addEventListener('focus', () => setLock(el.id));
-            el.addEventListener('blur', () => saveData(el, el.id));
+    function kembaliKeNama() {
+        document.getElementById('lobbyPage').classList.add('hidden');
+        document.getElementById('namePage').classList.remove('hidden');
+    }
+
+    function refreshLobby() {
+        let body = document.getElementById('lobbyBody');
+        body.innerHTML = "<tr><td colspan='4'>Menghubungkan ke server...</td></tr>";
+        fetch(URL_APP + "?action=get_lobby&t=" + Date.now()).then(r => r.json()).then(data => {
+            body.innerHTML = "";
+            data.forEach(k => {
+                let isLocked = k.status === "Terkunci";
+                body.innerHTML += `<tr>
+                    <td><b>${k.nama}</b></td>
+                    <td><span class="badge-status ${isLocked?'status-locked':'status-open'}">${k.status}</span></td>
+                    <td>${k.anggota} Siswa</td>
+                    <td><button class="btn-join" ${isLocked?'disabled':''} onclick="gabungKelompok('${k.nama}')">Gabung</button></td>
+                </tr>`;
+            });
         });
+    }
+
+    function gabungKelompok(namaK) {
+        sKel = namaK;
+        let fd = new FormData();
+        fd.append("action", "join_group"); fd.append("kelompok", sKel); fd.append("nama", sNama);
         
+        let btns = document.querySelectorAll('.btn-join');
+        btns.forEach(b => b.innerText = "Proses...");
+
+        fetch(URL_APP, { method: "POST", body: fd }).then(r => r.text()).then(res => {
+            if(res === "TERKUNCI") { alert("Maaf, kelompok baru saja dikunci oleh anggotanya."); refreshLobby(); }
+            else { masukRuangUtama(); }
+        });
+    }
+
+    function masukRuangUtama() {
+        document.getElementById('lobbyPage').classList.add('hidden');
+        document.getElementById('lkpdPage').classList.remove('hidden');
+        document.getElementById('infoUser').innerText = sKel + " | " + sNama;
+        
+        let nav = document.getElementById('navSoal');
+        nav.innerHTML = "";
+        for(let i=1; i<=10; i++) {
+            nav.innerHTML += `<button class="btn-nav ${i==1?'active':''}" onclick="pindahSoal(${i}, this)">Soal ${i}</button>`;
+        }
+        pindahSoal(1, nav.firstChild); 
         mulaiTimer();
-        tarikData(); 
-        setInterval(tarikData, 5000); 
+    }
+
+    // --- FITUR DISKUSI ---
+    function pindahSoal(no, btn) {
+        currentSoal = no; 
+        document.getElementById('teksSoal').innerHTML = DATA_SOAL[no];
+        
+        if(btn) {
+            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        } else {
+            let navs = document.querySelectorAll('.btn-nav');
+            navs.forEach(b => b.classList.remove('active'));
+            if(navs[no-1]) navs[no-1].classList.add('active');
+        }
+        
+        tarikChat();
+        if(chatInterval) clearInterval(chatInterval);
+        // PERCEPATAN TARIKAN DATA MENJADI 2 DETIK (2000 milidetik)
+        chatInterval = setInterval(tarikChat, 2000);
+    }
+
+    function kirimPesan() {
+        let box = document.getElementById('pesanInput'); 
+        let html = box.innerHTML.trim();
+        if(!html) return;
+        
+        // Membaca jika ada tabel, tambahkan tombol salin di pesan yang dikirim
+        if(html.includes('<table')) html += `<br><button class="chat-action-btn" onclick="salinTabel(this)">Salin & Edit Tabel Ini</button>`;
+        
+        box.innerHTML = ""; // Bersihkan form
+        
+        // Memunculkan pesan di layar diri sendiri secara instan (agar terasa responsif)
+        let chatBox = document.getElementById('chatContainer');
+        chatBox.innerHTML += `
+            <div class="chat-bubble chat-own">
+                <span class="chat-sender">${sNama}</span> ${html}
+            </div>`;
+        scrollToBottom();
+
+        // Mengirim ke server
+        let fd = new FormData();
+        fd.append("action", "kirim_pesan"); fd.append("kelompok", sKel); fd.append("soal", currentSoal); fd.append("nama", sNama); fd.append("pesan", html);
+        fetch(URL_APP, { method: "POST", body: fd }).then(() => tarikChat());
+    }
+
+    function tarikChat() {
+        let noCacheUrl = URL_APP + "?kelompok="+sKel+"&soal="+currentSoal+"&t="+Date.now();
+        fetch(noCacheUrl).then(r => r.json()).then(data => {
+            
+            // Update Label Status Kunci
+            let statusBadge = document.getElementById('statusKelompokBadge');
+            statusBadge.innerText = data.status_kunci;
+            if(data.status_kunci === "Terkunci") {
+                statusBadge.style.color = "#e74c3c";
+                document.getElementById('btnKunci').innerText = "Buka Kunci Kelp";
+                document.getElementById('btnKunci').style.background = "#27ae60";
+            } else {
+                statusBadge.style.color = "var(--primary)";
+                document.getElementById('btnKunci').innerText = "Kunci Kelp";
+                document.getElementById('btnKunci').style.background = "#f39c12";
+            }
+
+            document.getElementById('memberList').innerText = data.anggota.join(", ");
+            
+            // Cek posisi scroll
+            let chatBox = document.getElementById('chatContainer');
+            let isAtBottom = chatBox.scrollHeight - chatBox.scrollTop <= chatBox.clientHeight + 50;
+
+            let chatHtml = "";
+            data.chat.forEach(m => {
+                chatHtml += `<div class="chat-bubble ${m.nama==sNama?'chat-own':'chat-other'}">
+                    <span class="chat-sender">${m.nama}</span> ${m.pesan}
+                </div>`;
+            });
+            
+            chatBox.innerHTML = chatHtml || "<p style='text-align:center; color:#999;'>Belum ada diskusi.</p>";
+            
+            if(isAtBottom) scrollToBottom();
+        });
+    }
+
+    function scrollToBottom() {
+        let chatBox = document.getElementById('chatContainer');
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function sisipPecahan() {
+        let a = prompt("Masukkan Angka Atas (Pembilang):"); 
+        let b = prompt("Masukkan Angka Bawah (Penyebut):");
+        if(a && b) {
+            document.getElementById('pesanInput').innerHTML += `<span class="frac"><span class="top">${a}</span><span class="bot">${b}</span></span>&nbsp;`;
+        }
+    }
+
+    // PEMBARUAN: FITUR TABEL DINAMIS
+    function sisipTabel() {
+        let r = parseInt(prompt("Masukkan jumlah BARIS tabel (contoh: 3):", "2"));
+        let c = parseInt(prompt("Masukkan jumlah KOLOM tabel (contoh: 4):", "3"));
+        
+        if (!isNaN(r) && !isNaN(c) && r > 0 && c > 0) {
+            let htmlTabel = `<table class="chat-table"><tbody>`;
+            for(let i=0; i<r; i++) {
+                htmlTabel += `<tr>`;
+                for(let j=0; j<c; j++) { 
+                    htmlTabel += `<td>...</td>`; 
+                }
+                htmlTabel += `</tr>`;
+            }
+            htmlTabel += `</tbody></table><br>`;
+            document.getElementById('pesanInput').innerHTML += htmlTabel;
+        } else {
+            alert("Pembuatan tabel dibatalkan. Angka baris atau kolom tidak valid.");
+        }
+    }
+
+    function salinTabel(btn) {
+        let htmlTabelAsli = btn.parentElement.querySelector('table').outerHTML;
+        document.getElementById('pesanInput').innerHTML += "<br><i>[Menyalin Tabel]</i><br>" + htmlTabelAsli + "<br>";
+    }
+
+    function sisipSimbol(s) { 
+        document.getElementById('pesanInput').innerHTML += s; 
+    }
+
+    function toggleKunci() {
+        let stat = document.getElementById('statusKelompokBadge').innerText === "Terbuka" ? "Terkunci" : "Terbuka";
+        let fd = new FormData(); fd.append("action", "toggle_lock"); fd.append("kelompok", sKel); fd.append("status", stat);
+        
+        document.getElementById('btnKunci').innerText = "Memproses...";
+        fetch(URL_APP, { method: "POST", body: fd }).then(() => tarikChat());
+    }
+
+    function keluarKelompok() {
+        let stat = document.getElementById('statusKelompokBadge').innerText;
+        if (stat === "Terkunci") {
+            alert("Anda tidak bisa keluar saat kelompok sedang Terkunci. Buka kunci terlebih dahulu.");
+            return;
+        }
+        
+        if(confirm("Yakin ingin keluar dari kelompok ini?")) {
+            let fd = new FormData(); fd.append("action", "leave_group"); fd.append("kelompok", sKel); fd.append("nama", sNama);
+            fetch(URL_APP, { method: "POST", body: fd }).then(() => location.reload());
+        }
     }
 
     function mulaiTimer() {
-        if(localStorage.getItem('lkpd_status_' + sKel) === 'selesai') {
-            kunciLayarSelesai(localStorage.getItem('lkpd_waktuAkhir_' + sKel));
-            return;
+        let start = localStorage.getItem('start_'+sKel);
+        if(!start) {
+            start = Date.now();
+            localStorage.setItem('start_'+sKel, start);
         }
-
-        let startTime = localStorage.getItem('lkpd_startWaktu_' + sKel);
-        if (!startTime) {
-            startTime = Date.now();
-            localStorage.setItem('lkpd_startWaktu_' + sKel, startTime);
-        }
-
-        const totalDetik = WAKTU_MENIT * 60;
-        let timerDisplay = document.getElementById('timerDisplay');
-
-        timerInterval = setInterval(() => {
-            let elapsed = Math.floor((Date.now() - startTime) / 1000);
-            let sisa = totalDetik - elapsed;
-            let absSisa = Math.abs(sisa);
+        
+        setInterval(() => {
+            let sisa = (WAKTU_MENIT * 60) - Math.floor((Date.now() - start)/1000);
+            let m = Math.floor(Math.abs(sisa)/60).toString().padStart(2,'0');
+            let s = (Math.abs(sisa)%60).toString().padStart(2,'0');
             
-            let m = Math.floor(absSisa / 60).toString().padStart(2, '0');
-            let s = (absSisa % 60).toString().padStart(2, '0');
-
-            if (sisa >= 0) {
-                timerDisplay.innerText = "Sisa Waktu: " + m + ":" + s;
-                timerDisplay.classList.remove('timer-overtime');
+            let display = document.getElementById('timerDisplay');
+            if(sisa >= 0) {
+                display.innerText = m + ":" + s;
+                display.classList.remove('timer-overtime');
             } else {
-                timerDisplay.innerText = "Terlambat: -" + m + ":" + s;
-                timerDisplay.classList.add('timer-overtime');
+                display.innerText = "-" + m + ":" + s;
+                display.classList.add('timer-overtime');
             }
         }, 1000);
     }
-
-    function submitLKPD() {
-        let konfirmasi = confirm("Apakah kelompok Anda yakin ingin mengumpulkan? Jawaban tidak akan bisa diubah lagi.");
-        if (konfirmasi) {
-            clearInterval(timerInterval);
-
-            let startTime = localStorage.getItem('lkpd_startWaktu_' + sKel);
-            let elapsed = Math.floor((Date.now() - startTime) / 1000);
-            let m = Math.floor(elapsed / 60);
-            let s = elapsed % 60;
-            
-            let keteranganWaktu = "";
-            if(elapsed <= (WAKTU_MENIT * 60)){
-                keteranganWaktu = "Tepat Waktu (" + m + "m " + s + "s)";
-            } else {
-                let terlambatM = m - WAKTU_MENIT;
-                keteranganWaktu = "Terlambat " + terlambatM + "m " + s + "s";
-            }
-
-            localStorage.setItem('lkpd_status_' + sKel, 'selesai');
-            localStorage.setItem('lkpd_waktuAkhir_' + sKel, keteranganWaktu);
-
-            let fd = new FormData();
-            fd.append('kelompok', sKel);
-            fd.append('field', 'waktu_selesai'); 
-            fd.append('nilai', keteranganWaktu + " [Oleh: " + sNama + "]");
-            fd.append('nama', sNama);
-            fd.append('action', 'save');
-            
-            fetch(URL_APP, { method: 'POST', body: fd }).then(()=>{
-                kunciLayarSelesai(keteranganWaktu);
-                alert("Berhasil! LKPD telah dikumpulkan.");
-            });
-        }
-    }
-
-    function kunciLayarSelesai(teksWaktu) {
-        document.getElementById('btnSubmit').style.display = "none";
-        document.getElementById('timerDisplay').innerText = "[TERKUNCI] " + teksWaktu;
-        document.getElementById('timerDisplay').classList.remove('timer-overtime');
-        document.getElementById('timerDisplay').style.backgroundColor = "#d4edda";
-        document.getElementById('timerDisplay').style.color = "#155724";
-        document.getElementById('timerDisplay').style.borderColor = "#27ae60";
-        document.getElementById('syncStatus').innerText = "Status: Penilaian Guru";
-        
-        document.body.classList.add('locked-page');
-
-        inputs.forEach(el => {
-            el.disabled = true;
-            el.style.backgroundColor = "#e9ecef";
-        });
-    }
-
-    function setLock(fieldId) {
-        // Jangan mengunci lagi jika kita sudah mengirim kunci dalam 5 detik terakhir (mencegah spam ke server)
-        let now = Date.now();
-        if(myLocks[fieldId] && (now - myLocks[fieldId] < 5000)) return;
-        
-        myLocks[fieldId] = now;
-        
-        let fd = new FormData();
-        fd.append('kelompok', sKel); fd.append('field', fieldId);
-        fd.append('nama', sNama); fd.append('action', 'lock');
-        fetch(URL_APP, { method: 'POST', body: fd });
-    }
-
-    function saveData(el, fieldId) {
-        // Hapus catatan kunci lokal kita saat kursor pindah
-        delete myLocks[fieldId]; 
-        
-        if(!el.value) return; 
-        
-        document.getElementById('syncStatus').innerText = "Status: Menyimpan perubahan...";
-        let fd = new FormData();
-        fd.append('kelompok', sKel); fd.append('field', fieldId);
-        fd.append('nilai', el.value); fd.append('nama', sNama); fd.append('action', 'save');
-        
-        fetch(URL_APP, { method: 'POST', body: fd }).then(()=>{
-            document.getElementById('syncStatus').innerText = "Status: Data Tersimpan";
-            // Langsung tarik data segera setelah menyimpan agar layar teman cepat update
-            tarikData(); 
-        });
-    }
-
-    function tarikData() {
-        if(localStorage.getItem('lkpd_status_' + sKel) === 'selesai') return;
-
-        // Anti-Cache url agar data tidak tertahan
-        let noCacheUrl = URL_APP + '?kelompok=' + sKel + '&t=' + Date.now();
-
-        fetch(noCacheUrl).then(res => res.json()).then(data => {
-            
-            // Penanganan Anggota Kelompok
-            if(data.anggota && data.anggota.length > 0) {
-                document.getElementById('memberList').innerText = data.anggota.join(", ");
-            } else {
-                document.getElementById('memberList').innerText = "Belum ada data dari server.";
-            }
-
-            // Kompatibilitas data
-            let isNewFormat = data.jawaban !== undefined;
-            let jawabanData = isNewFormat ? data.jawaban : data;
-            let kunciData = isNewFormat ? data.Kunci_Sistem : data.locks;
-            let editorData = isNewFormat ? data.Jejak_Editor : data.editors;
-
-            // Kunci Layar jika disubmit teman
-            if(jawabanData && jawabanData['waktu_selesai'] && jawabanData['waktu_selesai'].trim() !== "") {
-                clearInterval(timerInterval);
-                localStorage.setItem('lkpd_status_' + sKel, 'selesai');
-                localStorage.setItem('lkpd_waktuAkhir_' + sKel, jawabanData['waktu_selesai']);
-                kunciLayarSelesai(jawabanData['waktu_selesai']);
-                return; 
-            }
-
-            inputs.forEach(el => {
-                let f = el.id;
-                let badge = document.getElementById('info_' + f);
-                
-                // PERBAIKAN BUG: Hanya tampilkan "Sedang diketik" JIKA:
-                // 1. Ada data kunci dari server
-                // 2. Kunci itu bukan nama kita sendiri
-                // 3. Kita sendiri sedang TIDAK berada (focus) di kotak tersebut.
-                if(kunciData && kunciData[f] && kunciData[f] !== sNama && document.activeElement !== el) {
-                    
-                    // Kita tidak menggunakan "disabled" pada input, agar kalau tabrakan, siswa tetap bisa ngetik
-                    el.classList.add("locked-input"); 
-                    badge.className = "badge badge-typing";
-                    badge.innerText = "Sedang diketik: " + kunciData[f];
-                    
-                } else {
-                    el.classList.remove("locked-input");
-                    
-                    // Update value JIKA kita sedang tidak ngetik di situ
-                    if(document.activeElement !== el && jawabanData && jawabanData[f] !== undefined) {
-                        el.value = jawabanData[f];
-                    }
-                    
-                    // Kembalikan ke mode Editor Terakhir
-                    if(editorData && editorData[f]) {
-                        badge.className = "badge badge-editor";
-                        if(el.classList.contains('table-input')){
-                           badge.innerText = editorData[f]; 
-                        } else {
-                           badge.innerText = "Editor terakhir: " + editorData[f];
-                        }
-                    } else {
-                        badge.className = "badge badge-editor";
-                        badge.innerText = "Belum diisi";
-                    }
-                }
-            });
-        }).catch(err => {
-            console.log("Koneksi tarik data terganggu sementara", err);
-        });
-    }
 </script>
-
 </body>
 </html>
