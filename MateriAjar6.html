@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Materi Ajar: Data Kelompok Bertahap</title>
+    <style>
+        :root {
+            --primary: #2563eb; --primary-dark: #1e3a8a;
+            --bg-color: #f8fafc; --card-bg: #ffffff;
+            --text-main: #0f172a; --text-muted: #475569;
+            --border: #cbd5e1; --success: #059669; --danger: #dc2626;
+            --warning: #d97706;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.7; display: flex; justify-content: center; scroll-behavior: smooth; }
+        .app-container { width: 100%; max-width: 650px; background: var(--card-bg); min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; }
+        
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 20; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+        .header-title { font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 16px; margin-bottom: 12px;}
+        .header-controls { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;}
+        .btn-tab-global { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-tab-global:hover { background: white; color: var(--primary); }
+        .btn-print-global { background: #f59e0b; color: white; border: 1px solid #d97706; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-print-global:hover { background: #d97706; }
+
+        .content { padding: 25px 20px; flex: 1; padding-bottom: 90px; }
+
+        #gate-panel { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 75vh; text-align: center; }
+        .gate-box { background: #f1f5f9; padding: 35px 25px; border-radius: 12px; border: 2px solid var(--border); width: 100%; box-shadow: 0 10px 15px rgba(0,0,0,0.03);}
+        .input-nama { width: 100%; padding: 14px; margin: 20px 0; border: 2px solid var(--border); border-radius: 8px; font-size: 16px; text-align: center; font-weight: bold; color: var(--primary-dark); }
+        .input-nama:focus { border-color: var(--primary); outline: none; }
+
+        .tab-wrapper { margin-bottom: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+        .tab-header { background: var(--primary-dark); color: white; padding: 16px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; user-select: none; }
+        .tab-header:hover { background: #1e40af; }
+        .tab-header.closed { border-radius: 8px; }
+        .tab-header:not(.closed) { border-radius: 8px 8px 0 0; }
+        .tab-icon { font-family: monospace; font-size: 14px; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 4px;}
+        .tab-content { background: white; padding: 25px 20px; border-radius: 0 0 8px 8px; display: block; }
+        .tab-content.hidden { display: none; }
+
+        .section-title { color: var(--primary-dark); font-size: 18px; font-weight: bold; margin: 30px 0 15px 0; padding-bottom: 8px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        p { margin-bottom: 18px; font-size: 15px; color: #334155; text-align: justify; }
+        ul { margin-left: 22px; margin-bottom: 18px; font-size: 15px; color: #334155; text-align: justify;}
+        li { margin-bottom: 10px; }
+        
+        .highlight-box { background: #eff6ff; border-left: 5px solid var(--primary); padding: 18px; border-radius: 0 8px 8px 0; margin-bottom: 22px; font-size: 15px; }
+        .example-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 20px 18px; margin-bottom: 22px; font-size: 15px; }
+        .contoh-soal { background: #f0fdf4; border: 1px solid var(--success); border-radius: 8px; padding: 25px 20px; margin-bottom: 25px; font-size: 15px; }
+        
+        /* PECAHAN MATEMATIKA YANG SANGAT RAPI */
+        .math-box { display: inline-flex; align-items: center; vertical-align: middle; margin: 0 5px; font-family: 'Cambria', 'Times New Roman', serif; font-size: 18px; color: var(--primary-dark); font-weight: bold;}
+        .frac { display: inline-flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 5px; }
+        .frac .top { border-bottom: 2px solid var(--primary-dark); padding: 0 5px; margin-bottom: 2px; }
+        .frac .bottom { padding: 0 5px; margin-top: 2px; }
+
+        /* KOTAK PENYELESAIAN STEP-BY-STEP */
+        .step-box { background: #f8fafc; border: 1px dashed var(--primary-dark); padding: 20px; border-radius: 8px; margin-top: 15px; overflow-x: auto;}
+        .step-row { display: flex; align-items: center; margin-bottom: 15px; font-size: 17px; font-weight: bold; color: var(--primary-dark); font-family: 'Cambria', serif;}
+        .step-row .left { width: 50px; text-align: right; }
+        .step-row .mid { width: 30px; text-align: center; }
+        .step-row .right { flex: 1; display: flex; align-items: center; flex-wrap: wrap;}
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; font-size: 15px; background: white;}
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 10px; text-align: center; vertical-align: middle;}
+        .data-table th { background: #e2e8f0; color: #0f172a;}
+        
+        .math-inline { font-family: 'Cambria', serif; font-size: 16px; font-weight: bold; color: var(--primary-dark); background: #f1f5f9; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px;}
+
+        .kuis-box { background: #ffffff; border: 2px solid var(--primary); padding: 22px; border-radius: 8px; margin: 30px 0 40px 0; box-shadow: 0 4px 6px rgba(37,99,235,0.1); position: relative; }
+        .kuis-title { color: var(--primary-dark); font-weight: bold; margin-bottom: 15px; font-size: 15px; text-transform: uppercase; border-bottom: 2px solid var(--border); padding-bottom: 8px;}
+        .kuis-feedback { margin-top: 18px; font-weight: bold; font-size: 15px; display: none; padding: 14px; border-radius: 8px; line-height: 1.5;}
+
+        /* Style Pilihan Ganda */
+        .btn-jawaban { background: white; color: var(--text-main); border: 2px solid var(--border); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; text-align: left; margin-bottom: 10px; font-size: 15px; line-height: 1.4;}
+        .btn-jawaban:hover:not(:disabled) { background: #f1f5f9; border-color: var(--primary);}
+        .btn-jawaban:active:not(:disabled) { background: #e2e8f0; }
+        .btn-jawaban:disabled { background: #f8fafc; color: #94a3b8; cursor: not-allowed; border-color: #cbd5e1; }
+        .btn-correct { background: #d1fae5 !important; border-color: #059669 !important; color: #065f46 !important; }
+
+        /* Input Styles */
+        .input-inline { width: 55px; padding: 6px; border: 2px solid var(--border); border-radius: 6px; text-align: center; font-weight: bold; font-family: monospace; font-size: 15px; color: var(--primary-dark); margin: 0 4px;}
+        .input-inline:focus { border-color: var(--primary); outline: none; background: #eff6ff;}
+        .input-inline:disabled { background: #f1f5f9; border-color: #cbd5e1; color: #64748b; cursor: not-allowed;}
+        
+        .input-frac { width: 55px; padding: 4px; border: 2px solid var(--border); border-radius: 4px; text-align: center; font-weight: bold; font-family: monospace; font-size: 15px; color: var(--primary-dark); margin: 2px; }
+        .input-frac:focus { border-color: var(--primary); outline: none; background: #eff6ff; }
+        .input-frac:disabled { background: #f1f5f9; border-color: #cbd5e1; color: #64748b; cursor: not-allowed; }
+
+        .btn-cek-isian { background: var(--primary-dark); color: white; border: none; padding: 14px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.2s; font-size: 15px; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-cek-isian:hover:not(:disabled) { background: var(--primary); }
+        .btn-cek-isian:disabled { background: #94a3b8; cursor: not-allowed;}
+
+        #btn-top { display: none; position: fixed; bottom: 90px; right: 20px; z-index: 99; border: none; outline: none; background-color: var(--primary-dark); color: white; cursor: pointer; padding: 12px 16px; border-radius: 50%; font-size: 18px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: 0.3s; }
+        #btn-top:hover { background-color: #0f172a; }
+
+        .bottom-bar { position: fixed; bottom: 0; width: 100%; max-width: 650px; background: white; padding: 18px 20px; border-top: 1px solid var(--border); display: none; z-index: 30; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); }
+        button.btn-utama { background: var(--primary); color: white; border: none; padding: 16px 20px; border-radius: 8px; font-weight: bold; font-size: 17px; width: 100%; cursor: pointer; transition: 0.2s;}
+        button.btn-utama:hover:not(:disabled) { background: var(--primary-dark); }
+        button.btn-utama:disabled { background: #94a3b8; cursor: not-allowed; }
+
+        #end-panel { display: none; flex-direction: column; justify-content: center; align-items: center; min-height: 75vh; text-align: center; }
+        .btn-kembali-materi { background: white; color: var(--primary-dark); border: 2px solid var(--primary-dark); padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; transition: 0.2s;}
+        .btn-kembali-materi:hover { background: #eff6ff; }
+        
+        @media print {
+            body { background: white; }
+            .app-container { box-shadow: none; max-width: 100%; }
+            .header, .bottom-bar, #btn-top, #gate-panel, .btn-cek-isian, .btn-jawaban, .header-controls, #end-panel { display: none !important; }
+            .tab-wrapper { border: none; box-shadow: none; margin-bottom: 20px;}
+            .tab-header { background: white; color: black; border-bottom: 2px solid black; border-radius: 0; padding: 10px 0;}
+            .tab-content { display: block !important; padding: 10px 0;}
+            .tab-icon { display: none; }
+            #materi-panel { display: block !important; }
+            .kuis-box { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div class="header" id="main-header">
+        <div class="header-title">Pemusatan Data Kelompok (Bertahap)</div>
+        <div class="header-controls" id="header-controls" style="display: none;">
+            <button class="btn-tab-global" onclick="kontrolSemuaTab(true)">[+] Buka Semua Tab</button>
+            <button class="btn-tab-global" onclick="kontrolSemuaTab(false)">[-] Tutup Semua Tab</button>
+            <button class="btn-print-global" onclick="window.print()">[ Simpan PDF / Offline ]</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div id="gate-panel">
+            <div class="gate-box">
+                <h2 style="color: var(--primary-dark); margin-bottom: 15px;">Portal Pembelajaran Bertahap</h2>
+                <p style="font-size: 15px; color: #475569;">Halo! Silakan masukkan nama lengkapmu. Kita akan mempelajari Data Kelompok selangkah demi selangkah dari akar konsepnya beserta contoh studi kasus utuh.</p>
+                <input type="text" id="namaSiswa" class="input-nama" placeholder="Ketik Nama Lengkap">
+                <button class="btn-utama" onclick="mulaiBelajar()">Mulai Membaca Materi</button>
+            </div>
+        </div>
+
+        <div id="materi-panel" style="display: none;">
+            
+            <div class="tab-wrapper" id="wrap-tahap0">
+                <div class="tab-header" onclick="toggleTab('content-tahap0', this)">
+                    <div>Latar Belakang: Mengapa Dikelompokkan?</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-tahap0">
+                    <p>Bayangkan kamu bekerja sebagai analis data di sebuah minimarket besar. Dalam satu hari, terjadi <strong>ribuan transaksi</strong> penjualan. Jika kamu membuat tabel satu per satu untuk setiap jumlah penjualan, tabelmu akan memakan puluhan halaman kertas dan sangat sulit dibaca.</p>
+                    
+                    <p>Solusi terbaik dari masalah ini adalah <strong>meringkas dan mengelompokkannya ke dalam sebuah Rentang Kelas (Interval)</strong>. Daripada menulis angka 20, 21, 22, 23, 24 satu per satu, kita cukup menulisnya sebagai rentang kelas "20 - 24".</p>
+                    
+                    <div class="highlight-box">
+                        <strong>Pengorbanan Terbesar Data Kelompok:</strong> Saat kita memasukkan data ke dalam rentang interval, <strong>kita kehilangan wujud angka aslinya</strong>. <br><br>Sebagai contoh, jika pada kelas "20 - 24" ada 4 orang pelanggan, kita tidak tahu lagi apakah angka omzet belanja mereka itu tepatnya Rp20.000, Rp21.000, atau Rp24.000.
+                    </div>
+
+                    <div id="kuis-step0" class="kuis-box">
+                        <div class="kuis-title">Uji Nalar: Solusi Data yang Hilang</div>
+                        <p>Karena wujud angka aslinya sudah tidak terlihat secara pasti di dalam rentang interval, kita tidak bisa langsung menjumlahkannya. Tindakan apa yang paling adil secara matematis untuk mewakili keseluruhan angka yang tersembunyi tersebut?</p>
+                        <button class="btn-jawaban" id="btn-s0-A" onclick="cekJawabanMC('step0', 'A', false, this, 'Kurang adil. Memilih angka terbesar akan membuat rata-rata keseluruhan ikut membengkak palsu.')">A. Memilih angka yang paling besar di dalam rentang batasnya</button>
+                        <button class="btn-jawaban" id="btn-s0-B" onclick="cekJawabanMC('step0', 'B', true, this, '')">B. Mencari Nilai Tengah (Titik Tengah) untuk dijadikan wakil tunggal dari rentang tersebut</button>
+                        <button class="btn-jawaban" id="btn-s0-C" onclick="cekJawabanMC('step0', 'C', false, this, 'Kurang tepat. Mengabaikannya membuat kita tidak bisa melakukan kalkulasi rata-rata sama sekali.')">C. Mengabaikan nilai angkanya dan hanya menghitung kolom frekuensinya saja</button>
+                        <div id="feedback-step0" class="kuis-feedback"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-wrapper" id="wrap-tahap1" style="display: none;">
+                <div class="tab-header" onclick="toggleTab('content-tahap1', this)">
+                    <div>Tahap 1: Menguasai Titik Tengah (<span style="font-family: 'Cambria', serif;">x<sub>i</sub></span>)</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-tahap1">
+                    <p>Karena kita sudah sepakat untuk mencari perwakilan yang adil, kita <strong>wajib</strong> menghitung <strong>Titik Tengah (<span class="math-inline">x<sub>i</sub></span>)</strong> dari setiap rentang kelas sebelum kita bisa mulai mengoperasikan perhitungan Rata-rata (Mean) apa pun.</p>
+                    
+                    <div class="example-box" style="text-align: center; border-color: var(--primary);">
+                        <p style="margin-bottom: 10px; font-weight: bold; color: var(--primary-dark);">Rumus Titik Tengah (<span class="math-inline">x<sub>i</sub></span>):</p>
+                        <div class="math-box">
+                            <span>x<sub>i</sub> = </span>
+                            <div class="frac">
+                                <span class="top">Batas Bawah + Batas Atas</span>
+                                <span class="bottom">2</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contoh-soal">
+                        <strong style="color: var(--success);">📖 STUDI KASUS & CONTOH PENGERJAAN:</strong><br>
+                        Sebuah toko mengelompokkan data umur pelanggan setianya. Terdapat kelompok pelanggan dengan rentang umur <strong>10 - 14</strong> tahun. Kita perlu mencari titik tengahnya sebagai wakil umur.
+                        <div class="step-box" style="border-color: var(--success); background: white;">
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x<sub>i</sub></span><span class="mid">=</span>
+                                <span class="right">
+                                    <div class="math-box" style="color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">10 + 14</span>
+                                            <span class="bottom">2</span>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x<sub>i</sub></span><span class="mid">=</span>
+                                <span class="right">
+                                    <div class="math-box" style="color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">24</span>
+                                            <span class="bottom">2</span>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x<sub>i</sub></span><span class="mid">=</span>
+                                <span class="right">12</span>
+                            </div>
+                        </div>
+                        <p style="margin-top: 10px; font-size: 14px; color: var(--success);">Kesimpulan: Umur wakil untuk rentang kelompok tersebut adalah 12 tahun.</p>
+                    </div>
+
+                    <div id="kuis-step1" class="kuis-box">
+                        <div class="kuis-title">Latihan Pemanasan 1: Mencari Perwakilan</div>
+                        <p>Mari amati dan tiru pola contoh di atas. Sebuah survei jumlah barang terjual dibagi menjadi 3 rentang kelas. Temukan nilai titik tengah (<span class="math-inline">x<sub>i</sub></span>) untuk setiap kelas di bawah ini!</p>
+                        
+                        <table class="data-table">
+                            <thead><tr><th>Rentang Penjualan</th><th>Langkah Hitung & Titik Tengah (<span class="math-inline">x<sub>i</sub></span>)</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td>20 - 24</td>
+                                    <td>
+                                        <div class="math-box" style="font-size:15px; color: var(--text-main);">
+                                            <div class="frac">
+                                                <span class="top">20 + 24</span>
+                                                <span class="bottom">2</span>
+                                            </div>
+                                            <span style="margin: 0 5px;"> = </span> <input type="text" id="in_s1_1" class="input-inline">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>25 - 29</td>
+                                    <td>
+                                        <div class="math-box" style="font-size:15px; color: var(--text-main);">
+                                            <div class="frac">
+                                                <span class="top">25 + 29</span>
+                                                <span class="bottom">2</span>
+                                            </div>
+                                            <span style="margin: 0 5px;"> = </span> <input type="text" id="in_s1_2" class="input-inline">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>30 - 34</td>
+                                    <td>
+                                        <div class="math-box" style="font-size:15px; color: var(--text-main);">
+                                            <div class="frac">
+                                                <span class="top">30 + 34</span>
+                                                <span class="bottom">2</span>
+                                            </div>
+                                            <span style="margin: 0 5px;"> = </span> <input type="text" id="in_s1_3" class="input-inline">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <button class="btn-cek-isian" id="btn-step1" onclick="cekKuisInput('step1', ['22', '27', '32'], ['in_s1_1', 'in_s1_2', 'in_s1_3'])">Validasi Titik Tengah</button>
+                        <div id="feedback-step1" class="kuis-feedback"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-wrapper" id="wrap-tahap2" style="display: none;">
+                <div class="tab-header" onclick="toggleTab('content-tahap2', this)">
+                    <div>Tahap 2: Mean Titik Tengah Dasar</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-tahap2">
+                    <p>Menghitung Rata-rata (Mean) data kelompok sangatlah mudah jika kamu sudah memiliki Titik Tengah. Langkahnya: <strong>Kalikan angka Frekuensi (<span class="math-inline">f<sub>i</sub></span>) dengan Titik Tengahnya (<span class="math-inline">x<sub>i</sub></span>) untuk seluruh baris</strong>, jumlahkan semua hasilnya, lalu bagi dengan total observasi (jumlah frekuensi).</p>
+                    
+                    <div class="example-box" style="text-align: center; border-color: var(--primary);">
+                        <p style="margin-bottom: 10px; font-weight: bold; color: var(--primary-dark);">Rumus Mean Titik Tengah:</p>
+                        <div class="math-box">
+                            <span>x&#772; = </span>
+                            <div class="frac">
+                                <span class="top">&sum;(f<sub>i</sub> &middot; x<sub>i</sub>)</span>
+                                <span class="bottom">&sum;f<sub>i</sub></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contoh-soal">
+                        <strong style="color: var(--success);">📖 STUDI KASUS & PENYELESAIAN UTUH:</strong><br>
+                        Sebuah kedai kopi mencatat jumlah pelanggan yang datang ke tokonya. Data telah dihitung, dan menghasilkan <strong>Total hasil kali (&sum;fx) = 150</strong> dari jumlah pengamatan <strong>Total hari (&sum;f) = 5</strong>.<br>
+                        Bagaimana penulisan rumus untuk mencari Rata-ratanya?
+                        <div class="step-box" style="border-color: var(--success); background: white;">
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    <div class="math-box" style="color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">&sum;fx</span>
+                                            <span class="bottom">&sum;f</span>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    <div class="math-box" style="color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">150</span>
+                                            <span class="bottom">5</span>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">30</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="kuis-step2" class="kuis-box">
+                        <div class="kuis-title">Latihan Inti 2: Menghitung Mean Utuh</div>
+                        <p>Mari gunakan tabel dari Tahap 1 tadi, namun sekarang dengan tambahan kolom Frekuensi (jumlah Toko). Tiru langkah penyelesaian di atas!</p>
+                        
+                        <table class="data-table">
+                            <thead><tr><th>Rentang</th><th>Toko (<span class="math-inline">f<sub>i</sub></span>)</th><th>T. Tengah (<span class="math-inline">x<sub>i</sub></span>)</th><th>Perkalian (f &middot; x)</th></tr></thead>
+                            <tbody>
+                                <tr><td>20 - 24</td><td>2</td><td>22</td><td>44</td></tr>
+                                <tr><td>25 - 29</td><td>4</td><td>27</td><td><input type="text" id="in_s2_1" class="input-inline"></td></tr>
+                                <tr><td>30 - 34</td><td>4</td><td>32</td><td><input type="text" id="in_s2_2" class="input-inline"></td></tr>
+                                <tr style="background:#f8fafc; font-weight:bold;">
+                                    <td>TOTAL</td>
+                                    <td>&sum;f = <input type="text" id="in_s2_3" class="input-inline" style="width:50px;"></td>
+                                    <td></td>
+                                    <td>&sum;fx = <input type="text" id="in_s2_4" class="input-inline" style="width:50px;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p><strong>Langkah Penyelesaian:</strong></p>
+                        <div class="step-box">
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    <div class="math-box" style="color: var(--text-main);">
+                                        <div class="frac">
+                                            <span class="top">&sum;fx</span>
+                                            <span class="bottom">&sum;f</span>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    <div class="math-box" style="color: var(--text-main);">
+                                        <div class="frac">
+                                            <span class="top"><input type="text" id="in_s2_5" class="input-frac"></span>
+                                            <span class="bottom"><input type="text" id="in_s2_6" class="input-frac"></span>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right"><input type="text" id="in_s2_7" class="input-inline" style="width: 70px;"></span>
+                            </div>
+                        </div>
+
+                        <button class="btn-cek-isian" id="btn-step2" onclick="cekKuisInput('step2', ['108', '128', '10', '280', '280', '10', '28'], ['in_s2_1', 'in_s2_2', 'in_s2_3', 'in_s2_4', 'in_s2_5', 'in_s2_6', 'in_s2_7'])">Validasi Hitungan Mean</button>
+                        <div id="feedback-step2" class="kuis-feedback"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-wrapper" id="wrap-tahap3" style="display: none;">
+                <div class="tab-header" onclick="toggleTab('content-tahap3', this)">
+                    <div>Tahap 3: Mean Rataan Sementara</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-tahap3">
+                    <p>Bayangkan jika Titik Tengahnya adalah angka ribuan (seperti 2.500), menghitung perkalian secara manual pasti sangat melelahkan. Itulah gunanya meminjam <strong>Rataan Sementara (<span class="math-inline">x&#772;<sub>s</sub></span>)</strong>. Dengan meminjam satu titik tengah, kita cukup mencari selisih/simpangannya saja (<span class="math-inline">d<sub>i</sub></span>) yang angkanya jauh lebih kecil.</p>
+                    
+                    <div class="example-box" style="text-align: center; border-color: var(--primary);">
+                        <p style="margin-bottom: 10px; font-weight: bold; color: var(--primary-dark);">Rumus Mean Rataan Sementara:</p>
+                        <div class="math-box">
+                            <span>x&#772; = x&#772;<sub>s</sub> + </span>
+                            <div class="frac">
+                                <span class="top">&sum;(f<sub>i</sub> &middot; d<sub>i</sub>)</span>
+                                <span class="bottom">&sum;f<sub>i</sub></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contoh-soal">
+                        <strong style="color: var(--success);">📖 STUDI KASUS & CARA MENGISI TABEL SELISIH (<span class="math-inline">d<sub>i</sub></span>):</strong><br>
+                        Data keuntungan kios menunjukkan beberapa Titik Tengah: 52, 57, dan 62. Frekuensi masing-masing baris adalah 3, 5, dan 2.<br>
+                        Mari kita sepakat <strong>meminjam Titik Tengah kelas kedua sebagai Rataan Sementara (<span class="math-inline">x&#772;<sub>s</sub> = 57</span>)</strong>.<br>
+                        Rumus mencari selisih untuk setiap baris adalah: <span class="math-inline">d<sub>i</sub> = x<sub>i</sub> - x&#772;<sub>s</sub></span>.<br>
+                        <ul style="margin-top: 10px; color: var(--success); list-style: none; margin-left: 0;">
+                            <li style="margin-bottom: 8px;">&bull; <strong>Baris 1 (Titik Tengah 52):</strong> <br>Mencari selisih: <span class="math-inline">d<sub>1</sub></span> = 52 - 57 = <strong>-5</strong>.<br>Lalu kalikan Frekuensi (3) dengan selisih (-5): <span class="math-inline">f<sub>1</sub> &middot; d<sub>1</sub></span> = 3 &times; (-5) = <strong>-15</strong>.</li>
+                            
+                            <li style="margin-bottom: 8px;">&bull; <strong>Baris 2 (Titik Tengah 57):</strong> <br>Mencari selisih: <span class="math-inline">d<sub>2</sub></span> = 57 - 57 = <strong>0</strong>.<br>Lalu kalikan Frekuensi (5) dengan selisih (0): <span class="math-inline">f<sub>2</sub> &middot; d<sub>2</sub></span> = 5 &times; 0 = <strong>0</strong>.</li>
+                            
+                            <li>&bull; <strong>Baris 3 (Titik Tengah 62):</strong> <br>Mencari selisih: <span class="math-inline">d<sub>3</sub></span> = 62 - 57 = <strong>5</strong>.<br>Lalu kalikan Frekuensi (2) dengan selisih (5): <span class="math-inline">f<sub>3</sub> &middot; d<sub>3</sub></span> = 2 &times; 5 = <strong>10</strong>.</li>
+                        </ul>
+                    </div>
+
+                    <div class="contoh-soal">
+                        <strong style="color: var(--success);">🔍 PENYELESAIAN RUMUS:</strong><br>
+                        Jika kita jumlahkan seluruh kolom <span class="math-inline">f \cdot d</span> di atas: (-15) + 0 + 10 = <strong>-5</strong> (&sum;fd).<br>
+                        Pinjaman <span class="math-inline">x&#772;<sub>s</sub></span> <strong>= 57</strong> dan Total Frek <strong>&sum;f = 10</strong>.<br>
+                        <div class="step-box" style="border-color: var(--success); background: white;">
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    x&#772;<sub>s</sub> + 
+                                    <div class="math-box" style="margin-left: 8px; color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">&sum;fd</span>
+                                            <span class="bottom">&sum;f</span>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    57 + 
+                                    <div class="math-box" style="margin-left: 8px; color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">-5</span>
+                                            <span class="bottom">10</span>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">57 + (-0.5)</span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">56.5</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="kuis-step3" class="kuis-box">
+                        <div class="kuis-title">Latihan Inti 3: Buktikan Hasilnya!</div>
+                        <p>Sekarang giliranmu. Pada tabel sebelumnya, kita <strong>pinjam Titik Tengah kelas kedua (27)</strong> sebagai Rataan Sementara (<span class="math-inline">x&#772;<sub>s</sub></span>). Lengkapi tabel dan cari Mean-nya dengan meniru langkah di atas!</p>
+                        
+                        <table class="data-table">
+                            <thead><tr><th>Rentang</th><th>Toko (f)</th><th>T. Tengah (x)</th><th>Selisih (<span class="math-inline">d<sub>i</sub> = x<sub>i</sub> - 27</span>)</th><th>f &middot; d</th></tr></thead>
+                            <tbody>
+                                <tr><td>20 - 24</td><td>2</td><td>22</td><td>-5</td><td>-10</td></tr>
+                                <tr style="background:#eff6ff;"><td>25 - 29</td><td>4</td><td><strong>27</strong></td><td>0</td><td>0</td></tr>
+                                <tr><td>30 - 34</td><td>4</td><td>32</td><td><input type="text" id="in_s3_1" class="input-inline"></td><td><input type="text" id="in_s3_2" class="input-inline"></td></tr>
+                                <tr style="background:#f8fafc; font-weight:bold;">
+                                    <td colspan="4">TOTAL TOKO (&sum;f = 10) &rarr;</td>
+                                    <td>&sum;fd = <input type="text" id="in_s3_3" class="input-inline"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p><strong>Langkah Penyelesaian:</strong></p>
+                        <div class="step-box">
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    x&#772;<sub>s</sub> + 
+                                    <div class="math-box" style="margin-left: 8px; color: var(--text-main);">
+                                        <div class="frac">
+                                            <span class="top">&sum;fd</span>
+                                            <span class="bottom">&sum;f</span>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    <input type="text" id="in_s3_4" class="input-inline"> + 
+                                    <div class="math-box" style="margin-left: 8px; color: var(--text-main);">
+                                        <div class="frac">
+                                            <span class="top"><input type="text" id="in_s3_5" class="input-frac"></span>
+                                            <span class="bottom"><input type="text" id="in_s3_6" class="input-frac"></span>
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right"><input type="text" id="in_s3_7" class="input-inline" style="width: 60px;"> + <input type="text" id="in_s3_8" class="input-inline" style="width: 60px;"></span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right"><input type="text" id="in_s3_9" class="input-inline" style="width: 70px;"></span>
+                            </div>
+                        </div>
+
+                        <button class="btn-cek-isian" id="btn-step3" onclick="cekKuisInput('step3', ['5', '20', '10', '27', '10', '10', '27', '1', '28'], ['in_s3_1', 'in_s3_2', 'in_s3_3', 'in_s3_4', 'in_s3_5', 'in_s3_6', 'in_s3_7', 'in_s3_8', 'in_s3_9'])">Validasi Rataan Sementara</button>
+                        <div id="feedback-step3" class="kuis-feedback"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-wrapper" id="wrap-tahap4" style="display: none;">
+                <div class="tab-header" onclick="toggleTab('content-tahap4', this)">
+                    <div>Tahap 4: Mean Metode Coding (Jalan Pintas)</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-tahap4">
+                    <p>Ini adalah jalan pintas (hack) favorit para analis. Kamu tidak perlu repot mencari selisih angka puluhan yang menghasilkan minus besar. Berikan saja <strong>Kode (<span class="math-inline">c<sub>i</sub></span>)</strong> dengan deret angka urut sederhana.</p>
+                    
+                    <div class="example-box" style="text-align: center; border-color: var(--primary);">
+                        <p style="margin-bottom: 10px; font-weight: bold; color: var(--primary-dark);">Rumus Mean Coding:</p>
+                        <div class="math-box">
+                            <span>x&#772; = x&#772;<sub>s</sub> + </span>
+                            <div class="frac">
+                                <span class="top">&sum;(f<sub>i</sub> &middot; c<sub>i</sub>)</span>
+                                <span class="bottom">&sum;f<sub>i</sub></span>
+                            </div>
+                            <span> &middot; p</span>
+                        </div>
+                    </div>
+
+                    <div class="contoh-soal">
+                        <strong style="color: var(--success);">📖 STUDI KASUS & CARA MEMBERIKAN KODE (<span class="math-inline">c<sub>i</sub></span>):</strong><br>
+                        Sebuah data memiliki 3 baris rentang kelas. Kita sepakat meminjam <strong>Rataan Sementara (<span class="math-inline">x&#772;<sub>s</sub></span>) pada baris ke-2</strong>.<br>
+                        Maka aturan mutlak pemberian kodenya adalah:<br>
+                        <ul style="margin-top: 10px; color: var(--success); list-style:none; margin-left:0;">
+                            <li style="margin-bottom: 8px;">&bull; <strong>Baris ke-2 (Lokasi Pinjaman):</strong> Wajib diberi kode pusat <strong>0</strong>. Frekuensinya nanti dikali 0.</li>
+                            <li style="margin-bottom: 8px;">&bull; <strong>Baris ke-1 (Satu tingkat di atas nol):</strong> Diberi kode <strong>-1</strong>. Jika ada baris lagi di atasnya, beri kode -2, dst.</li>
+                            <li>&bull; <strong>Baris ke-3 (Satu tingkat di bawah nol):</strong> Diberi kode <strong>1</strong>. Jika ada baris lagi di bawahnya, beri kode 2, dst.</li>
+                        </ul>
+                    </div>
+
+                    <div class="contoh-soal">
+                        <strong style="color: var(--success);">🔍 PENYELESAIAN RUMUS:</strong><br>
+                        Pinjaman <span class="math-inline">x&#772;<sub>s</sub></span> <strong>= 15</strong>, Panjang Kelas (p) <strong>= 2</strong>, Total <strong>&sum;fc = 10</strong> dan Frekuensi <strong>&sum;f = 5</strong>:<br>
+                        <i>Jangan lupa, di metode ini kita WAJIB mengalikan dengan Panjang Kelas (p) di akhir operasi kurung!</i>
+                        <div class="step-box" style="border-color: var(--success); background: white;">
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    x&#772;<sub>s</sub> + <span style="font-size:22px; margin: 0 4px;">[</span> 
+                                    <div class="math-box" style="color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">&sum;fc</span>
+                                            <span class="bottom">&sum;f</span>
+                                        </div>
+                                    </div> 
+                                    <span style="font-size:22px; margin: 0 4px;">]</span> &middot; p
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    15 + <span style="font-size:22px; margin: 0 4px;">[</span> 
+                                    <div class="math-box" style="color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">10</span>
+                                            <span class="bottom">5</span>
+                                        </div>
+                                    </div> 
+                                    <span style="font-size:22px; margin: 0 4px;">]</span> &middot; 2
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">15 + [ 2 ] &middot; 2</span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">15 + 4</span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">19</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="kuis-step4" class="kuis-box">
+                        <div class="kuis-title">Latihan Inti 4: Cara Pengkodean Cepat</div>
+                        <p>Mari kita uji datamu. Dengan pinjaman rataan sementara <strong>x&#772;<sub>s</sub> = 27</strong> (berada di kelas kedua). Panjang Kelas <strong>p = 5</strong> (karena rentang 20 ke 24 isinya 5 angka: 20, 21, 22, 23, 24). Terapkan pola kodenya dan selesaikan misi ini!</p>
+                        
+                        <table class="data-table">
+                            <thead><tr><th>Rentang</th><th>Toko (f)</th><th>Kode (<span class="math-inline">c<sub>i</sub></span>)</th><th>f &middot; c</th></tr></thead>
+                            <tbody>
+                                <tr><td>20 - 24</td><td>2</td><td>-1</td><td>-2</td></tr>
+                                <tr style="background:#eff6ff;"><td>25 - 29</td><td>4</td><td><strong>0</strong></td><td>0</td></tr>
+                                <tr><td>30 - 34</td><td>4</td><td><input type="text" id="in_s4_1" class="input-inline"></td><td><input type="text" id="in_s4_2" class="input-inline"></td></tr>
+                                <tr style="background:#f8fafc; font-weight:bold;">
+                                    <td colspan="3">TOTAL TOKO (&sum;f = 10) &rarr;</td>
+                                    <td>&sum;fc = <input type="text" id="in_s4_3" class="input-inline"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p><strong>Langkah Penyelesaian (Tiru Contoh):</strong></p>
+                        <div class="step-box">
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    x&#772;<sub>s</sub> + <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">[</span> 
+                                    <div class="math-box" style="color: var(--text-main);">
+                                        <div class="frac">
+                                            <span class="top">&sum;fc</span>
+                                            <span class="bottom">&sum;f</span>
+                                        </div>
+                                    </div> 
+                                    <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">]</span> &middot; p
+                                </span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right">
+                                    <input type="text" id="in_s4_4" class="input-inline"> + <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">[</span> 
+                                    <div class="math-box" style="color: var(--text-main);">
+                                        <div class="frac">
+                                            <span class="top"><input type="text" id="in_s4_5" class="input-frac"></span>
+                                            <span class="bottom"><input type="text" id="in_s4_6" class="input-frac"></span>
+                                        </div>
+                                    </div> 
+                                    <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">]</span> &middot; <input type="text" id="in_s4_7" class="input-inline">
+                                </span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right"><input type="text" id="in_s4_8" class="input-inline" style="width: 50px;"> + <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">[</span> <input type="text" id="in_s4_9" class="input-inline" style="width: 50px;"> <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">]</span> &middot; <input type="text" id="in_s4_10" class="input-inline"></span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right"><input type="text" id="in_s4_11" class="input-inline" style="width: 50px;"> + <input type="text" id="in_s4_12" class="input-inline" style="width: 50px;"></span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">x&#772;</span><span class="mid">=</span>
+                                <span class="right"><input type="text" id="in_s4_13" class="input-inline" style="width: 70px;"></span>
+                            </div>
+                        </div>
+
+                        <button class="btn-cek-isian" id="btn-step4" onclick="cekKuisInput('step4', ['1', '4', '2', '27', '2', '10', '5', '27', '0.2', '5', '27', '1', '28'], ['in_s4_1', 'in_s4_2', 'in_s4_3', 'in_s4_4', 'in_s4_5', 'in_s4_6', 'in_s4_7', 'in_s4_8', 'in_s4_9', 'in_s4_10', 'in_s4_11', 'in_s4_12', 'in_s4_13'])">Buktikan Metode Coding</button>
+                        <div id="feedback-step4" class="kuis-feedback"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-wrapper" id="wrap-tahap5" style="display: none;">
+                <div class="tab-header" onclick="toggleTab('content-tahap5', this)">
+                    <div>Tahap 5: Modus (Puncak Frekuensi)</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-tahap5">
+                    <p>Setelah mahir mencari rata-rata, kini kita mencari <strong>Modus (Nilai mayoritas terbanyak)</strong>. Panduan mutlak pertama: <strong>Pindai tabel dan temukan baris kelas dengan angka Frekuensi paling tinggi!</strong></p>
+                    
+                    <div class="example-box" style="text-align: center; border-color: var(--primary);">
+                        <p style="margin-bottom: 10px; font-weight: bold; color: var(--primary-dark);">Rumus Modus Data Kelompok:</p>
+                        <div class="math-box">
+                            <span>Mo = L + </span>
+                            <div class="frac">
+                                <span class="top">d<sub>1</sub></span>
+                                <span class="bottom">d<sub>1</sub> + d<sub>2</sub></span>
+                            </div>
+                            <span> &middot; p</span>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong>Panduan Mencari Variabel:</strong><br>
+                        &bull; <strong>L</strong> = Tepi bawah kelas modus (Batas bawahnya dikurangi 0,5)<br>
+                        &bull; <strong>d<sub>1</sub></strong> = Frekuensi modus dikurangi frekuensi kelas <strong>sebelumnya (atasnya)</strong><br>
+                        &bull; <strong>d<sub>2</sub></strong> = Frekuensi modus dikurangi frekuensi kelas <strong>sesudahnya (bawahnya)</strong><br>
+                        &bull; <strong>p</strong> = Panjang kelas (Rentang isinya ada berapa angka)
+                    </div>
+
+                    <div class="contoh-soal">
+                        <strong style="color: var(--success);">📖 STUDI KASUS & CONTOH PENGERJAAN PENUH:</strong><br>
+                        Tim pemasaran mendata jumlah kunjungan pelanggan ke sebuah pameran produk. Tabel distribusi frekuensinya adalah sebagai berikut:
+                        <table class="data-table" style="width: 80%; margin: 10px auto;">
+                            <thead><tr><th>Kunjungan</th><th>Frekuensi (f)</th></tr></thead>
+                            <tbody>
+                                <tr><td>10 - 14</td><td>4</td></tr>
+                                <tr style="background:#d1fae5;"><td>15 - 19</td><td><strong>10</strong> (Puncak Modus)</td></tr>
+                                <tr><td>20 - 24</td><td>6</td></tr>
+                            </tbody>
+                        </table>
+                        
+                        <p style="margin-bottom: 5px; color: var(--success); font-weight: bold;">Langkah 1: Menarik Keluar Variabel dari Tabel</p>
+                        <div class="step-box" style="border-color: var(--success); background: white; margin-top: 5px; margin-bottom: 15px; padding: 15px;">
+                            <div class="step-row" style="color: var(--success); font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;">L</span><span class="mid">=</span>
+                                <span class="right">15 - 0.5 = 14.5</span>
+                            </div>
+                            
+                            <div class="step-row" style="color: var(--success); font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;">d<sub>1</sub></span><span class="mid">=</span>
+                                <span class="right">Frekuensi Modus - Frekuensi Atasnya</span>
+                            </div>
+                            <div class="step-row" style="color: var(--success); font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;"></span><span class="mid">=</span>
+                                <span class="right">10 - 4 = 6</span>
+                            </div>
+                            
+                            <div class="step-row" style="color: var(--success); font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;">d<sub>2</sub></span><span class="mid">=</span>
+                                <span class="right">Frekuensi Modus - Frekuensi Bawahnya</span>
+                            </div>
+                            <div class="step-row" style="color: var(--success); font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;"></span><span class="mid">=</span>
+                                <span class="right">10 - 6 = 4</span>
+                            </div>
+                            
+                            <div class="step-row" style="color: var(--success); font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;">p</span><span class="mid">=</span>
+                                <span class="right">5 &nbsp;&nbsp; <i>(Karena rentang 15 sampai 19 memuat 5 angka hitungan)</i></span>
+                            </div>
+                        </div>
+
+                        <p style="margin-bottom: 5px; color: var(--success); font-weight: bold;">Langkah 2: Memasukkan ke Rumus Utama</p>
+                        <div class="step-box" style="border-color: var(--success); background: white; margin-top: 5px;">
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right">
+                                    L + <span style="font-size:22px; margin: 0 4px;">[</span> 
+                                    <div class="math-box" style="color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">d<sub>1</sub></span>
+                                            <span class="bottom">d<sub>1</sub> + d<sub>2</sub></span>
+                                        </div>
+                                    </div> 
+                                    <span style="font-size:22px; margin: 0 4px;">]</span> &middot; p
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right">
+                                    14.5 + <span style="font-size:22px; margin: 0 4px;">[</span> 
+                                    <div class="math-box" style="color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">6</span>
+                                            <span class="bottom">6 + 4</span>
+                                        </div>
+                                    </div> 
+                                    <span style="font-size:22px; margin: 0 4px;">]</span> &middot; 5
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right">
+                                    14.5 + <span style="font-size:22px; margin: 0 4px;">[</span> 
+                                    <div class="math-box" style="color: var(--success);">
+                                        <div class="frac">
+                                            <span class="top">6</span>
+                                            <span class="bottom">10</span>
+                                        </div>
+                                    </div> 
+                                    <span style="font-size:22px; margin: 0 4px;">]</span> &middot; 5
+                                </span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right">14.5 + [ 0.6 ] &middot; 5</span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right">14.5 + 3</span>
+                            </div>
+                            <div class="step-row" style="color: var(--success);">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right">17.5</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="kuis-step5" class="kuis-box">
+                        <div class="kuis-title">Latihan Inti 5: Menembak Nilai Modus Penjualan</div>
+                        <p>Sebuah distributor sepatu mengelompokkan data rekap penjualan hariannya. Secara visual, kita amati bahwa <strong>Kelas Modus berada di rentang 25-29</strong> karena angka Frekuensinya memegang rekor paling besar (yaitu 6 Toko).</p>
+                        
+                        <table class="data-table" style="width: 80%; margin: 10px auto;">
+                            <thead><tr><th>Rentang Penjualan</th><th>Toko (f)</th></tr></thead>
+                            <tbody>
+                                <tr><td>20 - 24</td><td>4</td></tr>
+                                <tr style="background:#eff6ff;"><td>25 - 29</td><td><strong>6</strong> (Puncak Modus)</td></tr>
+                                <tr><td>30 - 34</td><td>3</td></tr>
+                            </tbody>
+                        </table>
+                        
+                        <p style="margin-bottom: 5px; font-weight: bold; color: var(--primary-dark);">A. Tiru Contoh, Tarik Keluar Variabelnya:</p>
+                        <div class="step-box" style="background: #f1f5f9; padding: 15px; margin-top: 5px; margin-bottom: 20px;">
+                            <div class="step-row" style="font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;">L</span><span class="mid">=</span>
+                                <span class="right">25 - 0.5 = <input type="text" id="in_s5_1" class="input-inline" style="width:70px;"></span>
+                            </div>
+                            
+                            <hr style="border:0; border-top:1px dashed var(--border); margin: 10px 0;">
+                            
+                            <div class="step-row" style="font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;">d<sub>1</sub></span><span class="mid">=</span>
+                                <span class="right">Frek Modus - Frek Atasnya</span>
+                            </div>
+                            <div class="step-row" style="font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;"></span><span class="mid">=</span>
+                                <span class="right"><input type="text" id="in_s5_2" class="input-inline"> - <input type="text" id="in_s5_3" class="input-inline"> = <input type="text" id="in_s5_4" class="input-inline"></span>
+                            </div>
+                            
+                            <hr style="border:0; border-top:1px dashed var(--border); margin: 10px 0;">
+                            
+                            <div class="step-row" style="font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;">d<sub>2</sub></span><span class="mid">=</span>
+                                <span class="right">Frek Modus - Frek Bawahnya</span>
+                            </div>
+                            <div class="step-row" style="font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;"></span><span class="mid">=</span>
+                                <span class="right"><input type="text" id="in_s5_5" class="input-inline"> - <input type="text" id="in_s5_6" class="input-inline"> = <input type="text" id="in_s5_7" class="input-inline"></span>
+                            </div>
+                            
+                            <hr style="border:0; border-top:1px dashed var(--border); margin: 10px 0;">
+                            
+                            <div class="step-row" style="font-size: 15px; font-family: monospace; margin-bottom: 5px;">
+                                <span class="left" style="width: 40px;">p</span><span class="mid">=</span>
+                                <span class="right"><input type="text" id="in_s5_8" class="input-inline"></span>
+                            </div>
+                        </div>
+                        
+                        <p style="margin-bottom: 5px; font-weight: bold; color: var(--primary-dark);">B. Penyelesaian Ke Dalam Rumus:</p>
+                        <div class="step-box" style="margin-top: 5px;">
+                            <div class="step-row">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right">
+                                    L + <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">[</span> 
+                                    <div class="math-box" style="color: var(--text-main);">
+                                        <div class="frac">
+                                            <span class="top">d<sub>1</sub></span>
+                                            <span class="bottom">d<sub>1</sub> + d<sub>2</sub></span>
+                                        </div>
+                                    </div> 
+                                    <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">]</span> &middot; p
+                                </span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right">
+                                    <input type="text" id="in_s5_9" class="input-inline"> + <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">[</span> 
+                                    <div class="math-box" style="color: var(--text-main);">
+                                        <div class="frac">
+                                            <span class="top"><input type="text" id="in_s5_10" class="input-frac"></span>
+                                            <span class="bottom"><input type="text" id="in_s5_11" class="input-frac"> + <input type="text" id="in_s5_12" class="input-frac"></span>
+                                        </div>
+                                    </div> 
+                                    <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">]</span> &middot; <input type="text" id="in_s5_13" class="input-inline">
+                                </span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right">
+                                    <input type="text" id="in_s5_14" class="input-inline"> + <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">[</span> 
+                                    <div class="math-box" style="color: var(--text-main);">
+                                        <div class="frac">
+                                            <span class="top"><input type="text" id="in_s5_15" class="input-frac"></span>
+                                            <span class="bottom"><input type="text" id="in_s5_16" class="input-frac"></span>
+                                        </div>
+                                    </div> 
+                                    <span style="font-size:22px; color:var(--text-main); margin: 0 4px;">]</span> &middot; <input type="text" id="in_s5_17" class="input-inline">
+                                </span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right">
+                                    <input type="text" id="in_s5_18" class="input-inline"> + <input type="text" id="in_s5_19" class="input-inline">
+                                </span>
+                            </div>
+                            <div class="step-row">
+                                <span class="left">Mo</span><span class="mid">=</span>
+                                <span class="right"><input type="text" id="in_s5_20" class="input-inline" style="width: 70px;"></span>
+                            </div>
+                        </div>
+
+                        <button class="btn-cek-isian" id="btn-step5" onclick="cekKuisInput('step5', ['24.5', '6', '4', '2', '6', '3', '3', '5', '24.5', '2', '2', '3', '5', '24.5', '2', '5', '5', '24.5', '2', '26.5'], ['in_s5_1', 'in_s5_2', 'in_s5_3', 'in_s5_4', 'in_s5_5', 'in_s5_6', 'in_s5_7', 'in_s5_8', 'in_s5_9', 'in_s5_10', 'in_s5_11', 'in_s5_12', 'in_s5_13', 'in_s5_14', 'in_s5_15', 'in_s5_16', 'in_s5_17', 'in_s5_18', 'in_s5_19', 'in_s5_20'])">Tembak Nilai Modus</button>
+                        <div id="feedback-step5" class="kuis-feedback"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-wrapper" id="wrap-tahap6" style="display: none;">
+                <div class="tab-header" onclick="toggleTab('content-tahap6', this)">
+                    <div>Tahap 6: Buku Catatan Rangkuman</div>
+                    <div class="tab-icon">[-] Tutup</div>
+                </div>
+                <div class="tab-content" id="content-tahap6">
+                    <p>Selamat! Kamu telah berhasil menaklukkan seluruh algoritma perhitungan Data Kelompok. Sebagai bekal persiapan ujianmu, <strong>wajib salin ringkasan materi (Cheat Sheet) di bawah ini ke dalam buku catatan fisikmu.</strong></p>
+                    
+                    <div style="background: #fff; border: 2px dashed #0f172a; border-radius: 8px; padding: 25px; font-size: 15px; color: #0f172a; margin-bottom: 30px;">
+                        <h4 style="text-align: center; text-transform: uppercase; border-bottom: 1px solid #cbd5e1; padding-bottom: 10px; margin-bottom: 20px;">Catatan Saku: Pemusatan Data Kelompok</h4>
+                        
+                        <p style="font-weight: bold; font-size: 16px; color: var(--primary-dark);">A. MENCARI RATA-RATA (MEAN)</p>
+                        <p style="margin-bottom: 10px;">Ketiga rumus di bawah ini akan selalu menghasilkan nilai akhir yang SAMA persis. Silakan gunakan metode mana pun yang kamu kuasai.</p>
+                        
+                        <ul style="list-style-type: square; padding-left: 20px; margin-bottom: 25px;">
+                            <li style="margin-bottom: 15px;">
+                                <strong>1. Metode Titik Tengah (Cara Dasar)</strong><br>
+                                Langkah: Cari Nilai Tengah (<span class="math-inline">x<sub>i</sub></span>) tiap kelas &rarr; Kalikan frekuensi dengan Titik Tengah (<span class="math-inline">f<sub>i</sub> &middot; x<sub>i</sub></span>) &rarr; Jumlahkan totalnya &rarr; Bagi dengan total Frekuensi.<br>
+                                <div class="math-box" style="margin-top: 5px;">
+                                    <span>x&#772; = </span>
+                                    <div class="frac">
+                                        <span class="top">&sum;(f<sub>i</sub> &middot; x<sub>i</sub>)</span>
+                                        <span class="bottom">&sum;f<sub>i</sub></span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li style="margin-bottom: 15px;">
+                                <strong>2. Metode Rataan Sementara (Menghindari Angka Besar)</strong><br>
+                                Langkah: Pinjam satu titik tengah sebagai <span class="math-inline">x&#772;<sub>s</sub></span> &rarr; Cari selisihnya (<span class="math-inline">d<sub>i</sub> = x<sub>i</sub> - x&#772;<sub>s</sub></span>) &rarr; Kalikan (<span class="math-inline">f<sub>i</sub> &middot; d<sub>i</sub></span>) &rarr; Jumlahkan &rarr; Bagi dengan total Frekuensi &rarr; Tambahkan dengan pinjaman awal.<br>
+                                <div class="math-box" style="margin-top: 5px;">
+                                    <span>x&#772; = x&#772;<sub>s</sub> + </span>
+                                    <div class="frac">
+                                        <span class="top">&sum;(f<sub>i</sub> &middot; d<sub>i</sub>)</span>
+                                        <span class="bottom">&sum;f<sub>i</sub></span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <strong>3. Metode Coding (Jalan Pintas Terbaik)</strong><br>
+                                Langkah: Pinjam satu titik tengah <span class="math-inline">x&#772;<sub>s</sub></span> &rarr; Beri kode 0 di sebelahnya, -1 -2 ke atas, 1 2 ke bawah (<span class="math-inline">c<sub>i</sub></span>) &rarr; Kalikan (<span class="math-inline">f<sub>i</sub> &middot; c<sub>i</sub></span>) &rarr; Jumlahkan &rarr; Bagi dengan total frek &rarr; <strong>Kalikan panjang kelas (p)</strong> &rarr; Tambahkan pinjaman awal.<br>
+                                <div class="math-box" style="margin-top: 5px;">
+                                    <span>x&#772; = x&#772;<sub>s</sub> + </span>
+                                    <div class="frac">
+                                        <span class="top">&sum;(f<sub>i</sub> &middot; c<sub>i</sub>)</span>
+                                        <span class="bottom">&sum;f<sub>i</sub></span>
+                                    </div>
+                                    <span> &middot; p</span>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <p style="font-weight: bold; font-size: 16px; color: var(--primary-dark);">B. MENCARI NILAI MODUS</p>
+                        <p style="margin-bottom: 10px;">Langkah 1 Paling Wajib: Cari dan tandai baris yang punya <strong>Frekuensi Paling Besar</strong>.</p>
+                        <ul style="list-style-type: square; padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>L (Tepi Bawah)</strong> = Angka terkecil di rentang kelas modus tersebut dikurangi 0,5.</li>
+                            <li><strong>d<sub>1</sub></strong> = Frekuensi kelas modus dikurangi frekuensi kelas <strong>sebelumnya</strong>.</li>
+                            <li><strong>d<sub>2</sub></strong> = Frekuensi kelas modus dikurangi frekuensi kelas <strong>sesudahnya</strong>.</li>
+                            <li><strong>p (Panjang Kelas)</strong> = Jumlah deret angka di dalam satu rentang kelas tersebut.</li>
+                        </ul>
+                        <div style="padding-left: 20px;">
+                            <div class="math-box">
+                                <span>Mo = L + </span>
+                                <div class="frac">
+                                    <span class="top">d<sub>1</sub></span>
+                                    <span class="bottom">d<sub>1</sub> + d<sub>2</sub></span>
+                                </div>
+                                <span> &middot; p</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f0fdf4; border: 1px solid var(--success); border-radius: 8px; padding: 25px; text-align: left;">
+                        <h4 style="color: var(--success); margin-bottom: 15px; font-size: 16px; text-align: center; text-transform: uppercase;">Penyelesaian Modul Belajar</h4>
+                        <p style="color: #064e3b; font-size: 15px; margin-bottom: 0;">Untuk mengakhiri sesi, silakan tekan tombol <strong>"Lakukan Validasi Pengakhiran Sesi & Rekam Waktu"</strong> yang ada di dasar navigasi ini.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="end-panel">
+            <h2 style="color: var(--success); margin-bottom: 15px; font-size: 24px; text-transform: uppercase;">Sesi Belajar Telah Dikunci</h2>
+            <p style="font-size: 16px; line-height: 1.6; color: #334155; padding: 0 20px;">Luar Biasa! Jejak logika berhitung bertahapmu, durasi berfikirmu, serta keberhasilanmu membedah anatomi Rumus telah direkam permanen ke pangkalan data Guru.</p>
+            <div style="background: #f1f5f9; padding: 25px; border-radius: 12px; display: inline-block; margin-top: 25px; border: 2px solid var(--border); width: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+                <span style="font-size: 15px; color: #475569; display: block; margin-bottom: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Kalkulasi Waktu Fokus Belajarmu Adalah:</span>
+                <strong style="font-size: 32px; color: var(--primary-dark); font-family: monospace; letter-spacing: -1px; text-shadow: 1px 1px 0 rgba(0,0,0,0.1);" id="durasi-tampil">0 Menit 0 Detik</strong>
+            </div>
+            <button class="btn-kembali-materi" onclick="kembaliKeMateri()">&#8592; Kembali Baca Materi</button>
+        </div>
+    </div>
+
+    <button onclick="scrollToTop()" id="btn-top" title="Kembali ke Atas">&#8679;</button>
+
+    <div class="bottom-bar" id="bottom-bar">
+        <button class="btn-utama" id="btn-selesai" onclick="selesaiBelajar()" style="display: none;">Lakukan Validasi Pengakhiran Sesi & Rekam Waktu</button>
+    </div>
+</div>
+
+<script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbw8Nu8rJGBkIsTdSOTlRg0X-u3Mpsch03RmGvpsKntBxrnHzc_2REZLVshKxEl2m5JLBQ/exec";
+    
+    let namaSiswa = "";
+    let waktuMulai = 0;
+    let waktuAktivitasTerakhir = 0;
+    let timerAutoSave;
+    const BATAS_IDLE_MS = 30 * 60 * 1000; 
+
+    window.onscroll = function() {
+        let btnTop = document.getElementById("btn-top");
+        if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+            btnTop.style.display = "block";
+        } else {
+            btnTop.style.display = "none";
+        }
+    };
+
+    function scrollToTop() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    ['scroll', 'touchstart', 'mousemove', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, () => {
+            if(waktuMulai > 0) waktuAktivitasTerakhir = Date.now();
+        });
+    });
+
+    function kontrolSemuaTab(buka) {
+        const tabs = document.querySelectorAll('.tab-content');
+        const headers = document.querySelectorAll('.tab-header');
+        
+        tabs.forEach((tab, index) => {
+            if (tab.parentElement.style.display !== 'none') {
+                if (buka) {
+                    tab.classList.remove('hidden');
+                    headers[index].classList.remove('closed');
+                    headers[index].querySelector('.tab-icon').innerText = '[-] Tutup';
+                } else {
+                    tab.classList.add('hidden');
+                    headers[index].classList.add('closed');
+                    headers[index].querySelector('.tab-icon').innerText = '[+] Buka';
+                }
+            }
+        });
+    }
+
+    function toggleTab(contentId, headerElement) {
+        const content = document.getElementById(contentId);
+        const icon = headerElement.querySelector('.tab-icon');
+        
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            headerElement.classList.remove('closed');
+            icon.innerText = '[-] Tutup';
+        } else {
+            content.classList.add('hidden');
+            headerElement.classList.add('closed');
+            icon.innerText = '[+] Buka';
+        }
+    }
+
+    function mulaiBelajar() {
+        const input = document.getElementById('namaSiswa');
+        if(input.value.trim() === "") {
+            alert("Harap isikan nama lengkapmu terlebih dahulu.");
+            return;
+        }
+
+        namaSiswa = input.value;
+        waktuMulai = Date.now(); 
+        waktuAktivitasTerakhir = Date.now();
+
+        document.getElementById('gate-panel').style.display = 'none';
+        document.getElementById('materi-panel').style.display = 'block';
+        document.getElementById('bottom-bar').style.display = 'block';
+        document.getElementById('header-controls').style.display = 'flex';
+        
+        // PENGAMANAN MEMORI ANTI BENTROK (V11)
+        if(localStorage.getItem("v11_kel_kuis_step0_lulus") === "true") {
+            kunciKuisPilihanGandaVisual("step0");
+            bukaTabUtamaPenuh("wrap-tahap1", "content-tahap1");
+        }
+        if(localStorage.getItem("v11_kel_kuis_step1_lulus") === "true") {
+            kunciKuisInputVisual("step1");
+            document.getElementById("wrap-tahap2").style.display = "block";
+        }
+        if(localStorage.getItem("v11_kel_kuis_step2_lulus") === "true") {
+            kunciKuisInputVisual("step2");
+            document.getElementById("wrap-tahap3").style.display = "block";
+        }
+        if(localStorage.getItem("v11_kel_kuis_step3_lulus") === "true") {
+            kunciKuisInputVisual("step3");
+            document.getElementById("wrap-tahap4").style.display = "block";
+        }
+        if(localStorage.getItem("v11_kel_kuis_step4_lulus") === "true") {
+            kunciKuisInputVisual("step4");
+            bukaTabUtamaPenuh("wrap-tahap5", "content-tahap5");
+        }
+        if(localStorage.getItem("v11_kel_kuis_step5_lulus") === "true") {
+            kunciKuisInputVisual("step5");
+            bukaTabUtamaPenuh("wrap-tahap6", "content-tahap6"); 
+            document.getElementById("btn-selesai").style.display = "block";
+        }
+
+        timerAutoSave = setInterval(() => kirimDataWaktu("Auto-Save Latar Belakang (5 Menit)"), 300000); 
+    }
+
+    function bukaTabUtamaPenuh(wrapId, contentId) {
+        document.getElementById(wrapId).style.display = "block";
+        document.getElementById(contentId).classList.remove('hidden');
+        document.querySelector(`#${wrapId} .tab-header`).classList.remove('closed');
+    }
+
+    function kunciKuisPilihanGandaVisual(kuisId) {
+        let btns = document.querySelectorAll(`#kuis-${kuisId} .btn-jawaban`);
+        btns.forEach(btn => btn.disabled = true);
+        
+        let btnCorrect = document.getElementById(`btn-s0-B`);
+        if(btnCorrect) btnCorrect.classList.add("btn-correct");
+        
+        document.getElementById(`kuis-${kuisId}`).style.borderColor = "#059669";
+    }
+
+    function kunciKuisInputVisual(kuisId) {
+        let containerEl = document.getElementById(`kuis-${kuisId}`);
+        containerEl.style.borderColor = "#059669";
+        let inputs = containerEl.querySelectorAll(`input`);
+        inputs.forEach(inp => { inp.disabled = true; inp.style.background = "#d1fae5"; inp.style.color = "#065f46"; inp.style.borderColor = "#059669"; });
+        
+        let btn = document.getElementById(`btn-${kuisId}`);
+        btn.disabled = true; btn.innerText = "Tahap Dikuasai Sempurna"; btn.style.background = "#059669";
+    }
+
+    async function cekJawabanMC(kuisId, jawabanDipilih, apakahBenar, btnElement, pesanGagal) {
+        let feedbackEl = document.getElementById(`feedback-${kuisId}`);
+
+        const dataKuis = {
+            jenis: "kuis",
+            namaSiswa: namaSiswa,
+            idSoal: `Evaluasi Latar Belakang Data Kelompok [${kuisId}]`,
+            jawabanSiswa: jawabanDipilih,
+            statusJawaban: apakahBenar ? "Valid Benar" : "Salah"
+        };
+        fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dataKuis) });
+
+        if (apakahBenar) {
+            let btns = document.querySelectorAll(`#kuis-${kuisId} .btn-jawaban`);
+            btns.forEach(btn => btn.disabled = true);
+            btnElement.classList.add("btn-correct");
+            document.getElementById(`kuis-${kuisId}`).style.borderColor = "#059669";
+            
+            feedbackEl.style.display = "none";
+
+            localStorage.setItem(`v11_kel_kuis_${kuisId}_lulus`, "true");
+
+            if (kuisId === "step0") {
+                bukaTabUtamaPenuh("wrap-tahap1", "content-tahap1");
+                setTimeout(() => { document.getElementById("wrap-tahap1").scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 600);
+            }
+        } else {
+            feedbackEl.style.display = "block";
+            feedbackEl.style.background = "#fee2e2";
+            feedbackEl.style.color = "#991b1b";
+            feedbackEl.innerText = "[ JAWABAN KURANG TEPAT ] " + pesanGagal;
+        }
+    }
+
+    async function cekKuisInput(kuisId, arrJawabanBenar, arrInputIds) {
+        let feedbackEl = document.getElementById(`feedback-${kuisId}`);
+        let semuaBenar = true;
+        let stringJawabanSiswa = "";
+
+        for (let i = 0; i < arrInputIds.length; i++) {
+            let userVal = document.getElementById(arrInputIds[i]).value.trim().replace(',', '.'); 
+            stringJawabanSiswa += userVal + " | ";
+            if (userVal !== arrJawabanBenar[i]) {
+                semuaBenar = false;
+            }
+        }
+
+        const dataKuis = {
+            jenis: "kuis",
+            namaSiswa: namaSiswa,
+            idSoal: `Latihan Bertahap Terisolasi Data Kelompok [${kuisId}]`,
+            jawabanSiswa: stringJawabanSiswa,
+            statusJawaban: semuaBenar ? "Valid" : "Salah"
+        };
+        fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dataKuis) });
+
+        if (semuaBenar) {
+            let containerEl = document.getElementById(`kuis-${kuisId}`);
+            containerEl.style.borderColor = "#059669";
+            
+            arrInputIds.forEach(id => {
+                let inp = document.getElementById(id);
+                inp.disabled = true;
+                inp.style.background = "#d1fae5";
+                inp.style.color = "#065f46";
+                inp.style.borderColor = "#059669";
+            });
+            
+            let btn = document.getElementById(`btn-${kuisId}`);
+            btn.disabled = true;
+            btn.innerText = "Tahap Dikuasai Sempurna";
+            btn.style.background = "#059669";
+
+            feedbackEl.style.display = "none";
+            
+            localStorage.setItem(`v11_kel_kuis_${kuisId}_lulus`, "true");
+
+            if (kuisId === "step1") {
+                bukaTabUtamaPenuh("wrap-tahap2", "content-tahap2");
+                setTimeout(() => { document.getElementById("wrap-tahap2").scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 600);
+            } else if (kuisId === "step2") {
+                document.getElementById("wrap-tahap3").style.display = "block";
+                setTimeout(() => { document.getElementById("wrap-tahap3").scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 600);
+            } else if (kuisId === "step3") {
+                document.getElementById("wrap-tahap4").style.display = "block";
+                setTimeout(() => { document.getElementById("wrap-tahap4").scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 600);
+            } else if (kuisId === "step4") {
+                bukaTabUtamaPenuh("wrap-tahap5", "content-tahap5");
+                setTimeout(() => { document.getElementById("wrap-tahap5").scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 600);
+            } else if (kuisId === "step5") {
+                bukaTabUtamaPenuh("wrap-tahap6", "content-tahap6");
+                document.getElementById("btn-selesai").style.display = "block";
+                setTimeout(() => { document.getElementById("wrap-tahap6").scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 600);
+            }
+        } else {
+            feedbackEl.style.display = "block";
+            feedbackEl.style.background = "#fee2e2";
+            feedbackEl.style.color = "#991b1b";
+            feedbackEl.innerText = "Terdapat angka yang belum tepat. Silakan periksa kembali perhitungannya.";
+        }
+    }
+
+    async function kirimDataWaktu(statusSesi) {
+        let sekarang = Date.now();
+        let durasiKirimMs = sekarang - waktuMulai;
+
+        if (sekarang - waktuAktivitasTerakhir > BATAS_IDLE_MS) {
+            durasiKirimMs = waktuAktivitasTerakhir - waktuMulai;
+            clearInterval(timerAutoSave); 
+        }
+
+        if (durasiKirimMs <= 0) return 0;
+
+        let detik = Math.round(durasiKirimMs / 1000);
+
+        const dataWaktu = {
+            jenis: "waktu",
+            namaSiswa: namaSiswa,
+            komponen: "Materi Terisolasi Data Kelompok Langkah Terurut V11",
+            durasiDetik: detik,
+            status: statusSesi
+        };
+
+        fetch(GAS_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dataWaktu) });
+
+        waktuMulai = sekarang; 
+        return detik; 
+    }
+
+    async function selesaiBelajar() {
+        const btn = document.getElementById('btn-selesai');
+        btn.disabled = true;
+        btn.innerText = "Mengunci Penilaian ke Database Server...";
+
+        clearInterval(timerAutoSave);
+        
+        let sisaDetik = await kirimDataWaktu("Sesi Ditutup Permanen Oleh Pengguna");
+        
+        if(sisaDetik === undefined || isNaN(sisaDetik)) sisaDetik = 0;
+
+        let menitAkhir = Math.floor(sisaDetik / 60);
+        let detikAkhir = sisaDetik % 60;
+
+        document.getElementById('materi-panel').style.display = 'none';
+        document.getElementById('bottom-bar').style.display = 'none';
+        document.getElementById('header-controls').style.display = 'none';
+        document.getElementById('end-panel').style.display = 'flex';
+        document.getElementById('durasi-tampil').innerText = `${menitAkhir} Menit ${detikAkhir} Detik`;
+        
+        let countdown = 5;
+        let pText = document.querySelector('#end-panel p');
+        
+        let intervalBack = setInterval(() => {
+            pText.innerHTML = `Data aktivitas pembedahan langkah matematikamu telah direkam sangat aman ke dalam arsip.<br><br><strong>Otomatis kembali ke modul dalam ${countdown} detik...</strong>`;
+            countdown--;
+            
+            if (countdown < 0) {
+                clearInterval(intervalBack);
+                kembaliKeMateri();
+            }
+        }, 1000);
+
+        window.scrollTo(0, 0);
+    }
+
+    function kembaliKeMateri() {
+        document.getElementById('end-panel').style.display = 'none';
+        document.getElementById('materi-panel').style.display = 'block';
+        document.getElementById('header-controls').style.display = 'flex';
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
