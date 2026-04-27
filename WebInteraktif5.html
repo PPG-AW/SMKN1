@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ruang Eksplorasi Data Bisnis</title>
+    <style>
+        :root { --primary: #0f172a; --secondary: #334155; --accent: #2563eb; --accent-hover: #1d4ed8; --success: #059669; --warning: #d97706; --bg: #f8fafc; --card: #ffffff; --border: #cbd5e1; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: var(--bg); color: var(--primary); line-height: 1.6; display: flex; justify-content: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 700px; background: var(--bg); display: flex; flex-direction: column; position: relative; }
+        
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 10;}
+        .header h1 { font-size: 18px; margin: 0; font-weight: 700; letter-spacing: 0.5px;}
+        .header p { font-size: 12px; color: #94a3b8; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px;}
+
+        .content { padding: 20px; flex: 1; }
+
+        #home-view { display: block; }
+        .intro-card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .intro-title { font-size: 16px; font-weight: bold; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase;}
+        .intro-text { font-size: 14px; color: var(--secondary); margin-bottom: 15px; text-align: justify;}
+        
+        .instruction-list { margin-left: 20px; font-size: 14px; color: var(--secondary); margin-bottom: 15px;}
+        .instruction-list li { margin-bottom: 8px; }
+
+        .menu-title { font-size: 14px; text-transform: uppercase; font-weight: bold; margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 8px;}
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 30px; }
+        @media (min-width: 500px) { .menu-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .menu-btn { background: var(--card); border: 2px solid var(--border); padding: 15px; border-radius: 10px; text-align: left; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; gap: 5px; }
+        .menu-btn:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1); }
+        .menu-label { font-weight: bold; font-size: 15px; color: var(--primary); }
+        .menu-desc { font-size: 12px; color: #64748b; }
+
+        #practice-view { display: none; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-back { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s;}
+        .btn-back:hover { background: var(--primary); color: white; }
+        .topic-badge { background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+
+        .case-card { background: var(--card); border-left: 5px solid var(--accent); padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px;}
+        .case-text { font-size: 15px; color: var(--secondary); margin-bottom: 15px; line-height: 1.7;}
+        .question-text { font-weight: 700; font-size: 15px; color: var(--primary); margin-top: 15px;}
+        .highlight-data { background: #eff6ff; padding: 5px 10px; border-radius: 4px; font-family: monospace; font-size: 15px; font-weight: bold; color: #1d4ed8; letter-spacing: 0.5px; display: inline-block; margin-top: 5px;}
+
+        /* STYLING KHUSUS TABEL DATA SOAL */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 5px; font-size: 14px; background: white; }
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 10px; text-align: center; }
+        .data-table th { background: #f1f5f9; color: var(--primary); font-weight: bold; }
+
+        .action-area { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+        .input-ans { width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 8px; font-size: 15px; transition: 0.2s; outline: none; font-weight: bold; text-align: center;}
+        .input-ans:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1);}
+        
+        .btn-check { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s;}
+        .btn-check:hover { background: var(--accent-hover); }
+        .btn-refresh { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .btn-refresh:hover { background: #1e293b; }
+        
+        /* Scaffolding / Bantuan */
+        .btn-help { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .btn-help:hover { background: #fde68a; }
+        
+        .help-box { display: none; background: #fffbeb; border: 1px dashed #fbbf24; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .help-title { font-size: 13px; font-weight: bold; color: #b45309; margin-bottom: 8px; text-transform: uppercase;}
+        .help-content { font-size: 14px; color: #92400e; line-height: 1.5; white-space: pre-wrap; }
+
+        /* Feedback Modal/Alert */
+        .feedback-box { display: none; padding: 15px; border-radius: 8px; margin-top: 15px; font-weight: bold; font-size: 14px; text-align: center; animation: fadeIn 0.3s ease-in;}
+        .feedback-correct { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+        .feedback-wrong { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h1>Ruang Eksplorasi Mandiri Dinamis</h1>
+        <p>Pemusatan Data (Bisnis & Pemasaran)</p>
+    </div>
+
+    <div class="content">
+        <div id="home-view">
+            <div class="intro-card">
+                <div class="intro-title">Tujuan Pembelajaran</div>
+                <div class="intro-text">
+                    Ruang ini menghasilkan soal dengan angka, kasus, dan panjang data yang acak (bervariasi). Anda dituntut untuk memahami logika analisis di setiap penyelesaiannya, bukan sekadar menghafal.
+                </div>
+                
+                <div class="intro-title">Petunjuk Penggunaan</div>
+                <ul class="instruction-list">
+                    <li>Pilih topik materi dari menu di bawah ini.</li>
+                    <li>Coba pecahkan kasus studi yang diberikan secara mandiri.</li>
+                    <li>Gunakan tombol <strong>[Bantuan] Tampilkan Panduan Berpikir</strong> jika menemui kendala. Panduan hanya berisi rumus dan alur, silakan telusuri sendiri angkanya.</li>
+                    <li>Gunakan tombol <strong>Muat Ulang Soal Baru</strong> untuk melatih topik yang sama dengan variasi kasus yang berbeda.</li>
+                </ul>
+            </div>
+
+            <div class="menu-title">Topik 1: Eksplorasi Modus</div>
+            <div class="menu-grid">
+                <button class="menu-btn" onclick="bukaLatihan('modus-mentah')">
+                    <span class="menu-label">Modus Data Mentah</span>
+                    <span class="menu-desc">Mencari nilai paling sering muncul dari barisan data acak.</span>
+                </button>
+                <button class="menu-btn" onclick="bukaLatihan('modus-tabel')">
+                    <span class="menu-label">Modus Tabel Frekuensi</span>
+                    <span class="menu-desc">Menentukan frekuensi terbesar dari tabel (baris bervariasi).</span>
+                </button>
+            </div>
+
+            <div class="menu-title">Topik 2: Eksplorasi Mean (Rata-Rata)</div>
+            <div class="menu-grid">
+                <button class="menu-btn" onclick="bukaLatihan('mean-mentah')">
+                    <span class="menu-label">Mean Data Mentah</span>
+                    <span class="menu-desc">Menghitung rata-rata dari sekelompok angka (n bervariasi).</span>
+                </button>
+                <button class="menu-btn" onclick="bukaLatihan('mean-tabel')">
+                    <span class="menu-label">Mean Tabel Frekuensi</span>
+                    <span class="menu-desc">Melakukan perhitungan hasil kali frekuensi dengan nilainya.</span>
+                </button>
+                <button class="menu-btn" onclick="bukaLatihan('mean-gabungan')" style="grid-column: 1 / -1;">
+                    <span class="menu-label">Rata-Rata Gabungan</span>
+                    <span class="menu-desc">Menggabungkan 2 atau 3 kelompok data sekaligus.</span>
+                </button>
+            </div>
+
+            <div class="menu-title">Topik 3: Eksplorasi Median (Nilai Tengah)</div>
+            <div class="menu-grid">
+                <button class="menu-btn" onclick="bukaLatihan('median-ganjil')">
+                    <span class="menu-label">Median Data Ganjil</span>
+                    <span class="menu-desc">Mengurutkan data mentah untuk titik potong tengah (n ganjil).</span>
+                </button>
+                <button class="menu-btn" onclick="bukaLatihan('median-genap')">
+                    <span class="menu-label">Median Data Genap</span>
+                    <span class="menu-desc">Membelah data mentah untuk merata-ratakan 2 nilai tengah.</span>
+                </button>
+                <button class="menu-btn" onclick="bukaLatihan('median-tabel-ganjil')">
+                    <span class="menu-label">Median Tabel (n Ganjil)</span>
+                    <span class="menu-desc">Melacak letak 1 baris median pada tabel observasi ganjil.</span>
+                </button>
+                <button class="menu-btn" onclick="bukaLatihan('median-tabel-genap')">
+                    <span class="menu-label">Median Tabel (n Genap)</span>
+                    <span class="menu-desc">Melacak letak 2 baris median pada tabel observasi genap.</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="practice-view">
+            <div class="top-nav">
+                <button class="btn-back" onclick="kembaliKeHome()">Kembali ke Menu Utama</button>
+                <span class="topic-badge" id="view-badge">Topik</span>
+            </div>
+
+            <div class="case-card">
+                <div class="case-text" id="view-cerita">Teks studi kasus akan muncul di sini...</div>
+                <div class="question-text" id="view-tanya">Pertanyaan akan muncul di sini...</div>
+            </div>
+
+            <div class="action-area">
+                <input type="text" id="inputJawaban" class="input-ans" placeholder="Ketik hasil akhir perhitungan di sini...">
+                <button class="btn-check" onclick="cekJawaban()">[Aksi] Cek Kebenaran Jawaban</button>
+                <button class="btn-refresh" onclick="refreshSoal()">[Aksi] Muat Ulang Soal Baru (Acak)</button>
+                <button class="btn-help" id="btnToggleHelp" onclick="toggleBantuan()">[Bantuan] Tampilkan Panduan Berpikir</button>
+            </div>
+
+            <div id="feedback-area" class="feedback-box"></div>
+
+            <div id="help-area" class="help-box">
+                <div class="help-title">Panduan Langkah Demi Langkah:</div>
+                <div class="help-content" id="view-bantuan">Instruksi bantuan akan muncul di sini...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- FUNGSI PEMBANTU ---
+    function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
+    function formatDec(num) { return Number.isInteger(num) ? num.toString() : num.toFixed(2).replace(/\.?0+$/, ''); }
+    function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    // --- MESIN GENERATOR SOAL DINAMIS DENGAN BANTUAN BERBASIS RUMUS MURNI ---
+    const generators = {
+        'modus-mentah': () => {
+            const scenarios = [
+                { tipe: 'teks', items: ['Cokelat', 'Stroberi', 'Vanilla', 'Taro', 'Matcha', 'Lemon', 'Kopi'], deskripsi: 'varian rasa minuman yang dipesan pelanggan' },
+                { tipe: 'teks', items: ['Honda', 'Yamaha', 'Suzuki', 'Kawasaki', 'Vespa', 'KTM', 'TVS'], deskripsi: 'merek sepeda motor yang terparkir' },
+                { tipe: 'angka', items: [37, 38, 39, 40, 41, 42, 43], deskripsi: 'ukuran sepatu yang terjual' },
+                { tipe: 'angka', items: [70, 75, 80, 85, 90, 95, 100], deskripsi: 'nilai ulangan harian siswa' }
+            ];
+            
+            let scen = pickRandom(scenarios);
+            let baseItems = [...scen.items];
+            shuffle(baseItems);
+            
+            let mode = baseItems[0];
+            let data = [];
+            let nDistractors = rand(2, 4);
+            
+            let maxFreq = rand(4, 7);
+            for(let i=0; i<maxFreq; i++) data.push(mode);
+            
+            for(let i=1; i<=nDistractors; i++) {
+                let freq = rand(1, maxFreq - 1);
+                for(let j=0; j<freq; j++) data.push(baseItems[i]);
+            }
+            shuffle(data);
+
+            return {
+                badge: 'Modus Data Mentah',
+                cerita: `Sebuah pencatatan dilakukan untuk mendata ${scen.deskripsi}. Berikut adalah rekapan observasinya:\n<span class="highlight-data">${data.join(', ')}</span>`,
+                tanya: 'Tentukan nilai Modus dari data tersebut.',
+                bantuan: `1. Konsep: Modus (Mo) adalah nilai data yang paling sering muncul atau memiliki frekuensi tertinggi.\n2. Lakukan penghitungan turus/tally secara mandiri untuk mengelompokkan setiap data.\n3. Temukan data mana yang memiliki jumlah catatan paling tinggi di barisan tersebut.`,
+                kunci: [mode.toString().toLowerCase()]
+            };
+        },
+        
+        'modus-tabel': () => {
+            const scenarios = [
+                { items: ['Kaos XS', 'Kaos S', 'Kaos M', 'Kaos L', 'Kaos XL', 'Kaos XXL'], deskripsi: 'Data penjualan ukuran kaos', satuanx: 'Ukuran Kaos', satuanf: 'Terjual (pcs)' },
+                { items: [60, 65, 70, 75, 80, 85, 90], deskripsi: 'Rekapitulasi nilai evaluasi Pemasaran', satuanx: 'Poin Nilai', satuanf: 'Jumlah Siswa' },
+                { items: [15, 16, 17, 18, 19, 20], deskripsi: 'Distribusi umur anggota tim', satuanx: 'Umur (Tahun)', satuanf: 'Frekuensi' }
+            ];
+            
+            let scen = pickRandom(scenarios);
+            let nRows = rand(4, 6); 
+            let xItems = scen.items.slice(0, nRows);
+            
+            let f = [];
+            for(let i=0; i<nRows; i++) f.push(rand(2, 20));
+            
+            let maxF = Math.max(...f);
+            let modeCount = f.filter(val => val === maxF).length;
+            if(modeCount > 1) {
+                let maxIndex = f.indexOf(maxF);
+                f[maxIndex] += 1; 
+                maxF = f[maxIndex];
+            }
+            
+            let modeItem = xItems[f.indexOf(maxF)];
+
+            let tableHTML = `<table class="data-table"><tr><th>${scen.satuanx} (x)</th><th>${scen.satuanf} (f)</th></tr>`;
+            for(let i=0; i<nRows; i++) {
+                tableHTML += `<tr><td>${xItems[i]}</td><td>${f[i]}</td></tr>`;
+            }
+            tableHTML += `</table>`;
+
+            return {
+                badge: 'Modus Tabel Frekuensi',
+                cerita: `${scen.deskripsi}:<br>${tableHTML}`,
+                tanya: 'Berdasarkan tabel distribusi frekuensi di atas, tentukan nilai Modusnya.',
+                bantuan: `1. Konsep: Modus pada tabel frekuensi adalah nilai data (x) yang memiliki frekuensi (f) paling besar.\n2. Perhatikan baik-baik, Modus BUKAN mencari angka pada kolom Kiri (Nilai x) yang terbesar.\n3. Periksa seluruh baris di kolom Kanan (Frekuensi f), temukan mana frekuensi yang terbesar.\n4. Lihat nilai (x) apa yang terikat/sejajar dengan frekuensi terbesar tersebut pada kolom kirinya.`,
+                kunci: [modeItem.toString().toLowerCase()]
+            };
+        },
+        
+        'mean-mentah': () => {
+            const scenarios = [
+                { deskripsi: 'Laba bersih harian dari sebuah gerai (dalam ribu Rupiah)', pengali: 10, min: 10, max: 25 },
+                { deskripsi: 'Kapasitas produksi harian unit prakarya (dalam satuan unit)', pengali: 5, min: 4, max: 15 },
+                { deskripsi: 'Nilai ujian formatif siswa', pengali: 2, min: 35, max: 50 }
+            ];
+            
+            let scen = pickRandom(scenarios);
+            let data = [];
+            let sum = 0;
+            let n = rand(5, 9); 
+            
+            for(let i=0; i<n; i++) {
+                let val = rand(scen.min, scen.max) * scen.pengali;
+                data.push(val);
+                sum += val;
+            }
+            let mean = sum / n;
+
+            return {
+                badge: 'Mean Data Mentah',
+                cerita: `${scen.deskripsi} dalam beberapa observasi dicatat sebagai berikut:<br><span class="highlight-data">${data.join(', ')}</span>`,
+                tanya: 'Berapakah nilai Rata-rata (Mean) dari data observasi tersebut?',
+                bantuan: `1. Rumus Rata-rata: Mean = (Jumlah seluruh nilai data) / (Banyaknya data atau n).\n2. Langkah 1: Jumlahkan secara manual semua angka pada barisan observasi tersebut.\n3. Langkah 2: Hitung total ada berapa banyak angka data observasi tersebut untuk menemukan nilai (n).\n4. Langkah 3: Bagilah hasil penjumlahan pada Langkah 1 dengan nilai n.`,
+                kunci: [mean.toFixed(2), mean.toFixed(2).replace('.', ','), formatDec(mean), formatDec(mean).replace('.', ',')]
+            };
+        },
+        
+        'mean-tabel': () => {
+            const scenarios = [
+                { xItems: [10, 15, 20, 25, 30, 35], deskripsi: 'Catatan pengiriman barang ke gudang', satuanX: 'Jumlah (Kodi)', satuanF: 'Frekuensi' },
+                { xItems: [60, 70, 80, 90, 100], deskripsi: 'Rekapitulasi perolehan nilai mata pelajaran', satuanX: 'Nilai Ujian', satuanF: 'Jumlah Siswa' },
+                { xItems: [1, 2, 3, 4, 5, 6], deskripsi: 'Catatan jumlah ketidakhadiran siswa', satuanX: 'Hari Absen', satuanF: 'Frekuensi Siswa' }
+            ];
+            
+            let scen = pickRandom(scenarios);
+            let nRows = rand(3, 5);
+            let x = scen.xItems.slice(0, nRows);
+            let f = [];
+            let totalFx = 0;
+            let totalF = 0;
+            
+            for(let i=0; i<nRows; i++) {
+                let freq = rand(2, 10);
+                f.push(freq);
+                totalF += freq;
+                totalFx += (x[i] * freq);
+            }
+            let mean = totalFx / totalF;
+
+            let tableHTML = `<table class="data-table"><tr><th>${scen.satuanX} (x)</th><th>${scen.satuanF} (f)</th></tr>`;
+            for(let i=0; i<nRows; i++) {
+                tableHTML += `<tr><td>${x[i]}</td><td>${f[i]}</td></tr>`;
+            }
+            tableHTML += `<tr style="background:#f8fafc; font-weight:bold;"><td>Total Observasi (∑f)</td><td>${totalF}</td></tr></table>`;
+
+            return {
+                badge: 'Mean Tabel Frekuensi',
+                cerita: `${scen.deskripsi}:<br>${tableHTML}`,
+                tanya: 'Lakukan perhitungan dan tentukan nilai Rata-ratanya (Mean). (Maksimal 2 angka di belakang koma)',
+                bantuan: `1. Rumus Rata-rata Tabel: Mean = (∑f·x) / (∑f).\n2. Langkah 1: Kalikan tiap nilai (x) dengan frekuensinya (f) pada setiap baris.\n3. Langkah 2: Jumlahkan seluruh hasil kali dari setiap baris tersebut untuk mendapatkan Total f·x (∑f·x).\n4. Langkah 3: Lihat Total Observasi pada tabel untuk mendapatkan Total frekuensi (∑f).\n5. Langkah 4: Bagilah hasil (∑f·x) dengan (∑f).`,
+                kunci: [mean.toFixed(2), mean.toFixed(2).replace('.', ','), formatDec(mean), formatDec(mean).replace('.', ',')]
+            };
+        },
+        
+        'mean-gabungan': () => {
+            const scenarios = [
+                { entitas: 'Tim', sub1: 'Sales Cabang A', sub2: 'Sales Cabang B', sub3: 'Sales Cabang C', satuan: 'unit produk' },
+                { entitas: 'Kelas', sub1: 'X-PM 1', sub2: 'X-PM 2', sub3: 'X-PM 3', satuan: 'poin evaluasi' }
+            ];
+            let scen = pickRandom(scenarios);
+            
+            let nGroups = rand(2, 3);
+            let nArr = [], mArr = [], totalSum = 0, totalN = 0;
+            let cerita = "";
+            let subs = [scen.sub1, scen.sub2, scen.sub3];
+            
+            for(let i=0; i<nGroups; i++) {
+                let n = rand(10, 25);
+                let m = rand(15, 35);
+                nArr.push(n); mArr.push(m);
+                totalSum += (n * m);
+                totalN += n;
+                cerita += `${scen.entitas} ${subs[i]} (beranggotakan ${n} orang) memiliki rata-rata pencapaian ${m} ${scen.satuan}.<br>`;
+            }
+            let mean = totalSum / totalN;
+
+            return {
+                badge: 'Rata-Rata Gabungan',
+                cerita: cerita,
+                tanya: `Jika performa ${nGroups} kelompok tersebut digabungkan menjadi satu, berapakah rata-rata gabungannya?`,
+                bantuan: `1. Rumus Rata-rata Gabungan: Mean = (n1·x̄1 + n2·x̄2 + ...) / (n1 + n2 + ...).\n2. Langkah 1: Cari Total Pencapaian masing-masing kelompok dengan cara mengalikan jumlah anggotanya (n) dengan rata-ratanya (x̄).\n3. Langkah 2: Jumlahkan total pencapaian dari seluruh kelompok tersebut.\n4. Langkah 3: Hitung total gabungan jumlah anggota dari seluruh kelompok.\n5. Langkah 4: Bagilah hasil total gabungan nilai dengan total gabungan jumlah anggota.`,
+                kunci: [mean.toFixed(2), mean.toFixed(2).replace('.', ','), formatDec(mean), formatDec(mean).replace('.', ',')]
+            };
+        },
+        
+        'median-ganjil': () => {
+            const scenarios = [
+                { deskripsi: 'Penerimaan uang saku (dalam ribu Rupiah)', pengali: 10, min: 10, max: 25 },
+                { deskripsi: 'Lama waktu pengerjaan tugas perakitan (dalam menit)', pengali: 5, min: 6, max: 18 },
+                { deskripsi: 'Tinggi badan (dalam cm)', pengali: 1, min: 150, max: 175 }
+            ];
+            let scen = pickRandom(scenarios);
+            
+            let n = rand(2, 5) * 2 + 1; 
+            
+            let data = [];
+            for(let i=0; i<n; i++) data.push(rand(scen.min, scen.max) * scen.pengali);
+            let unsortedData = [...data];
+            shuffle(unsortedData);
+            
+            data.sort((a,b) => a-b);
+            let midIndex = Math.floor(n / 2);
+            let median = data[midIndex]; 
+
+            return {
+                badge: 'Median Ganjil (Mentah)',
+                cerita: `Catatan terkait ${scen.deskripsi} pada beberapa subjek dicatat secara acak sebagai berikut:<br><span class="highlight-data">${unsortedData.join(', ')}</span>`,
+                tanya: 'Tentukan nilai Median dari catatan observasi tersebut.',
+                bantuan: `1. Syarat Mutlak: Semua data HARUS diurutkan mulai dari nilai terkecil hingga nilai terbesar.\n2. Rumus Letak Median Ganjil: Median membelah barisan tepat pada urutan data ke- (n + 1) / 2.\n3. Langkah 1: Urutkan barisan data pada kertas coretan Anda.\n4. Langkah 2: Hitung banyaknya data (n), lalu gunakan rumus letak di atas untuk mengetahui urutan ke berapa letak nilai tengah itu berada.\n5. Langkah 3: Temukan angka yang berada pada letak urutan tersebut.`,
+                kunci: [median.toString(), median.toString().replace('.', ',')]
+            };
+        },
+        
+        'median-genap': () => {
+             const scenarios = [
+                { deskripsi: 'Jumlah kunjungan pembeli ke toko', pengali: 2, min: 10, max: 30 },
+                { deskripsi: 'Data penjualan item promosi (dalam pcs)', pengali: 1, min: 15, max: 50 },
+                { deskripsi: 'Sisa stok bahan baku di penghujung hari', pengali: 5, min: 5, max: 20 }
+            ];
+            let scen = pickRandom(scenarios);
+            
+            let n = rand(3, 6) * 2; 
+            
+            let data = [];
+            for(let i=0; i<n; i++) data.push(rand(scen.min, scen.max) * scen.pengali);
+            let unsortedData = [...data];
+            shuffle(unsortedData);
+            
+            data.sort((a,b) => a-b);
+            let mid1 = (n / 2) - 1;
+            let mid2 = n / 2;
+            let median = (data[mid1] + data[mid2]) / 2; 
+
+            return {
+                badge: 'Median Genap (Mentah)',
+                cerita: `Catatan observasi terkait ${scen.deskripsi} dicatat secara acak sebagai berikut:<br><span class="highlight-data">${unsortedData.join(', ')}</span>`,
+                tanya: 'Tentukan nilai tengah (Median) dari data tersebut.',
+                bantuan: `1. Syarat Mutlak: Semua data HARUS diurutkan mulai dari nilai terkecil hingga nilai terbesar.\n2. Rumus Letak Median Genap: Karena genap, median membelah DUA urutan, yaitu Urutan ke- (n / 2) dan Urutan ke- (n / 2) + 1.\n3. Rumus Nilai Median = (Data urutan letak pertama + Data urutan letak kedua) / 2.\n4. Langkah 1: Urutkan data dan hitung banyaknya data (n).\n5. Langkah 2: Cari kedua angka yang berada di posisi tengah berdasarkan rumus letak di atas, lalu jumlahkan keduanya dan bagi dua.`,
+                kunci: [median.toString(), median.toString().replace('.', ',')]
+            };
+        },
+        
+        'median-tabel-ganjil': () => {
+            const scenarios = [
+                { xItems: [10, 20, 30, 40, 50, 60], deskripsi: 'Catatan jumlah produksi harian pabrik', satuanX: 'Unit Diproduksi (x)', satuanF: 'Lama Hari (f)' },
+                { xItems: [55, 60, 65, 70, 75, 80], deskripsi: 'Sebaran hasil evaluasi kompetensi kejuruan', satuanX: 'Poin Nilai (x)', satuanF: 'Jumlah Siswa (f)' },
+                { xItems: [10, 12, 14, 16, 18, 20], deskripsi: 'Data distribusi berat paket logistik', satuanX: 'Berat Paket Kg (x)', satuanF: 'Frekuensi (f)' }
+            ];
+            
+            let scen = pickRandom(scenarios);
+            let nRows = rand(4, 6); 
+            let x = scen.xItems.slice(0, nRows);
+            
+            let f = [];
+            let totalF = 0;
+            for(let i=0; i<nRows; i++) {
+                let freq = rand(3, 10);
+                f.push(freq);
+                totalF += freq;
+            }
+            if(totalF % 2 === 0) {
+                f[0] += 1;
+                totalF += 1;
+            }
+            
+            let fk = [];
+            let currentFk = 0;
+            for(let i=0; i<nRows; i++) {
+                currentFk += f[i];
+                fk.push(currentFk);
+            }
+            
+            let me_pos = Math.ceil(totalF / 2);
+            
+            const getX = (pos) => {
+                for(let i=0; i<nRows; i++) { if(pos <= fk[i]) return x[i]; }
+            };
+            
+            let median = getX(me_pos);
+
+            let tableHTML = `<table class="data-table"><tr><th>${scen.satuanX}</th><th>${scen.satuanF}</th></tr>`;
+            for(let i=0; i<nRows; i++) { tableHTML += `<tr><td>${x[i]}</td><td>${f[i]}</td></tr>`; }
+            tableHTML += `<tr style="background:#f8fafc; font-weight:bold;"><td>Total Observasi (n)</td><td>${totalF}</td></tr></table>`;
+
+            return {
+                badge: 'Median Tabel (Ganjil)',
+                cerita: `${scen.deskripsi}:<br>${tableHTML}`,
+                tanya: 'Tentukan nilai Median dari tabel distribusi data tersebut.',
+                bantuan: `1. Buat coretan kolom tambahan Frekuensi Kumulatif (Fk) dengan menjumlahkan nilai frekuensi secara diagonal ke bawah.\n2. Rumus Letak Median Ganjil: Me berada persis pada urutan data ke- (n + 1) / 2.\n3. Gunakan Total Observasi (n) yang tertera di tabel, masukkan ke dalam rumus letak di atas untuk mengetahui urutan ke berapa median berada.\n4. Telusuri angka Fk yang telah Anda buat, dan temukan pada baris nilai x ke berapa urutan tersebut berada. Ambil nilai x-nya!`,
+                kunci: [median.toString(), median.toString().replace('.', ',')]
+            };
+        },
+
+        'median-tabel-genap': () => {
+            const scenarios = [
+                { xItems: [10, 20, 30, 40, 50, 60], deskripsi: 'Catatan jumlah produksi harian unit pabrik', satuanX: 'Unit Diproduksi (x)', satuanF: 'Lama Hari (f)' },
+                { xItems: [55, 60, 65, 70, 75, 80], deskripsi: 'Sebaran hasil evaluasi kompetensi siswa', satuanX: 'Poin Nilai (x)', satuanF: 'Jumlah Siswa (f)' },
+                { xItems: [10, 12, 14, 16, 18, 20], deskripsi: 'Data distribusi stok opname gudang', satuanX: 'Stok Sisa (x)', satuanF: 'Frekuensi (f)' }
+            ];
+            
+            let scen = pickRandom(scenarios);
+            let nRows = rand(4, 6); 
+            let x = scen.xItems.slice(0, nRows);
+            
+            let f = [];
+            let totalF = 0;
+            for(let i=0; i<nRows; i++) {
+                let freq = rand(3, 10);
+                f.push(freq);
+                totalF += freq;
+            }
+            if(totalF % 2 !== 0) {
+                f[0] += 1;
+                totalF += 1;
+            }
+            
+            let fk = [];
+            let currentFk = 0;
+            for(let i=0; i<nRows; i++) {
+                currentFk += f[i];
+                fk.push(currentFk);
+            }
+            
+            let me1_pos = totalF / 2;
+            let me2_pos = (totalF / 2) + 1;
+            
+            const getX = (pos) => {
+                for(let i=0; i<nRows; i++) { if(pos <= fk[i]) return x[i]; }
+            };
+            
+            let median = (getX(me1_pos) + getX(me2_pos)) / 2;
+
+            let tableHTML = `<table class="data-table"><tr><th>${scen.satuanX}</th><th>${scen.satuanF}</th></tr>`;
+            for(let i=0; i<nRows; i++) { tableHTML += `<tr><td>${x[i]}</td><td>${f[i]}</td></tr>`; }
+            tableHTML += `<tr style="background:#f8fafc; font-weight:bold;"><td>Total Observasi (n)</td><td>${totalF}</td></tr></table>`;
+
+            return {
+                badge: 'Median Tabel (Genap)',
+                cerita: `${scen.deskripsi}:<br>${tableHTML}`,
+                tanya: 'Tentukan nilai Median dari tabel distribusi data tersebut.',
+                bantuan: `1. Buat coretan kolom tambahan Frekuensi Kumulatif (Fk) dengan menjumlahkan nilai frekuensi secara diagonal ke bawah.\n2. Rumus Letak Median Genap: Letaknya membelah DUA urutan, yakni Urutan ke- (n / 2) dan Urutan ke- (n / 2) + 1.\n3. Masukkan Total Observasi (n) ke dalam rumus letak di atas untuk menemukan dua posisi urutan tersebut.\n4. Telusuri Fk Anda, carilah nilai (x) yang mengikat posisi letak pertama dan nilai (x) yang mengikat letak kedua.\n5. Rumus Nilai Median = (Nilai x letak 1 + Nilai x letak 2) / 2.`,
+                kunci: [median.toString(), median.toString().replace('.', ',')]
+            };
+        }
+    };
+
+    let currentTopicId = '';
+    let currentKunci = [];
+    let helpVisible = false;
+
+    function bukaLatihan(id) {
+        currentTopicId = id;
+        renderSoalBaru();
+        document.getElementById('home-view').style.display = 'none';
+        document.getElementById('practice-view').style.display = 'block';
+    }
+
+    function renderSoalBaru() {
+        const data = generators[currentTopicId]();
+        currentKunci = data.kunci;
+        
+        document.getElementById('inputJawaban').value = '';
+        document.getElementById('feedback-area').style.display = 'none';
+        
+        helpVisible = false;
+        document.getElementById('help-area').style.display = 'none';
+        document.getElementById('btnToggleHelp').innerHTML = '[Bantuan] Tampilkan Panduan Berpikir';
+        
+        document.getElementById('view-badge').innerText = data.badge;
+        document.getElementById('view-cerita').innerHTML = data.cerita; 
+        document.getElementById('view-tanya').innerText = data.tanya;
+        document.getElementById('view-bantuan').innerText = data.bantuan;
+    }
+
+    function refreshSoal() {
+        renderSoalBaru();
+    }
+
+    function kembaliKeHome() {
+        document.getElementById('practice-view').style.display = 'none';
+        document.getElementById('home-view').style.display = 'block';
+    }
+
+    function toggleBantuan() {
+        helpVisible = !helpVisible;
+        const helpBox = document.getElementById('help-area');
+        const btnHelp = document.getElementById('btnToggleHelp');
+        
+        if (helpVisible) {
+            helpBox.style.display = 'block';
+            btnHelp.innerHTML = '[Bantuan] Sembunyikan Panduan';
+        } else {
+            helpBox.style.display = 'none';
+            btnHelp.innerHTML = '[Bantuan] Tampilkan Panduan Berpikir';
+        }
+    }
+
+    function cekJawaban() {
+        let userInput = document.getElementById('inputJawaban').value.trim().toLowerCase();
+        const feedbackBox = document.getElementById('feedback-area');
+        
+        if (userInput === '') {
+            feedbackBox.className = 'feedback-box feedback-wrong';
+            feedbackBox.innerText = 'Mohon isikan hasil akhir perhitungan Anda sebelum melakukan pengecekan.';
+            feedbackBox.style.display = 'block';
+            return;
+        }
+
+        let isCorrect = false;
+        for (let i = 0; i < currentKunci.length; i++) {
+            if (userInput === currentKunci[i] || userInput.includes(currentKunci[i])) {
+                isCorrect = true;
+                break;
+            }
+        }
+
+        if (isCorrect) {
+            feedbackBox.className = 'feedback-box feedback-correct';
+            feedbackBox.innerHTML = '<b>Analisis Tepat!</b> Anda berhasil memecahkan logika penyelesaian soal ini secara akurat.<br><i>(Gunakan tombol "Muat Ulang Soal Baru" untuk menguji konsistensi pemahaman Anda)</i>';
+        } else {
+            feedbackBox.className = 'feedback-box feedback-wrong';
+            feedbackBox.innerText = 'Hasil perhitungan Anda belum tepat. Evaluasi kembali langkah penyelesaiannya melalui tombol "Tampilkan Panduan Berpikir".';
+        }
+        
+        feedbackBox.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
