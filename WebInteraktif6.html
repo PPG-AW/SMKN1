@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Generator Latihan Data Kelompok</title>
+    <style>
+        :root {
+            --primary: #0f172a; --primary-dark: #020617;
+            --accent: #2563eb; --accent-hover: #1d4ed8;
+            --bg-color: #f8fafc; --card-bg: #ffffff;
+            --border: #cbd5e1; --success: #059669; --danger: #dc2626;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-color); color: var(--primary); line-height: 1.6; display: flex; justify-content: center; min-height: 100vh;}
+        .app-container { width: 100%; max-width: 700px; background: var(--card-bg); box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        
+        .header { background: var(--primary); color: white; padding: 25px 20px; text-align: center; }
+        .header-title { font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 18px; margin-bottom: 5px;}
+        .header-subtitle { font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px;}
+
+        .content { padding: 25px 20px; }
+
+        /* Menu Styles */
+        .menu-title { font-size: 15px; text-transform: uppercase; font-weight: bold; margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 8px;}
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 30px; }
+        .menu-btn { background: var(--card-bg); border: 2px solid var(--border); padding: 15px; border-radius: 10px; text-align: left; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; gap: 5px; }
+        .menu-btn:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1); transform: translateY(-2px);}
+        .menu-label { font-weight: bold; font-size: 15px; color: var(--primary); }
+        .menu-desc { font-size: 13px; color: #64748b; }
+
+        /* Latihan Styles */
+        #practice-view { display: none; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border);}
+        .btn-back { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s;}
+        .btn-back:hover { background: var(--primary); color: white; }
+        .topic-badge { background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;}
+
+        .case-box { background: #f1f5f9; border-left: 4px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .case-title { font-weight: bold; color: var(--primary-dark); margin-bottom: 10px; font-size: 15px; text-transform: uppercase;}
+        
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 15px; background: white;}
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 10px; text-align: center; vertical-align: middle;}
+        .data-table th { background: #e2e8f0; color: #0f172a;}
+        .row-highlight { background: #eff6ff; font-weight: bold; }
+
+        /* Scaffolding Inputs */
+        .input-inline { width: 60px; padding: 6px; border: 2px solid var(--accent); border-radius: 4px; text-align: center; font-weight: bold; font-family: monospace; font-size: 15px; color: var(--primary-dark); margin: 0 4px;}
+        .input-inline:focus { outline: none; background: #eff6ff; border-color: var(--primary-dark);}
+        .input-inline.correct { border-color: var(--success); background: #d1fae5; color: #065f46; pointer-events: none;}
+        .input-inline.wrong { border-color: var(--danger); background: #fee2e2; color: #991b1b;}
+        
+        .input-frac { width: 55px; padding: 4px; border: 2px solid var(--accent); border-radius: 4px; text-align: center; font-weight: bold; font-family: monospace; font-size: 15px; color: var(--primary-dark); margin: 2px; }
+        .input-frac:focus { border-color: var(--primary-dark); outline: none; background: #eff6ff; }
+        .input-frac.correct { border-color: var(--success); background: #d1fae5; color: #065f46; pointer-events: none;}
+        .input-frac.wrong { border-color: var(--danger); background: #fee2e2; color: #991b1b;}
+
+        /* Math Fractions */
+        .step-box { background: #ffffff; border: 1px solid var(--border); padding: 25px 20px; border-radius: 8px; margin-bottom: 20px; overflow-x: auto;}
+        .step-row { display: flex; align-items: center; margin-bottom: 15px; font-size: 16px; font-weight: bold; color: var(--primary-dark); font-family: 'Cambria', serif;}
+        .step-row .left { width: 45px; text-align: right; }
+        .step-row .mid { width: 30px; text-align: center; }
+        .math-box { display: inline-flex; align-items: center; vertical-align: middle; margin: 0 5px;}
+        .frac { display: inline-flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 5px; }
+        .frac .top { border-bottom: 2px solid var(--primary-dark); padding: 0 8px; margin-bottom: 2px; }
+        .frac .bottom { padding: 0 8px; margin-top: 2px; }
+
+        .action-area { display: flex; flex-direction: column; gap: 10px; margin-top: 30px;}
+        .btn-action { padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 15px; border: none; text-transform: uppercase; letter-spacing: 0.5px;}
+        .btn-check { background: var(--primary); color: white; }
+        .btn-check:hover { background: var(--primary-dark); }
+        .btn-refresh { background: white; color: var(--primary); border: 2px solid var(--primary); }
+        .btn-refresh:hover { background: #f1f5f9; }
+
+        .feedback-box { display: none; padding: 15px; border-radius: 8px; margin-top: 20px; font-weight: bold; font-size: 14px; text-align: center; border: 1px solid;}
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <div class="header-title">Generator Latihan Data Kelompok</div>
+        <div class="header-subtitle">Mode Evaluasi Mandiri</div>
+    </div>
+
+    <div class="content">
+        <div id="home-view">
+            <div style="background: #f1f5f9; padding: 20px; border-radius: 8px; margin-bottom: 25px; font-size: 14px; color: var(--primary); border-left: 4px solid var(--primary);">
+                Seluruh nilai pengamatan akan diacak oleh sistem. Anda diwajibkan melakukan ekstraksi data, komputasi tabel, hingga penyelesaian perhitungan matematika secara mandiri pada setiap sesi latihan.
+            </div>
+
+            <div class="menu-title">Kelompok 1: Kalkulasi Rata-Rata (Mean)</div>
+            <div class="menu-grid">
+                <button class="menu-btn" onclick="startPractice('mean-titik')">
+                    <span class="menu-label">[1] Penugasan Titik Tengah Dasar</span>
+                    <span class="menu-desc">Menyelesaikan matriks perkalian frekuensi dengan titik tengah.</span>
+                </button>
+                <button class="menu-btn" onclick="startPractice('mean-rataan')">
+                    <span class="menu-label">[2] Penugasan Rataan Sementara</span>
+                    <span class="menu-desc">Melakukan eksekusi perhitungan matriks simpangan data.</span>
+                </button>
+                <button class="menu-btn" onclick="startPractice('mean-coding')">
+                    <span class="menu-label">[3] Penugasan Analisis Pengkodean</span>
+                    <span class="menu-desc">Mengoperasikan metode pengkodean terstruktur.</span>
+                </button>
+            </div>
+
+            <div class="menu-title">Kelompok 2: Deteksi Mayoritas (Modus)</div>
+            <div class="menu-grid">
+                <button class="menu-btn" onclick="startPractice('modus')">
+                    <span class="menu-label">[4] Pelacakan Puncak Modus</span>
+                    <span class="menu-desc">Menganalisis selisih frekuensi kelas mayoritas.</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="practice-view">
+            <div class="top-nav">
+                <button class="btn-back" onclick="goHome()">Kembali ke Menu</button>
+                <span class="topic-badge" id="topic-badge">Topik</span>
+            </div>
+
+            <div class="case-box">
+                <div class="case-title">Pemaparan Studi Kasus</div>
+                <div id="case-text" style="color: #1e293b; font-size: 14px;">Teks instruksi soal akan muncul di sini...</div>
+            </div>
+
+            <div id="workspace">
+                </div>
+
+            <div id="feedback" class="feedback-box"></div>
+
+            <div class="action-area">
+                <button class="btn-action btn-check" onclick="checkAnswers()">Lakukan Validasi Perhitungan</button>
+                <button class="btn-action btn-refresh" onclick="refreshPractice()">Muat Ulang Simulasi Data Baru</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- MESIN GENERATOR DATA ---
+    function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+    function generateBusinessContext() {
+        const contexts = [
+            { desc: "Berikut adalah laporan rekapitulasi data jumlah barang promosi yang terjual secara harian. Silakan lakukan kalkulasi matematis secara utuh.", varX: "Barang Terjual", varF: "Frekuensi (f)" },
+            { desc: "Data di bawah ini menunjukkan catatan pengunjung yang datang ke pameran ritel pusat. Tuntaskan pengisian matriks data ini.", varX: "Kunjungan", varF: "Frekuensi (f)" },
+            { desc: "Tabel ini memuat distribusi omzet kotor mingguan dari mitra UMKM sekolah. Lakukan operasi penyelesaian di setiap barisnya.", varX: "Omzet UMKM", varF: "Frekuensi (f)" }
+        ];
+        return contexts[getRandomInt(0, contexts.length - 1)];
+    }
+
+    function generateDataKelompok() {
+        let p = getRandomInt(0, 1) === 0 ? 5 : 10; 
+        let start = getRandomInt(2, 6) * 10; 
+        let k = 5; 
+
+        let L = [], U = [], x = [], f = [], d = [], c = [];
+        let totalF = 0, totalFX = 0, totalFD = 0, totalFC = 0;
+
+        for (let i = 0; i < k; i++) {
+            L[i] = start + (i * p);
+            U[i] = L[i] + p - 1;
+            x[i] = (L[i] + U[i]) / 2;
+        }
+
+        let xs_index = 2; 
+        
+        for (let i = 0; i < k; i++) {
+            if (i === xs_index) {
+                f[i] = getRandomInt(12, 18); 
+            } else {
+                f[i] = getRandomInt(2, 9); 
+            }
+        }
+
+        for (let i = 0; i < k; i++) {
+            if (i !== xs_index && f[i] >= f[xs_index]) f[i] = f[xs_index] - 2;
+        }
+
+        for (let i = 0; i < k; i++) {
+            d[i] = x[i] - x[xs_index];
+            c[i] = i - xs_index; 
+
+            totalF += f[i];
+            totalFX += (f[i] * x[i]);
+            totalFD += (f[i] * d[i]);
+            totalFC += (f[i] * c[i]);
+        }
+
+        let meanExact = totalFX / totalF;
+
+        let L_mo = L[xs_index] - 0.5;
+        let d1 = f[xs_index] - f[xs_index - 1];
+        let d2 = f[xs_index] - f[xs_index + 1];
+        let moExact = L_mo + (d1 / (d1 + d2)) * p;
+
+        return {
+            p, L, U, x, f, d, c, totalF, totalFX, totalFD, totalFC, 
+            meanExact, L_mo, d1, d2, moExact, xs_index
+        };
+    }
+
+    // --- STATE MANAGEMENT ---
+    let currentTopic = '';
+    let currentData = null;
+    let answerKeys = [];
+
+    function startPractice(topic) {
+        currentTopic = topic;
+        document.getElementById('home-view').style.display = 'none';
+        document.getElementById('practice-view').style.display = 'block';
+        refreshPractice();
+    }
+
+    function goHome() {
+        document.getElementById('practice-view').style.display = 'none';
+        document.getElementById('home-view').style.display = 'block';
+    }
+
+    function refreshPractice() {
+        let ctx = generateBusinessContext();
+        currentData = generateDataKelompok();
+        answerKeys = [];
+        
+        document.getElementById('case-text').innerText = ctx.desc;
+        document.getElementById('feedback').style.display = 'none';
+
+        let ws = document.getElementById('workspace');
+        ws.innerHTML = '';
+
+        if (currentTopic === 'mean-titik') renderMeanTitik(ctx, currentData, ws);
+        else if (currentTopic === 'mean-rataan') renderMeanRataan(ctx, currentData, ws);
+        else if (currentTopic === 'mean-coding') renderMeanCoding(ctx, currentData, ws);
+        else if (currentTopic === 'modus') renderModus(ctx, currentData, ws);
+    }
+
+    function addKey(id, val) {
+        let strVal = Number.isInteger(val) ? val.toString() : val.toFixed(2).replace(/\.?0+$/, ''); 
+        answerKeys.push({ id, val: strVal });
+    }
+
+    // --- RENDER 1: MEAN TITIK ---
+    function renderMeanTitik(ctx, dt, container) {
+        document.getElementById('topic-badge').innerText = 'Evaluasi Titik Tengah';
+        
+        let html = `
+        <table class="data-table">
+            <thead><tr><th>${ctx.varX}</th><th>${ctx.varF}</th><th>T. Tengah (x)</th><th>Perkalian (f &middot; x)</th></tr></thead>
+            <tbody>`;
+        
+        for(let i=0; i<5; i++) {
+            html += `<tr><td>${dt.L[i]} - ${dt.U[i]}</td><td>${dt.f[i]}</td>
+                <td><input type="text" id="x_${i}" class="input-inline"></td>
+                <td><input type="text" id="fx_${i}" class="input-inline"></td></tr>`;
+            addKey(`x_${i}`, dt.x[i]); 
+            addKey(`fx_${i}`, dt.f[i] * dt.x[i]);
+        }
+        
+        html += `<tr style="background:#f8fafc; font-weight:bold;">
+            <td>TOTAL OBSERVASI</td>
+            <td>&sum;f = <input type="text" id="sum_f" class="input-inline" style="width:45px;"></td>
+            <td></td>
+            <td>&sum;fx = <input type="text" id="sum_fx" class="input-inline" style="width:60px;"></td></tr>
+        </tbody></table>
+        
+        <p style="font-weight:bold; color:var(--primary-dark); font-size:15px; margin-bottom: 5px;">Penyelesaian Matematis:</p>
+        <div class="step-box">
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right"><div class="math-box"><div class="frac"><span class="top">&sum;fx</span><span class="bottom">&sum;f</span></div></div></span>
+            </div>
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right"><div class="math-box"><div class="frac">
+                    <span class="top"><input type="text" id="f_fx" class="input-frac"></span>
+                    <span class="bottom"><input type="text" id="f_f" class="input-frac"></span>
+                </div></div></span>
+            </div>
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="f_ans" class="input-inline" style="width: 80px;"></span>
+            </div>
+        </div>`;
+        
+        addKey('sum_f', dt.totalF); addKey('sum_fx', dt.totalFX);
+        addKey('f_fx', dt.totalFX); addKey('f_f', dt.totalF);
+        addKey('f_ans', dt.meanExact);
+
+        container.innerHTML = html;
+    }
+
+    // --- RENDER 2: MEAN RATAAN ---
+    function renderMeanRataan(ctx, dt, container) {
+        document.getElementById('topic-badge').innerText = 'Evaluasi Rataan Sementara';
+        let xs = dt.x[dt.xs_index];
+
+        let html = `
+        <div style="background:#f1f5f9; padding:15px; margin-bottom:15px; border-radius:8px; font-size:14px; border-left:4px solid var(--primary-dark);">
+            Instruksi Khusus: Anda diwajibkan untuk meminjam Titik Tengah baris ke-3 sebagai <strong>Rataan Sementara (x&#772;<sub>s</sub>)</strong>.
+        </div>
+        <table class="data-table">
+            <thead><tr><th>${ctx.varX}</th><th>f</th><th>Titik Tengah (x)</th><th>Simpangan (d)</th><th>Hasil (f &middot; d)</th></tr></thead>
+            <tbody>`;
+        
+        for(let i=0; i<5; i++) {
+            html += `<tr><td>${dt.L[i]} - ${dt.U[i]}</td><td>${dt.f[i]}</td>
+                <td><input type="text" id="x_${i}" class="input-inline"></td>
+                <td><input type="text" id="d_${i}" class="input-inline"></td>
+                <td><input type="text" id="fd_${i}" class="input-inline"></td></tr>`;
+            addKey(`x_${i}`, dt.x[i]);
+            addKey(`d_${i}`, dt.d[i]);
+            addKey(`fd_${i}`, dt.f[i]*dt.d[i]);
+        }
+        
+        html += `<tr style="background:#f8fafc; font-weight:bold;">
+            <td colspan="3">TOTAL KESELURUHAN &rarr;</td>
+            <td>&sum;f = <input type="text" id="sum_f" class="input-inline" style="width:50px;"></td>
+            <td>&sum;fd = <input type="text" id="sum_fd" class="input-inline" style="width:50px;"></td></tr>
+        </tbody></table>
+        
+        <p style="font-weight:bold; color:var(--primary-dark); font-size:15px; margin-bottom: 5px;">Penyelesaian Matematis:</p>
+        <div class="step-box">
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right">x&#772;<sub>s</sub> + <div class="math-box"><div class="frac"><span class="top">&sum;fd</span><span class="bottom">&sum;f</span></div></div></span>
+            </div>
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="f_xs1" class="input-inline"> + <div class="math-box"><div class="frac">
+                    <span class="top"><input type="text" id="f_sfd" class="input-frac"></span>
+                    <span class="bottom"><input type="text" id="f_sf" class="input-frac"></span>
+                </div></div></span>
+            </div>
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="f_xs2" class="input-inline"> + <input type="text" id="f_div" class="input-inline" style="width:60px;"></span>
+            </div>
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="f_ans" class="input-inline" style="width:80px;"></span>
+            </div>
+        </div>`;
+        
+        addKey('sum_f', dt.totalF); addKey('sum_fd', dt.totalFD);
+        addKey('f_xs1', xs); addKey('f_sfd', dt.totalFD); addKey('f_sf', dt.totalF);
+        addKey('f_xs2', xs); addKey('f_div', dt.totalFD/dt.totalF);
+        addKey('f_ans', dt.meanExact);
+
+        container.innerHTML = html;
+    }
+
+    // --- RENDER 3: MEAN CODING ---
+    function renderMeanCoding(ctx, dt, container) {
+        document.getElementById('topic-badge').innerText = 'Evaluasi Pengkodean';
+        let xs = dt.x[dt.xs_index];
+
+        let html = `
+        <div style="background:#f1f5f9; padding:15px; margin-bottom:15px; border-radius:8px; font-size:14px; border-left:4px solid var(--primary-dark);">
+            Instruksi Khusus: Anda diwajibkan meminjam parameter baris ke-3 sebagai titik nol <strong>Rataan Sementara (x&#772;<sub>s</sub>)</strong>. Tentukan nilai tengah dan panjang kelas secara mandiri.
+        </div>
+        <table class="data-table">
+            <thead><tr><th>${ctx.varX}</th><th>f</th><th>Titik Tengah (x)</th><th>Kode (c)</th><th>Hasil (f &middot; c)</th></tr></thead>
+            <tbody>`;
+        
+        for(let i=0; i<5; i++) {
+            html += `<tr><td>${dt.L[i]} - ${dt.U[i]}</td><td>${dt.f[i]}</td>
+                <td><input type="text" id="x_${i}" class="input-inline" style="width:50px;"></td>
+                <td><input type="text" id="c_${i}" class="input-inline" style="width:50px;"></td>
+                <td><input type="text" id="fc_${i}" class="input-inline" style="width:50px;"></td></tr>`;
+            addKey(`x_${i}`, dt.x[i]);
+            addKey(`c_${i}`, dt.c[i]);
+            addKey(`fc_${i}`, dt.f[i]*dt.c[i]);
+        }
+        
+        html += `<tr style="background:#f8fafc; font-weight:bold;">
+            <td colspan="3">TOTAL KESELURUHAN &rarr;</td>
+            <td>&sum;f = <input type="text" id="sum_f" class="input-inline" style="width:50px;"></td>
+            <td>&sum;fc = <input type="text" id="sum_fc" class="input-inline" style="width:50px;"></td></tr>
+        </tbody></table>
+        
+        <p style="font-weight:bold; color:var(--primary-dark); font-size:15px; margin-bottom: 5px;">Penyelesaian Matematis:</p>
+        <div class="step-box">
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right">x&#772;<sub>s</sub> + <span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">[</span><div class="math-box"><div class="frac"><span class="top">&sum;fc</span><span class="bottom">&sum;f</span></div></div><span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">]</span> &middot; p</span>
+            </div>
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="f_xs1" class="input-inline"> + <span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">[</span><div class="math-box"><div class="frac">
+                    <span class="top"><input type="text" id="f_sfc" class="input-frac"></span>
+                    <span class="bottom"><input type="text" id="f_sf" class="input-frac"></span>
+                </div></div><span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">]</span> &middot; <input type="text" id="f_p1" class="input-inline"></span>
+            </div>
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="f_xs2" class="input-inline"> + <span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">[</span> <input type="text" id="f_div" class="input-inline" style="width:60px;"> <span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">]</span> &middot; <input type="text" id="f_p2" class="input-inline"></span>
+            </div>
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="f_xs3" class="input-inline"> + <input type="text" id="f_mul" class="input-inline" style="width:60px;"></span>
+            </div>
+            <div class="step-row"><span class="left">x&#772;</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="f_ans" class="input-inline" style="width:80px;"></span>
+            </div>
+        </div>`;
+        
+        addKey('sum_f', dt.totalF); addKey('sum_fc', dt.totalFC);
+        addKey('f_xs1', xs); addKey('f_sfc', dt.totalFC); addKey('f_sf', dt.totalF); addKey('f_p1', dt.p);
+        addKey('f_xs2', xs); addKey('f_div', dt.totalFC/dt.totalF); addKey('f_p2', dt.p);
+        addKey('f_xs3', xs); addKey('f_mul', (dt.totalFC/dt.totalF)*dt.p);
+        addKey('f_ans', dt.meanExact);
+
+        container.innerHTML = html;
+    }
+
+    // --- RENDER 4: MODUS ---
+    function renderModus(ctx, dt, container) {
+        document.getElementById('topic-badge').innerText = 'Evaluasi Logika Modus';
+
+        let html = `
+        <table class="data-table" style="width: 80%; margin: 10px auto;">
+            <thead><tr><th>${ctx.varX}</th><th>${ctx.varF}</th></tr></thead>
+            <tbody>`;
+        
+        for(let i=0; i<5; i++) {
+            html += `<tr><td>${dt.L[i]} - ${dt.U[i]}</td><td>${dt.f[i]}</td></tr>`;
+        }
+        
+        html += `</tbody></table>
+        
+        <p style="font-weight:bold; color:var(--primary-dark); font-size:15px; margin-top:20px;">Langkah 1: Identifikasi dan Pemisahan Variabel</p>
+        <div class="step-box">
+            <div class="step-row"><span class="left" style="width:40px;">L</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="m_v1" class="input-inline" style="width:50px;"> - 0.5 = <input type="text" id="m_L" class="input-inline" style="width:60px;"></span></div>
+            
+            <div class="step-row" style="margin-bottom: 5px;"><span class="left" style="width:40px;">d<sub>1</sub></span><span class="mid">=</span>
+                <span class="right" style="font-size:14px; font-family:sans-serif; color:var(--text-muted);">Frekuensi Kelas Modus - Frekuensi Kelas Atasnya</span></div>
+            <div class="step-row"><span class="left" style="width:40px;"></span><span class="mid">=</span>
+                <span class="right"><input type="text" id="m_d1a" class="input-inline"> - <input type="text" id="m_d1b" class="input-inline"> = <input type="text" id="m_d1c" class="input-inline"></span></div>
+            
+            <div class="step-row" style="margin-bottom: 5px; margin-top:10px;"><span class="left" style="width:40px;">d<sub>2</sub></span><span class="mid">=</span>
+                <span class="right" style="font-size:14px; font-family:sans-serif; color:var(--text-muted);">Frekuensi Kelas Modus - Frekuensi Kelas Bawahnya</span></div>
+            <div class="step-row"><span class="left" style="width:40px;"></span><span class="mid">=</span>
+                <span class="right"><input type="text" id="m_d2a" class="input-inline"> - <input type="text" id="m_d2b" class="input-inline"> = <input type="text" id="m_d2c" class="input-inline"></span></div>
+            
+            <div class="step-row" style="margin-top:10px;"><span class="left" style="width:40px;">p</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="m_p" class="input-inline"></span></div>
+        </div>
+
+        <p style="font-weight:bold; color:var(--primary-dark); font-size:15px;">Langkah 2: Konstruksi dan Operasi Rumus Utama</p>
+        <div class="step-box">
+            <div class="step-row"><span class="left">Mo</span><span class="mid">=</span>
+                <span class="right">L + <span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">[</span><div class="math-box"><div class="frac"><span class="top">d<sub>1</sub></span><span class="bottom">d<sub>1</sub> + d<sub>2</sub></span></div></div><span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">]</span> &middot; p</span>
+            </div>
+            <div class="step-row"><span class="left">Mo</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="r_L1" class="input-inline"> + <span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">[</span><div class="math-box"><div class="frac">
+                    <span class="top"><input type="text" id="r_d1a" class="input-frac"></span>
+                    <span class="bottom"><input type="text" id="r_d1b" class="input-frac"> + <input type="text" id="r_d2" class="input-frac"></span>
+                </div></div><span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">]</span> &middot; <input type="text" id="r_p1" class="input-inline"></span>
+            </div>
+            <div class="step-row"><span class="left">Mo</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="r_L2" class="input-inline"> + <span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">[</span><div class="math-box"><div class="frac">
+                    <span class="top"><input type="text" id="r_top" class="input-frac"></span>
+                    <span class="bottom"><input type="text" id="r_bot" class="input-frac"></span>
+                </div></div><span style="font-size:24px; margin:0 4px; color:var(--primary-dark);">]</span> &middot; <input type="text" id="r_p2" class="input-inline"></span>
+            </div>
+            <div class="step-row"><span class="left">Mo</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="r_L3" class="input-inline"> + <input type="text" id="r_mul" class="input-inline" style="width:70px;"></span>
+            </div>
+            <div class="step-row"><span class="left">Mo</span><span class="mid">=</span>
+                <span class="right"><input type="text" id="r_ans" class="input-inline" style="width:80px;"></span>
+            </div>
+        </div>`;
+        
+        addKey('m_v1', dt.L[dt.xs_index]); addKey('m_L', dt.L_mo); 
+        addKey('m_d1a', dt.f[dt.xs_index]); addKey('m_d1b', dt.f[dt.xs_index-1]); addKey('m_d1c', dt.d1);
+        addKey('m_d2a', dt.f[dt.xs_index]); addKey('m_d2b', dt.f[dt.xs_index+1]); addKey('m_d2c', dt.d2);
+        addKey('m_p', dt.p);
+
+        addKey('r_L1', dt.L_mo); addKey('r_d1a', dt.d1); addKey('r_d1b', dt.d1); addKey('r_d2', dt.d2); addKey('r_p1', dt.p);
+        addKey('r_L2', dt.L_mo); addKey('r_top', dt.d1); addKey('r_bot', (dt.d1+dt.d2)); addKey('r_p2', dt.p);
+        addKey('r_L3', dt.L_mo); addKey('r_mul', (dt.d1/(dt.d1+dt.d2))*dt.p);
+        addKey('r_ans', dt.moExact);
+
+        container.innerHTML = html;
+    }
+
+    // --- VALIDATION LOGIC ---
+    function checkAnswers() {
+        let allCorrect = true;
+        let errors = 0;
+
+        answerKeys.forEach(k => {
+            let el = document.getElementById(k.id);
+            let userVal = el.value.trim().replace(',', '.');
+            let numUser = parseFloat(userVal);
+            let numKey = parseFloat(k.val);
+
+            let isMatch = false;
+            if (!isNaN(numUser) && !isNaN(numKey)) {
+                if (Math.abs(numUser - numKey) <= 0.05) isMatch = true;
+            } else {
+                if (userVal === k.val) isMatch = true; 
+            }
+
+            if (isMatch) {
+                el.classList.add('correct');
+                el.classList.remove('wrong');
+            } else {
+                el.classList.add('wrong');
+                el.classList.remove('correct');
+                allCorrect = false;
+                errors++;
+            }
+        });
+
+        let fb = document.getElementById('feedback');
+        fb.style.display = 'block';
+        if (allCorrect) {
+            fb.style.borderColor = 'var(--success)';
+            fb.style.backgroundColor = '#ecfdf5';
+            fb.style.color = '#065f46';
+            fb.innerHTML = 'Sempurna! Semua alur hitunganmu sangat akurat dan terstruktur.';
+        } else {
+            fb.style.borderColor = 'var(--danger)';
+            fb.style.backgroundColor = '#fee2e2';
+            fb.style.color = '#991b1b';
+            fb.innerHTML = `Terdapat indikasi ketidakakuratan perhitungan pada ${errors} bagian yang ditandai merah.`;
+        }
+    }
+</script>
+
+</body>
+</html>
