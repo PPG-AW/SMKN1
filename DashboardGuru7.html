@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Guru - Median Data Kelompok</title>
+  <style>
+    :root{--primary:#1d4ed8;--primary-dark:#1e3a8a;--orange:#ea580c;--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;--purple:#7c3aed;--teal:#0f766e;--text:#1e293b;--muted:#64748b;--border:#cbd5e1;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.5;font-size:14px;}
+    .header{background:linear-gradient(135deg,#0f172a,var(--primary-dark));color:#fff;padding:20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3);}
+    .header h1{font-size:22px;margin:0 0 4px;}
+    .header p{font-size:13px;opacity:.8;margin:0;}
+    .container{max-width:1000px;margin:0 auto;padding:16px;}
+    .card{background:#fff;border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(15,23,42,.06);border:1px solid #e2e8f0;}
+    .card h2{font-size:18px;color:var(--primary-dark);margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #dbeafe;}
+    .card h3{font-size:15px;color:var(--primary);margin:12px 0 6px;}
+    .card p{margin:0 0 6px;}
+    .info-box{background:#eff6ff;border-left:5px solid var(--primary);padding:10px;border-radius:8px;margin:8px 0;font-size:13px;}
+    .success-box{background:#ecfdf5;border-left:5px solid var(--success);padding:10px;border-radius:8px;margin:8px 0;font-size:13px;}
+    .warning-box{background:#fef2f2;border-left:5px solid var(--danger);padding:10px;border-radius:8px;margin:8px 0;font-size:13px;}
+    .note-box{background:#fffbeb;border-left:5px solid var(--accent);padding:10px;border-radius:8px;margin:8px 0;font-size:13px;}
+    table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px;}
+    th,td{border:1px solid var(--border);padding:6px 8px;text-align:left;}
+    th{background:#dbeafe;color:var(--primary-dark);font-weight:700;text-align:center;font-size:11px;}
+    td{text-align:center;}
+    tr:nth-child(even) td{background:#f8fafc;}
+    .stats-row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;}
+    .stat-card{flex:1;min-width:120px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;text-align:center;}
+    .stat-card b{font-size:28px;display:block;margin-bottom:2px;}
+    .stat-card span{font-size:11px;color:var(--muted);}
+    .stat-card.green b{color:var(--success);}
+    .stat-card.red b{color:var(--danger);}
+    .stat-card.blue b{color:var(--primary);}
+    .stat-card.orange b{color:var(--orange);}
+    .tabs{display:flex;gap:0;border-radius:10px;overflow:hidden;border:2px solid var(--border);margin:12px 0;}
+    .tab{flex:1;padding:10px;text-align:center;font-weight:700;font-size:13px;cursor:pointer;background:#f8fafc;color:var(--muted);transition:all .2s;}
+    .tab.active{background:var(--primary);color:#fff;}
+    .tab-content{display:none;}
+    .tab-content.active{display:block;}
+    .btn-refresh{padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;margin:4px 0;}
+    .btn-refresh:disabled{background:#94a3b8;}
+    .btn-confirm{padding:4px 10px;background:var(--success);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;}
+    .btn-reject{padding:4px 10px;background:var(--danger);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;}
+    .badge.green{background:#dcfce7;color:#166534;}
+    .badge.red{background:#fee2e2;color:#991b1b;}
+    .badge.yellow{background:#fef3c7;color:#92400e;}
+    .badge.blue{background:#dbeafe;color:#1d4ed8;}
+    .loading{text-align:center;padding:20px;color:var(--muted);}
+    .login-box{max-width:400px;margin:40px auto;text-align:center;}
+    .login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;font-size:15px;margin:8px 0;outline:none;}
+    .login-box button{width:100%;padding:12px;background:var(--primary-dark);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;margin-top:4px;}
+    @media(max-width:768px){.stats-row{gap:6px;}.stat-card{min-width:80px;padding:10px;}.stat-card b{font-size:22px;}table{font-size:11px;}th,td{padding:4px 6px;}}
+    @media print{.header{position:static;}.tabs,.btn-refresh,.btn-confirm,.btn-reject,.login-box{display:none;}.tab-content{display:block!important;}}
+  </style>
+</head>
+<body>
+<a href="https://ppg-aw.github.io/SMKN1/Pertemuan7.html" style="display:block;background:#0f172a;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:700;text-decoration:none;">Kembali ke Halaman Utama Pertemuan 7</a>
+<div class="header">
+  <h1>Dashboard Guru</h1>
+  <p>Median Data Kelompok / SMKN 1 Salatiga / Kelas X</p>
+</div>
+
+<div class="container">
+
+<!-- LOGIN GURU -->
+<div id="pgLoginGuru">
+  <div class="card">
+    <div class="login-box">
+      <h2 style="border:none;">Login Guru</h2>
+      <p style="color:var(--muted);">Masukkan password untuk mengakses dashboard.</p>
+      <input type="password" id="inpPass" placeholder="Password guru..."/>
+      <button id="btnLoginGuru">Masuk</button>
+      <p id="passMsg" style="margin-top:8px;font-size:13px;color:var(--danger);"></p>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="pgDashboard" style="display:none;">
+
+  <!-- RINGKASAN -->
+  <div class="card">
+    <h2>Ringkasan Kelas</h2>
+    <button class="btn-refresh" id="btnRefresh">Muat Ulang Data</button>
+    <div id="loadingMsg" class="loading" style="display:none;">Memuat data dari Sheets...</div>
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card blue"><b id="stTotal">0</b><span>Total Siswa</span></div>
+      <div class="stat-card green"><b id="stMateri">0</b><span>Selesai Materi</span></div>
+      <div class="stat-card orange"><b id="stPretest">0</b><span>Selesai Pre-Test</span></div>
+      <div class="stat-card blue"><b id="stLKPD">0</b><span>Selesai LKPD</span></div>
+      <div class="stat-card green"><b id="stPosttest">0</b><span>Selesai Post-Test</span></div>
+      <div class="stat-card red"><b id="stRefleksi">0</b><span>Isi Refleksi</span></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs" id="tabsNav">
+    <div class="tab active" data-tab="tabMateri">Materi</div>
+    <div class="tab" data-tab="tabPretest">Pre-Test</div>
+    <div class="tab" data-tab="tabLKPD">LKPD</div>
+    <div class="tab" data-tab="tabPosttest">Post-Test</div>
+    <div class="tab" data-tab="tabLatihan">Latihan</div>
+    <div class="tab" data-tab="tabRefleksi">Refleksi</div>
+  </div>
+
+  <!-- TAB: MATERI -->
+  <div class="tab-content active" id="tabMateri">
+    <div class="card">
+      <h2>Progres Materi Interaktif</h2>
+      <div id="tblMateri"><p class="loading">Klik "Muat Ulang Data" untuk memuat.</p></div>
+    </div>
+  </div>
+
+  <!-- TAB: PRE-TEST -->
+  <div class="tab-content" id="tabPretest">
+    <div class="card">
+      <h2>Hasil Pre-Test</h2>
+      <div class="stats-row">
+        <div class="stat-card green"><b id="stPreL3">0</b><span>Level 3</span></div>
+        <div class="stat-card orange"><b id="stPreL2">0</b><span>Level 2</span></div>
+        <div class="stat-card red"><b id="stPreL1">0</b><span>Level 1</span></div>
+      </div>
+      <div id="tblPretest"></div>
+    </div>
+  </div>
+
+  <!-- TAB: LKPD -->
+  <div class="tab-content" id="tabLKPD">
+    <div class="card">
+      <h2>Hasil LKPD</h2>
+      <div id="tblLKPD"></div>
+    </div>
+  </div>
+
+  <!-- TAB: POST-TEST -->
+  <div class="tab-content" id="tabPosttest">
+    <div class="card">
+      <h2>Hasil Post-Test</h2>
+      <div class="stats-row">
+        <div class="stat-card green"><b id="stPostSB">0</b><span>Sangat Baik</span></div>
+        <div class="stat-card blue"><b id="stPostT">0</b><span>Tuntas</span></div>
+        <div class="stat-card orange"><b id="stPostPB">0</b><span>Perlu Bimbingan</span></div>
+        <div class="stat-card red"><b id="stPostBT">0</b><span>Belum Tuntas</span></div>
+      </div>
+      <div id="tblPosttest"></div>
+    </div>
+  </div>
+
+  <!-- TAB: LATIHAN -->
+  <div class="tab-content" id="tabLatihan">
+    <div class="card">
+      <h2>Aktivitas Latihan Generator</h2>
+      <h3>Kesalahan Paling Sering</h3>
+      <div id="tblKesalahan"></div>
+      <h3>Riwayat Latihan per Siswa</h3>
+      <div id="tblLatihan"></div>
+    </div>
+  </div>
+
+  <!-- TAB: REFLEKSI -->
+  <div class="tab-content" id="tabRefleksi">
+    <div class="card">
+      <h2>Refleksi Siswa</h2>
+      <div id="tblRefleksi"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+var SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+var GURU_PASS = 'guru2025';
+
+function el(id){return document.getElementById(id);}
+
+function fetchSheet(sheetName){
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE')return Promise.resolve([]);
+  return fetch(SCRIPT_URL+'?action=getAllData&sheet='+encodeURIComponent(sheetName))
+    .then(function(r){return r.json();})
+    .then(function(d){return d.data||[];})
+    .catch(function(){return [];});
+}
+
+// LOGIN
+document.addEventListener('DOMContentLoaded',function(){
+  el('btnLoginGuru').addEventListener('click',function(){
+    if(el('inpPass').value===GURU_PASS){
+      el('pgLoginGuru').style.display='none';
+      el('pgDashboard').style.display='block';
+    }else{
+      el('passMsg').textContent='Password salah.';
+    }
+  });
+  el('inpPass').addEventListener('keydown',function(e){if(e.key==='Enter')el('btnLoginGuru').click();});
+
+  // TABS
+  el('tabsNav').addEventListener('click',function(e){
+    var tab=e.target.closest('.tab');if(!tab)return;
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+    tab.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(function(tc){tc.classList.remove('active');});
+    el(tab.getAttribute('data-tab')).classList.add('active');
+  });
+
+  // REFRESH
+  el('btnRefresh').addEventListener('click',loadAllData);
+});
+
+function loadAllData(){
+  el('btnRefresh').disabled=true;
+  el('loadingMsg').style.display='block';
+
+  Promise.all([
+    fetchSheet('DataSiswa'),
+    fetchSheet('MateriProgress'),
+    fetchSheet('PreTest'),
+    fetchSheet('LKPD'),
+    fetchSheet('PostTest'),
+    fetchSheet('LatihanGenerator'),
+    fetchSheet('Refleksi')
+  ]).then(function(results){
+    var siswa=results[0],materi=results[1],pretest=results[2],lkpd=results[3],posttest=results[4],latihan=results[5],refleksi=results[6];
+
+    // Ringkasan
+    el('stTotal').textContent=siswa.length;
+    el('stMateri').textContent=materi.filter(function(r){return r[1]&&r[2]&&r[3]&&r[4]&&r[5];}).length;
+    el('stPretest').textContent=pretest.length;
+    el('stLKPD').textContent=lkpd.length;
+    el('stPosttest').textContent=posttest.length;
+    el('stRefleksi').textContent=refleksi.length;
+
+    // Materi
+    renderMateri(siswa,materi);
+
+    // Pre-Test
+    renderPretest(pretest);
+
+    // LKPD
+    renderLKPD(lkpd);
+
+    // Post-Test
+    renderPosttest(posttest);
+
+    // Latihan
+    renderLatihan(latihan);
+
+    // Refleksi
+    renderRefleksi(refleksi);
+
+    el('btnRefresh').disabled=false;
+    el('loadingMsg').style.display='none';
+  });
+}
+
+function renderMateri(siswa,materi){
+  var h='<table><tr><th>No</th><th>Nama</th><th>B1</th><th>B2</th><th>B3</th><th>B4</th><th>B5</th><th>Status</th></tr>';
+  siswa.forEach(function(s,i){
+    var nama=String(s[0]).toUpperCase().trim();
+    var prog=materi.find(function(m){return String(m[0]).toUpperCase().trim()===nama;});
+    var q=[false,false,false,false,false];
+    if(prog){for(var j=0;j<5;j++)q[j]=prog[j+1]===true||String(prog[j+1]).toUpperCase()==='TRUE';}
+    var done=q.every(Boolean);
+    h+='<tr><td>'+(i+1)+'</td><td style="text-align:left;">'+nama+'</td>';
+    for(var j=0;j<5;j++)h+='<td>'+(q[j]?'<span class="badge green">V</span>':'<span class="badge red">X</span>')+'</td>';
+    h+='<td>'+(done?'<span class="badge green">Selesai</span>':'<span class="badge yellow">Belum</span>')+'</td></tr>';
+  });
+  h+='</table>';
+  el('tblMateri').innerHTML=h;
+}
+
+function renderPretest(data){
+  var l1=0,l2=0,l3=0;
+  var h='<table><tr><th>No</th><th>Nama</th><th>Skor</th><th>Level</th><th>Waktu</th><th>Validasi Guru</th></tr>';
+  data.forEach(function(r,i){
+    var skor=r[8]||0;var level=r[9]||'';
+    if(String(level).includes('1'))l1++;
+    else if(String(level).includes('3'))l3++;
+    else if(String(level).includes('2'))l2++;
+    var skorColor=skor>=80?'var(--success)':skor>=60?'var(--accent)':'var(--danger)';
+    h+='<tr><td>'+(i+1)+'</td><td style="text-align:left;">'+r[1]+'</td>';
+    h+='<td style="color:'+skorColor+';font-weight:700;">'+skor+'</td>';
+    h+='<td><span class="badge '+(String(level).includes('3')?'green':String(level).includes('2')?'yellow':'red')+'">'+level+'</span></td>';
+    h+='<td style="font-size:11px;">'+r[0]+'</td>';
+    h+='<td><button class="btn-confirm" onclick="validasi(\'pretest\','+i+',\'ok\')">OK</button> <button class="btn-reject" onclick="validasi(\'pretest\','+i+',\'revisi\')">Revisi</button></td></tr>';
+  });
+  h+='</table>';
+  el('tblPretest').innerHTML=h;
+  el('stPreL1').textContent=l1;
+  el('stPreL2').textContent=l2;
+  el('stPreL3').textContent=l3;
+}
+
+function renderLKPD(data){
+  var h='<table><tr><th>No</th><th>Nama</th><th>Level</th><th>Skor</th><th>Status</th><th>Waktu</th><th>Validasi Guru</th></tr>';
+  data.forEach(function(r,i){
+    var skor=r[4]||0;var status=r[5]||'';
+    h+='<tr><td>'+(i+1)+'</td><td style="text-align:left;">'+r[1]+'</td>';
+    h+='<td>'+r[2]+'</td>';
+    h+='<td style="font-weight:700;">'+skor+'</td>';
+    h+='<td><span class="badge '+(String(status).includes('tuntas')?'green':'red')+'">'+status+'</span></td>';
+    h+='<td style="font-size:11px;">'+r[0]+'</td>';
+    h+='<td><button class="btn-confirm" onclick="validasi(\'lkpd\','+i+',\'ok\')">OK</button> <button class="btn-reject" onclick="validasi(\'lkpd\','+i+',\'revisi\')">Revisi</button></td></tr>';
+  });
+  h+='</table>';
+  el('tblLKPD').innerHTML=h;
+}
+
+function renderPosttest(data){
+  var sb=0,t=0,pb=0,bt=0;
+  var h='<table><tr><th>No</th><th>Nama</th><th>Skor</th><th>Kategori</th><th>Waktu</th><th>Validasi Guru</th></tr>';
+  data.forEach(function(r,i){
+    var skor=r[10]||0;var fb=r[11]||'';
+    if(skor>=85)sb++;else if(skor>=70)t++;else if(skor>=50)pb++;else bt++;
+    var skorColor=skor>=85?'var(--success)':skor>=70?'var(--primary)':skor>=50?'var(--accent)':'var(--danger)';
+    var fbClass=skor>=85?'green':skor>=70?'blue':skor>=50?'yellow':'red';
+    h+='<tr><td>'+(i+1)+'</td><td style="text-align:left;">'+r[1]+'</td>';
+    h+='<td style="color:'+skorColor+';font-weight:700;">'+skor+'</td>';
+    h+='<td><span class="badge '+fbClass+'">'+fb+'</span></td>';
+    h+='<td style="font-size:11px;">'+r[0]+'</td>';
+    h+='<td><button class="btn-confirm" onclick="validasi(\'posttest\','+i+',\'ok\')">OK</button> <button class="btn-reject" onclick="validasi(\'posttest\','+i+',\'revisi\')">Revisi</button></td></tr>';
+  });
+  h+='</table>';
+  el('tblPosttest').innerHTML=h;
+  el('stPostSB').textContent=sb;
+  el('stPostT').textContent=t;
+  el('stPostPB').textContent=pb;
+  el('stPostBT').textContent=bt;
+}
+
+function renderLatihan(data){
+  // Hitung kesalahan
+  var kesalahan={};
+  var perSiswa={};
+  data.forEach(function(r){
+    var nama=r[1]||'';
+    var salah=String(r[5]||'').split(',');
+    salah.forEach(function(s){s=s.trim();if(s){kesalahan[s]=(kesalahan[s]||0)+1;}});
+    if(!perSiswa[nama])perSiswa[nama]={total:0,benar:0};
+    perSiswa[nama].total++;
+    if(r[4]==='true'||r[4]===true)perSiswa[nama].benar++;
+  });
+
+  // Sort kesalahan
+  var sortedK=Object.keys(kesalahan).sort(function(a,b){return kesalahan[b]-kesalahan[a];});
+  var hk='<table><tr><th>Langkah</th><th>Jumlah Kesalahan</th></tr>';
+  sortedK.forEach(function(k){hk+='<tr><td style="text-align:left;">'+k+'</td><td>'+kesalahan[k]+'</td></tr>';});
+  if(sortedK.length===0)hk+='<tr><td colspan="2">Belum ada data.</td></tr>';
+  hk+='</table>';
+  el('tblKesalahan').innerHTML=hk;
+
+  // Per siswa
+  var hl='<table><tr><th>Nama</th><th>Total Latihan</th><th>Benar</th><th>Akurasi</th></tr>';
+  for(var nama in perSiswa){
+    var s=perSiswa[nama];
+    var akurasi=s.total>0?Math.round(s.benar/s.total*100):0;
+    hl+='<tr><td style="text-align:left;">'+nama+'</td><td>'+s.total+'</td><td>'+s.benar+'</td><td>'+akurasi+'%</td></tr>';
+  }
+  if(Object.keys(perSiswa).length===0)hl+='<tr><td colspan="4">Belum ada data.</td></tr>';
+  hl+='</table>';
+  el('tblLatihan').innerHTML=hl;
+}
+
+function renderRefleksi(data){
+  var h='<table><tr><th>No</th><th>Nama</th><th>Mudah</th><th>Bingung</th><th>Web (1-5)</th><th>LKPD</th><th>Hal Baru</th><th>Saran</th></tr>';
+  data.forEach(function(r,i){
+    h+='<tr><td>'+(i+1)+'</td>';
+    h+='<td style="text-align:left;">'+r[1]+'</td>';
+    h+='<td style="text-align:left;font-size:11px;">'+r[2]+'</td>';
+    h+='<td style="text-align:left;font-size:11px;">'+r[3]+'</td>';
+    h+='<td>'+r[4]+'</td>';
+    h+='<td>'+r[5]+' - <span style="font-size:10px;">'+r[6]+'</span></td>';
+    h+='<td style="text-align:left;font-size:11px;">'+r[7]+'</td>';
+    h+='<td style="text-align:left;font-size:11px;">'+r[8]+'</td></tr>';
+  });
+  if(data.length===0)h+='<tr><td colspan="8">Belum ada refleksi.</td></tr>';
+  h+='</table>';
+  el('tblRefleksi').innerHTML=h;
+}
+
+function validasi(type,idx,status){
+  if(SCRIPT_URL==='https://script.google.com/macros/s/AKfycbyuNFgLcVTXa8fFjunkj-4MklOgDyGnPWqr5ilCcSyfpkIQJAsvsUyieyjCvq19elfWtA/exec'){console.log('Validasi:',type,idx,status);alert('Validasi: '+status);return;}
+  var p='action=validasi&type='+type+'&idx='+idx+'&status='+status+'&t='+new Date().toISOString();
+  fetch(SCRIPT_URL+'?'+p).then(function(r){return r.json();}).then(function(r){
+    console.log('[OK] validasi',r);
+    alert('Validasi '+status+' berhasil disimpan.');
+  }).catch(function(e){console.log('[ERR]',e);});
+}
+</script>
+
+</body>
+</html>

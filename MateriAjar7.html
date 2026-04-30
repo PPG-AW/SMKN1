@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Materi Interaktif - Median Data Kelompok</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root {
+      --primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+      --orange:#ea580c;--orange-light:#f97316;
+      --success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+      --purple:#7c3aed;--teal:#0f766e;
+      --text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+      --soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+      --soft-red:#fef2f2;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+
+    .header{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+    .header h1{font-size:20px;margin:0 0 4px;}
+    .header p{font-size:13px;opacity:.85;margin:0;}
+
+    .container{max-width:640px;margin:0 auto;padding:16px;}
+
+    .card{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(15,23,42,.06);border:1px solid #e2e8f0;}
+    .card h2{font-size:18px;color:var(--primary-dark);margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #dbeafe;}
+    .card h3{font-size:15px;color:var(--primary);margin:12px 0 6px;}
+    .card h4{font-size:14px;color:var(--orange);margin:10px 0 4px;}
+    .card p{margin:0 0 8px;}
+    .card ul,.card ol{padding-left:20px;margin:0 0 8px;}
+    .card li{margin:0 0 4px;}
+
+    .info-box{background:var(--soft-blue);border-left:5px solid var(--primary);padding:12px;border-radius:10px;margin:10px 0;}
+    .success-box{background:var(--soft-green);border-left:5px solid var(--success);padding:12px;border-radius:10px;margin:10px 0;}
+    .warning-box{background:var(--soft-red);border-left:5px solid var(--danger);padding:12px;border-radius:10px;margin:10px 0;}
+    .note-box{background:var(--soft-yellow);border-left:5px solid var(--accent);padding:12px;border-radius:10px;margin:10px 0;}
+    .formula-box{background:var(--primary-dark);color:#fff;padding:16px;border-radius:12px;text-align:center;font-size:17px;margin:12px 0;overflow-x:auto;}
+
+    table{width:100%;border-collapse:collapse;margin:8px 0;font-size:14px;}
+    th,td{border:1px solid var(--border);padding:8px 10px;text-align:center;}
+    th{background:#dbeafe;color:var(--primary-dark);font-weight:700;}
+    tr:nth-child(even) td{background:#f8fafc;}
+
+    /* LOGIN */
+    .login-page{min-height:80vh;display:flex;align-items:center;justify-content:center;}
+    .login-card{background:#fff;border-radius:20px;padding:40px 24px;max-width:420px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(15,23,42,.1);border:1px solid #e2e8f0;}
+    .login-card h2{color:var(--primary-dark);margin-bottom:8px;border:none;padding:0;}
+    .login-card p{color:var(--muted);margin-bottom:16px;}
+    .search-container{position:relative;width:100%;}
+    .search-input{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-size:15px;outline:none;transition:border .3s;}
+    .search-input:focus{border-color:var(--primary);}
+    .search-results{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:0 0 12px 12px;max-height:200px;overflow-y:auto;z-index:10;display:none;}
+    .search-results.active{display:block;}
+    .search-item{padding:10px 16px;cursor:pointer;font-size:14px;text-align:left;border-bottom:1px solid #f1f5f9;}
+    .search-item:hover{background:#dbeafe;}
+    .search-item.new{color:var(--success);font-weight:700;}
+    .login-btn{margin-top:12px;padding:12px 32px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+    .login-btn:disabled{background:#94a3b8;cursor:not-allowed;}
+    .login-status{margin-top:8px;font-size:13px;color:var(--muted);}
+    .user-badge{display:inline-block;background:var(--soft-green);color:#166534;padding:6px 16px;border-radius:999px;font-weight:700;font-size:13px;}
+
+    /* QUIZ */
+    .quiz-area{background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;padding:16px;margin:12px 0;}
+    .quiz-area h4{margin:0 0 8px;color:var(--primary-dark);}
+    .quiz-input{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;margin:4px 0 8px;outline:none;transition:border .3s;}
+    .quiz-input:focus{border-color:var(--primary);}
+    .quiz-input.correct{border-color:var(--success);background:#f0fdf4;}
+    .quiz-input.wrong{border-color:var(--danger);background:#fef2f2;}
+    .quiz-select{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;margin:4px 0 8px;outline:none;background:#fff;}
+    .quiz-select.correct{border-color:var(--success);background:#f0fdf4;}
+    .quiz-select.wrong{border-color:var(--danger);background:#fef2f2;}
+    .quiz-btn{padding:10px 24px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;margin-top:4px;}
+    .quiz-feedback{margin-top:8px;padding:10px;border-radius:8px;font-size:13px;display:none;}
+    .quiz-feedback.correct{display:block;background:#dcfce7;color:#166534;border:1px solid #86efac;}
+    .quiz-feedback.wrong{display:block;background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+    .hint-btn{background:none;border:1px solid var(--accent);color:var(--accent);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-top:4px;}
+    .hint-text{display:none;margin-top:6px;padding:8px;background:var(--soft-yellow);border-radius:8px;font-size:12px;color:#92400e;}
+    .hint-text.visible{display:block;}
+
+    /* STEP */
+    .step-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f1f5f9;}
+    .step-num{min-width:28px;height:28px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;}
+    .step-content{flex:1;}
+
+    /* BAGIAN TERSEMBUNYI */
+    .bagian{display:none;}
+    .bagian.visible{display:block;}
+
+    /* LOCK OVERLAY */
+    .lock-msg{text-align:center;padding:24px;color:var(--muted);font-size:14px;}
+
+    @media print {
+      .header{position:static;}
+      .login-page,.quiz-area,.hint-btn,.hint-text,.quiz-feedback,.lock-msg{display:none!important;}
+      .bagian{display:block!important;}
+	  .bagian#bagianCatatan{display:block!important;}
+      .card{box-shadow:none;border:1px solid #ddd;page-break-inside:avoid;}
+      body{background:#fff;}
+    }
+    @media(max-width:480px){
+      .card{padding:14px;border-radius:12px;}
+      .header h1{font-size:17px;}
+      table{font-size:12px;}
+      th,td{padding:6px;}
+    }
+  </style>
+</head>
+<body>
+<a href="https://ppg-aw.github.io/SMKN1/Pertemuan7.html" style="display:block;background:#0f172a;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:700;text-decoration:none;">Kembali ke Halaman Utama Pertemuan 7</a>
+<div class="header">
+  <h1>Median Data Kelompok</h1>
+  <p>Materi Interaktif / Matematika Kelas X / SMKN 1 Salatiga</p>
+</div>
+
+<div class="container">
+
+<!-- ============================== -->
+<!-- LOGIN                          -->
+<!-- ============================== -->
+<div class="login-page" id="loginPage">
+  <div class="login-card">
+    <h2>Selamat Datang</h2>
+    <p>Ketik namamu untuk memulai belajar</p>
+    <div class="search-container">
+      <input type="text" class="search-input" id="nameInput" placeholder="Ketik nama lengkapmu..." oninput="searchName()" onfocus="searchName()"/>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <div id="selectedName" style="margin-top:8px;"></div>
+    <button class="login-btn" id="loginBtn" disabled onclick="doLogin()">Mulai Belajar</button>
+    <div class="login-status" id="loginStatus"></div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- KONTEN MATERI                  -->
+<!-- ============================== -->
+<div id="materiContent" style="display:none;">
+
+<!-- BAGIAN 1 -->
+<div class="bagian visible" id="bagian1">
+  <div class="card">
+    <h2>Bagian 1: Tabel Distribusi Frekuensi</h2>
+
+    <h3>Apa itu Data Kelompok?</h3>
+    <p>Dalam kehidupan sehari-hari, kita sering menemukan data dalam jumlah besar. Misalnya, data jumlah views TikTok dari puluhan video, data jumlah pesanan di Shopee selama sebulan, atau data pengeluaran QRIS siswa selama seminggu.</p>
+    <p>Jika data terlalu banyak, kita mengelompokkannya ke dalam <strong>kelas interval</strong> agar lebih mudah dibaca dan dianalisis. Hasilnya disebut <strong>tabel distribusi frekuensi</strong>.</p>
+
+    <h3>Contoh Tabel Distribusi Frekuensi</h3>
+    <p>Berikut data jumlah views TikTok dari 30 video (dalam ribu views):</p>
+    <table>
+      <tr><th>Kelas Interval (Views dalam ribu)</th><th>Frekuensi (\(f\))</th></tr>
+      <tr><td>10 sampai 19</td><td>4</td></tr>
+      <tr><td>20 sampai 29</td><td>6</td></tr>
+      <tr><td>30 sampai 39</td><td>9</td></tr>
+      <tr><td>40 sampai 49</td><td>7</td></tr>
+      <tr><td>50 sampai 59</td><td>4</td></tr>
+    </table>
+
+    <h3>Istilah Penting</h3>
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-content"><strong>Kelas interval</strong> adalah rentang nilai yang membagi data menjadi beberapa kelompok. Contoh: 10 sampai 19 adalah satu kelas interval.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-content"><strong>Batas bawah</strong> adalah nilai terkecil pada suatu kelas. Contoh: pada kelas 10 sampai 19, batas bawahnya adalah 10.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-content"><strong>Batas atas</strong> adalah nilai terbesar pada suatu kelas. Contoh: pada kelas 10 sampai 19, batas atasnya adalah 19.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-content"><strong>Frekuensi (\(f\))</strong> adalah banyaknya data pada suatu kelas interval.</div>
+    </div>
+
+    <div class="quiz-area" id="quiz1Area">
+      <h4>Quiz Bagian 1</h4>
+      <p>Perhatikan tabel views TikTok di atas.</p>
+      <label><strong>1. Berapa batas bawah kelas kedua?</strong></label>
+      <input type="number" class="quiz-input" id="q1_1" placeholder="Jawaban..."/>
+      <label><strong>2. Berapa batas atas kelas keempat?</strong></label>
+      <input type="number" class="quiz-input" id="q1_2" placeholder="Jawaban..."/>
+      <label><strong>3. Berapa frekuensi kelas 30 sampai 39?</strong></label>
+      <input type="number" class="quiz-input" id="q1_3" placeholder="Jawaban..."/>
+      <button class="quiz-btn" onclick="checkQuiz(1)">Periksa Jawaban</button>
+      <div class="quiz-feedback" id="fb1"></div>
+      <button class="hint-btn" id="hint1Btn" style="display:none;" onclick="toggleHint('hint1')">Minta Petunjuk</button>
+      <div class="hint-text" id="hint1">Lihat kembali tabel di atas. Kelas kedua adalah baris kedua. Batas bawah adalah angka pertama pada interval. Batas atas adalah angka kedua. Frekuensi ada di kolom \(f\).</div>
+    </div>
+  </div>
+</div>
+
+<!-- BAGIAN 2 -->
+<div class="bagian" id="bagian2">
+  <div class="card">
+    <h2>Bagian 2: Frekuensi Kumulatif</h2>
+
+    <h3>Apa itu Frekuensi Kumulatif?</h3>
+    <p><strong>Frekuensi kumulatif (fk)</strong> adalah jumlah frekuensi secara bertahap dari kelas pertama hingga kelas tertentu. Frekuensi kumulatif menunjukkan berapa banyak data yang sudah terkumpul sampai kelas tersebut.</p>
+
+    <h3>Cara Menghitung</h3>
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-content">fk kelas pertama sama dengan frekuensi kelas pertama itu sendiri.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-content">fk kelas kedua sama dengan fk kelas pertama ditambah frekuensi kelas kedua.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-content">Lanjutkan sampai kelas terakhir. fk terakhir harus sama dengan \(n\).</div>
+    </div>
+
+    <h3>Contoh</h3>
+    <table>
+      <tr><th>Views (ribu)</th><th>\(f\)</th><th>fk</th><th>Cara</th></tr>
+      <tr><td>10 sampai 19</td><td>4</td><td>4</td><td>4</td></tr>
+      <tr><td>20 sampai 29</td><td>6</td><td>10</td><td>4 + 6</td></tr>
+      <tr><td>30 sampai 39</td><td>9</td><td>19</td><td>10 + 9</td></tr>
+      <tr><td>40 sampai 49</td><td>7</td><td>26</td><td>19 + 7</td></tr>
+      <tr><td>50 sampai 59</td><td>4</td><td>30</td><td>26 + 4</td></tr>
+    </table>
+    <div class="info-box">fk terakhir = 30 dan jumlah seluruh frekuensi juga = 30. Keduanya harus sama.</div>
+
+    <div class="quiz-area" id="quiz2Area">
+      <h4>Quiz Bagian 2</h4>
+      <p>Data pengeluaran QRIS siswa (ribu rupiah):</p>
+      <table>
+        <tr><th>Pengeluaran</th><th>\(f\)</th><th>fk</th></tr>
+        <tr><td>0 sampai 24</td><td>5</td><td>5</td></tr>
+        <tr><td>25 sampai 49</td><td>8</td><td>?</td></tr>
+        <tr><td>50 sampai 74</td><td>12</td><td>?</td></tr>
+        <tr><td>75 sampai 99</td><td>10</td><td>?</td></tr>
+        <tr><td>100 sampai 124</td><td>5</td><td>?</td></tr>
+      </table>
+      <label><strong>1. fk kelas 25 sampai 49?</strong></label>
+      <input type="number" class="quiz-input" id="q2_1" placeholder="fk = ..."/>
+      <label><strong>2. fk kelas 50 sampai 74?</strong></label>
+      <input type="number" class="quiz-input" id="q2_2" placeholder="fk = ..."/>
+      <label><strong>3. fk kelas 75 sampai 99?</strong></label>
+      <input type="number" class="quiz-input" id="q2_3" placeholder="fk = ..."/>
+      <label><strong>4. fk kelas 100 sampai 124?</strong></label>
+      <input type="number" class="quiz-input" id="q2_4" placeholder="fk = ..."/>
+      <button class="quiz-btn" onclick="checkQuiz(2)">Periksa Jawaban</button>
+      <div class="quiz-feedback" id="fb2"></div>
+      <button class="hint-btn" id="hint2Btn" style="display:none;" onclick="toggleHint('hint2')">Minta Petunjuk</button>
+      <div class="hint-text" id="hint2">fk dihitung dengan menambahkan frekuensi baris sekarang ke fk baris sebelumnya. fk kelas pertama sudah diketahui yaitu 5.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BAGIAN 3 -->
+<div class="bagian" id="bagian3">
+  <div class="card">
+    <h2>Bagian 3: Letak Median dan Kelas Median</h2>
+
+    <h3>Apa itu Median?</h3>
+    <div class="info-box">
+      <strong>Median</strong> adalah nilai tengah dari sekumpulan data yang telah diurutkan. Median membagi data menjadi dua bagian sama banyak.
+    </div>
+
+    <h3>Menentukan Letak Median</h3>
+    <div class="formula-box">\[ \text{Letak median} = \frac{n}{2} \]</div>
+
+    <h3>Menentukan Kelas Median</h3>
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-content">Hitung \(\frac{n}{2}\).</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-content">Lihat kolom fk.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-content">Cari fk pertama yang <strong>mencapai atau melewati</strong> \(\frac{n}{2}\). Kelas pada baris tersebut adalah kelas median.</div>
+    </div>
+
+    <h3>Contoh</h3>
+    <table>
+      <tr><th>Views (ribu)</th><th>\(f\)</th><th>fk</th></tr>
+      <tr><td>10 sampai 19</td><td>4</td><td>4</td></tr>
+      <tr><td>20 sampai 29</td><td>6</td><td>10</td></tr>
+      <tr style="background:#dcfce7;"><td><strong>30 sampai 39</strong></td><td><strong>9</strong></td><td><strong>19</strong></td></tr>
+      <tr><td>40 sampai 49</td><td>7</td><td>26</td></tr>
+      <tr><td>50 sampai 59</td><td>4</td><td>30</td></tr>
+    </table>
+    <p>\(n = 30\), \(\frac{n}{2} = 15\). fk pertama yang melewati 15 adalah 19 pada kelas 30 sampai 39.</p>
+    <div class="warning-box">Kelas median bukan kelas dengan frekuensi terbesar. Kelas median ditentukan dari fk.</div>
+
+    <div class="quiz-area" id="quiz3Area">
+      <h4>Quiz Bagian 3</h4>
+      <p>Data pengeluaran QRIS (tabel yang sama, fk sudah lengkap):</p>
+      <table>
+        <tr><th>Pengeluaran</th><th>\(f\)</th><th>fk</th></tr>
+        <tr><td>0 sampai 24</td><td>5</td><td>5</td></tr>
+        <tr><td>25 sampai 49</td><td>8</td><td>13</td></tr>
+        <tr><td>50 sampai 74</td><td>12</td><td>25</td></tr>
+        <tr><td>75 sampai 99</td><td>10</td><td>35</td></tr>
+        <tr><td>100 sampai 124</td><td>5</td><td>40</td></tr>
+      </table>
+      <label><strong>1. Berapa n?</strong></label>
+      <input type="number" class="quiz-input" id="q3_1" placeholder="n = ..."/>
+      <label><strong>2. Berapa n/2?</strong></label>
+      <input type="number" class="quiz-input" id="q3_2" placeholder="n/2 = ..." step="any"/>
+      <label><strong>3. Kelas median adalah:</strong></label>
+      <select class="quiz-select" id="q3_3">
+        <option value="">Pilih kelas median...</option>
+        <option value="a">0 sampai 24</option>
+        <option value="b">25 sampai 49</option>
+        <option value="c">50 sampai 74</option>
+        <option value="d">75 sampai 99</option>
+        <option value="e">100 sampai 124</option>
+      </select>
+      <button class="quiz-btn" onclick="checkQuiz(3)">Periksa Jawaban</button>
+      <div class="quiz-feedback" id="fb3"></div>
+      <button class="hint-btn" id="hint3Btn" style="display:none;" onclick="toggleHint('hint3')">Minta Petunjuk</button>
+      <div class="hint-text" id="hint3">Jumlahkan semua frekuensi untuk mendapat n. Bagi n dengan 2. Bandingkan hasilnya dengan setiap fk. Kelas median adalah kelas yang fk-nya pertama kali sama atau lebih besar dari n/2.</div>
+    </div>
+  </div>
+</div>
+<!-- BAGIAN 4 -->
+<div class="bagian" id="bagian4">
+  <div class="card">
+    <h2>Bagian 4: Komponen Rumus Median</h2>
+
+    <h3>Rumus Median Data Kelompok</h3>
+    <div class="formula-box">
+      \[ Me = Tb + p \times \left(\frac{\dfrac{n}{2} - F}{f}\right) \]
+    </div>
+
+    <h3>Komponen Rumus</h3>
+    <div class="step-row">
+      <div class="step-num">Tb</div>
+      <div class="step-content"><strong>Tepi bawah kelas median.</strong> Cara: batas bawah kelas median dikurangi 0,5.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">p</div>
+      <div class="step-content"><strong>Panjang kelas.</strong> Cara: batas atas dikurangi batas bawah ditambah 1.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">n</div>
+      <div class="step-content"><strong>Jumlah seluruh frekuensi.</strong></div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">F</div>
+      <div class="step-content"><strong>fk sebelum kelas median.</strong> Lihat fk pada baris tepat di atas kelas median.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">f</div>
+      <div class="step-content"><strong>Frekuensi kelas median itu sendiri.</strong></div>
+    </div>
+
+    <div class="warning-box">
+      <strong>Jangan tertukar!</strong> \(F\) (huruf besar) = fk sebelum kelas median. \(f\) (huruf kecil) = frekuensi kelas median itu sendiri. Ini kesalahan paling umum.
+    </div>
+
+    <h3>Contoh</h3>
+    <p>Dari tabel views TikTok, kelas median 30 sampai 39:</p>
+    <table>
+      <tr><th>Komponen</th><th>Cara Menentukan</th><th>Nilai</th></tr>
+      <tr><td>\(Tb\)</td><td>30 dikurangi 0,5</td><td>29,5</td></tr>
+      <tr><td>\(p\)</td><td>39 dikurangi 30 ditambah 1</td><td>10</td></tr>
+      <tr><td>\(n\)</td><td>4 + 6 + 9 + 7 + 4</td><td>30</td></tr>
+      <tr><td>\(F\)</td><td>fk kelas 20 sampai 29</td><td>10</td></tr>
+      <tr><td>\(f\)</td><td>frekuensi kelas 30 sampai 39</td><td>9</td></tr>
+    </table>
+
+    <div class="quiz-area" id="quiz4Area">
+      <h4>Quiz Bagian 4</h4>
+      <p>Data pengeluaran QRIS (kelas median: 50 sampai 74):</p>
+      <table>
+        <tr><th>Pengeluaran</th><th>\(f\)</th><th>fk</th></tr>
+        <tr><td>0 sampai 24</td><td>5</td><td>5</td></tr>
+        <tr><td>25 sampai 49</td><td>8</td><td>13</td></tr>
+        <tr style="background:#dcfce7;"><td><strong>50 sampai 74</strong></td><td><strong>12</strong></td><td><strong>25</strong></td></tr>
+        <tr><td>75 sampai 99</td><td>10</td><td>35</td></tr>
+        <tr><td>100 sampai 124</td><td>5</td><td>40</td></tr>
+      </table>
+      <label><strong>1. Berapa Tb?</strong></label>
+      <input type="number" class="quiz-input" id="q4_1" placeholder="Tb = ..." step="any"/>
+      <label><strong>2. Berapa p?</strong></label>
+      <input type="number" class="quiz-input" id="q4_2" placeholder="p = ..."/>
+      <label><strong>3. Berapa F (fk sebelum kelas median)?</strong></label>
+      <input type="number" class="quiz-input" id="q4_3" placeholder="F = ..."/>
+      <label><strong>4. Berapa f (frekuensi kelas median)?</strong></label>
+      <input type="number" class="quiz-input" id="q4_4" placeholder="f = ..."/>
+      <button class="quiz-btn" onclick="checkQuiz(4)">Periksa Jawaban</button>
+      <div class="quiz-feedback" id="fb4"></div>
+      <button class="hint-btn" id="hint4Btn" style="display:none;" onclick="toggleHint('hint4')">Minta Petunjuk</button>
+      <div class="hint-text" id="hint4">Tb dihitung dari batas bawah kelas median dikurangi 0,5. p dihitung dari batas atas dikurangi batas bawah ditambah 1. F ada di kolom fk pada baris tepat di atas kelas median. f ada di kolom frekuensi pada baris kelas median.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BAGIAN 5 -->
+<div class="bagian" id="bagian5">
+  <div class="card">
+    <h2>Bagian 5: Menghitung Median dan Interpretasi</h2>
+
+    <h3>Urutan Pengerjaan</h3>
+    <p>Setelah semua komponen diketahui, masukkan ke rumus secara bertahap. Kerjakan dari dalam ke luar:</p>
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-content">Masukkan semua komponen ke dalam rumus.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-content">Hitung pembilang pecahan: \(\frac{n}{2} - F\)</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-content">Bagi pembilang dengan \(f\).</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-content">Kalikan hasil dengan \(p\).</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">5</div>
+      <div class="step-content">Tambahkan dengan \(Tb\) untuk mendapatkan median.</div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">6</div>
+      <div class="step-content">Tulis interpretasi sesuai konteks.</div>
+    </div>
+
+    <h3>Contoh: Views TikTok</h3>
+    <p>Komponen: \(Tb = 29{,}5\), \(p = 10\), \(n = 30\), \(F = 10\), \(f = 9\)</p>
+
+    <p><strong>Langkah 1:</strong> Masukkan ke rumus:</p>
+    <div class="formula-box" style="font-size:15px;">
+      \[ Me = 29{,}5 + 10 \times \left(\frac{15 - 10}{9}\right) \]
+    </div>
+
+    <p><strong>Langkah 2:</strong> Hitung pembilang: \(15 - 10 = 5\)</p>
+    <p><strong>Langkah 3:</strong> Bagi dengan f: \(\frac{5}{9} = 0{,}56\)</p>
+    <p><strong>Langkah 4:</strong> Kalikan dengan p: \(10 \times 0{,}56 = 5{,}56\)</p>
+    <p><strong>Langkah 5:</strong> Tambahkan Tb: \(29{,}5 + 5{,}56 = 35{,}06\)</p>
+    <p><strong>Langkah 6:</strong></p>
+    <div class="success-box">Median views TikTok adalah sekitar 35.060 views. Artinya, sekitar 50% video memiliki views kurang dari atau sama dengan 35.060, dan 50% lainnya lebih dari itu.</div>
+
+    <h3>Apa itu Interpretasi?</h3>
+    <div class="note-box">
+      Interpretasi adalah penjelasan makna median sesuai konteks. Format: "Median [konteks] adalah sekitar [nilai]. Artinya, sekitar 50% [subjek] memiliki [konteks] kurang dari atau sama dengan [nilai], dan 50% lainnya lebih dari itu."
+    </div>
+
+    <!-- QUIZ BAGIAN 5 -->
+       <div class="quiz-area" id="quiz5Area">
+      <h4>Quiz Bagian 5</h4>
+      <p>Hitunglah median dari data pengeluaran QRIS berikut:</p>
+      <table>
+        <tr><th>Pengeluaran (ribu Rp)</th><th>\(f\)</th><th>fk</th></tr>
+        <tr><td>0 sampai 24</td><td>5</td><td>5</td></tr>
+        <tr><td>25 sampai 49</td><td>8</td><td>13</td></tr>
+        <tr style="background:#dcfce7;"><td><strong>50 sampai 74</strong></td><td><strong>12</strong></td><td><strong>25</strong></td></tr>
+        <tr><td>75 sampai 99</td><td>10</td><td>35</td></tr>
+        <tr><td>100 sampai 124</td><td>5</td><td>40</td></tr>
+      </table>
+      <p>Kelas median: <strong>50 sampai 74</strong></p>
+
+      <!-- LANGKAH 0: RUMUS LENGKAP -->
+      <div class="info-box">
+        <strong>Langkah 0: Rumus yang akan digunakan</strong>
+        <div style="text-align:center;font-size:16px;margin:8px 0;">
+          \[ Me = Tb + p \times \left(\frac{\dfrac{n}{2} - F}{f}\right) \]
+        </div>
+      </div>
+
+      <!-- LANGKAH 1: ISI KOMPONEN -->
+      <p><strong>Langkah 1: Masukkan nilai setiap komponen</strong></p>
+      <p>Tentukan nilai dari tabel di atas lalu isikan:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <div>
+          <label>\(Tb\) = </label>
+          <input type="number" class="quiz-input" id="q5_tb" placeholder="..." step="any"/>
+        </div>
+        <div>
+          <label>\(p\) = </label>
+          <input type="number" class="quiz-input" id="q5_p" placeholder="..."/>
+        </div>
+        <div>
+          <label>\(\frac{n}{2}\) = </label>
+          <input type="number" class="quiz-input" id="q5_nhalf" placeholder="..." step="any"/>
+        </div>
+        <div>
+          <label>\(F\) = </label>
+          <input type="number" class="quiz-input" id="q5_F" placeholder="..."/>
+        </div>
+        <div style="grid-column:1/3;">
+          <label>\(f\) = </label>
+          <input type="number" class="quiz-input" id="q5_f" placeholder="..."/>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--muted);">Setelah diisi, rumusnya menjadi:</p>
+      <div style="text-align:center;font-size:15px;margin:4px 0;color:var(--primary-dark);">
+        \[ Me = \boxed{Tb} + \boxed{p} \times \left(\frac{\boxed{\frac{n}{2}} - \boxed{F}}{\boxed{f}}\right) \]
+      </div>
+
+      <!-- LANGKAH 2: HITUNG PEMBILANG -->
+      <p><strong>Langkah 2: Hitung pembilang pecahan</strong></p>
+      <p>Dari langkah 1, hitung \(\frac{n}{2} - F\):</p>
+      <div style="text-align:center;font-size:15px;margin:4px 0;color:var(--primary-dark);">
+        \[ Me = Tb + p \times \left(\frac{\boxed{\frac{n}{2} - F}}{f}\right) \]
+      </div>
+      <label>\(\frac{n}{2} - F\) = </label>
+      <input type="number" class="quiz-input" id="q5_step2" placeholder="Hasil n/2 dikurangi F = ..." step="any"/>
+
+      <!-- LANGKAH 3: HITUNG p x PECAHAN -->
+      <p><strong>Langkah 3: Hitung \(p \times \frac{\frac{n}{2} - F}{f}\)</strong></p>
+      <p>Bagi hasil langkah 2 dengan \(f\), lalu kalikan dengan \(p\):</p>
+      <div style="text-align:center;font-size:15px;margin:4px 0;color:var(--primary-dark);">
+        \[ Me = Tb + \boxed{p \times \frac{\frac{n}{2} - F}{f}} \]
+      </div>
+      <label>Hasil \(p \times \frac{\frac{n}{2} - F}{f}\) = </label>
+      <span style="font-size:11px;color:var(--muted);">(bulatkan 2 desimal)</span>
+      <input type="number" class="quiz-input" id="q5_step3" placeholder="Hasil perkalian = ..." step="any"/>
+
+      <!-- LANGKAH 4: HITUNG MEDIAN -->
+      <p><strong>Langkah 4: Hitung median</strong></p>
+      <p>Tambahkan \(Tb\) dengan hasil langkah 3:</p>
+      <div style="text-align:center;font-size:15px;margin:4px 0;color:var(--primary-dark);">
+        \[ Me = \boxed{Tb + \text{hasil langkah 3}} \]
+      </div>
+      <label>\(Me\) = </label>
+      <span style="font-size:11px;color:var(--muted);">(bulatkan 2 desimal)</span>
+      <input type="number" class="quiz-input" id="q5_step4" placeholder="Me = ..." step="any"/>
+
+      <!-- LANGKAH 5: INTERPRETASI -->
+      <p><strong>Langkah 5: Tuliskan interpretasi</strong></p>
+      <p style="font-size:12px;color:var(--muted);">Interpretasi harus memuat: (1) nilai median, (2) konteks data yaitu pengeluaran QRIS, (3) makna 50% data di bawah dan 50% di atas median.</p>
+      <textarea class="quiz-input" id="q5_interp" rows="4" placeholder="Median pengeluaran QRIS siswa adalah sekitar ... Artinya, sekitar 50% siswa ... dan 50% lainnya ..." style="resize:vertical;"></textarea>
+
+      <button class="quiz-btn" onclick="checkQuiz(5)">Periksa Jawaban</button>
+      <div class="quiz-feedback" id="fb5"></div>
+      <button class="hint-btn" id="hint5Btn" style="display:none;" onclick="toggleHint('hint5')">Minta Petunjuk</button>
+      <div class="hint-text" id="hint5">
+        Langkah 1: Tb dihitung dari batas bawah kelas median dikurangi 0,5. p dihitung dari batas atas dikurangi batas bawah ditambah 1. n/2 dihitung dari jumlah seluruh frekuensi dibagi 2. F ada di kolom fk pada baris tepat di atas kelas median. f ada di kolom frekuensi pada baris kelas median.<br>
+        Langkah 2: Kurangkan n/2 dengan F yang sudah kamu tentukan.<br>
+        Langkah 3: Bagi hasil langkah 2 dengan f, lalu kalikan hasilnya dengan p.<br>
+        Langkah 4: Tambahkan Tb dengan hasil langkah 3.<br>
+        Langkah 5: Tulis interpretasi yang memuat nilai median, konteks pengeluaran QRIS, dan makna bahwa 50% data di bawah dan 50% di atas median.
+      </div>
+    </div>
+
+<!-- CATATAN SISWA -->
+<div class="bagian" id="bagianCatatan">
+  <div class="card" style="border:2px dashed #fb923c;background:#fff7ed;">
+    <h2 style="color:#c2410c;border-bottom:2px solid #fb923c;">Catatan yang Wajib Ditulis di Buku</h2>
+    <div style="background:#fff;border-radius:12px;padding:16px;margin:8px 0;border:1px solid #fed7aa;">
+
+      <h3 style="color:#c2410c;margin:0 0 8px;">Median Data Kelompok</h3>
+
+      <p><strong>1. Rumus:</strong></p>
+      <div class="formula-box" style="margin:6px 0;">
+        \[ Me = Tb + p \times \left(\frac{\dfrac{n}{2} - F}{f}\right) \]
+      </div>
+
+      <p><strong>2. Arti simbol:</strong></p>
+      <table>
+        <tr><th>Simbol</th><th>Arti</th></tr>
+        <tr><td>\(Me\)</td><td>Median data kelompok</td></tr>
+        <tr><td>\(Tb\)</td><td>Tepi bawah kelas median (batas bawah dikurangi 0,5)</td></tr>
+        <tr><td>\(p\)</td><td>Panjang kelas (batas atas dikurangi batas bawah ditambah 1)</td></tr>
+        <tr><td>\(n\)</td><td>Jumlah seluruh frekuensi</td></tr>
+        <tr><td>\(F\)</td><td>Frekuensi kumulatif sebelum kelas median</td></tr>
+        <tr><td>\(f\)</td><td>Frekuensi kelas median</td></tr>
+      </table>
+
+      <p><strong>3. Langkah penyelesaian:</strong></p>
+      <ol>
+        <li>Hitung jumlah frekuensi \(n\).</li>
+        <li>Hitung frekuensi kumulatif (fk).</li>
+        <li>Hitung letak median \(\frac{n}{2}\).</li>
+        <li>Tentukan kelas median (fk pertama yang mencapai atau melewati \(\frac{n}{2}\)).</li>
+        <li>Tentukan \(Tb\), \(p\), \(F\), dan \(f\).</li>
+        <li>Masukkan ke rumus dan hitung.</li>
+        <li>Tulis interpretasi.</li>
+      </ol>
+
+      <p><strong>4. Cara menulis interpretasi:</strong></p>
+      <p style="font-size:13px;color:#92400e;background:#fef3c7;padding:8px;border-radius:8px;">
+        "Median [konteks data] adalah sekitar [nilai]. Artinya, sekitar 50% [subjek] memiliki [konteks] kurang dari atau sama dengan [nilai], dan 50% lainnya lebih dari itu."
+      </p>
+
+      <p><strong>5. Peringatan penting:</strong></p>
+      <ul>
+        <li>Kelas median BUKAN kelas dengan frekuensi terbesar.</li>
+        <li>\(F\) (huruf besar) BUKAN sama dengan \(f\) (huruf kecil).</li>
+        <li>\(\frac{n}{2}\) boleh desimal, jangan dibulatkan.</li>
+        <li>Tepi bawah bukan batas bawah. \(Tb\) = batas bawah dikurangi 0,5.</li>
+      </ul>
+    </div>
+
+    <div class="note-box">
+      <strong>Instruksi:</strong> Salin catatan di atas ke buku catatanmu sekarang. Catatan ini akan kamu butuhkan saat mengerjakan LKPD dan Post-Test di kelas. Guru akan mengecek catatan di bukumu.
+    </div>
+  </div>
+</div>
+
+<!-- HALAMAN SELESAI -->
+<div class="bagian" id="bagianSelesai">
+  <div class="card" style="text-align:center;padding:32px 20px;">
+    <h2 style="color:var(--success);border:none;padding:0;">Selamat! Kamu Telah Menyelesaikan Materi</h2>
+    <p style="margin:12px 0;">Kamu sudah mempelajari semua langkah menghitung median data kelompok.</p>
+
+    <div class="info-box" style="text-align:left;">
+      <strong>Ringkasan langkah:</strong>
+      <ol>
+        <li>Baca tabel distribusi frekuensi.</li>
+        <li>Hitung jumlah frekuensi \(n\).</li>
+        <li>Hitung frekuensi kumulatif.</li>
+        <li>Tentukan letak median \(\frac{n}{2}\).</li>
+        <li>Tentukan kelas median.</li>
+        <li>Tentukan \(Tb\), \(p\), \(F\), \(f\).</li>
+        <li>Substitusi ke rumus secara bertahap.</li>
+        <li>Tulis interpretasi.</li>
+      </ol>
+    </div>
+
+    <p style="margin:16px 0;"><strong>Langkah selanjutnya:</strong></p>
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
+      <a href="https://ppg-aw.github.io/SMKN1/Asessment7.html" style="display:inline-block;padding:12px 32px;background:var(--orange);color:#fff;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;width:80%;text-align:center;">Kerjakan Pre-Test</a>
+      <a href="https://ppg-aw.github.io/SMKN1/WebInteraktif7.html" style="display:inline-block;padding:12px 32px;background:var(--purple);color:#fff;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;width:80%;text-align:center;">Latihan Soal Generator</a>
+      <button onclick="window.print()" style="padding:12px 32px;background:var(--muted);color:#fff;border-radius:12px;border:none;font-weight:700;font-size:15px;cursor:pointer;width:80%;">Cetak Materi sebagai PDF</button>
+    </div>
+    <p id="completionTime" style="margin-top:16px;color:var(--muted);font-size:12px;"></p>
+  </div>
+</div>
+
+</div><!-- end materiContent -->
+</div><!-- end container -->
+
+<!-- ============================== -->
+<!-- JAVASCRIPT                     -->
+<!-- ============================== -->
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzAVK2RAoGxK_KmMh_7wceXVWfbIqtE-QG3aKrJqja-A9QA6NFqSGfslpJN1jHa6DzJQ/exec';
+const SHEET_SOURCE = 'MateriAjar7';
+
+let studentNames = [];
+let currentUser = '';
+let quizPassed = [false, false, false, false, false];
+let loginTime = null;
+
+// ========== LOAD NAMES ==========
+async function loadNames() {
+  // Fallback names
+  const fallback = [
+    "AGUSTYA RAMADHANI","ANINDYA AZZAHRA","ANJA ALZENA TANJUNG",
+    "AURELIA KEYSHA VERNANDYA","AYU WIDYASARI","AZZAHRA ISMAYANTI",
+    "CARISSA ARVITA PUTRI","DAVINA ALYA PUTRI","DITA NANDA PUTRI",
+    "EKA WULANSARI","FEBBY AULIA DAMAYANTI","JENNYTA WULANDARI",
+    "LAURA OKTAVIANI","MAITSA KHALISTA PUTRI","MARVA MAULIDA",
+    "MELYNDA ANANTA SARI","NABILLA AYU EVANIA","NAMIRA SETARIANTI",
+    "NANDITA FITRIA RAMADANI","NAYLA AZKIYA HAFIZHAH","NOLA FEBI AYU DANITYA",
+    "NOVI MARTHALITA","OCTAVIA FITRIYANI","REKA MUSTIKA FAHLUIZA",
+    "RORO ENDAH MUSTIKA NINGRUM","SALSABILA CHALISA RAHMA WIBOWO",
+    "SEFA FEBI SAPUTRI","SUCI NAZILAH","TARA ARGYA NUR AGUSTIN",
+    "TIRTA ARUM KUMALA DEWI","WISNU BIMA NURIN PRATAMA"
+  ];
+
+  if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    studentNames = fallback;
+    return;
+  }
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?action=getNames&source=' + SHEET_SOURCE);
+    const data = await res.json();
+    studentNames = (data && data.names && data.names.length > 0) ? data.names.map(n => n.toUpperCase()) : fallback;
+  } catch(e) {
+    studentNames = fallback;
+  }
+}
+
+// ========== LOAD PROGRESS ==========
+async function loadProgress(name) {
+  if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return null;
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?action=getProgress&source=' + SHEET_SOURCE + '&nama=' + encodeURIComponent(name));
+    return await res.json();
+  } catch(e) { return null; }
+}
+
+// ========== SEND TO SHEETS ==========
+function sendToSheets(action, data) {
+  if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    console.log('Data:', action, data);
+    return;
+  }
+
+  // Kirim semua data sebagai parameter URL terpisah
+  let params = 'action=' + encodeURIComponent(action);
+  params += '&source=' + encodeURIComponent(SHEET_SOURCE);
+  params += '&t=' + encodeURIComponent(new Date().toISOString());
+
+  // Tambahkan setiap key dari data sebagai parameter
+  for (const key in data) {
+    let val = data[key];
+    // Jika array, ubah jadi string
+    if (Array.isArray(val)) {
+      val = val.join(',');
+    }
+    params += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(val);
+  }
+
+  const url = APPS_SCRIPT_URL + '?' + params;
+
+  fetch(url)
+    .then(res => res.json())
+    .then(result => console.log('Terkirim:', action, result))
+    .catch(err => console.log('Error kirim:', err));
+}// ========== LOGIN ==========
+function searchName() {
+  const val = document.getElementById('nameInput').value.trim().toUpperCase();
+  const results = document.getElementById('searchResults');
+  if (val.length === 0) { results.classList.remove('active'); return; }
+
+  const filtered = studentNames.filter(n => n.includes(val));
+  let html = '';
+  filtered.forEach(n => {
+    html += '<div class="search-item" onclick="selectName(\'' + n.replace(/'/g, "\\'") + '\')">' + n + '</div>';
+  });
+  if (filtered.length === 0 && val.length >= 3) {
+    html += '<div class="search-item new" onclick="addAndSelect(\'' + val.replace(/'/g, "\\'") + '\')">Tambah nama baru: "' + val + '"</div>';
+  }
+  results.innerHTML = html;
+  results.classList.toggle('active', html.length > 0);
+}
+
+function selectName(name) {
+  currentUser = name;
+  document.getElementById('nameInput').value = name;
+  document.getElementById('searchResults').classList.remove('active');
+  document.getElementById('selectedName').innerHTML = '<span class="user-badge">Nama terpilih: ' + name + '</span>';
+  document.getElementById('loginBtn').disabled = false;
+}
+
+function addAndSelect(name) {
+  const f = name.toUpperCase();
+  if (!studentNames.includes(f)) {
+    studentNames.push(f);
+    sendToSheets('addName', { nama: f });
+  }
+  selectName(f);
+}
+
+async function doLogin() {
+  if (!currentUser) return;
+  const btn = document.getElementById('loginBtn');
+  btn.textContent = 'Memuat...';
+  btn.disabled = true;
+  document.getElementById('loginStatus').textContent = 'Mengecek data...';
+
+  loginTime = new Date();
+  const progress = await loadProgress(currentUser);
+
+  if (progress && progress.quizPassed && Array.isArray(progress.quizPassed)) {
+    quizPassed = progress.quizPassed;
+    sendToSheets('login_kembali', { nama: currentUser, waktu: loginTime.toISOString() });
+  } else {
+    quizPassed = [false, false, false, false, false];
+    sendToSheets('login', { nama: currentUser, waktu: loginTime.toISOString() });
+  }
+
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('materiContent').style.display = 'block';
+  applyProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (window.MathJax) MathJax.typesetPromise();
+}
+
+// ========== PROGRESS ==========
+function applyProgress() {
+  const allDone = quizPassed.every(Boolean);
+
+  for (let i = 0; i < 5; i++) {
+    const bagian = document.getElementById('bagian' + (i + 1));
+    if (i === 0) {
+      bagian.classList.add('visible');
+    } else if (allDone || quizPassed[i - 1]) {
+      bagian.classList.add('visible');
+    } else {
+      bagian.classList.remove('visible');
+    }
+
+    // Jika quiz sudah pernah benar, tampilkan feedback benar dan disable input
+    if (quizPassed[i]) {
+      const fb = document.getElementById('fb' + (i + 1));
+      if (fb) {
+        fb.className = 'quiz-feedback correct';
+        fb.innerHTML = 'Kamu sudah menjawab dengan benar sebelumnya.';
+      }
+    }
+  }
+
+  if (allDone) {
+    document.getElementById('bagianCatatan').classList.add('visible');
+    document.getElementById('bagianSelesai').classList.add('visible');
+}
+}
+
+function saveProgressToSheets() {
+  sendToSheets('saveProgress', {
+    nama: currentUser,
+    quizPassed: quizPassed,
+    loginTime: loginTime ? loginTime.toISOString() : ''
+  });
+}
+
+function unlockBagian(quizNum) {
+  quizPassed[quizNum - 1] = true;
+  saveProgressToSheets();
+
+  // Buka bagian berikutnya
+  if (quizNum < 5) {
+    const next = document.getElementById('bagian' + (quizNum + 1));
+    next.classList.add('visible');
+    setTimeout(() => {
+      next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  }
+
+  // Cek apakah semua selesai
+  if (quizPassed.every(Boolean)) {
+    var catatan = document.getElementById('bagianCatatan');
+    catatan.classList.add('visible');
+    var selesai = document.getElementById('bagianSelesai');
+    selesai.classList.add('visible');
+
+    const now = new Date();
+    const diff = loginTime ? Math.round((now - loginTime) / 60000) : 0;
+    document.getElementById('completionTime').textContent = 'Waktu belajar: ' + diff + ' menit. Selesai pada ' + now.toLocaleString('id-ID');
+
+    sendToSheets('selesai', {
+      nama: currentUser,
+      waktuMulai: loginTime ? loginTime.toISOString() : '',
+      waktuSelesai: now.toISOString(),
+      durasiMenit: diff,
+      quizPassed: quizPassed
+    });
+
+    setTimeout(() => {
+      selesai.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  }
+
+  if (window.MathJax) MathJax.typesetPromise();
+}
+
+// ========== HINT ==========
+function toggleHint(id) {
+  document.getElementById(id).classList.toggle('visible');
+}
+
+// ========== QUIZ HELPERS ==========
+function markInput(id, correct) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('correct', 'wrong');
+  el.classList.add(correct ? 'correct' : 'wrong');
+}
+
+function markSelect(id, correct) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('correct', 'wrong');
+  el.classList.add(correct ? 'correct' : 'wrong');
+}
+
+function showFeedback(id, correct, msg) {
+  const fb = document.getElementById(id);
+  fb.className = 'quiz-feedback ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = msg;
+}
+
+// ========== UNIFIED QUIZ CHECK ==========
+function checkQuiz(num) {
+  if (quizPassed[num - 1]) return; // sudah selesai
+
+  switch(num) {
+    case 1: checkQuiz1(); break;
+    case 2: checkQuiz2(); break;
+    case 3: checkQuiz3(); break;
+    case 4: checkQuiz4(); break;
+    case 5: checkQuiz5(); break;
+  }
+}
+
+function checkQuiz1() {
+  const a1 = parseFloat(document.getElementById('q1_1').value);
+  const a2 = parseFloat(document.getElementById('q1_2').value);
+  const a3 = parseFloat(document.getElementById('q1_3').value);
+  const c1 = a1===20, c2 = a2===49, c3 = a3===9;
+  markInput('q1_1',c1); markInput('q1_2',c2); markInput('q1_3',c3);
+  if (c1&&c2&&c3) {
+    showFeedback('fb1', true, 'Benar semua! Bagian 2 sudah terbuka di bawah.');
+    unlockBagian(1);
+    document.getElementById('hint1Btn').style.display='none';
+    sendToSheets('quiz', {nama:currentUser, bagian:1, status:'benar'});
+  } else {
+    let m='Periksa jawaban yang ditandai merah. ';
+    if(!c1) m+='Lihat baris kedua pada tabel. Angka pertama pada interval tersebut adalah batas bawah. ';
+    if(!c2) m+='Lihat baris keempat pada tabel. Angka kedua pada interval tersebut adalah batas atas. ';
+    if(!c3) m+='Lihat kolom frekuensi pada baris kelas 30 sampai 39. ';
+    showFeedback('fb1', false, m);
+    document.getElementById('hint1Btn').style.display='inline-block';
+  }
+}
+
+function checkQuiz2() {
+  const a1=parseFloat(document.getElementById('q2_1').value);
+  const a2=parseFloat(document.getElementById('q2_2').value);
+  const a3=parseFloat(document.getElementById('q2_3').value);
+  const a4=parseFloat(document.getElementById('q2_4').value);
+  const c1=a1===13,c2=a2===25,c3=a3===35,c4=a4===40;
+  markInput('q2_1',c1);markInput('q2_2',c2);markInput('q2_3',c3);markInput('q2_4',c4);
+  if(c1&&c2&&c3&&c4){
+    showFeedback('fb2',true,'Benar semua! Bagian 3 sudah terbuka di bawah.');
+    unlockBagian(2);
+    document.getElementById('hint2Btn').style.display='none';
+    sendToSheets('quiz',{nama:currentUser,bagian:2,status:'benar'});
+  } else {
+    let m='Periksa jawaban yang ditandai merah. fk dihitung dengan menambahkan frekuensi baris sekarang ke fk baris sebelumnya. ';
+    if(!c1) m+='fk kelas kedua = fk kelas pertama ditambah frekuensi kelas kedua. ';
+    if(!c2) m+='fk kelas ketiga = fk kelas kedua ditambah frekuensi kelas ketiga. ';
+    if(!c3) m+='fk kelas keempat = fk kelas ketiga ditambah frekuensi kelas keempat. ';
+    if(!c4) m+='fk kelas kelima = fk kelas keempat ditambah frekuensi kelas kelima. ';
+    showFeedback('fb2',false,m);
+    document.getElementById('hint2Btn').style.display='inline-block';
+  }
+}
+
+function checkQuiz3() {
+  const a1=parseFloat(document.getElementById('q3_1').value);
+  const a2=parseFloat(document.getElementById('q3_2').value);
+  const a3=document.getElementById('q3_3').value;
+  const c1=a1===40,c2=a2===20,c3=a3==='c';
+  markInput('q3_1',c1);markInput('q3_2',c2);markSelect('q3_3',c3);
+  if(c1&&c2&&c3){
+    showFeedback('fb3',true,'Benar! Bagian 4 sudah terbuka di bawah.');
+    unlockBagian(3);
+    document.getElementById('hint3Btn').style.display='none';
+    sendToSheets('quiz',{nama:currentUser,bagian:3,status:'benar'});
+  } else {
+    let m='Periksa jawaban yang ditandai merah. ';
+    if(!c1) m+='Jumlahkan semua frekuensi pada tabel untuk mendapatkan n. ';
+    if(!c2) m+='Bagi n dengan 2. Hasilnya boleh desimal. ';
+    if(!c3) m+='Bandingkan n/2 dengan setiap fk. Cari fk pertama yang nilainya sama atau lebih besar dari n/2. ';
+    showFeedback('fb3',false,m);
+    document.getElementById('hint3Btn').style.display='inline-block';
+  }
+}
+
+function checkQuiz4() {
+  const a1=parseFloat(document.getElementById('q4_1').value);
+  const a2=parseFloat(document.getElementById('q4_2').value);
+  const a3=parseFloat(document.getElementById('q4_3').value);
+  const a4=parseFloat(document.getElementById('q4_4').value);
+  const c1=a1===49.5,c2=a2===25,c3=a3===13,c4=a4===12;
+  markInput('q4_1',c1);markInput('q4_2',c2);markInput('q4_3',c3);markInput('q4_4',c4);
+  if(c1&&c2&&c3&&c4){
+    showFeedback('fb4',true,'Benar semua! Bagian 5 sudah terbuka di bawah.');
+    unlockBagian(4);
+    document.getElementById('hint4Btn').style.display='none';
+    sendToSheets('quiz',{nama:currentUser,bagian:4,status:'benar'});
+  } else {
+    let m='Periksa jawaban yang ditandai merah. ';
+    if(!c1) m+='Tb dihitung dari batas bawah kelas median dikurangi 0,5. Batas bawah kelas 50 sampai 74 ada di tabel. ';
+    if(!c2) m+='p dihitung dari batas atas dikurangi batas bawah kelas median ditambah 1. ';
+    if(!c3) m+='F adalah fk pada baris tepat di atas kelas median. Lihat kolom fk. ';
+    if(!c4) m+='f adalah frekuensi pada baris kelas median itu sendiri. Lihat kolom f. ';
+    showFeedback('fb4',false,m);
+    document.getElementById('hint4Btn').style.display='inline-block';
+  }
+}
+
+function checkQuiz5() {
+  // Data: n=40, kelas median 50-74
+  // Tb=49.5, p=25, n/2=20, F=13, f=12
+  // Langkah 2: n/2-F = 20-13 = 7
+  // Langkah 3: p*(n/2-F)/f = 25*(7/12) = 25*0.5833 = 14.58
+  // Langkah 4: Me = 49.5 + 14.58 = 64.08
+
+  const vTb = parseFloat(document.getElementById('q5_tb').value);
+  const vP = parseFloat(document.getElementById('q5_p').value);
+  const vNhalf = parseFloat(document.getElementById('q5_nhalf').value);
+  const vF = parseFloat(document.getElementById('q5_F').value);
+  const vf = parseFloat(document.getElementById('q5_f').value);
+  const vStep2 = parseFloat(document.getElementById('q5_step2').value);
+  const vStep3 = parseFloat(document.getElementById('q5_step3').value);
+  const vStep4 = parseFloat(document.getElementById('q5_step4').value);
+  const vInterp = document.getElementById('q5_interp').value.trim();
+
+  const cTb = vTb===49.5;
+  const cP = vP===25;
+  const cNhalf = vNhalf===20;
+  const cF = vF===13;
+  const cf = vf===12;
+  const cStep2 = vStep2===7;
+  const cStep3 = (vStep3>=14.58 && vStep3<=14.59);
+  const cStep4 = (vStep4>=64.08 && vStep4<=64.09);
+
+  // Validasi interpretasi: harus memuat angka median, kata "pengeluaran" atau "QRIS", dan kata "50%"
+  const interpLower = vInterp.toLowerCase();
+  const hasNilai = interpLower.includes('64') || interpLower.includes('64,08') || interpLower.includes('64.08');
+  const hasKonteks = interpLower.includes('pengeluaran') || interpLower.includes('qris');
+  const hasMakna = interpLower.includes('50%') || interpLower.includes('50 %') || interpLower.includes('separuh') || interpLower.includes('setengah');
+  const cInterp = vInterp.length >= 30 && hasNilai && hasKonteks && hasMakna;
+
+  markInput('q5_tb', cTb);
+  markInput('q5_p', cP);
+  markInput('q5_nhalf', cNhalf);
+  markInput('q5_F', cF);
+  markInput('q5_f', cf);
+  markInput('q5_step2', cStep2);
+  markInput('q5_step3', cStep3);
+  markInput('q5_step4', cStep4);
+
+  const ta = document.getElementById('q5_interp');
+  ta.classList.remove('correct','wrong');
+  ta.classList.add(cInterp ? 'correct' : 'wrong');
+
+  const allOk = cTb && cP && cNhalf && cF && cf && cStep2 && cStep3 && cStep4 && cInterp;
+
+  if (allOk) {
+    showFeedback('fb5', true, 'Luar biasa! Kamu sudah berhasil menghitung median data kelompok dan menuliskan interpretasinya dengan lengkap!');
+    unlockBagian(5);
+    document.getElementById('hint5Btn').style.display='none';
+    sendToSheets('quiz', {nama:currentUser, bagian:5, status:'benar'});
+  } else {
+    let m='Periksa bagian yang ditandai merah.<br>';
+    if(!cTb) m+='Tb: Hitung batas bawah kelas median dikurangi 0,5.<br>';
+    if(!cP) m+='p: Hitung batas atas dikurangi batas bawah kelas median ditambah 1.<br>';
+    if(!cNhalf) m+='n/2: Bagi jumlah seluruh frekuensi dengan 2.<br>';
+    if(!cF) m+='F: Lihat fk pada baris tepat di atas kelas median.<br>';
+    if(!cf) m+='f: Lihat frekuensi pada baris kelas median.<br>';
+    if(!cStep2) m+='Langkah 2: Kurangkan n/2 dengan F.<br>';
+    if(!cStep3) m+='Langkah 3: Bagi hasil langkah 2 dengan f, lalu kalikan dengan p. Bulatkan 2 desimal.<br>';
+    if(!cStep4) m+='Langkah 4: Tambahkan Tb dengan hasil langkah 3. Bulatkan 2 desimal.<br>';
+    if(!cInterp) {
+      m+='Langkah 5: Interpretasi belum lengkap. Pastikan memuat:<br>';
+      if(!hasNilai) m+='- Nilai median (angka hasil perhitungan).<br>';
+      if(!hasKonteks) m+='- Konteks data yaitu pengeluaran QRIS.<br>';
+      if(!hasMakna) m+='- Makna bahwa 50% data di bawah dan 50% di atas median.<br>';
+      if(vInterp.length<30) m+='- Tuliskan lebih lengkap (minimal 30 karakter).<br>';
+    }
+    showFeedback('fb5', false, m);
+    document.getElementById('hint5Btn').style.display='inline-block';
+  }
+}
+
+// ========== CLOSE SEARCH ==========
+document.addEventListener('click', function(e) {
+  const sc = document.querySelector('.search-container');
+  if (sc && !sc.contains(e.target)) {
+    document.getElementById('searchResults').classList.remove('active');
+  }
+});
+
+// ========== INIT ==========
+loadNames();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Post-Test - Median Data Kelompok</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root{--primary:#1d4ed8;--primary-dark:#1e3a8a;--orange:#ea580c;--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;--purple:#7c3aed;--text:#1e293b;--muted:#64748b;--border:#cbd5e1;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+    .header{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+    .header h1{font-size:20px;margin:0 0 4px;}
+    .header p{font-size:13px;opacity:.85;margin:0;}
+    .container{max-width:640px;margin:0 auto;padding:16px;}
+    .card{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(15,23,42,.06);border:1px solid #e2e8f0;}
+    .card h2{font-size:18px;color:var(--primary-dark);margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #dbeafe;}
+    .card p{margin:0 0 8px;}
+    .info-box{background:#eff6ff;border-left:5px solid var(--primary);padding:12px;border-radius:10px;margin:10px 0;}
+    .success-box{background:#ecfdf5;border-left:5px solid var(--success);padding:12px;border-radius:10px;margin:10px 0;}
+    .warning-box{background:#fef2f2;border-left:5px solid var(--danger);padding:12px;border-radius:10px;margin:10px 0;}
+    .note-box{background:#fffbeb;border-left:5px solid var(--accent);padding:12px;border-radius:10px;margin:10px 0;}
+    table{width:100%;border-collapse:collapse;margin:8px 0;font-size:14px;}
+    th,td{border:1px solid var(--border);padding:8px 10px;text-align:center;}
+    th{background:#dbeafe;color:var(--primary-dark);font-weight:700;}
+    tr:nth-child(even) td{background:#f8fafc;}
+    .login-page{min-height:80vh;display:flex;align-items:center;justify-content:center;}
+    .login-card{background:#fff;border-radius:20px;padding:40px 24px;max-width:420px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(15,23,42,.1);border:1px solid #e2e8f0;}
+    .login-card h2{color:var(--primary-dark);margin-bottom:8px;border:none;padding:0;}
+    .login-card p{color:var(--muted);margin-bottom:16px;}
+    .search-box{position:relative;width:100%;}
+    .s-input{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-size:15px;outline:none;}
+    .s-input:focus{border-color:var(--primary);}
+    .s-list{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:0 0 12px 12px;max-height:200px;overflow-y:auto;z-index:10;display:none;}
+    .s-item{padding:10px 16px;cursor:pointer;font-size:14px;text-align:left;border-bottom:1px solid #f1f5f9;}
+    .s-item:hover{background:#dbeafe;}
+    .s-item.new{color:var(--success);font-weight:700;}
+    .u-badge{display:inline-block;background:#ecfdf5;color:#166534;padding:6px 16px;border-radius:999px;font-weight:700;font-size:13px;}
+    .btn-login{margin-top:12px;padding:12px 32px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+    .btn-login:disabled{background:#94a3b8;cursor:not-allowed;}
+    .q-input{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;margin:4px 0 8px;outline:none;}
+    .q-input:focus{border-color:var(--primary);}
+    .q-input.ok{border-color:var(--success);background:#f0fdf4;}
+    .q-input.no{border-color:var(--danger);background:#fef2f2;}
+    .btn-blue{padding:12px 24px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;width:100%;}
+    .btn-blue:disabled{background:#94a3b8;cursor:not-allowed;}
+    .soal-num{display:inline-block;background:var(--primary);color:#fff;padding:2px 12px;border-radius:8px;font-size:13px;font-weight:700;margin-bottom:6px;}
+    .skor-display{text-align:center;padding:24px;margin:16px 0;}
+    .skor-num{font-size:48px;font-weight:800;}
+    .skor-label{font-size:14px;color:var(--muted);margin-top:4px;}
+    .fb-badge{display:inline-block;padding:8px 24px;border-radius:12px;font-weight:700;font-size:16px;margin-top:8px;}
+    .fb-sb{background:#dcfce7;color:#166534;}
+    .fb-b{background:#fef3c7;color:#92400e;}
+    .fb-pb{background:#fee2e2;color:#991b1b;}
+    .fb-bt{background:#fef2f2;color:#dc2626;}
+    .already-done{text-align:center;padding:20px;}
+    @media(max-width:480px){.card{padding:14px;}table{font-size:12px;}th,td{padding:6px;}.skor-num{font-size:36px;}}
+  </style>
+</head>
+<body>
+<a href="https://ppg-aw.github.io/SMKN1/Pertemuan7.html" style="display:block;background:#0f172a;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:700;text-decoration:none;">Kembali ke Halaman Utama Pertemuan 7</a>
+<div class="header">
+  <h1>Post-Test: Median Data Kelompok</h1>
+  <p>Matematika Kelas X / SMKN 1 Salatiga</p>
+</div>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div class="login-page" id="pgLogin">
+  <div class="login-card">
+    <h2>Post-Test</h2>
+    <p>Kerjakan 8 soal berikut secara mandiri dan jujur. Boleh melihat catatan rumus di buku.</p>
+    <div class="search-box" id="searchBox">
+      <input type="text" class="s-input" id="inpNama" placeholder="Ketik nama lengkapmu..."/>
+      <div class="s-list" id="sList"></div>
+    </div>
+    <div id="dispNama" style="margin-top:8px;"></div>
+    <button class="btn-login" id="btnLogin" disabled>Mulai Post-Test</button>
+    <div id="loginMsg" style="margin-top:8px;font-size:13px;color:var(--muted);"></div>
+  </div>
+</div>
+
+<!-- SUDAH MENGERJAKAN -->
+<div id="pgDone" style="display:none;">
+  <div class="card">
+    <div class="already-done">
+      <h2 style="border:none;padding:0;">Kamu Sudah Mengerjakan Post-Test</h2>
+      <div class="skor-display">
+        <div class="skor-num" id="doneScore">0</div>
+        <div class="skor-label">Skor Post-Test</div>
+        <div class="fb-badge" id="doneFb"></div>
+      </div>
+      <p>Hasil post-test sudah terekam. Silakan tunggu instruksi guru untuk tindak lanjut.</p>
+      <div style="margin-top:16px;">
+        <a href="https://ppg-aw.github.io/SMKN1/WebInteraktif7.html" style="display:inline-block;padding:12px 24px;background:var(--purple);color:#fff;border-radius:12px;text-decoration:none;font-weight:700;">Latihan Soal Generator</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SOAL -->
+<div id="pgSoal" style="display:none;">
+  <div class="card">
+    <h2>Post-Test: Median Data Kelompok</h2>
+    <div class="note-box">Kerjakan secara mandiri dan jujur. Boleh melihat catatan rumus di buku tetapi tidak boleh bertanya teman.</div>
+
+    <p>Gunakan tabel berikut untuk menjawab soal nomor 1 sampai 8.</p>
+    <table>
+      <tr><th>Views TikTok (ribu)</th><th>\(f\)</th></tr>
+      <tr><td>10 sampai 19</td><td>3</td></tr>
+      <tr><td>20 sampai 29</td><td>5</td></tr>
+      <tr><td>30 sampai 39</td><td>12</td></tr>
+      <tr><td>40 sampai 49</td><td>8</td></tr>
+      <tr><td>50 sampai 59</td><td>2</td></tr>
+    </table>
+
+    <!-- SOAL 1 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 1 (10 poin)</div>
+      <p>Hitung jumlah frekuensi \(n\).</p>
+      <input type="number" class="q-input" id="s1" placeholder="n = ..."/>
+    </div>
+
+    <!-- SOAL 2 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 2 (10 poin)</div>
+      <p>Tentukan letak median \(\frac{n}{2}\).</p>
+      <input type="number" class="q-input" id="s2" placeholder="n/2 = ..." step="any"/>
+    </div>
+
+    <!-- SOAL 3 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 3 (10 poin)</div>
+      <p>Lengkapi frekuensi kumulatif. Pisahkan dengan koma.</p>
+      <input type="text" class="q-input" id="s3" placeholder="Contoh: 3,8,20,28,30"/>
+    </div>
+
+    <!-- SOAL 4 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 4 (10 poin)</div>
+      <p>Tentukan kelas median.</p>
+      <select class="q-input" id="s4" style="background:#fff;">
+        <option value="">Pilih kelas median...</option>
+        <option value="a">10 sampai 19</option>
+        <option value="b">20 sampai 29</option>
+        <option value="c">30 sampai 39</option>
+        <option value="d">40 sampai 49</option>
+        <option value="e">50 sampai 59</option>
+      </select>
+    </div>
+
+    <!-- SOAL 5 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 5 (15 poin)</div>
+      <p>Tentukan \(Tb\), \(p\), \(F\), dan \(f\).</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <div><label>\(Tb\) = </label><input type="number" class="q-input" id="s5a" placeholder="..." step="any"/></div>
+        <div><label>\(p\) = </label><input type="number" class="q-input" id="s5b" placeholder="..."/></div>
+        <div><label>\(F\) = </label><input type="number" class="q-input" id="s5c" placeholder="..."/></div>
+        <div><label>\(f\) = </label><input type="number" class="q-input" id="s5d" placeholder="..."/></div>
+      </div>
+    </div>
+
+    <!-- SOAL 6 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 6 (20 poin)</div>
+      <p>Hitung median data kelompok. Bulatkan 2 desimal.</p>
+      <input type="number" class="q-input" id="s6" placeholder="Me = ..." step="any"/>
+    </div>
+
+    <!-- SOAL 7 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 7 (15 poin)</div>
+      <p>Tuliskan interpretasi median yang kamu peroleh dalam konteks views TikTok.</p>
+      <textarea class="q-input" id="s7" rows="3" placeholder="Median views TikTok adalah ... Artinya ..." style="resize:vertical;"></textarea>
+    </div>
+
+    <!-- SOAL 8 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 8 (10 poin)</div>
+      <p>Mengapa kelas median tidak selalu sama dengan kelas yang frekuensinya paling besar? Jelaskan.</p>
+      <textarea class="q-input" id="s8" rows="3" placeholder="Karena ..." style="resize:vertical;"></textarea>
+    </div>
+
+    <button class="btn-blue" id="btnSubmit">Kirim Jawaban</button>
+    <div id="submitMsg" style="margin-top:8px;font-size:13px;color:var(--muted);"></div>
+  </div>
+</div>
+
+<!-- HASIL -->
+<div id="pgHasil" style="display:none;">
+  <div class="card">
+    <h2 style="text-align:center;border:none;padding:0;">Hasil Post-Test</h2>
+    <div class="skor-display">
+      <div class="skor-num" id="skorNum">0</div>
+      <div class="skor-label">dari 100</div>
+      <div class="fb-badge" id="fbBadge"></div>
+    </div>
+    <div id="hasilDetail"></div>
+    <div id="hasilFeedback" style="margin-top:12px;"></div>
+    <div style="margin-top:20px;text-align:center;">
+      <p style="font-size:14px;color:var(--muted);">Hasil sudah terekam di dashboard guru.</p>
+      <div style="margin-top:12px;">
+        <a href="https://ppg-aw.github.io/SMKN1/WebInteraktif7.html" style="display:inline-block;padding:12px 24px;background:var(--purple);color:#fff;border-radius:12px;text-decoration:none;font-weight:700;">Latihan Soal Generator</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz9ZU60vKNM5WO2eyUr6HgfwhVuCs4zlxR127xCdDksiyUFsnmVjKei43-6FluiRVWq/exec';
+var SRC = 'PostTest';
+var NAMES = ["AGUSTYA RAMADHANI","ANINDYA AZZAHRA","ANJA ALZENA TANJUNG","AURELIA KEYSHA VERNANDYA","AYU WIDYASARI","AZZAHRA ISMAYANTI","CARISSA ARVITA PUTRI","DAVINA ALYA PUTRI","DITA NANDA PUTRI","EKA WULANSARI","FEBBY AULIA DAMAYANTI","JENNYTA WULANDARI","LAURA OKTAVIANI","MAITSA KHALISTA PUTRI","MARVA MAULIDA","MELYNDA ANANTA SARI","NABILLA AYU EVANIA","NAMIRA SETARIANTI","NANDITA FITRIA RAMADANI","NAYLA AZKIYA HAFIZHAH","NOLA FEBI AYU DANITYA","NOVI MARTHALITA","OCTAVIA FITRIYANI","REKA MUSTIKA FAHLUIZA","RORO ENDAH MUSTIKA NINGRUM","SALSABILA CHALISA RAHMA WIBOWO","SEFA FEBI SAPUTRI","SUCI NAZILAH","TARA ARGYA NUR AGUSTIN","TIRTA ARUM KUMALA DEWI","WISNU BIMA NURIN PRATAMA"];
+var user = '';
+
+// KUNCI: n=30, n/2=15, fk=3,8,20,28,30, kelas median=30-39(c)
+// Tb=29.5, p=10, F=8, f=12, Me=35.33
+var KEY = {
+  s1: 30,
+  s2: 15,
+  s3: [3,8,20,28,30],
+  s4: 'c',
+  s5a: 29.5, s5b: 10, s5c: 8, s5d: 12,
+  s6: 35.33
+};
+
+function el(id){return document.getElementById(id);}
+function mark(id,ok){var e=el(id);if(e){e.classList.remove('ok','no');e.classList.add(ok?'ok':'no');}}
+
+function toSheets(action,data){
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE'){console.log('[LOG]',action,data);return Promise.resolve({success:true});}
+  var p='action='+encodeURIComponent(action)+'&source='+encodeURIComponent(SRC)+'&t='+encodeURIComponent(new Date().toISOString());
+  for(var k in data){var v=data[k];if(Array.isArray(v))v=v.join(',');p+='&'+encodeURIComponent(k)+'='+encodeURIComponent(v);}
+  return fetch(SCRIPT_URL+'?'+p).then(function(r){return r.json();}).then(function(r){console.log('[OK]',action,r);return r;}).catch(function(e){console.log('[ERR]',e);return{error:e};});
+}
+
+function loadNames(){
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE')return;
+  fetch(SCRIPT_URL+'?action=getNames&source='+SRC)
+    .then(function(r){return r.json();})
+    .then(function(d){if(d&&d.names&&d.names.length>0)NAMES=d.names.map(function(n){return n.toUpperCase();});})
+    .catch(function(){});
+}
+
+function doSearch(){
+  var v=el('inpNama').value.trim().toUpperCase();
+  var list=el('sList');
+  if(v.length<1){list.style.display='none';return;}
+  var fil=NAMES.filter(function(n){return n.includes(v);});
+  var h='';
+  fil.forEach(function(n){h+='<div class="s-item" data-name="'+n+'">'+n+'</div>';});
+  if(fil.length===0&&v.length>=3)h+='<div class="s-item new" data-name="'+v+'">Tambah: "'+v+'"</div>';
+  list.innerHTML=h;list.style.display=h?'block':'none';
+}
+
+function pickName(name){
+  user=name.toUpperCase();
+  el('inpNama').value=user;
+  el('sList').style.display='none';
+  el('dispNama').innerHTML='<span class="u-badge">'+user+'</span>';
+  el('btnLogin').disabled=false;
+}
+
+function doLogin(){
+  if(!user)return;
+  el('btnLogin').disabled=true;
+  el('loginMsg').textContent='Mengecek data...';
+  if(SCRIPT_URL!=='YOUR_APPS_SCRIPT_URL_HERE'){
+    fetch(SCRIPT_URL+'?action=getPosttest&nama='+encodeURIComponent(user))
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(d&&d.data&&d.data.skor!==undefined&&d.data.skor!==''){
+          showDone(d.data.skor,d.data.feedback);
+        }else{showSoal();}
+      })
+      .catch(function(){showSoal();});
+  }else{showSoal();}
+}
+
+function showDone(skor,feedback){
+  el('pgLogin').style.display='none';
+  el('pgDone').style.display='block';
+  el('doneScore').textContent=skor;
+  var fb=el('doneFb');
+  fb.textContent=feedback||'';
+  fb.className='fb-badge';
+  var s=parseInt(skor);
+  if(s>=85)fb.classList.add('fb-sb');
+  else if(s>=70)fb.classList.add('fb-b');
+  else if(s>=50)fb.classList.add('fb-pb');
+  else fb.classList.add('fb-bt');
+}
+
+function showSoal(){
+  el('pgLogin').style.display='none';
+  el('pgSoal').style.display='block';
+  el('loginMsg').textContent='';
+  if(window.MathJax)MathJax.typesetPromise();
+}
+
+function submitJawaban(){
+  el('btnSubmit').disabled=true;
+  el('submitMsg').textContent='Memeriksa jawaban...';
+
+  var a1=parseFloat(el('s1').value);
+  var a2=parseFloat(el('s2').value);
+  var a3raw=el('s3').value.trim();
+  var a3=a3raw.split(',').map(function(s){return parseFloat(s.trim());});
+  var a4=el('s4').value;
+  var a5a=parseFloat(el('s5a').value);
+  var a5b=parseFloat(el('s5b').value);
+  var a5c=parseFloat(el('s5c').value);
+  var a5d=parseFloat(el('s5d').value);
+  var a6=parseFloat(el('s6').value);
+  var a7=el('s7').value.trim();
+  var a8=el('s8').value.trim();
+
+  var skor=0;
+  var detail=[];
+
+  // SOAL 1 (10)
+  var c1=a1===KEY.s1;
+  mark('s1',c1);
+  if(c1){skor+=10;detail.push({no:1,p:10,d:10,s:'Benar'});}
+  else detail.push({no:1,p:10,d:0,s:'Salah. Jawaban: '+KEY.s1});
+
+  // SOAL 2 (10)
+  var c2=a2===KEY.s2;
+  mark('s2',c2);
+  if(c2){skor+=10;detail.push({no:2,p:10,d:10,s:'Benar'});}
+  else detail.push({no:2,p:10,d:0,s:'Salah. Jawaban: '+KEY.s2});
+
+  // SOAL 3 (10)
+  var c3=a3.length===KEY.s3.length;
+  if(c3){for(var i=0;i<KEY.s3.length;i++){if(a3[i]!==KEY.s3[i]){c3=false;break;}}}
+  mark('s3',c3);
+  var s3p=0;
+  if(c3)s3p=10;
+  else{var b3=0;for(var i=0;i<Math.min(a3.length,KEY.s3.length);i++){if(a3[i]===KEY.s3[i])b3++;}if(b3>=3)s3p=5;}
+  skor+=s3p;
+  detail.push({no:3,p:10,d:s3p,s:c3?'Benar':'Jawaban: '+KEY.s3.join(', ')});
+
+  // SOAL 4 (10)
+  var c4=a4===KEY.s4;
+  mark('s4',c4);
+  if(c4){skor+=10;detail.push({no:4,p:10,d:10,s:'Benar'});}
+  else detail.push({no:4,p:10,d:0,s:'Salah. Jawaban: 30 sampai 39'});
+
+  // SOAL 5 (15)
+  var c5a=a5a===KEY.s5a,c5b=a5b===KEY.s5b,c5c=a5c===KEY.s5c,c5d=a5d===KEY.s5d;
+  mark('s5a',c5a);mark('s5b',c5b);mark('s5c',c5c);mark('s5d',c5d);
+  var s5c=[c5a,c5b,c5c,c5d].filter(Boolean).length;
+  var s5p=s5c===4?15:(s5c>=2?8:0);
+  skor+=s5p;
+  detail.push({no:5,p:15,d:s5p,s:s5c===4?'Benar':'Benar '+s5c+'/4. Jawaban: Tb='+KEY.s5a+', p='+KEY.s5b+', F='+KEY.s5c+', f='+KEY.s5d});
+
+  // SOAL 6 (20)
+  var c6=Math.abs(a6-KEY.s6)<=0.02;
+  mark('s6',c6);
+  var s6p=0;
+  if(c6)s6p=20;
+  else if(Math.abs(a6-KEY.s6)<=1)s6p=10;
+  skor+=s6p;
+  detail.push({no:6,p:20,d:s6p,s:c6?'Benar':'Jawaban: '+KEY.s6});
+
+  // SOAL 7 (15)
+  var a7l=a7.toLowerCase();
+  var h7n=a7l.includes('35')||a7l.includes('35,33')||a7l.includes('35.33');
+  var h7k=a7l.includes('views')||a7l.includes('tiktok')||a7l.includes('video');
+  var h7m=a7l.includes('50%')||a7l.includes('50 %')||a7l.includes('separuh')||a7l.includes('setengah');
+  var c7=a7.length>=30&&h7n&&h7k&&h7m;
+  var s7p=0;
+  if(c7)s7p=15;
+  else if(a7.length>=20&&(h7n||h7k))s7p=8;
+  var ta7=el('s7');ta7.classList.remove('ok','no');ta7.classList.add(c7?'ok':'no');
+  skor+=s7p;
+  detail.push({no:7,p:15,d:s7p,s:c7?'Benar':'Interpretasi belum lengkap. Harus memuat: nilai median, konteks TikTok/views, dan makna 50%.'});
+
+  // SOAL 8 (10)
+  var a8l=a8.toLowerCase();
+  var h8a=a8l.includes('kumulatif')||a8l.includes('fk')||a8l.includes('posisi')||a8l.includes('letak');
+  var h8b=a8l.includes('terbesar')||a8l.includes('paling banyak')||a8l.includes('paling besar');
+  var c8=a8.length>=20&&h8a;
+  var s8p=0;
+  if(c8)s8p=10;
+  else if(a8.length>=15&&h8b)s8p=5;
+  var ta8=el('s8');ta8.classList.remove('ok','no');ta8.classList.add(c8?'ok':'no');
+  skor+=s8p;
+  detail.push({no:8,p:10,d:s8p,s:c8?'Benar':'Penjelasan belum tepat. Kelas median ditentukan dari frekuensi kumulatif, bukan frekuensi terbesar.'});
+
+  // FEEDBACK
+  var feedback='';
+  if(skor>=85)feedback='Sangat Baik';
+  else if(skor>=70)feedback='Tuntas';
+  else if(skor>=50)feedback='Perlu Bimbingan';
+  else feedback='Belum Tuntas';
+
+  showHasil(skor,feedback,detail);
+
+  toSheets('posttest',{
+    nama:user,
+    soal1:a1||'',soal2:a2||'',soal3:a3raw,soal4:a4||'',
+    soal5:(a5a||'')+','+(a5b||'')+','+(a5c||'')+','+(a5d||''),
+    soal6:a6||'',soal7:a7,soal8:a8,
+    skor:skor,feedback:feedback
+  });
+}
+
+function showHasil(skor,feedback,detail){
+  el('pgSoal').style.display='none';
+  el('pgHasil').style.display='block';
+
+  el('skorNum').textContent=skor;
+  el('skorNum').style.color=skor>=85?'var(--success)':skor>=70?'var(--accent)':skor>=50?'var(--orange)':'var(--danger)';
+
+  var fb=el('fbBadge');
+  fb.textContent=feedback;
+  fb.className='fb-badge';
+  if(skor>=85)fb.classList.add('fb-sb');
+  else if(skor>=70)fb.classList.add('fb-b');
+  else if(skor>=50)fb.classList.add('fb-pb');
+  else fb.classList.add('fb-bt');
+
+  var h='<table><tr><th>No</th><th>Poin</th><th>Dapat</th><th>Keterangan</th></tr>';
+  detail.forEach(function(d){
+    var c=d.d===d.p?'var(--success)':d.d>0?'var(--accent)':'var(--danger)';
+    h+='<tr><td>'+d.no+'</td><td>'+d.p+'</td><td style="color:'+c+';font-weight:700;">'+d.d+'</td><td style="text-align:left;font-size:12px;">'+d.s+'</td></tr>';
+  });
+  h+='</table>';
+  el('hasilDetail').innerHTML=h;
+
+  var fh='';
+  if(skor>=85)fh='<div class="success-box"><strong>Sangat Baik!</strong> Kamu sudah sangat memahami median data kelompok. Silakan kerjakan soal tantangan di web latihan generator untuk penguatan lebih lanjut.</div>';
+  else if(skor>=70)fh='<div class="info-box"><strong>Tuntas!</strong> Kamu sudah memahami konsep utama. Perkuat kembali bagian interpretasi dan ketelitian perhitungan dengan berlatih di web latihan generator.</div>';
+  else if(skor>=50)fh='<div class="note-box"><strong>Perlu Bimbingan.</strong> Kamu sudah mulai memahami, tetapi perlu mengulang langkah frekuensi kumulatif dan kelas median. Kerjakan latihan di web latihan generator.</div>';
+  else fh='<div class="warning-box"><strong>Belum Tuntas.</strong> Pelajari kembali materi dari langkah awal di web materi interaktif. Fokus pada cara membuat fk dan menentukan kelas median. Kemudian kerjakan latihan di web generator.</div>';
+  el('hasilFeedback').innerHTML=fh;
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// EVENT LISTENERS
+document.addEventListener('DOMContentLoaded',function(){
+  el('inpNama').addEventListener('input',doSearch);
+  el('inpNama').addEventListener('focus',doSearch);
+  el('sList').addEventListener('click',function(e){
+    var item=e.target.closest('.s-item');
+    if(!item)return;
+    var name=item.getAttribute('data-name');
+    if(item.classList.contains('new')){
+      var clean=name.toUpperCase();
+      if(NAMES.indexOf(clean)===-1){NAMES.push(clean);toSheets('addName',{nama:clean});}
+      pickName(clean);
+    }else{pickName(name);}
+  });
+  document.addEventListener('click',function(e){
+    if(!el('searchBox').contains(e.target))el('sList').style.display='none';
+  });
+  el('btnLogin').addEventListener('click',doLogin);
+  el('btnSubmit').addEventListener('click',submitJawaban);
+  loadNames();
+});
+</script>
+
+</body>
+</html>

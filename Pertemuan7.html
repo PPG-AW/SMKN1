@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pertemuan 7 - Median Data Kelompok</title>
+  <style>
+    :root{--primary:#1d4ed8;--primary-dark:#1e3a8a;--orange:#ea580c;--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;--purple:#7c3aed;--teal:#0f766e;--text:#1e293b;--muted:#64748b;--border:#cbd5e1;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+    .header{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:24px 20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+    .header h1{font-size:22px;margin:0 0 4px;}
+    .header p{font-size:14px;opacity:.9;margin:0 0 2px;}
+    .header .sub{font-size:12px;opacity:.7;}
+    .container{max-width:640px;margin:0 auto;padding:16px;}
+    .card{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(15,23,42,.06);border:1px solid #e2e8f0;}
+    .card h2{font-size:18px;color:var(--primary-dark);margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #dbeafe;}
+    .card p{margin:0 0 8px;}
+    .info-box{background:#eff6ff;border-left:5px solid var(--primary);padding:12px;border-radius:10px;margin:10px 0;}
+    .success-box{background:#ecfdf5;border-left:5px solid var(--success);padding:12px;border-radius:10px;margin:10px 0;}
+    .note-box{background:#fffbeb;border-left:5px solid var(--accent);padding:12px;border-radius:10px;margin:10px 0;}
+
+    /* ALUR */
+    .alur{display:flex;flex-direction:column;gap:0;margin:16px 0;}
+    .alur-item{display:flex;align-items:stretch;gap:0;}
+    .alur-line{display:flex;flex-direction:column;align-items:center;width:40px;flex-shrink:0;}
+    .alur-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;flex-shrink:0;z-index:2;}
+    .alur-connector{width:3px;flex:1;background:#cbd5e1;}
+    .alur-content{flex:1;padding:0 0 20px 12px;}
+    .alur-card{background:#fff;border:2px solid #e2e8f0;border-radius:14px;padding:14px 16px;transition:all .2s;cursor:pointer;text-decoration:none;color:var(--text);display:block;}
+    .alur-card:hover{border-color:var(--primary);box-shadow:0 4px 16px rgba(29,78,216,.12);transform:translateY(-2px);}
+    .alur-card h3{font-size:15px;margin:0 0 4px;}
+    .alur-card p{font-size:13px;color:var(--muted);margin:0 0 6px;}
+    .alur-card .badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:10px;font-weight:700;}
+    .alur-card .badge.pre{background:#ede9fe;color:#6d28d9;}
+    .alur-card .badge.in{background:#dbeafe;color:#1d4ed8;}
+    .alur-card .badge.post{background:#dcfce7;color:#166534;}
+    .alur-card .badge.guru{background:#fef3c7;color:#92400e;}
+
+    .dot-blue{background:var(--primary);}
+    .dot-purple{background:var(--purple);}
+    .dot-orange{background:var(--orange);}
+    .dot-green{background:var(--success);}
+    .dot-teal{background:var(--teal);}
+    .dot-red{background:var(--danger);}
+    .dot-accent{background:var(--accent);}
+    .dot-dark{background:#0f172a;}
+
+    .alur-item:last-child .alur-connector:last-child{display:none;}
+
+    /* STATUS */
+    .status-row{display:flex;align-items:center;gap:6px;margin-top:6px;}
+    .status-dot{width:10px;height:10px;border-radius:50%;}
+    .status-dot.done{background:var(--success);}
+    .status-dot.pending{background:var(--border);}
+    .status-label{font-size:11px;color:var(--muted);}
+
+    .guru-link{display:block;text-align:center;margin:20px 0;padding:14px;background:#0f172a;color:#fff;border-radius:14px;text-decoration:none;font-weight:700;font-size:15px;}
+    .guru-link:hover{background:#1e293b;}
+
+    .search-box{position:relative;width:100%;max-width:400px;margin:0 auto;}
+    .s-input{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-size:15px;outline:none;text-align:center;}
+    .s-input:focus{border-color:var(--primary);}
+    .s-list{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:0 0 12px 12px;max-height:200px;overflow-y:auto;z-index:10;display:none;}
+    .s-item{padding:10px 16px;cursor:pointer;font-size:14px;text-align:left;border-bottom:1px solid #f1f5f9;}
+    .s-item:hover{background:#dbeafe;}
+    .s-item.new{color:var(--success);font-weight:700;}
+    .u-badge{display:inline-block;background:#ecfdf5;color:#166534;padding:6px 16px;border-radius:999px;font-weight:700;font-size:13px;margin:8px 0;}
+
+    @media(max-width:480px){.card{padding:14px;}.alur-card{padding:12px;}.alur-card h3{font-size:14px;}}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Pertemuan 7</h1>
+  <p>Median Data Kelompok</p>
+  <div class="sub">Matematika Kelas X / SMKN 1 Salatiga / Semester Genap 2025/2026</div>
+</div>
+
+<div class="container">
+
+  <!-- SELAMAT DATANG -->
+  <div class="card">
+    <h2>Selamat Datang</h2>
+    <p>Halaman ini adalah panduan alur pembelajaran pertemuan 7 tentang <strong>Median Data Kelompok</strong>. Ikuti setiap langkah dari atas ke bawah.</p>
+
+    <div class="search-box" id="searchBox">
+      <input type="text" class="s-input" id="inpNama" placeholder="Ketik namamu untuk melihat progres..."/>
+      <div class="s-list" id="sList"></div>
+    </div>
+    <div id="dispNama" style="text-align:center;"></div>
+    <div id="progresInfo" style="display:none;"></div>
+  </div>
+
+  <!-- ALUR PEMBELAJARAN -->
+  <div class="card">
+    <h2>Alur Pembelajaran</h2>
+
+    <div class="alur">
+
+      <!-- 1. MATERI -->
+      <div class="alur-item">
+        <div class="alur-line">
+          <div class="alur-dot dot-blue">1</div>
+          <div class="alur-connector"></div>
+        </div>
+        <div class="alur-content">
+          <a class="alur-card" href="https://ppg-aw.github.io/SMKN1/MateriAjar7.html">
+            <span class="badge pre">Pre-Class</span>
+            <h3>Materi Interaktif</h3>
+            <p>Pelajari materi median data kelompok per bagian. Setiap bagian ada quiz yang harus dijawab benar untuk lanjut.</p>
+            <div class="status-row"><div class="status-dot" id="st1"></div><span class="status-label" id="sl1">Belum dimulai</span></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. PRE-TEST -->
+      <div class="alur-item">
+        <div class="alur-line">
+          <div class="alur-dot dot-orange">2</div>
+          <div class="alur-connector"></div>
+        </div>
+        <div class="alur-content">
+          <a class="alur-card" href="https://ppg-aw.github.io/SMKN1/Asessment7.html">
+            <span class="badge pre">Pre-Class</span>
+            <h3>Pre-Test</h3>
+            <p>Kerjakan 6 soal untuk menentukan level LKPD yang akan kamu kerjakan di kelas. Skor menentukan Level 1, 2, atau 3.</p>
+            <div class="status-row"><div class="status-dot" id="st2"></div><span class="status-label" id="sl2">Belum dikerjakan</span></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 3. LATIHAN GENERATOR -->
+      <div class="alur-item">
+        <div class="alur-line">
+          <div class="alur-dot dot-purple">3</div>
+          <div class="alur-connector"></div>
+        </div>
+        <div class="alur-content">
+          <a class="alur-card" href="https://ppg-aw.github.io/SMKN1/WebInteraktif7.html">
+            <span class="badge pre">Pre-Class / Kapan Saja</span>
+            <h3>Latihan Soal Generator</h3>
+            <p>Berlatih mengerjakan soal median dengan soal acak tanpa batas. Ada mode terbimbing dan mandiri.</p>
+            <div class="status-row"><div class="status-dot" id="st3"></div><span class="status-label" id="sl3">Bisa dikerjakan kapan saja</span></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 4. LKPD -->
+      <div class="alur-item">
+        <div class="alur-line">
+          <div class="alur-dot dot-teal">4</div>
+          <div class="alur-connector"></div>
+        </div>
+        <div class="alur-content">
+          <a class="alur-card" href="https://ppg-aw.github.io/SMKN1/LKPD7.html">
+            <span class="badge in">In-Class</span>
+            <h3>LKPD Digital</h3>
+            <p>Kerjakan LKPD sesuai level yang ditentukan dari pre-test. Level otomatis terdeteksi saat login.</p>
+            <div class="status-row"><div class="status-dot" id="st4"></div><span class="status-label" id="sl4">Dikerjakan di kelas</span></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 5. POST-TEST -->
+      <div class="alur-item">
+        <div class="alur-line">
+          <div class="alur-dot dot-green">5</div>
+          <div class="alur-connector"></div>
+        </div>
+        <div class="alur-content">
+          <a class="alur-card" href="https://ppg-aw.github.io/SMKN1/AssesmentPost7.html">
+            <span class="badge in">In-Class</span>
+            <h3>Post-Test</h3>
+            <p>Kerjakan 8 soal secara mandiri dan jujur. Boleh lihat catatan rumus di buku.</p>
+            <div class="status-row"><div class="status-dot" id="st5"></div><span class="status-label" id="sl5">Dikerjakan di kelas</span></div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 6. REFLEKSI -->
+      <div class="alur-item">
+        <div class="alur-line">
+          <div class="alur-dot dot-accent">6</div>
+          <div class="alur-connector" style="display:none;"></div>
+        </div>
+        <div class="alur-content">
+          <a class="alur-card" href="https://ppg-aw.github.io/SMKN1/Refleksi7.html">
+            <span class="badge post">Post-Class</span>
+            <h3>Refleksi Pembelajaran</h3>
+            <p>Isi refleksi setelah pembelajaran. Bantu guru memperbaiki pembelajaran berikutnya.</p>
+            <div class="status-row"><div class="status-dot" id="st6"></div><span class="status-label" id="sl6">Diisi setelah pembelajaran</span></div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="card">
+    <h2>Informasi Pembelajaran</h2>
+    <div class="info-box">
+      <strong>Topik:</strong> Median Data Kelompok<br>
+      <strong>Guru:</strong> Awang Haris Prasetyo Adhi, S.Pd.<br>
+      <strong>Alokasi Waktu:</strong> 1 Pertemuan x 2 JP x 40 Menit
+    </div>
+    <div class="note-box">
+      <strong>Untuk siswa yang sedang magang:</strong> Kerjakan semua langkah secara mandiri melalui halaman ini. Mulai dari Materi Interaktif, Pre-Test, Latihan Generator, LKPD, Post-Test, dan Refleksi. Semua hasil terekam otomatis.
+    </div>
+  </div>
+
+  <!-- GURU -->
+  <a class="guru-link" href="https://ppg-aw.github.io/SMKN1/DashboardGuru7.html">Dashboard Guru</a>
+
+</div>
+
+<script>
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyuNFgLcVTXa8fFjunkj-4MklOgDyGnPWqr5ilCcSyfpkIQJAsvsUyieyjCvq19elfWtA/exec';
+var NAMES = ["AGUSTYA RAMADHANI","ANINDYA AZZAHRA","ANJA ALZENA TANJUNG","AURELIA KEYSHA VERNANDYA","AYU WIDYASARI","AZZAHRA ISMAYANTI","CARISSA ARVITA PUTRI","DAVINA ALYA PUTRI","DITA NANDA PUTRI","EKA WULANSARI","FEBBY AULIA DAMAYANTI","JENNYTA WULANDARI","LAURA OKTAVIANI","MAITSA KHALISTA PUTRI","MARVA MAULIDA","MELYNDA ANANTA SARI","NABILLA AYU EVANIA","NAMIRA SETARIANTI","NANDITA FITRIA RAMADANI","NAYLA AZKIYA HAFIZHAH","NOLA FEBI AYU DANITYA","NOVI MARTHALITA","OCTAVIA FITRIYANI","REKA MUSTIKA FAHLUIZA","RORO ENDAH MUSTIKA NINGRUM","SALSABILA CHALISA RAHMA WIBOWO","SEFA FEBI SAPUTRI","SUCI NAZILAH","TARA ARGYA NUR AGUSTIN","TIRTA ARUM KUMALA DEWI","WISNU BIMA NURIN PRATAMA"];
+var user = '';
+
+function el(id){return document.getElementById(id);}
+
+function loadNames(){
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE')return;
+  fetch(SCRIPT_URL+'?action=getNames&source=Index')
+    .then(function(r){return r.json();})
+    .then(function(d){if(d&&d.names&&d.names.length>0)NAMES=d.names.map(function(n){return n.toUpperCase();});})
+    .catch(function(){});
+}
+
+function doSearch(){
+  var v=el('inpNama').value.trim().toUpperCase();var list=el('sList');
+  if(v.length<1){list.style.display='none';return;}
+  var fil=NAMES.filter(function(n){return n.includes(v);});var h='';
+  fil.forEach(function(n){h+='<div class="s-item" data-name="'+n+'">'+n+'</div>';});
+  list.innerHTML=h;list.style.display=h?'block':'none';
+}
+
+function pickName(name){
+  user=name.toUpperCase();
+  el('inpNama').value=user;
+  el('sList').style.display='none';
+  el('dispNama').innerHTML='<span class="u-badge">'+user+'</span>';
+  loadProgres();
+}
+
+function loadProgres(){
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE'){
+    el('progresInfo').style.display='block';
+    el('progresInfo').innerHTML='<div class="note-box">Mode offline. Progres tidak bisa dimuat.</div>';
+    return;
+  }
+
+  el('progresInfo').style.display='block';
+  el('progresInfo').innerHTML='<div class="info-box">Memuat progres...</div>';
+
+  Promise.all([
+    fetch(SCRIPT_URL+'?action=getProgress&nama='+encodeURIComponent(user)).then(function(r){return r.json();}),
+    fetch(SCRIPT_URL+'?action=getPretest&nama='+encodeURIComponent(user)).then(function(r){return r.json();}),
+    fetch(SCRIPT_URL+'?action=getLKPD&nama='+encodeURIComponent(user)).then(function(r){return r.json();}),
+    fetch(SCRIPT_URL+'?action=getPosttest&nama='+encodeURIComponent(user)).then(function(r){return r.json();})
+  ]).then(function(results){
+    var materi=results[0], pretest=results[1], lkpd=results[2], posttest=results[3];
+
+    // 1. Materi
+    var materiDone=false;
+    if(materi&&materi.quizPassed&&Array.isArray(materi.quizPassed)){
+      materiDone=materi.quizPassed.every(Boolean);
+      var count=materi.quizPassed.filter(Boolean).length;
+      setStatus('st1','sl1',materiDone,materiDone?'Selesai (5/5 bagian)':'Progres: '+count+'/5 bagian');
+    }else{
+      setStatus('st1','sl1',false,'Belum dimulai');
+    }
+
+    // 2. Pre-test
+    var pretestDone=false;
+    if(pretest&&pretest.data&&pretest.data.skor!==undefined&&pretest.data.skor!==''){
+      pretestDone=true;
+      setStatus('st2','sl2',true,'Selesai (Skor: '+pretest.data.skor+', '+pretest.data.level+')');
+    }else{
+      setStatus('st2','sl2',false,'Belum dikerjakan');
+    }
+
+    // 3. Latihan
+    setStatus('st3','sl3',null,'Bisa dikerjakan kapan saja');
+
+    // 4. LKPD
+    if(lkpd&&lkpd.data&&lkpd.data.skor!==undefined&&lkpd.data.skor!==''){
+      setStatus('st4','sl4',true,'Selesai ('+lkpd.data.level+', Skor: '+lkpd.data.skor+')');
+    }else{
+      setStatus('st4','sl4',false,pretestDone?'Siap dikerjakan':'Kerjakan pre-test dulu');
+    }
+
+    // 5. Post-test
+    if(posttest&&posttest.data&&posttest.data.skor!==undefined&&posttest.data.skor!==''){
+      setStatus('st5','sl5',true,'Selesai (Skor: '+posttest.data.skor+', '+posttest.data.feedback+')');
+    }else{
+      setStatus('st5','sl5',false,'Dikerjakan di kelas');
+    }
+
+    // 6. Refleksi
+    setStatus('st6','sl6',null,'Diisi setelah pembelajaran');
+
+    // Info
+    var allDone=materiDone&&pretestDone;
+    if(allDone){
+      el('progresInfo').innerHTML='<div class="success-box"><strong>Pre-class sudah selesai!</strong> Kamu siap mengikuti pembelajaran di kelas. Terus berlatih di Latihan Soal Generator.</div>';
+    }else{
+      var todo=[];
+      if(!materiDone)todo.push('Materi Interaktif');
+      if(!pretestDone)todo.push('Pre-Test');
+      el('progresInfo').innerHTML='<div class="note-box"><strong>Yang perlu diselesaikan sebelum kelas:</strong> '+todo.join(', ')+'.</div>';
+    }
+  }).catch(function(){
+    el('progresInfo').innerHTML='<div class="note-box">Gagal memuat progres. Coba lagi nanti.</div>';
+  });
+}
+
+function setStatus(dotId,labelId,done,text){
+  var dot=el(dotId);
+  dot.classList.remove('done','pending');
+  if(done===true)dot.classList.add('done');
+  else if(done===false)dot.classList.add('pending');
+  el(labelId).textContent=text;
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  el('inpNama').addEventListener('input',doSearch);
+  el('inpNama').addEventListener('focus',doSearch);
+  el('sList').addEventListener('click',function(e){
+    var item=e.target.closest('.s-item');if(!item)return;
+    pickName(item.getAttribute('data-name'));
+  });
+  document.addEventListener('click',function(e){if(!el('searchBox').contains(e.target))el('sList').style.display='none';});
+  loadNames();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Refleksi Pembelajaran - Median Data Kelompok</title>
+  <style>
+    :root{--primary:#1d4ed8;--primary-dark:#1e3a8a;--success:#16a34a;--accent:#f59e0b;--text:#1e293b;--muted:#64748b;--border:#cbd5e1;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+    .header{background:linear-gradient(135deg,#6366f1,var(--primary));color:#fff;padding:20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+    .header h1{font-size:20px;margin:0 0 4px;}
+    .header p{font-size:13px;opacity:.85;margin:0;}
+    .container{max-width:640px;margin:0 auto;padding:16px;}
+    .card{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(15,23,42,.06);border:1px solid #e2e8f0;}
+    .card h2{font-size:18px;color:var(--primary-dark);margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #dbeafe;}
+    .card p{margin:0 0 8px;}
+    .info-box{background:#eff6ff;border-left:5px solid var(--primary);padding:12px;border-radius:10px;margin:10px 0;}
+    .success-box{background:#ecfdf5;border-left:5px solid var(--success);padding:12px;border-radius:10px;margin:10px 0;}
+    .login-page{min-height:80vh;display:flex;align-items:center;justify-content:center;}
+    .login-card{background:#fff;border-radius:20px;padding:40px 24px;max-width:420px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(15,23,42,.1);border:1px solid #e2e8f0;}
+    .login-card h2{color:var(--primary-dark);margin-bottom:8px;border:none;padding:0;}
+    .login-card p{color:var(--muted);margin-bottom:16px;}
+    .search-box{position:relative;width:100%;}
+    .s-input{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-size:15px;outline:none;}
+    .s-input:focus{border-color:var(--primary);}
+    .s-list{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:0 0 12px 12px;max-height:200px;overflow-y:auto;z-index:10;display:none;}
+    .s-item{padding:10px 16px;cursor:pointer;font-size:14px;text-align:left;border-bottom:1px solid #f1f5f9;}
+    .s-item:hover{background:#dbeafe;}
+    .s-item.new{color:var(--success);font-weight:700;}
+    .u-badge{display:inline-block;background:#ecfdf5;color:#166534;padding:6px 16px;border-radius:999px;font-weight:700;font-size:13px;}
+    .btn-login{margin-top:12px;padding:12px 32px;background:#6366f1;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+    .btn-login:disabled{background:#94a3b8;cursor:not-allowed;}
+    .q-input{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;margin:4px 0 8px;outline:none;}
+    .q-input:focus{border-color:var(--primary);}
+    .btn-blue{padding:12px 24px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;width:100%;}
+    .btn-blue:disabled{background:#94a3b8;cursor:not-allowed;}
+    .stars{display:flex;gap:4px;margin:4px 0 8px;}
+    .star{width:36px;height:36px;border:2px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;background:#fff;transition:all .2s;}
+    .star.active{background:#fef3c7;border-color:var(--accent);color:var(--accent);}
+    .star:hover{background:#fef3c7;}
+    .soal-label{font-weight:700;margin:12px 0 4px;font-size:14px;}
+    @media(max-width:480px){.card{padding:14px;}.star{width:32px;height:32px;font-size:16px;}}
+  </style>
+</head>
+<body>
+<a href="https://ppg-aw.github.io/SMKN1/Pertemuan7.html" style="display:block;background:#0f172a;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:700;text-decoration:none;">Kembali ke Halaman Utama Pertemuan 7</a>
+<div class="header">
+  <h1>Refleksi Pembelajaran</h1>
+  <p>Median Data Kelompok / Matematika Kelas X / SMKN 1 Salatiga</p>
+</div>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div class="login-page" id="pgLogin">
+  <div class="login-card">
+    <h2>Refleksi Pembelajaran</h2>
+    <p>Isi refleksi setelah mengikuti pembelajaran hari ini.</p>
+    <div class="search-box" id="searchBox">
+      <input type="text" class="s-input" id="inpNama" placeholder="Ketik nama lengkapmu..."/>
+      <div class="s-list" id="sList"></div>
+    </div>
+    <div id="dispNama" style="margin-top:8px;"></div>
+    <button class="btn-login" id="btnLogin" disabled>Mulai Refleksi</button>
+  </div>
+</div>
+
+<!-- FORM -->
+<div id="pgForm" style="display:none;">
+  <div class="card">
+    <h2>Refleksi Pembelajaran</h2>
+    <p><strong>Nama:</strong> <span id="namaDisplay"></span></p>
+    <div class="info-box">Jawab pertanyaan berikut dengan jujur. Refleksi ini membantu guru memperbaiki pembelajaran berikutnya.</div>
+
+    <div class="soal-label">1. Bagian mana dari materi median data kelompok yang paling mudah kamu pahami?</div>
+    <textarea class="q-input" id="r1" rows="2" placeholder="Bagian yang paling mudah adalah ..." style="resize:vertical;"></textarea>
+
+    <div class="soal-label">2. Bagian mana yang masih membuatmu bingung?</div>
+    <textarea class="q-input" id="r2" rows="2" placeholder="Bagian yang masih membingungkan adalah ..." style="resize:vertical;"></textarea>
+
+    <div class="soal-label">3. Seberapa membantu web interaktif dalam memahami materi?</div>
+    <div class="stars" id="stars3">
+      <div class="star" data-val="1">1</div>
+      <div class="star" data-val="2">2</div>
+      <div class="star" data-val="3">3</div>
+      <div class="star" data-val="4">4</div>
+      <div class="star" data-val="5">5</div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);">1 = tidak membantu, 5 = sangat membantu</p>
+
+    <div class="soal-label">4. Apakah langkah bertahap pada LKPD membantu kamu memahami cara menghitung median?</div>
+    <div style="margin:4px 0 8px;">
+      <label style="margin-right:16px;cursor:pointer;"><input type="radio" name="r4" value="ya"/> Ya</label>
+      <label style="cursor:pointer;"><input type="radio" name="r4" value="tidak"/> Tidak</label>
+    </div>
+    <textarea class="q-input" id="r4alasan" rows="2" placeholder="Alasan: ..." style="resize:vertical;"></textarea>
+
+    <div class="soal-label">5. Apa satu hal baru yang kamu pelajari hari ini?</div>
+    <textarea class="q-input" id="r5" rows="2" placeholder="Hal baru yang saya pelajari adalah ..." style="resize:vertical;"></textarea>
+
+    <div class="soal-label">6. Apa saranmu agar pembelajaran berikutnya lebih baik?</div>
+    <textarea class="q-input" id="r6" rows="2" placeholder="Saran saya adalah ..." style="resize:vertical;"></textarea>
+
+    <button class="btn-blue" id="btnSubmit">Kirim Refleksi</button>
+    <div id="submitMsg" style="margin-top:8px;font-size:13px;color:var(--muted);"></div>
+  </div>
+</div>
+
+<!-- SELESAI -->
+<div id="pgDone" style="display:none;">
+  <div class="card" style="text-align:center;padding:32px;">
+    <div class="success-box">
+      <h2 style="border:none;padding:0;color:#166534;">Terima Kasih!</h2>
+      <p>Refleksi kamu sudah terekam. Terima kasih sudah belajar dengan serius hari ini.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyuNFgLcVTXa8fFjunkj-4MklOgDyGnPWqr5ilCcSyfpkIQJAsvsUyieyjCvq19elfWtA/exec';
+var SRC = 'Refleksi';
+var NAMES = ["AGUSTYA RAMADHANI","ANINDYA AZZAHRA","ANJA ALZENA TANJUNG","AURELIA KEYSHA VERNANDYA","AYU WIDYASARI","AZZAHRA ISMAYANTI","CARISSA ARVITA PUTRI","DAVINA ALYA PUTRI","DITA NANDA PUTRI","EKA WULANSARI","FEBBY AULIA DAMAYANTI","JENNYTA WULANDARI","LAURA OKTAVIANI","MAITSA KHALISTA PUTRI","MARVA MAULIDA","MELYNDA ANANTA SARI","NABILLA AYU EVANIA","NAMIRA SETARIANTI","NANDITA FITRIA RAMADANI","NAYLA AZKIYA HAFIZHAH","NOLA FEBI AYU DANITYA","NOVI MARTHALITA","OCTAVIA FITRIYANI","REKA MUSTIKA FAHLUIZA","RORO ENDAH MUSTIKA NINGRUM","SALSABILA CHALISA RAHMA WIBOWO","SEFA FEBI SAPUTRI","SUCI NAZILAH","TARA ARGYA NUR AGUSTIN","TIRTA ARUM KUMALA DEWI","WISNU BIMA NURIN PRATAMA"];
+var user = '';
+var starVal = 0;
+
+function el(id){return document.getElementById(id);}
+
+function toSheets(action,data){
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE'){console.log('[LOG]',action,data);return Promise.resolve({success:true});}
+  var p='action='+encodeURIComponent(action)+'&source='+encodeURIComponent(SRC)+'&t='+encodeURIComponent(new Date().toISOString());
+  for(var k in data){var v=data[k];p+='&'+encodeURIComponent(k)+'='+encodeURIComponent(v);}
+  return fetch(SCRIPT_URL+'?'+p).then(function(r){return r.json();}).then(function(r){console.log('[OK]',action,r);return r;}).catch(function(e){console.log('[ERR]',e);});
+}
+
+function loadNames(){
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE')return;
+  fetch(SCRIPT_URL+'?action=getNames&source='+SRC).then(function(r){return r.json();}).then(function(d){if(d&&d.names&&d.names.length>0)NAMES=d.names.map(function(n){return n.toUpperCase();});}).catch(function(){});
+}
+
+function doSearch(){
+  var v=el('inpNama').value.trim().toUpperCase();var list=el('sList');
+  if(v.length<1){list.style.display='none';return;}
+  var fil=NAMES.filter(function(n){return n.includes(v);});var h='';
+  fil.forEach(function(n){h+='<div class="s-item" data-name="'+n+'">'+n+'</div>';});
+  if(fil.length===0&&v.length>=3)h+='<div class="s-item new" data-name="'+v+'">Tambah: "'+v+'"</div>';
+  list.innerHTML=h;list.style.display=h?'block':'none';
+}
+
+function pickName(name){
+  user=name.toUpperCase();el('inpNama').value=user;el('sList').style.display='none';
+  el('dispNama').innerHTML='<span class="u-badge">'+user+'</span>';el('btnLogin').disabled=false;
+}
+
+function doLogin(){
+  if(!user)return;
+  el('pgLogin').style.display='none';
+  el('pgForm').style.display='block';
+  el('namaDisplay').textContent=user;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function submitRefleksi(){
+  var r1=el('r1').value.trim();
+  var r2=el('r2').value.trim();
+  var r3=starVal;
+  var r4radio=document.querySelector('input[name="r4"]:checked');
+  var r4=r4radio?r4radio.value:'';
+  var r4a=el('r4alasan').value.trim();
+  var r5=el('r5').value.trim();
+  var r6=el('r6').value.trim();
+
+  if(!r1||!r2||!r3||!r4||!r5||!r6){
+    el('submitMsg').textContent='Mohon lengkapi semua pertanyaan sebelum mengirim.';
+    el('submitMsg').style.color='var(--danger)';
+    return;
+  }
+
+  el('btnSubmit').disabled=true;
+  el('submitMsg').textContent='Mengirim refleksi...';
+  el('submitMsg').style.color='var(--muted)';
+
+  toSheets('refleksi',{
+    nama:user,
+    r1_mudah:r1,
+    r2_bingung:r2,
+    r3_web:r3,
+    r4_lkpd:r4,
+    r4_alasan:r4a,
+    r5_baru:r5,
+    r6_saran:r6
+  }).then(function(){
+    el('pgForm').style.display='none';
+    el('pgDone').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  el('inpNama').addEventListener('input',doSearch);
+  el('inpNama').addEventListener('focus',doSearch);
+  el('sList').addEventListener('click',function(e){
+    var item=e.target.closest('.s-item');if(!item)return;
+    var name=item.getAttribute('data-name');
+    if(item.classList.contains('new')){var clean=name.toUpperCase();if(NAMES.indexOf(clean)===-1){NAMES.push(clean);toSheets('addName',{nama:clean});}pickName(clean);}
+    else{pickName(name);}
+  });
+  document.addEventListener('click',function(e){if(!el('searchBox').contains(e.target))el('sList').style.display='none';});
+  el('btnLogin').addEventListener('click',doLogin);
+  el('btnSubmit').addEventListener('click',submitRefleksi);
+
+  // Stars
+  el('stars3').addEventListener('click',function(e){
+    var star=e.target.closest('.star');if(!star)return;
+    starVal=parseInt(star.getAttribute('data-val'));
+    el('stars3').querySelectorAll('.star').forEach(function(s){
+      s.classList.toggle('active',parseInt(s.getAttribute('data-val'))<=starVal);
+    });
+  });
+
+  loadNames();
+});
+</script>
+
+</body>
+</html>

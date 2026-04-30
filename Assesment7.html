@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pre-Test - Median Data Kelompok</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root{--primary:#1d4ed8;--primary-dark:#1e3a8a;--orange:#ea580c;--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;--purple:#7c3aed;--text:#1e293b;--muted:#64748b;--border:#cbd5e1;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+    .header{background:linear-gradient(135deg,var(--orange),var(--primary));color:#fff;padding:20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2);}
+    .header h1{font-size:20px;margin:0 0 4px;}
+    .header p{font-size:13px;opacity:.85;margin:0;}
+    .container{max-width:640px;margin:0 auto;padding:16px;}
+    .card{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(15,23,42,.06);border:1px solid #e2e8f0;}
+    .card h2{font-size:18px;color:var(--primary-dark);margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #dbeafe;}
+    .card p{margin:0 0 8px;}
+    .info-box{background:#eff6ff;border-left:5px solid var(--primary);padding:12px;border-radius:10px;margin:10px 0;}
+    .success-box{background:#ecfdf5;border-left:5px solid var(--success);padding:12px;border-radius:10px;margin:10px 0;}
+    .warning-box{background:#fef2f2;border-left:5px solid var(--danger);padding:12px;border-radius:10px;margin:10px 0;}
+    .note-box{background:#fffbeb;border-left:5px solid var(--accent);padding:12px;border-radius:10px;margin:10px 0;}
+    table{width:100%;border-collapse:collapse;margin:8px 0;font-size:14px;}
+    th,td{border:1px solid var(--border);padding:8px 10px;text-align:center;}
+    th{background:#dbeafe;color:var(--primary-dark);font-weight:700;}
+    tr:nth-child(even) td{background:#f8fafc;}
+    .login-page{min-height:80vh;display:flex;align-items:center;justify-content:center;}
+    .login-card{background:#fff;border-radius:20px;padding:40px 24px;max-width:420px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(15,23,42,.1);border:1px solid #e2e8f0;}
+    .login-card h2{color:var(--primary-dark);margin-bottom:8px;border:none;padding:0;}
+    .login-card p{color:var(--muted);margin-bottom:16px;}
+    .search-box{position:relative;width:100%;}
+    .s-input{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:12px;font-size:15px;outline:none;}
+    .s-input:focus{border-color:var(--primary);}
+    .s-list{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:0 0 12px 12px;max-height:200px;overflow-y:auto;z-index:10;display:none;}
+    .s-item{padding:10px 16px;cursor:pointer;font-size:14px;text-align:left;border-bottom:1px solid #f1f5f9;}
+    .s-item:hover{background:#dbeafe;}
+    .s-item.new{color:var(--success);font-weight:700;}
+    .u-badge{display:inline-block;background:#ecfdf5;color:#166534;padding:6px 16px;border-radius:999px;font-weight:700;font-size:13px;}
+    .btn-login{margin-top:12px;padding:12px 32px;background:var(--orange);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+    .btn-login:disabled{background:#94a3b8;cursor:not-allowed;}
+    .q-input{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;margin:4px 0 8px;outline:none;}
+    .q-input:focus{border-color:var(--primary);}
+    .q-input.ok{border-color:var(--success);background:#f0fdf4;}
+    .q-input.no{border-color:var(--danger);background:#fef2f2;}
+    .btn-blue{padding:12px 24px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;width:100%;}
+    .btn-blue:disabled{background:#94a3b8;cursor:not-allowed;}
+    .soal-num{display:inline-block;background:var(--primary);color:#fff;padding:2px 12px;border-radius:8px;font-size:13px;font-weight:700;margin-bottom:6px;}
+    .skor-display{text-align:center;padding:24px;margin:16px 0;}
+    .skor-num{font-size:48px;font-weight:800;}
+    .skor-label{font-size:14px;color:var(--muted);margin-top:4px;}
+    .level-badge{display:inline-block;padding:8px 24px;border-radius:12px;font-weight:700;font-size:16px;margin-top:8px;}
+    .level-1{background:#fee2e2;color:#991b1b;}
+    .level-2{background:#fef3c7;color:#92400e;}
+    .level-3{background:#dcfce7;color:#166534;}
+    .already-done{text-align:center;padding:20px;}
+    @media(max-width:480px){.card{padding:14px;}table{font-size:12px;}th,td{padding:6px;}.skor-num{font-size:36px;}}
+  </style>
+</head>
+<body>
+<a href="https://ppg-aw.github.io/SMKN1/Pertemuan7.html" style="display:block;background:#0f172a;color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:700;text-decoration:none;">Kembali ke Halaman Utama Pertemuan 7</a>
+<div class="header">
+  <h1>Pre-Test: Median Data Kelompok</h1>
+  <p>Matematika Kelas X / SMKN 1 Salatiga</p>
+</div>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div class="login-page" id="pgLogin">
+  <div class="login-card">
+    <h2>Pre-Test</h2>
+    <p>Kerjakan 6 soal berikut untuk menentukan level LKPD yang akan kamu kerjakan di kelas.</p>
+    <div class="search-box" id="searchBox">
+      <input type="text" class="s-input" id="inpNama" placeholder="Ketik nama lengkapmu..."/>
+      <div class="s-list" id="sList"></div>
+    </div>
+    <div id="dispNama" style="margin-top:8px;"></div>
+    <button class="btn-login" id="btnLogin" disabled>Mulai Pre-Test</button>
+    <div id="loginMsg" style="margin-top:8px;font-size:13px;color:var(--muted);"></div>
+  </div>
+</div>
+
+<!-- SUDAH MENGERJAKAN -->
+<div id="pgDone" style="display:none;">
+  <div class="card">
+    <div class="already-done">
+      <h2 style="border:none;padding:0;">Kamu Sudah Mengerjakan Pre-Test</h2>
+      <div class="skor-display">
+        <div class="skor-num" id="doneScore">0</div>
+        <div class="skor-label">Skor Pre-Test</div>
+        <div class="level-badge" id="doneLevel">Level</div>
+      </div>
+      <p>Hasil pre-test sudah terekam. Level LKPD yang akan kamu kerjakan di kelas sudah ditentukan.</p>
+      <div style="margin-top:16px;">
+        <a href="https://ppg-aw.github.io/SMKN1/WebInteraktif7.html" style="display:inline-block;padding:12px 24px;background:var(--purple);color:#fff;border-radius:12px;text-decoration:none;font-weight:700;">Latihan Soal Generator</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SOAL -->
+<div id="pgSoal" style="display:none;">
+  <div class="card">
+    <h2>Pre-Test: Median Data Kelompok</h2>
+    <div class="note-box">Kerjakan secara mandiri dan jujur. Skor pre-test menentukan level LKPD yang akan kamu kerjakan di kelas.</div>
+
+    <p>Gunakan tabel berikut untuk menjawab soal nomor 1 sampai 6.</p>
+    <table>
+      <tr><th>Durasi Streaming Musik (menit)</th><th>\(f\)</th></tr>
+      <tr><td>0 sampai 19</td><td>3</td></tr>
+      <tr><td>20 sampai 39</td><td>7</td></tr>
+      <tr><td>40 sampai 59</td><td>10</td></tr>
+      <tr><td>60 sampai 79</td><td>6</td></tr>
+      <tr><td>80 sampai 99</td><td>4</td></tr>
+    </table>
+
+    <!-- SOAL 1 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 1 (10 poin)</div>
+      <p>Hitung jumlah seluruh frekuensi \(n\).</p>
+      <input type="number" class="q-input" id="s1" placeholder="n = ..."/>
+    </div>
+
+    <!-- SOAL 2 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 2 (15 poin)</div>
+      <p>Tentukan frekuensi kumulatif untuk setiap kelas. Pisahkan dengan koma.</p>
+      <input type="text" class="q-input" id="s2" placeholder="Contoh: 2,5,10,16,20"/>
+    </div>
+
+    <!-- SOAL 3 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 3 (15 poin)</div>
+      <p>Tentukan letak median \(\frac{n}{2}\).</p>
+      <input type="number" class="q-input" id="s3" placeholder="n/2 = ..." step="any"/>
+    </div>
+
+    <!-- SOAL 4 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 4 (15 poin)</div>
+      <p>Tentukan kelas median.</p>
+      <select class="q-input" id="s4" style="background:#fff;">
+        <option value="">Pilih kelas median...</option>
+        <option value="a">0 sampai 19</option>
+        <option value="b">20 sampai 39</option>
+        <option value="c">40 sampai 59</option>
+        <option value="d">60 sampai 79</option>
+        <option value="e">80 sampai 99</option>
+      </select>
+    </div>
+
+    <!-- SOAL 5 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 5 (20 poin)</div>
+      <p>Tentukan nilai \(Tb\), \(p\), \(F\), dan \(f\) dari kelas median.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <div><label>\(Tb\) = </label><input type="number" class="q-input" id="s5a" placeholder="..." step="any"/></div>
+        <div><label>\(p\) = </label><input type="number" class="q-input" id="s5b" placeholder="..."/></div>
+        <div><label>\(F\) = </label><input type="number" class="q-input" id="s5c" placeholder="..."/></div>
+        <div><label>\(f\) = </label><input type="number" class="q-input" id="s5d" placeholder="..."/></div>
+      </div>
+    </div>
+
+    <!-- SOAL 6 -->
+    <div style="margin:16px 0;">
+      <div class="soal-num">Soal 6 (25 poin)</div>
+      <p>Hitung median data kelompok tersebut. Bulatkan 2 desimal.</p>
+      <input type="number" class="q-input" id="s6" placeholder="Me = ..." step="any"/>
+    </div>
+
+    <button class="btn-blue" id="btnSubmit">Kirim Jawaban</button>
+    <div id="submitMsg" style="margin-top:8px;font-size:13px;color:var(--muted);"></div>
+  </div>
+</div>
+
+<!-- HASIL -->
+<div id="pgHasil" style="display:none;">
+  <div class="card">
+    <h2 style="text-align:center;border:none;padding:0;">Hasil Pre-Test</h2>
+    <div class="skor-display">
+      <div class="skor-num" id="skorNum">0</div>
+      <div class="skor-label">dari 100</div>
+      <div class="level-badge" id="levelBadge">Level</div>
+    </div>
+    <div id="hasilDetail"></div>
+    <div id="hasilFeedback" style="margin-top:12px;"></div>
+    <div style="margin-top:20px;text-align:center;">
+      <p style="font-size:14px;color:var(--muted);">Level LKPD yang akan kamu kerjakan di kelas sudah ditentukan berdasarkan skor ini.</p>
+      <div style="margin-top:12px;">
+        <a href="https://ppg-aw.github.io/SMKN1/WebInteraktif7.html" style="display:inline-block;padding:12px 24px;background:var(--purple);color:#fff;border-radius:12px;text-decoration:none;font-weight:700;">Latihan Soal Generator</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz9ZU60vKNM5WO2eyUr6HgfwhVuCs4zlxR127xCdDksiyUFsnmVjKei43-6FluiRVWq/exec';
+var SRC = 'PreTest';
+var NAMES = ["AGUSTYA RAMADHANI","ANINDYA AZZAHRA","ANJA ALZENA TANJUNG","AURELIA KEYSHA VERNANDYA","AYU WIDYASARI","AZZAHRA ISMAYANTI","CARISSA ARVITA PUTRI","DAVINA ALYA PUTRI","DITA NANDA PUTRI","EKA WULANSARI","FEBBY AULIA DAMAYANTI","JENNYTA WULANDARI","LAURA OKTAVIANI","MAITSA KHALISTA PUTRI","MARVA MAULIDA","MELYNDA ANANTA SARI","NABILLA AYU EVANIA","NAMIRA SETARIANTI","NANDITA FITRIA RAMADANI","NAYLA AZKIYA HAFIZHAH","NOLA FEBI AYU DANITYA","NOVI MARTHALITA","OCTAVIA FITRIYANI","REKA MUSTIKA FAHLUIZA","RORO ENDAH MUSTIKA NINGRUM","SALSABILA CHALISA RAHMA WIBOWO","SEFA FEBI SAPUTRI","SUCI NAZILAH","TARA ARGYA NUR AGUSTIN","TIRTA ARUM KUMALA DEWI","WISNU BIMA NURIN PRATAMA"];
+var user = '';
+
+// KUNCI JAWABAN
+// n=30, fk=3,10,20,26,30, n/2=15, kelas median=40-59 (c)
+// Tb=39.5, p=20, F=10, f=10, Me=49.5
+var KEY = {
+  s1: 30,
+  s2: [3,10,20,26,30],
+  s3: 15,
+  s4: 'c',
+  s5a: 39.5,
+  s5b: 20,
+  s5c: 10,
+  s5d: 10,
+  s6: 49.5
+};
+
+function el(id){return document.getElementById(id);}
+function mark(id,ok){var e=el(id);if(e){e.classList.remove('ok','no');e.classList.add(ok?'ok':'no');}}
+
+function toSheets(action,data){
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE'){console.log('[LOG]',action,data);return Promise.resolve({success:true});}
+  var p='action='+encodeURIComponent(action)+'&source='+encodeURIComponent(SRC)+'&t='+encodeURIComponent(new Date().toISOString());
+  for(var k in data){var v=data[k];if(Array.isArray(v))v=v.join(',');p+='&'+encodeURIComponent(k)+'='+encodeURIComponent(v);}
+  return fetch(SCRIPT_URL+'?'+p).then(function(r){return r.json();}).then(function(r){console.log('[OK]',action,r);return r;}).catch(function(e){console.log('[ERR]',e);return{error:e};});
+}
+
+function loadNames(){
+  if(SCRIPT_URL==='YOUR_APPS_SCRIPT_URL_HERE')return;
+  fetch(SCRIPT_URL+'?action=getNames&source='+SRC)
+    .then(function(r){return r.json();})
+    .then(function(d){if(d&&d.names&&d.names.length>0)NAMES=d.names.map(function(n){return n.toUpperCase();});})
+    .catch(function(){});
+}
+
+function doSearch(){
+  var v=el('inpNama').value.trim().toUpperCase();
+  var list=el('sList');
+  if(v.length<1){list.style.display='none';return;}
+  var fil=NAMES.filter(function(n){return n.includes(v);});
+  var h='';
+  fil.forEach(function(n){h+='<div class="s-item" data-name="'+n+'">'+n+'</div>';});
+  if(fil.length===0&&v.length>=3)h+='<div class="s-item new" data-name="'+v+'">Tambah: "'+v+'"</div>';
+  list.innerHTML=h;list.style.display=h?'block':'none';
+}
+
+function pickName(name){
+  user=name.toUpperCase();
+  el('inpNama').value=user;
+  el('sList').style.display='none';
+  el('dispNama').innerHTML='<span class="u-badge">'+user+'</span>';
+  el('btnLogin').disabled=false;
+}
+
+function doLogin(){
+  if(!user)return;
+  el('btnLogin').disabled=true;
+  el('loginMsg').textContent='Mengecek data...';
+
+  // Cek apakah sudah pernah mengerjakan
+  if(SCRIPT_URL!=='YOUR_APPS_SCRIPT_URL_HERE'){
+    fetch(SCRIPT_URL+'?action=getPretest&nama='+encodeURIComponent(user))
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(d&&d.data&&d.data.skor!==undefined&&d.data.skor!==''){
+          // Sudah pernah mengerjakan
+          showDone(d.data.skor, d.data.level);
+        } else {
+          showSoal();
+        }
+      })
+      .catch(function(){showSoal();});
+  } else {
+    showSoal();
+  }
+}
+
+function showDone(skor,level){
+  el('pgLogin').style.display='none';
+  el('pgDone').style.display='block';
+  el('doneScore').textContent=skor;
+  var lb=el('doneLevel');
+  lb.textContent=level||'';
+  lb.className='level-badge';
+  if(String(level).includes('1'))lb.classList.add('level-1');
+  else if(String(level).includes('3'))lb.classList.add('level-3');
+  else lb.classList.add('level-2');
+}
+
+function showSoal(){
+  el('pgLogin').style.display='none';
+  el('pgSoal').style.display='block';
+  el('loginMsg').textContent='';
+  if(window.MathJax)MathJax.typesetPromise();
+}
+
+function submitJawaban(){
+  el('btnSubmit').disabled=true;
+  el('submitMsg').textContent='Memeriksa jawaban...';
+
+  // Ambil jawaban
+  var a1 = parseFloat(el('s1').value);
+  var a2raw = el('s2').value.trim();
+  var a2 = a2raw.split(',').map(function(s){return parseFloat(s.trim());});
+  var a3 = parseFloat(el('s3').value);
+  var a4 = el('s4').value;
+  var a5a = parseFloat(el('s5a').value);
+  var a5b = parseFloat(el('s5b').value);
+  var a5c = parseFloat(el('s5c').value);
+  var a5d = parseFloat(el('s5d').value);
+  var a6 = parseFloat(el('s6').value);
+
+  // Hitung skor
+  var skor = 0;
+  var detail = [];
+
+  // Soal 1 (10)
+  var c1 = a1===KEY.s1;
+  mark('s1',c1);
+  if(c1){skor+=10;detail.push({no:1,poin:10,dapat:10,status:'Benar'});}
+  else{detail.push({no:1,poin:10,dapat:0,status:'Salah. Jawaban benar: '+KEY.s1});}
+
+  // Soal 2 (15)
+  var c2=a2.length===KEY.s2.length;
+  if(c2){for(var i=0;i<KEY.s2.length;i++){if(a2[i]!==KEY.s2[i]){c2=false;break;}}}
+  mark('s2',c2);
+  var s2partial=0;
+  if(c2){s2partial=15;}else{
+    // Partial: hitung berapa fk yang benar
+    var benarFk=0;
+    for(var i=0;i<Math.min(a2.length,KEY.s2.length);i++){if(a2[i]===KEY.s2[i])benarFk++;}
+    if(benarFk>=3)s2partial=8;
+  }
+  skor+=s2partial;
+  detail.push({no:2,poin:15,dapat:s2partial,status:c2?'Benar':'Jawaban benar: '+KEY.s2.join(', ')});
+
+  // Soal 3 (15)
+  var c3=a3===KEY.s3;
+  mark('s3',c3);
+  if(c3){skor+=15;detail.push({no:3,poin:15,dapat:15,status:'Benar'});}
+  else{detail.push({no:3,poin:15,dapat:0,status:'Salah. Jawaban benar: '+KEY.s3});}
+
+  // Soal 4 (15)
+  var c4=a4===KEY.s4;
+  mark('s4',c4);
+  if(c4){skor+=15;detail.push({no:4,poin:15,dapat:15,status:'Benar'});}
+  else{detail.push({no:4,poin:15,dapat:0,status:'Salah. Jawaban benar: 40 sampai 59'});}
+
+  // Soal 5 (20)
+  var c5a=a5a===KEY.s5a,c5b=a5b===KEY.s5b,c5c=a5c===KEY.s5c,c5d=a5d===KEY.s5d;
+  mark('s5a',c5a);mark('s5b',c5b);mark('s5c',c5c);mark('s5d',c5d);
+  var s5count=[c5a,c5b,c5c,c5d].filter(Boolean).length;
+  var s5skor=s5count===4?20:(s5count>=2?10:0);
+  skor+=s5skor;
+  detail.push({no:5,poin:20,dapat:s5skor,status:s5count===4?'Benar':'Benar '+s5count+'/4. Jawaban: Tb='+KEY.s5a+', p='+KEY.s5b+', F='+KEY.s5c+', f='+KEY.s5d});
+
+  // Soal 6 (25)
+  var c6=Math.abs(a6-KEY.s6)<=0.02;
+  mark('s6',c6);
+  if(c6){skor+=25;detail.push({no:6,poin:25,dapat:25,status:'Benar'});}
+  else{
+    // Partial: cek apakah substitusi benar tapi salah hitung
+    var s6partial=0;
+    if(Math.abs(a6-KEY.s6)<=1)s6partial=13;
+    skor+=s6partial;
+    detail.push({no:6,poin:25,dapat:s6partial,status:'Jawaban benar: '+KEY.s6});
+  }
+
+  // Tentukan level
+  var level='';
+  if(skor>=80)level='Level 3';
+  else if(skor>=60)level='Level 2';
+  else level='Level 1';
+
+  // Tampilkan hasil
+  showHasil(skor,level,detail);
+
+  // Kirim ke sheets
+  toSheets('pretest',{
+    nama:user,
+    soal1:a1||'',
+    soal2:a2raw,
+    soal3:a3||'',
+    soal4:a4||'',
+    soal5:(a5a||'')+','+(a5b||'')+','+(a5c||'')+','+(a5d||''),
+    soal6:a6||'',
+    skor:skor,
+    level:level
+  });
+}
+
+function showHasil(skor,level,detail){
+  el('pgSoal').style.display='none';
+  el('pgHasil').style.display='block';
+
+  // Skor
+  el('skorNum').textContent=skor;
+  el('skorNum').style.color=skor>=80?'var(--success)':skor>=60?'var(--accent)':'var(--danger)';
+
+  // Level badge
+  var lb=el('levelBadge');
+  lb.textContent=level;
+  lb.className='level-badge';
+  if(level==='Level 1')lb.classList.add('level-1');
+  else if(level==='Level 3')lb.classList.add('level-3');
+  else lb.classList.add('level-2');
+
+  // Detail per soal
+  var h='<table><tr><th>No</th><th>Poin</th><th>Dapat</th><th>Keterangan</th></tr>';
+  detail.forEach(function(d){
+    var color=d.dapat===d.poin?'var(--success)':d.dapat>0?'var(--accent)':'var(--danger)';
+    h+='<tr><td>'+d.no+'</td><td>'+d.poin+'</td><td style="color:'+color+';font-weight:700;">'+d.dapat+'</td><td style="text-align:left;font-size:12px;">'+d.status+'</td></tr>';
+  });
+  h+='</table>';
+  el('hasilDetail').innerHTML=h;
+
+  // Feedback
+  var fb='';
+  if(skor>=80)fb='<div class="success-box"><strong>Sangat Baik!</strong> Kamu akan mengerjakan LKPD Level 3 (Mandiri Tantangan) di kelas. Soal menggunakan data mentah yang harus kamu kelompokkan sendiri.</div>';
+  else if(skor>=60)fb='<div class="note-box"><strong>Baik!</strong> Kamu akan mengerjakan LKPD Level 2 (Mandiri Terbimbing) di kelas. Soal menggunakan tabel yang sudah tersedia dengan panduan langkah.</div>';
+  else fb='<div class="warning-box"><strong>Perlu Penguatan!</strong> Kamu akan mengerjakan LKPD Level 1 (Bimbingan Intensif) di kelas. Soal disertai petunjuk di setiap langkah dan guru akan membimbingmu. Kamu juga mendapat soal lebih banyak agar semakin terampil.</div>';
+  el('hasilFeedback').innerHTML=fb;
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// EVENT LISTENERS
+document.addEventListener('DOMContentLoaded',function(){
+  el('inpNama').addEventListener('input',doSearch);
+  el('inpNama').addEventListener('focus',doSearch);
+  el('sList').addEventListener('click',function(e){
+    var item=e.target.closest('.s-item');
+    if(!item)return;
+    var name=item.getAttribute('data-name');
+    if(item.classList.contains('new')){
+      var clean=name.toUpperCase();
+      if(NAMES.indexOf(clean)===-1){NAMES.push(clean);toSheets('addName',{nama:clean});}
+      pickName(clean);
+    }else{pickName(name);}
+  });
+  document.addEventListener('click',function(e){
+    if(!el('searchBox').contains(e.target))el('sList').style.display='none';
+  });
+  el('btnLogin').addEventListener('click',doLogin);
+  el('btnSubmit').addEventListener('click',submitJawaban);
+  loadNames();
+});
+</script>
+
+</body>
+</html>
