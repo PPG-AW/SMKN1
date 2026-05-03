@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sumatif Statistika - X PM1</title>
+    <style>
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-user-select: none; -moz-user-select: none;
+            -ms-user-select: none; user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        @media print { html, body { display: none !important; } }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, Roboto, Helvetica, Arial, sans-serif;
+            background: #eef1f5;
+            color: #2d2d2d;
+            font-size: 15px;
+            line-height: 1.65;
+            padding-bottom: 72px;
+        }
+
+        .top-bar {
+            background: #1a56a8;
+            color: #fff;
+            padding: 14px 16px 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .top-bar .row-1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .top-bar .identity h1 {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .top-bar .identity p {
+            font-size: 11px;
+            opacity: 0.75;
+            margin-top: 1px;
+        }
+        .top-bar .timer-box {
+            text-align: right;
+            flex-shrink: 0;
+        }
+        .top-bar .timer-box .time {
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+        .top-bar .timer-box .time.warn { color: #ffb74d; }
+        .top-bar .timer-box .time.overtime { color: #ff5252; animation: blink 1s infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+        .top-bar .timer-box .timer-label {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+        .top-bar .row-2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        .top-bar .chips {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .top-bar .chip {
+            background: rgba(255,255,255,0.15);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+        .top-bar .violations {
+            background: rgba(255,255,255,0.15);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .top-bar .violations.danger { background: #e53935; }
+
+        .main {
+            padding: 12px;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .card-petunjuk {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .card-petunjuk .motivasi {
+            font-size: 13px;
+            color: #2e7d32;
+            font-style: italic;
+            padding: 10px 12px;
+            background: #f1f8e9;
+            border-radius: 6px;
+            border-left: 3px solid #66bb6a;
+            margin-bottom: 12px;
+            line-height: 1.55;
+        }
+        .card-petunjuk h3 {
+            font-size: 13px;
+            color: #1a56a8;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+        .card-petunjuk ol {
+            padding-left: 18px;
+            font-size: 12px;
+            color: #555;
+        }
+        .card-petunjuk ol li {
+            margin-bottom: 3px;
+            line-height: 1.5;
+        }
+        .card-petunjuk ol li b { color: #333; }
+
+        .soal-card {
+            background: #fff;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+        .soal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fafbfc;
+        }
+        .soal-head .soal-no {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a56a8;
+        }
+        .soal-head .soal-skor {
+            font-size: 11px;
+            font-weight: 600;
+            color: #fff;
+            background: #1a56a8;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+        .soal-body { padding: 16px; }
+
+        .ilustrasi {
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            border: 1px solid #e8e8e8;
+        }
+        .ilustrasi .foto-wrap {
+            width: 100%;
+            height: 160px;
+            overflow: hidden;
+            position: relative;
+            background: #e0e0e0;
+        }
+        .ilustrasi .foto-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .ilustrasi .foto-wrap .foto-overlay {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            padding: 20px 12px 8px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.55));
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .ilustrasi .caption {
+            font-size: 12px;
+            color: #555;
+            padding: 10px 12px;
+            background: #fafbfc;
+            border-top: 1px solid #f0f0f0;
+            line-height: 1.5;
+        }
+
+        .data-box {
+            background: #f4f7fa;
+            border: 1px solid #e2e7ed;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            letter-spacing: 0.5px;
+            margin: 12px 0;
+            line-height: 1.8;
+        }
+
+        .tbl-wrap {
+            overflow-x: auto;
+            margin: 12px 0;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid #e2e7ed;
+            border-radius: 8px;
+        }
+        .tbl {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 260px;
+        }
+        .tbl th {
+            background: #1a56a8;
+            color: #fff;
+            font-weight: 600;
+            padding: 9px 10px;
+            font-size: 12px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .tbl td {
+            padding: 8px 10px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+        }
+        .tbl tr:last-child td { border-bottom: none; }
+        .tbl tr:nth-child(even) { background: #f8f9fb; }
+
+        .info-box {
+            background: #edf4fc;
+            border: 1px solid #c9ddf2;
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 13px;
+            color: #1a56a8;
+            line-height: 1.65;
+            margin: 12px 0;
+        }
+        .info-box b { color: #0d3b7a; }
+
+        .soal-body p {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        .soal-body .pertanyaan { margin-top: 10px; }
+        .soal-body .pertanyaan ol {
+            padding-left: 18px;
+            margin-top: 4px;
+        }
+        .soal-body .pertanyaan ol li {
+            margin-bottom: 2px;
+            font-size: 14px;
+        }
+        .hl {
+            background: #fff3cd;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            background: #fff;
+            border-top: 1px solid #e0e0e0;
+            padding: 8px 12px;
+            z-index: 100;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+        }
+        .bottom-nav .dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .bottom-nav .dot {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            border: 1.5px solid #1a56a8;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700;
+            color: #1a56a8; cursor: pointer;
+            background: #fff; transition: all 0.15s;
+        }
+        .bottom-nav .dot.active { background: #1a56a8; color: #fff; }
+        .bottom-nav .btns { display: flex; gap: 8px; }
+        .bottom-nav .btn {
+            flex: 1; padding: 10px;
+            border-radius: 8px; font-size: 13px;
+            font-weight: 600; cursor: pointer;
+            border: 1.5px solid #1a56a8;
+            font-family: inherit; text-align: center;
+        }
+        .bottom-nav .btn.prev { background: #fff; color: #1a56a8; }
+        .bottom-nav .btn.next { background: #1a56a8; color: #fff; }
+        .bottom-nav .btn:disabled { opacity: 0.3; cursor: default; }
+
+        #lockScreen {
+            display: none; position: fixed; inset: 0;
+            z-index: 9999; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center; padding: 24px; color: #fff;
+        }
+        #lockScreen.show { display: flex; }
+        #lockScreen.warn-mode { background: rgba(21,70,150,0.97); }
+        #lockScreen.ban-mode { background: rgba(140,15,15,0.97); }
+        #lockScreen h2 {
+            font-size: 18px; font-weight: 700;
+            margin-bottom: 6px; padding-bottom: 8px;
+            border-bottom: 2px solid rgba(255,255,255,0.25);
+        }
+        #lockScreen .lock-msg {
+            font-size: 14px; line-height: 1.7;
+            margin-bottom: 24px; max-width: 320px; opacity: 0.92;
+        }
+        #lockScreen .input-wrap {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 10px; width: 100%;
+        }
+        #lockScreen input {
+            width: 100%; max-width: 220px; padding: 12px;
+            font-size: 18px; text-align: center; border: none;
+            border-radius: 8px; font-family: monospace;
+            letter-spacing: 4px; outline: none;
+            background: rgba(255,255,255,0.95); color: #222;
+        }
+        #lockScreen .btn-unlock {
+            width: 100%; max-width: 220px; padding: 12px;
+            font-size: 14px; font-weight: 700; border: none;
+            border-radius: 8px; background: #2e7d32; color: #fff;
+            cursor: pointer; font-family: inherit;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        #lockScreen .btn-unlock:active { transform: translateY(1px); }
+        #lockScreen .lock-err {
+            font-size: 12px; color: #ffcdd2;
+            margin-top: 4px; font-weight: 600; min-height: 18px;
+        }
+        .blur { filter: blur(18px) !important; pointer-events: none !important; }
+
+        @media (max-width: 380px) {
+            .top-bar .identity h1 { font-size: 13px; }
+            .top-bar .timer-box .time { font-size: 18px; }
+            .soal-body { padding: 14px; }
+            .data-box { font-size: 14px; }
+            .ilustrasi .foto-wrap { height: 140px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="lockScreen">
+    <h2 id="lockTitle">PELANGGARAN TERDETEKSI</h2>
+    <p class="lock-msg" id="lockMsg"></p>
+    <div class="input-wrap" id="lockInputWrap">
+        <input type="tel" id="kodeGuru" placeholder="KODE GURU" autocomplete="off" maxlength="6">
+        <button class="btn-unlock" onclick="bukaKunci()">Buka Kunci</button>
+        <div class="lock-err" id="lockErr"></div>
+    </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="top-bar" id="topBar">
+    <div class="row-1">
+        <div class="identity">
+            <h1>SUMATIF STATISTIKA</h1>
+            <p>SMKN 1 Salatiga &bull; Kelas X PM1</p>
+        </div>
+        <div class="timer-box">
+            <div class="time" id="timer">60:00</div>
+            <div class="timer-label" id="timerLabel">sisa waktu</div>
+        </div>
+    </div>
+    <div class="row-2">
+        <div class="chips">
+            <span class="chip">8 Soal</span>
+            <span class="chip">Skor: 100</span>
+            <span class="chip">KKM: 78</span>
+        </div>
+        <div class="violations" id="vBadge">0/5</div>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="mainContent">
+
+    <!-- PETUNJUK -->
+    <div class="card-petunjuk soal-item" id="intro">
+        <div class="motivasi">Kerjakan dengan tenang, teliti, dan jujur. Setiap langkah yang benar akan membawamu pada hasil yang tepat.</div>
+        <h3>Petunjuk Pengerjaan</h3>
+        <ol>
+            <li>Tuliskan <b>nama</b> dan <b>kelas</b> pada lembar jawaban.</li>
+            <li>Semua jawaban <b>wajib ditulis dengan pulpen</b>.</li>
+            <li>Tunjukkan <b>langkah perhitungan</b> secara jelas pada setiap soal.</li>
+            <li>Baca soal di layar ini, kerjakan jawabannya di kertas.</li>
+            <li>Jangan keluar dari layar ini selama ujian berlangsung.</li>
+        </ol>
+    </div>
+
+    <!-- SOAL 1 -->
+    <div class="soal-card soal-item" id="soal1">
+        <div class="soal-head">
+            <span class="soal-no">Soal 1</span>
+            <span class="soal-skor">10 poin</span>
+        </div>
+        <div class="soal-body">
+            <div class="ilustrasi">
+                <div class="foto-wrap">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80" alt="Warung makan" loading="lazy">
+                    <div class="foto-overlay">Warung Makan "Rasa Kita"</div>
+                </div>
+                <div class="caption">Warung makan "Rasa Kita" mencatat jumlah paket makan siang yang terjual selama 7 hari terakhir.</div>
+            </div>
+            <p>Berikut data jumlah paket yang terjual:</p>
+            <div class="data-box">45, &ensp;52, &ensp;47, &ensp;53, &ensp;42, &ensp;47, &ensp;50</div>
+            <div class="pertanyaan">
+                <p>Tentukan:</p>
+                <ol>
+                    <li>Mean</li>
+                    <li>Modus</li>
+                    <li>Median</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOAL 2 -->
+    <div class="soal-card soal-item" id="soal2">
+        <div class="soal-head">
+            <span class="soal-no">Soal 2</span>
+            <span class="soal-skor">10 poin</span>
+        </div>
+        <div class="soal-body">
+            <div class="ilustrasi">
+                <div class="foto-wrap">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80" alt="Toko online" loading="lazy">
+                    <div class="foto-overlay">Flash Sale - Toko Online</div>
+                </div>
+                <div class="caption">Sebuah toko online mengadakan program Flash Sale dan mencatat penjualan dari 10 produk unggulan dalam satu hari.</div>
+            </div>
+            <p>Berikut data jumlah paket produk promosi yang terjual:</p>
+            <div class="data-box">22, &ensp;30, &ensp;18, &ensp;14, &ensp;24, &ensp;20, &ensp;26, &ensp;22, &ensp;16, &ensp;28</div>
+            <div class="pertanyaan">
+                <p>Tentukan:</p>
+                <ol>
+                    <li>Mean</li>
+                    <li>Modus</li>
+                    <li>Median</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOAL 3 -->
+    <div class="soal-card soal-item" id="soal3">
+        <div class="soal-head">
+            <span class="soal-no">Soal 3</span>
+            <span class="soal-skor">10 poin</span>
+        </div>
+        <div class="soal-body">
+            <div class="ilustrasi">
+                <div class="foto-wrap">
+                    <img src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=800&q=80" alt="Minimarket" loading="lazy">
+                    <div class="foto-overlay">Minimarket - Data Transaksi Kasir</div>
+                </div>
+                <div class="caption">Seorang manajer minimarket mencatat jumlah transaksi kasir per hari selama 30 hari.</div>
+            </div>
+            <p>Data tersebut disajikan dalam tabel berikut:</p>
+            <div class="tbl-wrap">
+                <table class="tbl">
+                    <tr><th>Jumlah Transaksi per Hari</th><th>Frekuensi</th></tr>
+                    <tr><td>70</td><td>3</td></tr>
+                    <tr><td>75</td><td>5</td></tr>
+                    <tr><td>80</td><td>10</td></tr>
+                    <tr><td>85</td><td>7</td></tr>
+                    <tr><td>90</td><td>5</td></tr>
+                </table>
+            </div>
+            <p>Tentukan <span class="hl">mean</span> dari data pada tabel frekuensi tersebut.</p>
+        </div>
+    </div>
+
+    <!-- SOAL 4 -->
+    <div class="soal-card soal-item" id="soal4">
+        <div class="soal-head">
+            <span class="soal-no">Soal 4</span>
+            <span class="soal-skor">10 poin</span>
+        </div>
+        <div class="soal-body">
+            <div class="ilustrasi">
+                <div class="foto-wrap">
+                    <img src="https://images.unsplash.com/photo-1556742031-c6961e8560b0?w=800&q=80" alt="Pesanan online" loading="lazy">
+                    <div class="foto-overlay">Dashboard Pesanan Online</div>
+                </div>
+                <div class="caption">Sebuah usaha kecil mencatat jumlah pesanan online per hari selama 25 hari.</div>
+            </div>
+            <p>Data tersebut disajikan dalam tabel berikut:</p>
+            <div class="tbl-wrap">
+                <table class="tbl">
+                    <tr><th>Jumlah Pesanan per Hari</th><th>Frekuensi</th></tr>
+                    <tr><td>10</td><td>2</td></tr>
+                    <tr><td>11</td><td>9</td></tr>
+                    <tr><td>12</td><td>6</td></tr>
+                    <tr><td>13</td><td>4</td></tr>
+                    <tr><td>14</td><td>4</td></tr>
+                </table>
+            </div>
+            <div class="pertanyaan">
+                <p>Tentukan:</p>
+                <ol>
+                    <li>Modus</li>
+                    <li>Median</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOAL 5 -->
+    <div class="soal-card soal-item" id="soal5">
+        <div class="soal-head">
+            <span class="soal-no">Soal 5</span>
+            <span class="soal-skor">10 poin</span>
+        </div>
+        <div class="soal-body">
+            <div class="ilustrasi">
+                <div class="foto-wrap">
+                    <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&q=80" alt="Media sosial" loading="lazy">
+                    <div class="foto-overlay">Toko Fashion - Media Sosial</div>
+                </div>
+                <div class="caption">Akun media sosial sebuah toko fashion mencatat jumlah followers baru per hari selama 30 hari.</div>
+            </div>
+            <p>Data tersebut disajikan dalam tabel berikut:</p>
+            <div class="tbl-wrap">
+                <table class="tbl">
+                    <tr><th>Followers Baru per Hari</th><th>Frekuensi</th></tr>
+                    <tr><td>15</td><td>3</td></tr>
+                    <tr><td>16</td><td>11</td></tr>
+                    <tr><td>17</td><td>6</td></tr>
+                    <tr><td>18</td><td>5</td></tr>
+                    <tr><td>19</td><td>5</td></tr>
+                </table>
+            </div>
+            <div class="pertanyaan">
+                <p>Tentukan:</p>
+                <ol>
+                    <li>Modus</li>
+                    <li>Median</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOAL 6 -->
+    <div class="soal-card soal-item" id="soal6">
+        <div class="soal-head">
+            <span class="soal-no">Soal 6</span>
+            <span class="soal-skor">10 poin</span>
+        </div>
+        <div class="soal-body">
+            <div class="ilustrasi">
+                <div class="foto-wrap">
+                    <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80" alt="Toko retail" loading="lazy">
+                    <div class="foto-overlay">Penilaian Kinerja Dua Cabang Toko</div>
+                </div>
+                <div class="caption">Dua cabang toko retail melakukan penilaian kinerja pelayanan karyawan.</div>
+            </div>
+            <p>Berikut data penilaian kinerja dari masing-masing cabang:</p>
+            <div class="info-box">
+                <b>Cabang A:</b> 20 karyawan, nilai rata-rata = 80<br>
+                <b>Cabang B:</b> 30 karyawan, nilai rata-rata = 90
+            </div>
+            <p>Tentukan <span class="hl">mean gabungan</span> nilai kinerja karyawan dari kedua cabang tersebut.</p>
+        </div>
+    </div>
+
+    <!-- SOAL 7 -->
+    <div class="soal-card soal-item" id="soal7">
+        <div class="soal-head">
+            <span class="soal-no">Soal 7</span>
+            <span class="soal-skor">20 poin</span>
+        </div>
+        <div class="soal-body">
+            <div class="ilustrasi">
+                <div class="foto-wrap">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Digital marketing" loading="lazy">
+                    <div class="foto-overlay">Iklan Digital UMKM</div>
+                </div>
+                <div class="caption">Sebanyak 40 pelaku UMKM mencatat pengeluaran iklan digital mereka dalam satu minggu.</div>
+            </div>
+            <p>Data tersebut disajikan dalam tabel distribusi frekuensi berikut:</p>
+            <div class="tbl-wrap">
+                <table class="tbl">
+                    <tr><th>Pengeluaran Iklan Digital<br>(puluhan ribu rupiah)</th><th>Frekuensi</th></tr>
+                    <tr><td>10 &ndash; 19</td><td>5</td></tr>
+                    <tr><td>20 &ndash; 29</td><td>7</td></tr>
+                    <tr><td>30 &ndash; 39</td><td>13</td></tr>
+                    <tr><td>40 &ndash; 49</td><td>9</td></tr>
+                    <tr><td>50 &ndash; 59</td><td>6</td></tr>
+                </table>
+            </div>
+            <p>Tentukan <span class="hl">mean data kelompok</span> tersebut dengan menggunakan <span class="hl">minimal 2 cara</span> dari pilihan berikut:</p>
+            <div class="pertanyaan">
+                <ol>
+                    <li>cara titik tengah,</li>
+                    <li>cara rataan sementara,</li>
+                    <li>cara coding.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOAL 8 -->
+    <div class="soal-card soal-item" id="soal8">
+        <div class="soal-head">
+            <span class="soal-no">Soal 8</span>
+            <span class="soal-skor">20 poin</span>
+        </div>
+        <div class="soal-body">
+            <div class="ilustrasi">
+                <div class="foto-wrap">
+                    <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&q=80" alt="Restoran" loading="lazy">
+                    <div class="foto-overlay">Restoran Cepat Saji - 44 Hari</div>
+                </div>
+                <div class="caption">Sebuah restoran cepat saji mencatat jumlah pengunjung harian selama 44 hari.</div>
+            </div>
+            <p>Data tersebut disajikan dalam tabel distribusi frekuensi berikut:</p>
+            <div class="tbl-wrap">
+                <table class="tbl">
+                    <tr><th>Jumlah Pengunjung</th><th>Frekuensi</th></tr>
+                    <tr><td>40 &ndash; 49</td><td>4</td></tr>
+                    <tr><td>50 &ndash; 59</td><td>8</td></tr>
+                    <tr><td>60 &ndash; 69</td><td>10</td></tr>
+                    <tr><td>70 &ndash; 79</td><td>8</td></tr>
+                    <tr><td>80 &ndash; 89</td><td>8</td></tr>
+                    <tr><td>90 &ndash; 99</td><td>6</td></tr>
+                </table>
+            </div>
+            <div class="pertanyaan">
+                <p>Tentukan:</p>
+                <ol>
+                    <li>Median data kelompok</li>
+                    <li>Modus data kelompok</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+    <div class="dots" id="dots"></div>
+    <div class="btns">
+        <button class="btn prev" id="btnPrev" onclick="prev()">Sebelumnya</button>
+        <button class="btn next" id="btnNext" onclick="next()">Selanjutnya</button>
+    </div>
+</div>
+
+<script>
+    const KODE = "040526";
+    const DURASI = 60 * 60;
+    const MAX_V = 5;
+    const TOTAL = 9;
+    const PFX = 'stat2_';
+
+    let v = parseInt(localStorage.getItem(PFX+'v')) || 0;
+    let ban = localStorage.getItem(PFX+'ban') === '1';
+    let t = parseInt(localStorage.getItem(PFX+'t')) || 0;
+    let cur = parseInt(localStorage.getItem(PFX+'c')) || 0;
+    let started = localStorage.getItem(PFX+'s') === '1';
+    let interval = null;
+
+    const lockEl = document.getElementById('lockScreen');
+    const lockTitle = document.getElementById('lockTitle');
+    const lockMsg = document.getElementById('lockMsg');
+    const lockInputWrap = document.getElementById('lockInputWrap');
+    const kodeInput = document.getElementById('kodeGuru');
+    const lockErr = document.getElementById('lockErr');
+    const mainEl = document.getElementById('mainContent');
+    const topBarEl = document.getElementById('topBar');
+    const timerEl = document.getElementById('timer');
+    const timerLbl = document.getElementById('timerLabel');
+    const vBadge = document.getElementById('vBadge');
+
+    function save() {
+        try {
+            localStorage.setItem(PFX+'v', v);
+            localStorage.setItem(PFX+'ban', ban?'1':'0');
+            localStorage.setItem(PFX+'t', t);
+            localStorage.setItem(PFX+'c', cur);
+            localStorage.setItem(PFX+'s', started?'1':'0');
+            localStorage.setItem(PFX+'ts', Date.now());
+        } catch(e){}
+    }
+
+    function init() {
+        const ts = parseInt(localStorage.getItem(PFX+'ts')) || 0;
+        if (ts > 0 && started) {
+            t += Math.floor((Date.now() - ts) / 1000);
+        }
+        if (ts > 0 && (Date.now() - ts) > 3*3600000) {
+            resetAll(); return;
+        }
+        updateBadge();
+        buildDots();
+        if (ban) { showBan(); }
+        else if (v > 0 && !started) { showLock(); }
+        showItem(cur);
+        if (!started) { started = true; }
+        save();
+        startTimer();
+    }
+
+    function resetAll() {
+        [PFX+'v',PFX+'ban',PFX+'t',PFX+'c',PFX+'s',PFX+'ts'].forEach(k=>localStorage.removeItem(k));
+        v=0; ban=false; t=0; cur=0; started=false;
+    }
+
+    function startTimer() {
+        updateTimer();
+        interval = setInterval(()=>{
+            t++;
+            updateTimer();
+            if(t%10===0) save();
+        }, 1000);
+    }
+
+    function updateTimer() {
+        const r = DURASI - t;
+        if (r > 0) {
+            const m = Math.floor(r/60), s = r%60;
+            timerEl.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+            timerEl.className = 'time' + (r <= 300 ? ' warn' : '');
+            timerLbl.textContent = r <= 300 ? 'waktu hampir habis' : 'sisa waktu';
+        } else {
+            const o = Math.abs(r), m = Math.floor(o/60), s = o%60;
+            timerEl.textContent = '+' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+            timerEl.className = 'time overtime';
+            timerLbl.textContent = 'melewati batas waktu';
+        }
+    }
+
+    function buildDots() {
+        const c = document.getElementById('dots');
+        c.innerHTML = '';
+        const labels = ['i','1','2','3','4','5','6','7','8'];
+        for (let i = 0; i < TOTAL; i++) {
+            const d = document.createElement('div');
+            d.className = 'dot' + (i===cur?' active':'');
+            d.textContent = labels[i];
+            d.onclick = (()=>{ const idx=i; return ()=>showItem(idx); })();
+            c.appendChild(d);
+        }
+    }
+
+    function showItem(n) {
+        cur = n;
+        const items = document.querySelectorAll('.soal-item');
+        items.forEach((el,i) => el.style.display = i===n ? 'block' : 'none');
+        document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===n));
+        document.getElementById('btnPrev').disabled = n===0;
+        document.getElementById('btnNext').disabled = n===TOTAL-1;
+        window.scrollTo(0,0);
+        save();
+    }
+    function next() { if(cur<TOTAL-1) showItem(cur+1); }
+    function prev() { if(cur>0) showItem(cur-1); }
+
+    function updateBadge() {
+        vBadge.textContent = v + '/' + MAX_V;
+        vBadge.className = 'violations' + (v>=3?' danger':'');
+    }
+
+    function showBan() {
+        lockTitle.textContent = "UJIAN TERKUNCI";
+        lockMsg.innerHTML = "Anda telah mencapai batas maksimal pelanggaran (" + MAX_V + " kali).<br><br>Layar ujian dikunci.<br><br><b>Panggil Guru pengawas untuk membuka kunci.</b>";
+        kodeInput.value = '';
+        lockErr.textContent = '';
+        lockInputWrap.style.display = 'flex';
+        lockEl.className = 'show ban-mode';
+        mainEl.classList.add('blur');
+        topBarEl.classList.add('blur');
+    }
+
+    function showLock() {
+        lockTitle.textContent = "PELANGGARAN TERDETEKSI";
+        lockMsg.innerHTML = 'Fokus layar hilang. Anda terdeteksi keluar dari layar ujian.<br><br><b>Pelanggaran ke-' + v + ' dari ' + MAX_V + '.</b><br><br>Panggil Guru untuk membuka kunci.';
+        kodeInput.value = '';
+        lockErr.textContent = '';
+        lockInputWrap.style.display = 'flex';
+        lockEl.className = 'show warn-mode';
+        mainEl.classList.add('blur');
+        topBarEl.classList.add('blur');
+    }
+
+    function pelanggaran() {
+        if (ban) return;
+        v++;
+        updateBadge();
+        save();
+        if (v >= MAX_V) {
+            ban = true;
+            localStorage.setItem(PFX+'ban','1');
+            showBan();
+        } else {
+            showLock();
+        }
+    }
+
+    function bukaKunci() {
+        if (kodeInput.value === KODE) {
+            // Buka kunci di semua kondisi termasuk ban
+            if (ban) {
+                ban = false;
+                localStorage.setItem(PFX+'ban','0');
+                // Reset pelanggaran ke 4 agar masih bisa lanjut tapi tetap ada catatan
+                v = MAX_V - 1;
+                updateBadge();
+                save();
+            }
+            lockEl.className = '';
+            mainEl.classList.remove('blur');
+            topBarEl.classList.remove('blur');
+            lockErr.textContent = '';
+            kodeInput.value = '';
+        } else {
+            lockErr.textContent = 'Kode salah. Hubungi pengawas.';
+            kodeInput.value = '';
+        }
+    }
+
+    // === PROTECTION ===
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && !lockEl.classList.contains('show') && !ban) pelanggaran();
+    });
+    window.addEventListener('blur', () => {
+        setTimeout(() => {
+            if (document.activeElement && document.activeElement.id === 'kodeGuru') return;
+            if (!lockEl.classList.contains('show') && !ban) pelanggaran();
+        }, 300);
+    });
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('copy', e => e.preventDefault());
+    document.addEventListener('cut', e => e.preventDefault());
+    document.addEventListener('paste', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if (e.key === 'PrintScreen') { e.preventDefault(); pelanggaran(); }
+        if (e.key === 'F5') e.preventDefault();
+        if (e.key === 'F12') { e.preventDefault(); pelanggaran(); }
+        if (e.ctrlKey || e.metaKey) {
+            if (['c','v','x','a','s','p','u','r'].includes(e.key.toLowerCase())) e.preventDefault();
+        }
+        if ((e.ctrlKey||e.metaKey) && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase())) {
+            e.preventDefault(); pelanggaran();
+        }
+        if (e.key === 'Escape') e.preventDefault();
+    });
+    document.addEventListener('dragstart', e => e.preventDefault());
+    history.pushState(null,null,location.href);
+    window.addEventListener('popstate', () => history.pushState(null,null,location.href));
+    window.addEventListener('beforeunload', e => { save(); e.preventDefault(); e.returnValue=''; });
+    kodeInput.addEventListener('keydown', e => { if(e.key==='Enter') bukaKunci(); });
+
+    init();
+</script>
+</body>
+</html>
