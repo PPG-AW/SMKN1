@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Latihan Soal Generator | Kuartil dan Jangkauan</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-light:#f97316;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;--teal:#0f766e;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+.login-box{background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:400px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:12px;font-size:18px;}
+.login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:8px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box .name-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;text-align:left;}
+.login-box .name-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;}
+.login-box .name-item:hover{background:var(--soft-blue);}
+.login-box .name-item.selected{background:#dbeafe;font-weight:700;color:var(--primary);}
+.login-box button{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.login-box button:disabled{opacity:.5;cursor:not-allowed;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--muted);}
+.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.card h3{color:var(--primary-dark);font-size:16px;margin-bottom:10px;}
+.card h4{color:var(--orange);font-size:14px;margin:10px 0 6px;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0;}
+.stat-box{background:var(--soft-blue);border-radius:8px;padding:10px;text-align:center;}
+.stat-box .stat-num{font-size:22px;font-weight:800;color:var(--primary-dark);}
+.stat-box .stat-label{font-size:11px;color:var(--muted);}
+.mode-selector{display:flex;gap:8px;margin:12px 0;}
+.mode-btn{flex:1;padding:14px;border:2px solid var(--border);border-radius:10px;text-align:center;cursor:pointer;font-weight:700;font-size:14px;transition:.2s;background:#fff;}
+.mode-btn:hover{border-color:var(--primary);background:var(--soft-blue);}
+.mode-btn.active{border-color:var(--primary);background:var(--primary);color:#fff;}
+.focus-group{margin:12px 0;}
+.focus-group h4{color:var(--primary);font-size:13px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #e2e8f0;}
+.type-selector{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.type-btn{padding:8px 12px;border:2px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;font-size:11px;font-weight:600;transition:.2s;background:#fff;}
+.type-btn:hover{border-color:var(--orange);background:var(--orange-soft);}
+.type-btn.active{border-color:var(--orange);background:var(--orange);color:#fff;}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--border);padding:6px 8px;vertical-align:top;}
+th{background:#dbeafe;color:#1e3a8a;font-weight:700;text-align:left;}
+.formula{background:var(--primary-dark);color:#fff;padding:10px;border-radius:8px;text-align:center;font-size:14px;margin:8px 0;overflow-x:auto;}
+.note{background:var(--soft-yellow);border-left:4px solid var(--accent);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.info-box{background:var(--soft-blue);border-left:4px solid var(--primary);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.step-box{background:var(--soft-purple);border:2px solid var(--purple);border-radius:10px;padding:14px;margin:10px 0;}
+.step-box h4{color:var(--purple);margin:0 0 6px;font-size:13px;}
+.step-box input[type="number"],.step-box input[type="text"]{width:100%;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin:4px 0;}
+.step-box select{width:100%;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin:4px 0;background:#fff;}
+.step-box input.correct,.step-box select.correct{border-color:var(--success);background:var(--soft-green);}
+.step-box input.wrong,.step-box select.wrong{border-color:var(--danger);background:var(--soft-red);}
+.step-box .step-fb{margin-top:6px;padding:6px;border-radius:6px;font-size:12px;display:none;}
+.step-box .step-fb.show{display:block;}
+.step-box .step-fb.ok{background:var(--soft-green);color:#166534;border:1px solid #86efac;}
+.step-box .step-fb.err{background:var(--soft-red);color:#991b1b;border:1px solid #fca5a5;}
+.input-row{display:flex;align-items:center;gap:8px;margin:6px 0;padding:8px;border:2px solid var(--border);border-radius:8px;background:#fff;}
+.input-row label{font-weight:700;color:var(--primary-dark);min-width:55px;font-size:14px;}
+.input-row input{flex:1;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:15px;min-width:0;}
+.input-row input:focus{outline:none;border-color:var(--primary);}
+.input-row input.correct{border-color:var(--success);background:var(--soft-green);}
+.input-row input.wrong{border-color:var(--danger);background:var(--soft-red);}
+.input-row .row-btn{padding:8px 14px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:var(--primary);color:#fff;white-space:nowrap;}
+.input-row .row-btn:disabled{opacity:.5;cursor:not-allowed;}
+.input-row .row-fb{font-size:11px;min-width:20px;text-align:center;}
+.btn{border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;}
+.btn-primary{background:var(--primary);color:#fff;}.btn-success{background:var(--success);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}.btn-muted{background:#94a3b8;color:#fff;}
+.btn-purple{background:var(--purple);color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.hint-btn{background:none;border:1px solid var(--purple);color:var(--purple);padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;}
+.hint-text{background:var(--soft-yellow);padding:8px;border-radius:6px;margin-top:6px;font-size:12px;display:none;}
+.hint-text.show{display:block;}
+.solution-box{background:var(--soft-green);border:2px solid var(--success);border-radius:10px;padding:16px;margin:12px 0;display:none;}
+.solution-box.show{display:block;}
+.solution-box h4{color:#166534;margin:0 0 8px;}
+.user-info{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.user-info .name{font-weight:700;color:var(--primary-dark);}
+#app{display:none;}#soalArea{display:none;}
+@media(max-width:480px){.container{padding:8px;}.card{padding:14px;}.stats-grid{grid-template-columns:repeat(2,1fr);}.mode-selector{flex-direction:column;}.formula{font-size:12px;padding:8px;}table{font-size:11px;}.input-row{flex-wrap:wrap;}.input-row label{min-width:100%;}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="Pertemuan8.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>Latihan Soal Generator</h1>
+  <p>Kuartil dan Jangkauan Data Tunggal dan Data Kelompok</p>
+</div>
+
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>Masuk ke Latihan</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ketik nama lalu pilih dari daftar</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button id="btnLogin" disabled>Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<div class="container" id="app">
+  <div class="user-info">
+    <span class="name" id="userName"></span>
+    <span id="userStats" style="color:var(--muted);"></span>
+  </div>
+  <div class="card" id="statsCard">
+    <h3>Statistik Latihan Kamu</h3>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-num" id="stTotal">0</div><div class="stat-label">Total Latihan</div></div>
+      <div class="stat-box"><div class="stat-num" id="stBenar">0</div><div class="stat-label">Benar</div></div>
+      <div class="stat-box"><div class="stat-num" id="stSalah">0</div><div class="stat-label">Salah</div></div>
+    </div>
+    <div id="stLangkahSalah" style="margin-top:8px;font-size:12px;color:var(--muted);"></div>
+  </div>
+  <div class="card">
+    <h3>Pilih Mode Latihan</h3>
+    <div class="mode-selector">
+      <div class="mode-btn" id="modeTerbimbing">
+        <div style="font-size:18px;margin-bottom:4px;">Terbimbing</div>
+        <div style="font-size:11px;font-weight:400;">Langkah per langkah dengan rumus</div>
+      </div>
+      <div class="mode-btn" id="modeMandiri">
+        <div style="font-size:18px;margin-bottom:4px;">Mandiri</div>
+        <div style="font-size:11px;font-weight:400;">Langsung jawab, cek per jawaban</div>
+      </div>
+    </div>
+    <div class="focus-group">
+      <h4>Data Tunggal</h4>
+      <div class="type-selector">
+        <div class="type-btn" data-type="T1">Mengurutkan Data</div>
+        <div class="type-btn" data-type="T2">Menentukan Q2</div>
+        <div class="type-btn" data-type="T3">Q1 Membagi Data</div>
+        <div class="type-btn" data-type="T4">Q3 Membagi Data</div>
+        <div class="type-btn" data-type="T5">Q1 Rumus Letak</div>
+        <div class="type-btn" data-type="T6">Q3 Rumus Letak</div>
+        <div class="type-btn" data-type="T7">Range</div>
+        <div class="type-btn" data-type="T8">IQR</div>
+        <div class="type-btn" data-type="T9">Lengkap</div>
+      </div>
+    </div>
+    <div class="focus-group">
+      <h4>Data Kelompok</h4>
+      <div class="type-selector">
+        <div class="type-btn" data-type="K1">Letak dan Kelas Q1</div>
+        <div class="type-btn" data-type="K2">Letak dan Kelas Q3</div>
+        <div class="type-btn" data-type="K3">Komponen Rumus</div>
+        <div class="type-btn" data-type="K4">Menghitung Q1</div>
+        <div class="type-btn" data-type="K5">Menghitung Q3</div>
+        <div class="type-btn" data-type="K6">Range</div>
+        <div class="type-btn" data-type="K7">IQR</div>
+        <div class="type-btn" data-type="K8">Lengkap</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="btn btn-primary" id="btnGenerate" disabled>Buat Soal Baru</button>
+    </div>
+  </div>
+  <div id="soalArea"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const API = 'https://script.google.com/macros/s/AKfycbwNkT0t7ZXdy5f-iIofi_Q7u42-nzU9wI73UkOtJiwht4eMCGowSx9Ykf0MVCKRgYGm/exec';
+  const FALLBACK_NAMES = [
+    'AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA',
+    'AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI',
+    'DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI',
+    'LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI',
+    'NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH',
+    'NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA',
+    'RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI',
+    'SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'
+  ];
+  const KONTEKS = [
+    {nama:'penjualan harian sebuah toko',satuan:'ribu rupiah'},
+    {nama:'jumlah pengunjung toko per hari',satuan:'orang'},
+    {nama:'pengeluaran harian siswa',satuan:'ribu rupiah'},
+    {nama:'jumlah pesanan online per hari',satuan:'pesanan'},
+    {nama:'harga barang di sebuah toko',satuan:'ribu rupiah'},
+    {nama:'jumlah transaksi harian',satuan:'transaksi'},
+    {nama:'pendapatan harian pedagang',satuan:'ribu rupiah'}
+  ];
+
+  let currentUser='', allNames=[], selectedName='', sheetsOK=false;
+  let selectedMode='', selectedType='';
+  let totalLatihan=0, totalBenar=0, totalSalah=0, langkahSalahMap={};
+  let currentSoal=null, setKe=0;
+
+  const loginSection = document.getElementById('loginSection');
+  const app = document.getElementById('app');
+  const searchName = document.getElementById('searchName');
+  const nameList = document.getElementById('nameList');
+  const btnLogin = document.getElementById('btnLogin');
+  const loginMsg = document.getElementById('loginMsg');
+  const soalArea = document.getElementById('soalArea');
+  const btnGenerate = document.getElementById('btnGenerate');
+
+  /* ========================
+     API & LOGIN
+  ======================== */
+  function callAPI(p, cb) {
+    const c = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+    p.callback = c;
+    const u = API + '?' + Object.keys(p).map(k => k + '=' + encodeURIComponent(p[k])).join('&');
+    const s = document.createElement('script');
+    window[c] = function(d) { delete window[c]; if (s.parentNode) s.parentNode.removeChild(s); if (cb) cb(d); };
+    s.src = u;
+    s.onerror = function() { delete window[c]; if (s.parentNode) s.parentNode.removeChild(s); if (cb) cb(null); };
+    document.head.appendChild(s);
+  }
+
+  function loadNames() {
+    callAPI({ action: 'getNames' }, function(d) {
+      if (d && d.ok && d.names && d.names.length) { allNames = d.names; sheetsOK = true; }
+      else { allNames = FALLBACK_NAMES; }
+      renderNames('');
+    });
+    setTimeout(() => { if (!allNames.length) { allNames = FALLBACK_NAMES; renderNames(''); } }, 5000);
+  }
+
+  function renderNames(f) {
+    const fl = f.trim().toUpperCase();
+    const list = fl ? allNames.filter(n => n.toUpperCase().includes(fl)) : allNames;
+    nameList.innerHTML = '';
+    list.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'name-item' + (name === selectedName ? ' selected' : '');
+      div.textContent = name;
+      div.addEventListener('click', () => { selectedName = name; searchName.value = name; btnLogin.disabled = false; renderNames(name); });
+      nameList.appendChild(div);
+    });
+  }
+
+  searchName.addEventListener('input', () => { selectedName = ''; btnLogin.disabled = true; renderNames(searchName.value); });
+
+  btnLogin.addEventListener('click', () => {
+    if (!selectedName) return;
+    currentUser = selectedName;
+    btnLogin.disabled = true;
+    loginMsg.textContent = 'Memuat...';
+    callAPI({ action: 'login', nama: currentUser, sumber: 'GENERATOR', device: 'HP' }, function() {
+      loginSection.style.display = 'none';
+      app.style.display = 'block';
+      document.getElementById('userName').textContent = currentUser;
+      updateStats();
+    });
+    setTimeout(() => {
+      if (loginSection.style.display !== 'none') {
+        loginSection.style.display = 'none';
+        app.style.display = 'block';
+        document.getElementById('userName').textContent = currentUser;
+      }
+    }, 4000);
+  });
+
+  function updateStats() {
+    document.getElementById('stTotal').textContent = totalLatihan;
+    document.getElementById('stBenar').textContent = totalBenar;
+    document.getElementById('stSalah').textContent = totalSalah;
+    const el = document.getElementById('stLangkahSalah');
+    const e = Object.entries(langkahSalahMap).sort((a, b) => b[1] - a[1]);
+    el.innerHTML = e.length ? '<strong>Langkah yang sering salah:</strong> ' + e.map(x => x[0] + ' (' + x[1] + 'x)').join(', ') : '';
+    document.getElementById('userStats').textContent = totalLatihan ? 'Akurasi ' + Math.round(totalBenar / totalLatihan * 100) + '%' : 'Belum ada latihan';
+  }
+
+  /* ========================
+     MODE & TYPE SELECTOR
+  ======================== */
+  document.getElementById('modeTerbimbing').addEventListener('click', function() {
+    selectedMode = 'TERBIMBING';
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    checkReady();
+  });
+  document.getElementById('modeMandiri').addEventListener('click', function() {
+    selectedMode = 'MANDIRI';
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    checkReady();
+  });
+  document.querySelectorAll('.type-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      selectedType = this.getAttribute('data-type');
+      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      checkReady();
+    });
+  });
+  function checkReady() { btnGenerate.disabled = !(selectedMode && selectedType); }
+  btnGenerate.addEventListener('click', () => { generateSoal(); });
+
+  /* ========================
+     HELPERS
+  ======================== */
+  function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+  function randPick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function roundTo(v, d) { return Math.round(v * Math.pow(10, d)) / Math.pow(10, d); }
+  function medianOf(a) {
+    const l = a.length;
+    if (l % 2 === 1) return a[Math.floor(l / 2)];
+    return (a[l / 2 - 1] + a[l / 2]) / 2;
+  }
+
+  /* ========================
+     GENERATE DATA TUNGGAL
+  ======================== */
+  function genTunggal() {
+    const n = randPick([7, 9, 11, 13, 8, 10, 12]);
+    const k = randPick(KONTEKS);
+    const d = [];
+    let b = randInt(5, 30);
+    for (let i = 0; i < n; i++) { d.push(b); b += randInt(2, 8); }
+    d.sort((a, c) => a - c);
+    const isOdd = n % 2 === 1;
+    let q2, q1, q3, q1rl, q3rl;
+    if (isOdd) {
+      const m = Math.floor(n / 2);
+      q2 = d[m];
+      q1 = medianOf(d.slice(0, m));
+      q3 = medianOf(d.slice(m + 1));
+    } else {
+      q2 = (d[n / 2 - 1] + d[n / 2]) / 2;
+      q1 = medianOf(d.slice(0, n / 2));
+      q3 = medianOf(d.slice(n / 2));
+    }
+    const lq1 = (n + 1) / 4;
+    const posQ1 = Math.floor(lq1);
+    const fracQ1 = lq1 - posQ1;
+    q1rl = roundTo(d[posQ1 - 1] + (fracQ1 * (d[posQ1] - d[posQ1 - 1])), 2);
+    const lq3 = 3 * (n + 1) / 4;
+    const posQ3 = Math.floor(lq3);
+    const fracQ3 = lq3 - posQ3;
+    q3rl = roundTo(d[posQ3 - 1] + (fracQ3 > 0 && posQ3 < n ? fracQ3 * (d[posQ3] - d[posQ3 - 1]) : 0), 2);
+    return {
+      jenis: 'TUNGGAL', konteks: k, data: d, n: n, isOdd: isOdd,
+      q1: roundTo(q1, 2), q2: roundTo(q2, 2), q3: roundTo(q3, 2),
+      q1rl: q1rl, q3rl: q3rl,
+      letakQ1: roundTo(lq1, 2), letakQ3: roundTo(lq3, 2),
+      range: d[n - 1] - d[0], iqr: roundTo(q3 - q1, 2),
+      dataAcak: d.slice().sort(() => Math.random() - 0.5)
+    };
+  }
+
+  /* ========================
+     GENERATE DATA KELOMPOK
+  ======================== */
+  function genKelompok() {
+    const k = randPick(KONTEKS);
+    const nk = randPick([4, 5, 6]);
+    const p = randPick([10, 20]);
+    const bb0 = randPick([0, 10, 20]);
+    const kelas = [], freqs = [];
+    let tot = 0;
+    for (let i = 0; i < nk; i++) {
+      const bb = bb0 + i * p;
+      kelas.push({ bb: bb, ba: bb + p - 1 });
+      const f = (i === 0 || i === nk - 1) ? randInt(2, 6) : randInt(6, 15);
+      freqs.push(f);
+      tot += f;
+    }
+    const fk = [];
+    let cum = 0;
+    for (let i = 0; i < nk; i++) { cum += freqs[i]; fk.push(cum); }
+    function hitQ(iQ) {
+      const lt = (iQ * tot) / 4;
+      let ki = 0;
+      for (let j = 0; j < nk; j++) { if (fk[j] >= lt) { ki = j; break; } }
+      const Tb = kelas[ki].bb - 0.5;
+      const F = ki > 0 ? fk[ki - 1] : 0;
+      const f = freqs[ki];
+      return { letak: lt, kelasIdx: ki, kelasTeks: kelas[ki].bb + ' sampai ' + kelas[ki].ba, Tb: Tb, F: F, f: f, nilai: roundTo(Tb + p * ((lt - F) / f), 2) };
+    }
+    const q1 = hitQ(1), q2 = hitQ(2), q3 = hitQ(3);
+    return {
+      jenis: 'KELOMPOK', konteks: k, kelas: kelas, freqs: freqs, fk: fk,
+      n: tot, p: p, numKelas: nk, q1: q1, q2: q2, q3: q3,
+      range: roundTo((kelas[nk - 1].ba + 0.5) - (kelas[0].bb - 0.5), 2),
+      iqr: roundTo(q3.nilai - q1.nilai, 2)
+    };
+  }
+
+  /* ========================
+     HEADER BUILDERS
+  ======================== */
+  function headerTunggal(s, showAcak) {
+    let h = '<div class="card"><h3>Soal Latihan #' + setKe + '</h3>';
+    h += '<p>Data ' + s.konteks.nama + ' selama ' + s.n + ' hari (' + s.konteks.satuan + ')';
+    if (showAcak) h += ', belum diurutkan:</p><p style="font-weight:700;color:var(--danger);">' + s.dataAcak.join(', ') + '</p>';
+    else h += ', sudah diurutkan:</p><p style="font-weight:700;color:var(--primary-dark);">' + s.data.join(', ') + '</p>';
+    h += '<p>\\(n = ' + s.n + '\\) (' + (s.isOdd ? 'ganjil' : 'genap') + ')</p></div>';
+    return h;
+  }
+
+  function headerKelompok(s) {
+    let h = '<div class="card"><h3>Soal Latihan #' + setKe + '</h3>';
+    h += '<p>Data ' + s.konteks.nama + ':</p>';
+    h += '<table><tr><th>Kelas (' + s.konteks.satuan + ')</th><th>\\(f\\)</th><th>fk</th></tr>';
+    for (let i = 0; i < s.numKelas; i++) {
+      h += '<tr><td>' + s.kelas[i].bb + ' sampai ' + s.kelas[i].ba + '</td><td>' + s.freqs[i] + '</td><td>' + s.fk[i] + '</td></tr>';
+    }
+    h += '</table><p>\\(n = ' + s.n + '\\), \\(p = ' + s.p + '\\)</p></div>';
+    return h;
+  }
+
+  /* ========================
+     GENERATE & DISPATCH
+  ======================== */
+  function generateSoal() {
+    const t = selectedType;
+    const isTunggal = t.startsWith('T');
+    currentSoal = isTunggal ? genTunggal() : genKelompok();
+    setKe++;
+    soalArea.style.display = 'block';
+    soalArea.innerHTML = '';
+    if (selectedMode === 'TERBIMBING') {
+      if (isTunggal) renderTerbimbingTunggal(t);
+      else renderTerbimbingKelompok(t);
+    } else {
+      renderMandiri(t, isTunggal);
+    }
+    soalArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.MathJax) MathJax.typesetPromise();
+  }
+
+  /* ========================
+     STEP BUILDERS: TUNGGAL
+  ======================== */
+  function stepUrutkan(s, num) {
+    let h = '<h4>Langkah ' + num + ': Urutkan Data</h4>';
+    h += '<p>Data belum terurut: ' + s.dataAcak.join(', ') + '</p>';
+    h += '<p style="font-size:12px;color:var(--muted);">Ketik data yang sudah diurutkan, dipisah koma</p>';
+    h += '<input type="text" id="s' + num + 'ans" placeholder="Ketik urutan data..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">Cari angka paling kecil terlebih dahulu, lalu yang paling kecil berikutnya, sampai semua data tertulis dari kecil ke besar.</div>';
+    return { html: h, answer: s.data.join(','), label: 'Mengurutkan', type: 'array' };
+  }
+
+  function stepQ2(s, num) {
+    let h = '<h4>Langkah ' + num + ': Tentukan Q2 (Median)</h4>';
+    h += '<p>Data sudah terurut: ' + s.data.join(', ') + '</p>';
+    h += '<p>\\(n = ' + s.n + '\\) (' + (s.isOdd ? 'ganjil' : 'genap') + ')</p>';
+    if (s.isOdd) {
+      h += '<div class="formula">\\[ Q_2 = \\text{data ke-}\\frac{n+1}{2} = \\text{data ke-}\\frac{' + s.n + '+1}{2} = \\text{data ke-}' + ((s.n + 1) / 2) + ' \\]</div>';
+    } else {
+      h += '<div class="formula">\\[ Q_2 = \\frac{\\text{data ke-}' + s.n / 2 + ' + \\text{data ke-}' + (s.n / 2 + 1) + '}{2} = \\frac{' + s.data[s.n / 2 - 1] + ' + ' + s.data[s.n / 2] + '}{2} \\]</div>';
+    }
+    h += '<label>Q2 = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">' + (s.isOdd ? 'Cari data urutan ke-' + ((s.n + 1) / 2) + ' dari data yang sudah diurutkan.' : 'Rata ratakan ' + s.data[s.n / 2 - 1] + ' dan ' + s.data[s.n / 2] + '.') + '</div>';
+    return { html: h, answer: s.q2, label: 'Q2' };
+  }
+
+  function stepQ1Membagi(s, num) {
+    const lower = s.isOdd ? s.data.slice(0, Math.floor(s.n / 2)) : s.data.slice(0, s.n / 2);
+    let h = '<h4>Langkah ' + num + ': Tentukan Q1 (Metode Membagi Data)</h4>';
+    h += '<p>Data sudah terurut: ' + s.data.join(', ') + '</p>';
+    h += '<p>Q2 = ' + s.q2 + '</p>';
+    h += '<p>Data bagian bawah' + (s.isOdd ? ' (tidak termasuk Q2)' : '') + ': <strong>' + lower.join(', ') + '</strong> (' + lower.length + ' data)</p>';
+    if (lower.length % 2 === 1) {
+      const pos = Math.floor(lower.length / 2) + 1;
+      h += '<div class="formula">\\[ Q_1 = \\text{median bagian bawah} = \\text{data ke-}' + pos + ' \\]</div>';
+    } else {
+      const p1 = lower.length / 2, p2 = lower.length / 2 + 1;
+      h += '<div class="formula">\\[ Q_1 = \\frac{\\text{data ke-}' + p1 + ' + \\text{data ke-}' + p2 + '}{2} = \\frac{' + lower[p1 - 1] + ' + ' + lower[p2 - 1] + '}{2} \\]</div>';
+    }
+    h += '<label>Q1 = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">Tentukan median dari ' + lower.length + ' data bagian bawah: ' + lower.join(', ') + '</div>';
+    return { html: h, answer: s.q1, label: 'Q1 Membagi' };
+  }
+
+  function stepQ3Membagi(s, num) {
+    const upper = s.isOdd ? s.data.slice(Math.floor(s.n / 2) + 1) : s.data.slice(s.n / 2);
+    let h = '<h4>Langkah ' + num + ': Tentukan Q3 (Metode Membagi Data)</h4>';
+    h += '<p>Data sudah terurut: ' + s.data.join(', ') + '</p>';
+    h += '<p>Q2 = ' + s.q2 + '</p>';
+    h += '<p>Data bagian atas' + (s.isOdd ? ' (tidak termasuk Q2)' : '') + ': <strong>' + upper.join(', ') + '</strong> (' + upper.length + ' data)</p>';
+    if (upper.length % 2 === 1) {
+      const pos = Math.floor(upper.length / 2) + 1;
+      h += '<div class="formula">\\[ Q_3 = \\text{median bagian atas} = \\text{data ke-}' + pos + ' \\]</div>';
+    } else {
+      const p1 = upper.length / 2, p2 = upper.length / 2 + 1;
+      h += '<div class="formula">\\[ Q_3 = \\frac{\\text{data ke-}' + p1 + ' + \\text{data ke-}' + p2 + '}{2} = \\frac{' + upper[p1 - 1] + ' + ' + upper[p2 - 1] + '}{2} \\]</div>';
+    }
+    h += '<label>Q3 = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">Tentukan median dari ' + upper.length + ' data bagian atas: ' + upper.join(', ') + '</div>';
+    return { html: h, answer: s.q3, label: 'Q3 Membagi' };
+  }
+
+  function stepQ1Letak(s, num) {
+    let h = '<h4>Langkah ' + num + ': Tentukan Q1 (Metode Rumus Letak)</h4>';
+    h += '<p>Data sudah terurut: ' + s.data.join(', ') + '</p>';
+    h += '<div class="formula">\\[ \\text{Letak } Q_1 = \\text{data ke-}\\frac{n+1}{4} = \\text{data ke-}\\frac{' + s.n + '+1}{4} = \\text{data ke-}' + s.letakQ1 + ' \\]</div>';
+    if (s.letakQ1 % 1 !== 0) {
+      const pos = Math.floor(s.letakQ1);
+      h += '<p>Posisi desimal, lakukan interpolasi antara data ke-' + pos + ' = ' + s.data[pos - 1] + ' dan data ke-' + (pos + 1) + ' = ' + s.data[pos] + '</p>';
+      h += '<div class="formula">\\[ Q_1 = ' + s.data[pos - 1] + ' + ' + (s.letakQ1 - pos) + ' \\times (' + s.data[pos] + ' - ' + s.data[pos - 1] + ') \\]</div>';
+    }
+    h += '<label>Q1 = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">' + (s.letakQ1 % 1 === 0 ? 'Letak tepat bilangan bulat, langsung ambil data ke-' + s.letakQ1 : 'Hitung interpolasi sesuai rumus di atas.') + '</div>';
+    return { html: h, answer: s.q1rl, label: 'Q1 Letak' };
+  }
+
+  function stepQ3Letak(s, num) {
+    let h = '<h4>Langkah ' + num + ': Tentukan Q3 (Metode Rumus Letak)</h4>';
+    h += '<p>Data sudah terurut: ' + s.data.join(', ') + '</p>';
+    h += '<div class="formula">\\[ \\text{Letak } Q_3 = \\text{data ke-}\\frac{3(n+1)}{4} = \\text{data ke-}\\frac{3 \\times ' + (s.n + 1) + '}{4} = \\text{data ke-}' + s.letakQ3 + ' \\]</div>';
+    if (s.letakQ3 % 1 !== 0) {
+      const pos = Math.floor(s.letakQ3);
+      h += '<p>Posisi desimal, lakukan interpolasi antara data ke-' + pos + ' = ' + s.data[pos - 1] + ' dan data ke-' + (pos + 1) + ' = ' + s.data[pos] + '</p>';
+      h += '<div class="formula">\\[ Q_3 = ' + s.data[pos - 1] + ' + ' + roundTo(s.letakQ3 - pos, 2) + ' \\times (' + s.data[pos] + ' - ' + s.data[pos - 1] + ') \\]</div>';
+    }
+    h += '<label>Q3 = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">' + (s.letakQ3 % 1 === 0 ? 'Letak tepat bilangan bulat, langsung ambil data ke-' + s.letakQ3 : 'Hitung interpolasi sesuai rumus di atas.') + '</div>';
+    return { html: h, answer: s.q3rl, label: 'Q3 Letak' };
+  }
+
+  function stepRange(s, num) {
+    let h = '<h4>Langkah ' + num + ': Hitung Range</h4>';
+    h += '<div class="formula">\\[ \\text{Range} = x_{maks} - x_{min} = ' + s.data[s.n - 1] + ' - ' + s.data[0] + ' \\]</div>';
+    h += '<label>Range = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button>';
+    return { html: h, answer: s.range, label: 'Range' };
+  }
+
+  function stepIQR(s, num) {
+    let h = '<h4>Langkah ' + num + ': Hitung IQR</h4>';
+    h += '<div class="formula">\\[ \\text{IQR} = Q_3 - Q_1 = ' + s.q3 + ' - ' + s.q1 + ' \\]</div>';
+    h += '<label>IQR = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button>';
+    return { html: h, answer: s.iqr, label: 'IQR' };
+  }
+
+  /* ========================
+     STEP BUILDERS: TUNGGAL FOKUS
+  ======================== */
+  function stepRangeOnly(s, num) {
+    let h = '<h4>Langkah ' + num + ': Hitung Range</h4>';
+    h += '<p>Data sudah terurut: ' + s.data.join(', ') + '</p>';
+    h += '<p>Data terbesar = ' + s.data[s.n - 1] + ', data terkecil = ' + s.data[0] + '</p>';
+    h += '<div class="formula">\\[ \\text{Range} = x_{maks} - x_{min} = ' + s.data[s.n - 1] + ' - ' + s.data[0] + ' = ? \\]</div>';
+    h += '<label>Range = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">' + s.data[s.n - 1] + ' dikurangi ' + s.data[0] + ' = ?</div>';
+    return { html: h, answer: s.range, label: 'Range' };
+  }
+
+  function stepIQROnly(s, num) {
+    let h = '<h4>Langkah ' + num + ': Hitung IQR</h4>';
+    h += '<p>Data sudah terurut: ' + s.data.join(', ') + '</p>';
+    h += '<p>Diketahui: Q1 = ' + s.q1 + ' dan Q3 = ' + s.q3 + '</p>';
+    h += '<div class="formula">\\[ \\text{IQR} = Q_3 - Q_1 = ' + s.q3 + ' - ' + s.q1 + ' = ? \\]</div>';
+    h += '<label>IQR = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">' + s.q3 + ' dikurangi ' + s.q1 + ' = ?</div>';
+    return { html: h, answer: s.iqr, label: 'IQR' };
+  }
+
+  /* ========================
+     STEP BUILDERS: KELOMPOK
+  ======================== */
+  function stepLetakK(s, num, iQ, qInfo) {
+    let h = '<h4>Langkah ' + num + ': Hitung Letak Q' + iQ + '</h4>';
+    h += '<div class="formula">\\[ \\text{Letak } Q_' + iQ + ' = \\frac{' + iQ + ' \\times n}{4} = \\frac{' + iQ + ' \\times ' + s.n + '}{4} = ? \\]</div>';
+    h += '<label>Letak Q' + iQ + ' = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">' + iQ + ' x ' + s.n + ' / 4 = ' + (iQ * s.n) + ' / 4 = ?</div>';
+    return { html: h, answer: qInfo.letak, label: 'Letak Q' + iQ };
+  }
+
+  function stepKelasK(s, num, iQ, qInfo) {
+    let h = '<h4>Langkah ' + num + ': Tentukan Kelas Q' + iQ + '</h4>';
+    h += '<p>Letak Q' + iQ + ' = ' + qInfo.letak + '. Cari fk pertama yang mencapai atau melewati ' + qInfo.letak + '.</p>';
+    h += '<table><tr><th>Kelas</th><th>f</th><th>fk</th></tr>';
+    for (let i = 0; i < s.numKelas; i++) {
+      h += '<tr><td>' + s.kelas[i].bb + ' sampai ' + s.kelas[i].ba + '</td><td>' + s.freqs[i] + '</td><td>' + s.fk[i] + '</td></tr>';
+    }
+    h += '</table>';
+    h += '<label>Kelas Q' + iQ + ':</label><select id="s' + num + 'ans"><option value="">Pilih kelas...</option>';
+    for (let i = 0; i < s.numKelas; i++) {
+      h += '<option value="' + s.kelas[i].bb + '">' + s.kelas[i].bb + ' sampai ' + s.kelas[i].ba + '</option>';
+    }
+    h += '</select>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">Lihat kolom fk. Cari baris pertama yang fk-nya sama atau lebih besar dari ' + qInfo.letak + '.</div>';
+    return { html: h, answer: String(s.kelas[qInfo.kelasIdx].bb), label: 'Kelas Q' + iQ, type: 'select' };
+  }
+
+  function stepKomponenK(s, num, iQ, qInfo) {
+    let h = '<h4>Langkah ' + num + ': Komponen Rumus Q' + iQ + '</h4>';
+    h += '<p>Kelas Q' + iQ + ' = ' + qInfo.kelasTeks + '</p>';
+    h += '<label>Tb = batas bawah dikurangi 0,5 = </label><input type="number" id="s' + num + 'a" step="any" placeholder="Tb = ..."/>';
+    h += '<label style="display:block;margin-top:4px;">F = fk sebelum kelas Q' + iQ + ' = </label><input type="number" id="s' + num + 'b" step="any" placeholder="F = ..."/>';
+    h += '<label style="display:block;margin-top:4px;">f = frekuensi kelas Q' + iQ + ' = </label><input type="number" id="s' + num + 'c" step="any" placeholder="f = ..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">Tb = ' + s.kelas[qInfo.kelasIdx].bb + ' dikurangi 0,5. F = fk baris sebelum kelas Q' + iQ + '. f = frekuensi baris kelas Q' + iQ + '.</div>';
+    return { html: h, answer: [qInfo.Tb, qInfo.F, qInfo.f], label: 'Komponen Q' + iQ, type: 'multi' };
+  }
+
+  function stepHitungK(s, num, iQ, qInfo) {
+    let h = '<h4>Langkah ' + num + ': Hitung Q' + iQ + '</h4>';
+    h += '<div class="formula">\\[ Q_' + iQ + ' = Tb + p \\times \\frac{\\frac{' + iQ + ' \\times n}{4} - F}{f} \\]</div>';
+    h += '<div class="formula">\\[ Q_' + iQ + ' = ' + qInfo.Tb + ' + ' + s.p + ' \\times \\frac{' + qInfo.letak + ' - ' + qInfo.F + '}{' + qInfo.f + '} = ? \\]</div>';
+    h += '<label>Q' + iQ + ' = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">Hitung: ' + qInfo.Tb + ' + ' + s.p + ' x (' + qInfo.letak + ' dikurangi ' + qInfo.F + ') / ' + qInfo.f + '</div>';
+    return { html: h, answer: qInfo.nilai, label: 'Q' + iQ };
+  }
+
+  function stepRangeK(s, num) {
+    const tb = s.kelas[0].bb - 0.5;
+    const ta = s.kelas[s.numKelas - 1].ba + 0.5;
+    let h = '<h4>Langkah ' + num + ': Hitung Range</h4>';
+    h += '<div class="formula">\\[ \\text{Range} = \\text{tepi atas terakhir} - \\text{tepi bawah pertama} = ' + ta + ' - (' + tb + ') = ? \\]</div>';
+    h += '<label>Range = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button>';
+    return { html: h, answer: s.range, label: 'Range' };
+  }
+
+  function stepIQRK(s, num) {
+    let h = '<h4>Langkah ' + num + ': Hitung IQR</h4>';
+    h += '<div class="formula">\\[ \\text{IQR} = Q_3 - Q_1 = ' + s.q3.nilai + ' - ' + s.q1.nilai + ' = ? \\]</div>';
+    h += '<label>IQR = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button>';
+    return { html: h, answer: s.iqr, label: 'IQR' };
+  }
+
+  function stepRangeKOnly(s, num) {
+    const tb = s.kelas[0].bb - 0.5;
+    const ta = s.kelas[s.numKelas - 1].ba + 0.5;
+    let h = '<h4>Langkah ' + num + ': Hitung Range Data Kelompok</h4>';
+    h += '<p>Kelas pertama: ' + s.kelas[0].bb + ' sampai ' + s.kelas[0].ba + '. Kelas terakhir: ' + s.kelas[s.numKelas - 1].bb + ' sampai ' + s.kelas[s.numKelas - 1].ba + '.</p>';
+    h += '<p>Tepi bawah kelas pertama = ' + s.kelas[0].bb + ' dikurangi 0,5 = ' + tb + '</p>';
+    h += '<p>Tepi atas kelas terakhir = ' + s.kelas[s.numKelas - 1].ba + ' ditambah 0,5 = ' + ta + '</p>';
+    h += '<div class="formula">\\[ \\text{Range} = ' + ta + ' - (' + tb + ') = ? \\]</div>';
+    h += '<label>Range = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">' + ta + ' dikurangi ' + tb + ' = ?</div>';
+    return { html: h, answer: s.range, label: 'Range' };
+  }
+
+  function stepIQRKOnly(s, num) {
+    let h = '<h4>Langkah ' + num + ': Hitung IQR Data Kelompok</h4>';
+    h += '<p>Diketahui: Q1 = ' + s.q1.nilai + ' dan Q3 = ' + s.q3.nilai + '</p>';
+    h += '<div class="formula">\\[ \\text{IQR} = Q_3 - Q_1 = ' + s.q3.nilai + ' - ' + s.q1.nilai + ' = ? \\]</div>';
+    h += '<label>IQR = </label><input type="number" id="s' + num + 'ans" step="any" placeholder="Jawaban..."/>';
+    h += '<div class="step-fb" id="s' + num + 'fb"></div>';
+    h += '<button class="btn btn-primary" id="s' + num + 'check">Periksa</button> ';
+    h += '<button class="hint-btn" id="s' + num + 'hint">Petunjuk</button>';
+    h += '<div class="hint-text" id="s' + num + 'hintText">' + s.q3.nilai + ' dikurangi ' + s.q1.nilai + ' = ?</div>';
+    return { html: h, answer: s.iqr, label: 'IQR' };
+  }
+
+  /* ========================
+     RENDER TERBIMBING TUNGGAL
+  ======================== */
+  function renderTerbimbingTunggal(t) {
+    const s = currentSoal;
+    const steps = [];
+    const showAcak = (t === 'T1' || t === 'T9');
+    let html = headerTunggal(s, showAcak);
+
+    if (t === 'T1' || t === 'T9') steps.push(stepUrutkan(s, steps.length + 1));
+    if (t === 'T2' || t === 'T3' || t === 'T4' || t === 'T9') steps.push(stepQ2(s, steps.length + 1));
+    if (t === 'T3' || t === 'T9') steps.push(stepQ1Membagi(s, steps.length + 1));
+    if (t === 'T4' || t === 'T9') steps.push(stepQ3Membagi(s, steps.length + 1));
+    if (t === 'T5') steps.push(stepQ1Letak(s, steps.length + 1));
+    if (t === 'T6') steps.push(stepQ3Letak(s, steps.length + 1));
+    if (t === 'T7') steps.push(stepRangeOnly(s, steps.length + 1));
+    if (t === 'T8') steps.push(stepIQROnly(s, steps.length + 1));
+    if (t === 'T9') {
+      steps.push(stepRange(s, steps.length + 1));
+      steps.push(stepIQR(s, steps.length + 1));
+    }
+
+    steps.forEach((st, idx) => {
+      html += '<div class="step-box" id="step' + (idx + 1) + '"' + (idx === 0 ? '' : ' style="display:none;"') + '>' + st.html + '</div>';
+    });
+    html += '<div class="solution-box" id="solusi"><h4>Solusi Lengkap</h4><div id="solusiIsi"></div></div>';
+    html += '<div style="text-align:center;margin-top:14px;"><button class="btn btn-orange" id="btnSoalBaru" style="display:none;">Buat Soal Baru</button></div>';
+    soalArea.innerHTML = html;
+    if (window.MathJax) MathJax.typesetPromise();
+    bindSteps(steps, s);
+  }
+
+  /* ========================
+     RENDER TERBIMBING KELOMPOK
+  ======================== */
+  function renderTerbimbingKelompok(t) {
+    const s = currentSoal;
+    const steps = [];
+    let html = headerKelompok(s);
+
+    if (t === 'K1' || t === 'K3' || t === 'K4' || t === 'K8') {
+      steps.push(stepLetakK(s, steps.length + 1, 1, s.q1));
+      steps.push(stepKelasK(s, steps.length + 1, 1, s.q1));
+    }
+    if (t === 'K2' || t === 'K5' || t === 'K8') {
+      steps.push(stepLetakK(s, steps.length + 1, 3, s.q3));
+      steps.push(stepKelasK(s, steps.length + 1, 3, s.q3));
+    }
+    if (t === 'K3' || t === 'K4' || t === 'K8') steps.push(stepKomponenK(s, steps.length + 1, 1, s.q1));
+    if (t === 'K4' || t === 'K8') steps.push(stepHitungK(s, steps.length + 1, 1, s.q1));
+    if (t === 'K5' || t === 'K8') {
+      steps.push(stepKomponenK(s, steps.length + 1, 3, s.q3));
+      steps.push(stepHitungK(s, steps.length + 1, 3, s.q3));
+    }
+    if (t === 'K6') steps.push(stepRangeKOnly(s, steps.length + 1));
+    if (t === 'K7') steps.push(stepIQRKOnly(s, steps.length + 1));
+    if (t === 'K8') {
+      steps.push(stepRangeK(s, steps.length + 1));
+      steps.push(stepIQRK(s, steps.length + 1));
+    }
+
+    steps.forEach((st, idx) => {
+      html += '<div class="step-box" id="step' + (idx + 1) + '"' + (idx === 0 ? '' : ' style="display:none;"') + '>' + st.html + '</div>';
+    });
+    html += '<div class="solution-box" id="solusi"><h4>Solusi Lengkap</h4><div id="solusiIsi"></div></div>';
+    html += '<div style="text-align:center;margin-top:14px;"><button class="btn btn-orange" id="btnSoalBaru" style="display:none;">Buat Soal Baru</button></div>';
+    soalArea.innerHTML = html;
+    if (window.MathJax) MathJax.typesetPromise();
+    bindSteps(steps, s);
+  }
+
+  /* ========================
+     BIND STEPS (TERBIMBING)
+  ======================== */
+  function bindSteps(steps, s) {
+    let stepErrors = {};
+    steps.forEach((st, idx) => {
+      const num = idx + 1;
+      const checkBtn = document.getElementById('s' + num + 'check');
+      const hintBtn = document.getElementById('s' + num + 'hint');
+
+      if (checkBtn) checkBtn.addEventListener('click', () => {
+        let correct = false;
+        const fb = document.getElementById('s' + num + 'fb');
+
+        if (st.type === 'select') {
+          const inp = document.getElementById('s' + num + 'ans');
+          correct = inp.value === st.answer;
+          inp.className = correct ? 'correct' : 'wrong';
+        } else if (st.type === 'multi') {
+          const inps = [
+            document.getElementById('s' + num + 'a'),
+            document.getElementById('s' + num + 'b'),
+            document.getElementById('s' + num + 'c')
+          ];
+          correct = true;
+          inps.forEach((inp, j) => {
+            if (!inp) return;
+            const uv = parseFloat(inp.value.trim());
+            const ok = !isNaN(uv) && Math.abs(uv - st.answer[j]) <= 0.02;
+            inp.className = ok ? 'correct' : 'wrong';
+            if (!ok) correct = false;
+          });
+        } else if (st.type === 'array') {
+          const inp = document.getElementById('s' + num + 'ans');
+          const userArr = inp.value.trim().replace(/\s/g, '').split(',').map(Number);
+          const correctArr = st.answer.split(',').map(Number);
+          correct = userArr.length === correctArr.length && userArr.every((v, i) => v === correctArr[i]);
+          inp.className = correct ? 'correct' : 'wrong';
+        } else {
+          const inp = document.getElementById('s' + num + 'ans');
+          const uv = parseFloat(inp.value.trim());
+          correct = !isNaN(uv) && Math.abs(uv - st.answer) <= 0.02;
+          inp.className = correct ? 'correct' : 'wrong';
+        }
+
+        fb.classList.add('show');
+        fb.classList.remove('ok', 'err');
+        if (correct) {
+          fb.classList.add('ok');
+          fb.textContent = 'Benar!';
+          if (idx < steps.length - 1) {
+            const next = document.getElementById('step' + (num + 1));
+            if (next) { next.style.display = 'block'; setTimeout(() => next.scrollIntoView({ behavior: 'smooth' }), 300); }
+          } else {
+            showSolusi(s);
+          }
+        } else {
+          fb.classList.add('err');
+          if (!stepErrors[num]) stepErrors[num] = 0;
+          stepErrors[num]++;
+          fb.textContent = 'Belum tepat. Percobaan ke-' + stepErrors[num] + '.';
+          langkahSalahMap[st.label] = (langkahSalahMap[st.label] || 0) + 1;
+        }
+      });
+
+      if (hintBtn) hintBtn.addEventListener('click', () => {
+        const ht = document.getElementById('s' + num + 'hintText');
+        if (ht) ht.classList.toggle('show');
+      });
+    });
+  }
+
+  /* ========================
+     SOLUSI LENGKAP
+  ======================== */
+  function showSolusi(s) {
+    const sol = document.getElementById('solusi');
+    const isi = document.getElementById('solusiIsi');
+    let h = '';
+    if (s.jenis === 'TUNGGAL') {
+      h += '<p><strong>Data:</strong> ' + s.data.join(', ') + '</p>';
+      h += '<p>Q1 = ' + s.q1 + ', Q2 = ' + s.q2 + ', Q3 = ' + s.q3 + '</p>';
+      h += '<p>Range = ' + s.range + ', IQR = ' + s.iqr + '</p>';
+    } else {
+      h += '<p><strong>Q1:</strong> Letak=' + s.q1.letak + ', Kelas=' + s.q1.kelasTeks + ', Tb=' + s.q1.Tb + ', F=' + s.q1.F + ', f=' + s.q1.f + ' &rarr; Q1 = ' + s.q1.nilai + '</p>';
+      h += '<p><strong>Q3:</strong> Letak=' + s.q3.letak + ', Kelas=' + s.q3.kelasTeks + ', Tb=' + s.q3.Tb + ', F=' + s.q3.F + ', f=' + s.q3.f + ' &rarr; Q3 = ' + s.q3.nilai + '</p>';
+      h += '<p>Range = ' + s.range + ', IQR = ' + s.iqr + '</p>';
+    }
+    isi.innerHTML = h;
+    sol.classList.add('show');
+    totalLatihan++;
+    totalBenar++;
+    updateStats();
+    const btnBaru = document.getElementById('btnSoalBaru');
+    if (btnBaru) {
+      btnBaru.style.display = 'inline-block';
+      btnBaru.addEventListener('click', () => generateSoal());
+    }
+    saveLatihanToSheets(s, true);
+  }
+
+  /* ========================
+     GET MANDIRI FIELDS
+  ======================== */
+  function getMandiriFields(s, t, isTunggal) {
+    const fields = [];
+    if (isTunggal) {
+      if (t === 'T1') fields.push({ id: 'm_urut', label: 'Urutan', answer: s.data.join(','), type: 'array' });
+      if (t === 'T2' || t === 'T9') fields.push({ id: 'm_q2', label: 'Q2', answer: s.q2 });
+      if (t === 'T3' || t === 'T9') fields.push({ id: 'm_q1', label: 'Q1', answer: s.q1 });
+      if (t === 'T4' || t === 'T9') fields.push({ id: 'm_q3', label: 'Q3', answer: s.q3 });
+      if (t === 'T5') fields.push({ id: 'm_q1rl', label: 'Q1', answer: s.q1rl });
+      if (t === 'T6') fields.push({ id: 'm_q3rl', label: 'Q3', answer: s.q3rl });
+      if (t === 'T7' || t === 'T9') fields.push({ id: 'm_range', label: 'Range', answer: s.range });
+      if (t === 'T8' || t === 'T9') fields.push({ id: 'm_iqr', label: 'IQR', answer: s.iqr });
+    } else {
+      if (t === 'K1') fields.push({ id: 'm_lq1', label: 'Letak Q1', answer: s.q1.letak });
+      if (t === 'K2') fields.push({ id: 'm_lq3', label: 'Letak Q3', answer: s.q3.letak });
+      if (t === 'K3') {
+        fields.push({ id: 'm_tb1', label: 'Tb Q1', answer: s.q1.Tb });
+        fields.push({ id: 'm_F1', label: 'F Q1', answer: s.q1.F });
+        fields.push({ id: 'm_f1', label: 'f Q1', answer: s.q1.f });
+      }
+      if (t === 'K4' || t === 'K8') fields.push({ id: 'm_q1', label: 'Q1', answer: s.q1.nilai });
+      if (t === 'K5' || t === 'K8') fields.push({ id: 'm_q3', label: 'Q3', answer: s.q3.nilai });
+      if (t === 'K6' || t === 'K8') fields.push({ id: 'm_range', label: 'Range', answer: s.range });
+      if (t === 'K7' || t === 'K8') fields.push({ id: 'm_iqr', label: 'IQR', answer: s.iqr });
+    }
+    return fields;
+  }
+
+  /* ========================
+     RENDER MANDIRI
+  ======================== */
+  function renderMandiri(t, isTunggal) {
+    const s = currentSoal;
+    const showAcak = (t === 'T1');
+    let html = isTunggal ? headerTunggal(s, showAcak) : headerKelompok(s);
+    const fields = getMandiriFields(s, t, isTunggal);
+
+    html += '<div class="card"><h4>Tentukan nilai berikut:</h4>';
+    fields.forEach(f => {
+      if (f.type === 'array') {
+        html += '<div class="input-row" id="row_' + f.id + '"><label>Urutan =</label><input type="text" id="' + f.id + '" placeholder="Ketik urutan data..."/><button class="row-btn" id="btn_' + f.id + '">Cek</button><span class="row-fb" id="fb_' + f.id + '"></span></div>';
+      } else {
+        html += '<div class="input-row" id="row_' + f.id + '"><label>' + f.label + ' =</label><input type="number" id="' + f.id + '" step="any" placeholder="Jawaban..."/><button class="row-btn" id="btn_' + f.id + '">Cek</button><span class="row-fb" id="fb_' + f.id + '"></span></div>';
+      }
+    });
+    html += '</div>';
+    html += '<div class="solution-box" id="solusi"><h4>Solusi Lengkap</h4><div id="solusiIsi"></div></div>';
+    html += '<div style="text-align:center;margin-top:14px;"><button class="btn btn-orange" id="btnSoalBaru" style="display:none;">Buat Soal Baru</button></div>';
+    soalArea.innerHTML = html;
+    if (window.MathJax) MathJax.typesetPromise();
+    bindMandiri(fields, s);
+  }
+
+  /* ========================
+     BIND MANDIRI
+  ======================== */
+  function bindMandiri(fields, s) {
+    let correctCount = 0;
+    fields.forEach(f => {
+      const btn = document.getElementById('btn_' + f.id);
+      const inp = document.getElementById(f.id);
+      const fb = document.getElementById('fb_' + f.id);
+      let answered = false;
+
+      btn.addEventListener('click', () => {
+        let ok = false;
+        if (f.type === 'array') {
+          const userArr = inp.value.trim().replace(/\s/g, '').split(',').map(Number);
+          const correctArr = f.answer.split(',').map(Number);
+          ok = userArr.length === correctArr.length && userArr.every((v, i) => v === correctArr[i]);
+        } else {
+          const uv = parseFloat(inp.value.trim());
+          ok = !isNaN(uv) && Math.abs(uv - f.answer) <= 0.02;
+        }
+        inp.className = ok ? 'correct' : 'wrong';
+        if (ok) {
+          fb.textContent = 'Benar';
+          fb.style.color = '#166534';
+          btn.disabled = true;
+          btn.textContent = 'OK';
+          btn.style.background = '#16a34a';
+          if (!answered) { correctCount++; answered = true; }
+          if (correctCount >= fields.length) {
+            totalLatihan++;
+            totalBenar++;
+            updateStats();
+            showSolusi(s);
+          }
+        } else {
+          fb.textContent = 'Salah';
+          fb.style.color = '#991b1b';
+          langkahSalahMap[f.label] = (langkahSalahMap[f.label] || 0) + 1;
+        }
+      });
+
+      inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') btn.click(); });
+    });
+  }
+
+  /* ========================
+     SAVE KE SHEETS
+  ======================== */
+  function saveLatihanToSheets(s, benar) {
+    if (!sheetsOK) return;
+    const akurasi = totalLatihan > 0 ? Math.round(totalBenar / totalLatihan * 100) : 0;
+    callAPI({
+      action: 'latihan', nama: currentUser, mode: selectedMode, jenis: s.jenis,
+      konteks: s.konteks ? s.konteks.nama : '', benar: benar ? 1 : 0, skor: benar ? 100 : 0,
+      akurasi: akurasi, langkahSalah: Object.keys(langkahSalahMap).join(', '),
+      setKe: setKe, detail: 'n=' + s.n + ' fokus=' + selectedType
+    }, function(d) { if (d && d.ok) console.log('Latihan tersimpan'); });
+  }
+
+  /* ========================
+     ENTER KEY
+  ======================== */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+      if (e.target.id === 'searchName' && selectedName) { btnLogin.click(); return; }
+      const parent = e.target.closest('.step-box');
+      if (parent) { const btn = parent.querySelector('.btn-primary'); if (btn) btn.click(); }
+    }
+  });
+
+  loadNames();
+});
+</script>
+</body>
+</html>

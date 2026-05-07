@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Materi Ajar Pertemuan 8 | Kuartil dan Jangkauan</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-light:#f97316;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;--teal:#0f766e;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+.login-box{background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:400px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:12px;font-size:18px;}
+.login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:8px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box .name-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;text-align:left;}
+.login-box .name-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;}
+.login-box .name-item:hover{background:var(--soft-blue);}
+.login-box .name-item.selected{background:#dbeafe;font-weight:700;color:var(--primary);}
+.login-box button{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.login-box button:disabled{opacity:.5;cursor:not-allowed;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--muted);}
+.progress-wrap{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;}
+.progress-bar{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));border-radius:999px;transition:width .5s;}
+.bagian{background:#fff;border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);display:none;}
+.bagian.active{display:block;}.bagian.locked{opacity:.5;pointer-events:none;}
+.bagian-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.bagian-num{width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;}
+.bagian-num.done{background:var(--success);}.bagian-num.wrong{background:var(--danger);}
+.bagian-title{font-size:16px;font-weight:700;color:var(--primary-dark);}
+.bagian h3{color:var(--primary);font-size:14px;margin:12px 0 6px;border-bottom:1px solid #e2e8f0;padding-bottom:4px;}
+.bagian h4{color:var(--orange);font-size:13px;margin:10px 0 4px;}
+.bagian p{margin:0 0 8px;}.bagian ul,.bagian ol{padding-left:20px;margin:0 0 8px;}.bagian li{margin:0 0 4px;}
+.formula{background:var(--primary-dark);color:#fff;padding:12px;border-radius:8px;text-align:center;font-size:14px;margin:8px 0;overflow-x:auto;}
+.note{background:var(--soft-yellow);border-left:4px solid var(--accent);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.info-box{background:var(--soft-blue);border-left:4px solid var(--primary);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--border);padding:6px 8px;vertical-align:top;}
+th{background:#dbeafe;color:#1e3a8a;font-weight:700;text-align:left;}
+.quiz-box{background:var(--soft-purple);border:2px solid var(--purple);border-radius:10px;padding:16px;margin:14px 0;}
+.quiz-box h4{color:var(--purple);margin:0 0 8px;font-size:14px;}
+.quiz-box label{display:block;margin:4px 0;font-size:13px;}
+.quiz-box input[type="text"],.quiz-box input[type="number"]{width:100%;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin:4px 0;}
+.quiz-box select{width:100%;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin:4px 0;background:#fff;}
+.quiz-box input.correct,.quiz-box select.correct{border-color:var(--success);background:var(--soft-green);}
+.quiz-box input.wrong,.quiz-box select.wrong{border-color:var(--danger);background:var(--soft-red);}
+.quiz-box .quiz-feedback{margin-top:8px;padding:8px;border-radius:6px;font-size:13px;display:none;}
+.quiz-box .quiz-feedback.show{display:block;}
+.quiz-box .quiz-feedback.correct{background:var(--soft-green);color:#166534;border:1px solid #86efac;}
+.quiz-box .quiz-feedback.wrong{background:var(--soft-red);color:#991b1b;border:1px solid #fca5a5;}
+.btn{border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;}
+.btn-primary{background:var(--primary);color:#fff;}.btn-success{background:var(--success);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}.btn-muted{background:#94a3b8;color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.hint-btn{background:none;border:1px solid var(--purple);color:var(--purple);padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;margin-top:6px;}
+.hint-text{background:var(--soft-yellow);padding:8px;border-radius:6px;margin-top:6px;font-size:12px;display:none;}
+.hint-text.show{display:block;}
+.nav-bagian{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;justify-content:center;}
+.nav-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;transition:.2s;}
+.nav-dot.done{background:var(--success);color:#fff;border-color:var(--success);}
+.nav-dot.current{background:var(--primary);color:#fff;border-color:var(--primary);}
+.nav-dot.locked{opacity:.4;cursor:not-allowed;}
+.user-info{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.user-info .name{font-weight:700;color:var(--primary-dark);}
+#app{display:none;}
+.visual-kuartil{background:#fff;border:2px solid var(--primary);border-radius:10px;padding:16px;margin:12px 0;overflow-x:auto;}
+.vk-bar{display:flex;height:40px;border-radius:6px;overflow:hidden;margin:8px 0;}
+.vk-bar div{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.vk-b1{background:#3b82f6;flex:1;}.vk-b2{background:#8b5cf6;flex:1;}.vk-b3{background:#f59e0b;flex:1;}.vk-b4{background:#ef4444;flex:1;}
+.vk-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px;position:relative;}
+.vk-labels span{text-align:center;}
+.vk-markers{display:flex;justify-content:space-between;margin-top:2px;}
+.vk-markers .vk-m{text-align:center;font-size:12px;font-weight:700;color:var(--primary-dark);}
+.visual-membagi{background:var(--soft-blue);border:2px solid var(--primary);border-radius:10px;padding:16px;margin:12px 0;}
+.vm-row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;justify-content:center;}
+.vm-cell{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid var(--border);background:#fff;}
+.vm-cell.lower{background:#dbeafe;border-color:var(--primary);}.vm-cell.upper{background:#dcfce7;border-color:var(--success);}
+.vm-cell.median{background:#fef3c7;border-color:var(--accent);}
+.vm-cell.q1{background:#ede9fe;border-color:var(--purple);}.vm-cell.q3{background:#ffedd5;border-color:var(--orange);}
+.vm-label{text-align:center;font-size:11px;color:var(--muted);margin:2px 0;}
+@media(max-width:480px){.container{padding:8px;}.bagian{padding:14px;}.formula{font-size:12px;padding:8px;}table{font-size:11px;}.vk-bar div{font-size:9px;}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="Pertemuan8.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>Materi Pertemuan 8</h1>
+  <p>Kuartil dan Jangkauan Data Tunggal dan Data Kelompok</p>
+</div>
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>Masuk ke Materi</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ketik nama lalu pilih dari daftar</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button id="btnLogin" disabled>Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+<div class="container" id="app">
+  <div class="user-info">
+    <span class="name" id="userName"></span>
+    <span id="userStatus" style="color:var(--muted);"></span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Progres Materi</span>
+      <span id="progressText">0 / 13</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="nav-bagian" id="navDots"></div>
+  <div id="bagianContainer">
+
+    <!-- ========== BAGIAN 1 ========== -->
+    <div class="bagian" id="bagian1">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num1">1</div>
+        <div class="bagian-title">Apa itu Kuartil?</div>
+      </div>
+      <p>Bayangkan kamu memiliki data penjualan harian sebuah toko selama satu bulan. Kamu sudah tahu cara mencari <strong>median</strong> yang membagi data menjadi dua bagian sama banyak. Tapi bagaimana kalau kamu ingin membagi data menjadi <strong>empat bagian</strong> sama banyak?</p>
+      <p>Di sinilah <strong>kuartil</strong> berperan. Kuartil adalah nilai yang membagi data yang sudah diurutkan menjadi <strong>empat bagian sama banyak</strong>, masing-masing sebesar 25 persen.</p>
+      <div class="info-box">
+        <strong>Tiga kuartil:</strong>
+        <ul>
+          <li><strong>Q1 (Kuartil Bawah)</strong> membatasi 25 persen data terbawah</li>
+          <li><strong>Q2 (Kuartil Tengah)</strong> sama dengan median, membatasi 50 persen data</li>
+          <li><strong>Q3 (Kuartil Atas)</strong> membatasi 75 persen data terbawah</li>
+        </ul>
+      </div>
+
+      <!-- VISUAL KUARTIL -->
+      <div class="visual-kuartil">
+        <p style="text-align:center;font-weight:700;color:var(--primary-dark);margin-bottom:8px;">Pembagian Data oleh Kuartil</p>
+        <div class="vk-bar">
+          <div class="vk-b1">25%</div>
+          <div class="vk-b2">25%</div>
+          <div class="vk-b3">25%</div>
+          <div class="vk-b4">25%</div>
+        </div>
+        <div class="vk-markers" style="padding:0 2px;">
+          <div class="vk-m">Data<br>Terkecil</div>
+          <div class="vk-m" style="margin-left:auto;margin-right:auto;">Q1</div>
+          <div class="vk-m" style="margin-left:auto;margin-right:auto;">Q2<br><span style="font-size:10px;color:var(--muted);">(Median)</span></div>
+          <div class="vk-m" style="margin-left:auto;margin-right:auto;">Q3</div>
+          <div class="vk-m">Data<br>Terbesar</div>
+        </div>
+        <table style="margin-top:10px;">
+          <tr><th>Bagian</th><th>Rentang</th><th>Persentase</th></tr>
+          <tr><td>Bagian 1</td><td>Data terkecil sampai Q1</td><td>25% terbawah</td></tr>
+          <tr><td>Bagian 2</td><td>Q1 sampai Q2</td><td>25% berikutnya</td></tr>
+          <tr><td>Bagian 3</td><td>Q2 sampai Q3</td><td>25% berikutnya</td></tr>
+          <tr><td>Bagian 4</td><td>Q3 sampai data terbesar</td><td>25% teratas</td></tr>
+        </table>
+      </div>
+
+      <div class="quiz-box" id="quiz1">
+        <h4>Cek Pemahaman Bagian 1</h4>
+        <p>Kuartil membagi data menjadi berapa bagian sama banyak?</p>
+        <input type="number" id="q1ans" placeholder="Ketik angka..."/>
+        <div class="quiz-feedback" id="q1fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q1check">Periksa</button>
+          <button class="hint-btn" id="q1hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q1hintText">Perhatikan kata kunci pada penjelasan di atas. Kuartil berasal dari kata "kuart" yang berarti empat.</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 2 ========== -->
+    <div class="bagian" id="bagian2">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num2">2</div>
+        <div class="bagian-title">Mengurutkan Data</div>
+      </div>
+      <p>Sebelum menentukan kuartil, data <strong>harus diurutkan</strong> dari nilai terkecil ke nilai terbesar. Tanpa mengurutkan, posisi Q1, Q2, dan Q3 tidak bisa ditentukan dengan benar.</p>
+      <h4>Contoh</h4>
+      <p>Data penjualan harian toko (ribu rupiah):</p>
+      <p>Data belum terurut: 85, 42, 67, 55, 73, 91, 48, 63, 78, 50, 88</p>
+      <p>Data sudah terurut: <strong>42, 48, 50, 55, 63, 67, 73, 78, 85, 88, 91</strong></p>
+      <div class="note">Selalu urutkan data terlebih dahulu sebelum menentukan kuartil. Ini langkah paling mendasar yang sering terlewatkan.</div>
+      <div class="quiz-box" id="quiz2">
+        <h4>Cek Pemahaman Bagian 2</h4>
+        <p>Urutkan data berikut dari terkecil ke terbesar: 25, 10, 18, 35, 22, 15, 30</p>
+        <p style="font-size:12px;color:var(--muted);">Ketik angka dipisahkan koma, contoh: 1, 2, 3</p>
+        <input type="text" id="q2ans" placeholder="Ketik urutan data..."/>
+        <div class="quiz-feedback" id="q2fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q2check">Periksa</button>
+          <button class="hint-btn" id="q2hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q2hintText">Cari angka yang paling kecil dulu, lalu yang paling kecil berikutnya, dan seterusnya sampai semua data tertulis.</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 3 ========== -->
+    <div class="bagian" id="bagian3">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num3">3</div>
+        <div class="bagian-title">Menentukan Q2 (Median) Data Tunggal</div>
+      </div>
+      <p>Q2 sama dengan median. Cara mencarinya bergantung pada jumlah data ganjil atau genap.</p>
+      <table>
+        <tr><th>Kondisi</th><th>Cara Menentukan Q2</th></tr>
+        <tr><td>\(n\) ganjil</td><td>Q2 = data yang tepat di tengah. Posisi = data ke-\(\frac{n+1}{2}\)</td></tr>
+        <tr><td>\(n\) genap</td><td>Q2 = rata-rata dua data di tengah. Posisi = rata-rata data ke-\(\frac{n}{2}\) dan ke-\(\frac{n}{2}+1\)</td></tr>
+      </table>
+      <h4>Contoh 1: n ganjil</h4>
+      <p>Data (n = 7): 5, 8, 12, <strong>15</strong>, 20, 25, 30</p>
+      <p>Posisi Q2 = data ke-\(\frac{7+1}{2}\) = data ke-4 = <strong>15</strong></p>
+      <h4>Contoh 2: n genap</h4>
+      <p>Data (n = 8): 12, 15, 18, 22, 25, 28, 31, 35</p>
+      <p>Q2 = rata rata data ke-4 dan ke-5 = \(\frac{22+25}{2} = 23{,}5\)</p>
+
+      <div class="quiz-box" id="quiz3">
+        <h4>Cek Pemahaman Bagian 3</h4>
+        <p><strong>Soal A (n ganjil):</strong> Data sudah terurut: 4, 8, 12, 16, 20. Tentukan Q2.</p>
+        <input type="number" id="q3a_ans" placeholder="Q2 = ..." step="any"/>
+        <p style="margin-top:10px;"><strong>Soal B (n genap):</strong> Data sudah terurut: 10, 14, 18, 22, 26, 30. Tentukan Q2.</p>
+        <input type="number" id="q3b_ans" placeholder="Q2 = ..." step="any"/>
+        <div class="quiz-feedback" id="q3fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q3check">Periksa</button>
+          <button class="hint-btn" id="q3hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q3hintText">Soal A: n = 5 (ganjil), Q2 = data ke-(5+1)/2 = data ke-3. Soal B: n = 6 (genap), Q2 = rata rata data ke-3 dan data ke-4 = (18 + 22) / 2.</div>
+      </div>
+    </div>
+
+<!-- POTONGAN 1 SELESAI -->
+<!-- Tempelkan Potongan 2 di bawah baris ini -->
+    <!-- ========== BAGIAN 4 ========== -->
+    <div class="bagian" id="bagian4">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num4">4</div>
+        <div class="bagian-title">Menentukan Q1 Data Tunggal</div>
+      </div>
+      <p>Ada dua metode untuk menentukan Q1 pada data tunggal, yaitu <strong>Metode Membagi Data</strong> dan <strong>Metode Rumus Letak</strong>.</p>
+
+      <h3>Metode Membagi Data</h3>
+      <p>Setelah Q2 ditemukan, bagi data menjadi dua bagian:</p>
+      <ul>
+        <li><strong>Data bagian bawah:</strong> semua data di bawah Q2 (tidak termasuk Q2 jika n ganjil)</li>
+        <li><strong>Q1 = median dari data bagian bawah</strong></li>
+      </ul>
+
+      <div class="note">Perhatikan: jika n ganjil, Q2 <strong>tidak boleh</strong> disertakan ke dalam data bagian bawah maupun data bagian atas. Banyak siswa yang keliru karena ikut memasukkan Q2 ke salah satu bagian.</div>
+
+      <h4>Contoh 1: n ganjil (n = 11)</h4>
+      <p>Data: 42, 48, 50, 55, 63, 67, 73, 78, 85, 88, 91</p>
+      <p>Q2 = 67 (data ke-6)</p>
+      <p>Data bagian bawah (tidak termasuk Q2): 42, 48, 50, 55, 63 (5 data)</p>
+      <p>Q1 = median dari 5 data = data ke-3 = <strong>50</strong></p>
+
+      <div class="visual-membagi">
+        <p class="vm-label"><strong>Visual Metode Membagi Data (n = 11, ganjil)</strong></p>
+        <p class="vm-label">Data: 42, 48, 50, 55, 63, 67, 73, 78, 85, 88, 91</p>
+        <div class="vm-row">
+          <div class="vm-cell lower">42</div><div class="vm-cell lower">48</div><div class="vm-cell q1">50</div><div class="vm-cell lower">55</div><div class="vm-cell lower">63</div>
+          <div class="vm-cell median">67</div>
+          <div class="vm-cell upper">73</div><div class="vm-cell upper">78</div><div class="vm-cell upper">85</div><div class="vm-cell upper">88</div><div class="vm-cell upper">91</div>
+        </div>
+        <div style="display:flex;font-size:10px;margin-top:4px;">
+          <span style="flex:5;text-align:center;color:var(--primary);">Data bagian bawah</span>
+          <span style="flex:1;text-align:center;color:var(--accent);">Q2</span>
+          <span style="flex:5;text-align:center;color:var(--success);">Data bagian atas</span>
+        </div>
+        <p class="vm-label" style="margin-top:4px;font-weight:700;color:var(--purple);">Q1 = median bagian bawah = 50</p>
+      </div>
+
+      <h4>Contoh 2: n genap (n = 8)</h4>
+      <p>Data: 12, 15, 18, 22, 25, 28, 31, 35</p>
+      <p>Q2 = rata rata data ke-4 dan ke-5 = \(\frac{22+25}{2} = 23{,}5\)</p>
+      <p>Data bagian bawah: 12, 15, 18, 22 (4 data)</p>
+      <p>Q1 = rata rata data ke-2 dan ke-3 = \(\frac{15+18}{2} = 16{,}5\)</p>
+
+      <div class="visual-membagi" style="border-color:var(--success);background:var(--soft-green);">
+        <p class="vm-label"><strong>Visual Metode Membagi Data (n = 8, genap)</strong></p>
+        <p class="vm-label">Data: 12, 15, 18, 22, 25, 28, 31, 35</p>
+        <div class="vm-row">
+          <div class="vm-cell lower">12</div><div class="vm-cell q1">15</div><div class="vm-cell q1">18</div><div class="vm-cell lower">22</div>
+          <div style="width:4px;background:var(--accent);margin:0 2px;border-radius:2px;"></div>
+          <div class="vm-cell upper">25</div><div class="vm-cell upper">28</div><div class="vm-cell upper">31</div><div class="vm-cell upper">35</div>
+        </div>
+        <div style="display:flex;font-size:10px;margin-top:4px;">
+          <span style="flex:1;text-align:center;color:var(--primary);">Data bagian bawah</span>
+          <span style="flex:1;text-align:center;color:var(--success);">Data bagian atas</span>
+        </div>
+        <p class="vm-label" style="margin-top:4px;">Q2 = (22+25)/2 = 23,5</p>
+        <p class="vm-label" style="font-weight:700;color:var(--purple);">Q1 = (15+18)/2 = 16,5</p>
+      </div>
+
+      <h3>Metode Rumus Letak</h3>
+      <div class="formula">\[ \text{Letak } Q_1 = \text{data ke-}\frac{n+1}{4} \]</div>
+      <p>Jika posisi letak bukan bilangan bulat, lakukan <strong>interpolasi</strong> antara dua data terdekat.</p>
+
+      <h4>Contoh 1: n ganjil (n = 11)</h4>
+      <p>Data: 42, 48, 50, 55, 63, 67, 73, 78, 85, 88, 91</p>
+      <p>Letak Q1 = data ke-\(\frac{11+1}{4}\) = data ke-\(\frac{12}{4}\) = data ke-3</p>
+      <p>Q1 = data ke-3 = <strong>50</strong></p>
+
+      <h4>Contoh 2: n genap (n = 8)</h4>
+      <p>Data: 12, 15, 18, 22, 25, 28, 31, 35</p>
+      <p>Letak Q1 = data ke-\(\frac{8+1}{4}\) = data ke-\(\frac{9}{4}\) = data ke-2,25</p>
+      <p>Interpolasi: data ke-2 = 15, data ke-3 = 18</p>
+      <p>Q1 = 15 + 0,25 x (18 dikurangi 15) = 15 + 0,75 = <strong>15,75</strong></p>
+
+      <div class="info-box">Pada n ganjil (n = 11), kedua metode menghasilkan Q1 = 50. Pada n genap (n = 8), Metode Membagi Data menghasilkan Q1 = 16,5 sedangkan Metode Rumus Letak menghasilkan Q1 = 15,75. Keduanya benar, siswa boleh menggunakan salah satu metode.</div>
+
+      <div class="quiz-box" id="quiz4">
+        <h4>Cek Pemahaman Bagian 4</h4>
+
+        <p><strong>Soal A: Metode Membagi Data, n ganjil</strong></p>
+        <p>Data (n = 9): 10, 15, 20, 25, 30, 35, 40, 45, 50</p>
+        <p>Q2 = 30 (data ke-5)</p>
+        <p style="font-size:12px;color:var(--muted);">Data bagian bawah (tidak termasuk Q2): 10, 15, 20, 25</p>
+        <input type="number" id="q4a_ans" placeholder="Q1 = ..." step="any"/>
+
+        <p style="margin-top:10px;"><strong>Soal B: Metode Membagi Data, n genap</strong></p>
+        <p>Data (n = 8): 4, 8, 12, 16, 20, 24, 28, 32</p>
+        <p>Q2 = (16+20)/2 = 18</p>
+        <p style="font-size:12px;color:var(--muted);">Data bagian bawah: 4, 8, 12, 16</p>
+        <input type="number" id="q4b_ans" placeholder="Q1 = ..." step="any"/>
+
+        <p style="margin-top:10px;"><strong>Soal C: Metode Rumus Letak, n ganjil</strong></p>
+        <p>Data (n = 9): 10, 15, 20, 25, 30, 35, 40, 45, 50</p>
+        <p style="font-size:12px;color:var(--muted);">Letak Q1 = data ke-(9+1)/4 = data ke-2,5. Lakukan interpolasi.</p>
+        <input type="number" id="q4c_ans" placeholder="Q1 = ..." step="any"/>
+
+        <p style="margin-top:10px;"><strong>Soal D: Metode Rumus Letak, n genap</strong></p>
+        <p>Data (n = 8): 4, 8, 12, 16, 20, 24, 28, 32</p>
+        <p style="font-size:12px;color:var(--muted);">Letak Q1 = data ke-(8+1)/4 = data ke-2,25. Lakukan interpolasi.</p>
+        <input type="number" id="q4d_ans" placeholder="Q1 = ..." step="any"/>
+
+        <div class="quiz-feedback" id="q4fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q4check">Periksa</button>
+          <button class="hint-btn" id="q4hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q4hintText">Soal A: data bagian bawah 4 data (genap), Q1 = rata rata data ke-2 dan ke-3 = (15+20)/2. Soal B: data bagian bawah 4 data (genap), Q1 = rata rata data ke-2 dan ke-3 = (8+12)/2. Soal C: letak Q1 = data ke-2,5, interpolasi antara data ke-2 dan ke-3 = 15 + 0,5 x (20 dikurangi 15). Soal D: letak Q1 = data ke-2,25, interpolasi antara data ke-2 dan ke-3 = 8 + 0,25 x (12 dikurangi 8).</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 5 ========== -->
+    <div class="bagian" id="bagian5">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num5">5</div>
+        <div class="bagian-title">Menentukan Q3 Data Tunggal</div>
+      </div>
+      <p>Cara menentukan Q3 sama dengan Q1, tetapi menggunakan <strong>data bagian atas</strong>.</p>
+
+      <h3>Metode Membagi Data</h3>
+      <ul>
+        <li><strong>Data bagian atas:</strong> semua data di atas Q2 (tidak termasuk Q2 jika n ganjil)</li>
+        <li><strong>Q3 = median dari data bagian atas</strong></li>
+      </ul>
+
+      <h4>Contoh 1: n ganjil (n = 11)</h4>
+      <p>Data: 42, 48, 50, 55, 63, 67, 73, 78, 85, 88, 91</p>
+      <p>Q2 = 67 (data ke-6)</p>
+      <p>Data bagian atas (tidak termasuk Q2): 73, 78, 85, 88, 91 (5 data)</p>
+      <p>Q3 = median dari 5 data = data ke-3 = <strong>85</strong></p>
+
+      <div class="visual-membagi">
+        <p class="vm-label"><strong>Visual Metode Membagi Data untuk Q3 (n = 11, ganjil)</strong></p>
+        <p class="vm-label">Data: 42, 48, 50, 55, 63, 67, 73, 78, 85, 88, 91</p>
+        <div class="vm-row">
+          <div class="vm-cell lower">42</div><div class="vm-cell lower">48</div><div class="vm-cell lower">50</div><div class="vm-cell lower">55</div><div class="vm-cell lower">63</div>
+          <div class="vm-cell median">67</div>
+          <div class="vm-cell upper">73</div><div class="vm-cell upper">78</div><div class="vm-cell q3">85</div><div class="vm-cell upper">88</div><div class="vm-cell upper">91</div>
+        </div>
+        <div style="display:flex;font-size:10px;margin-top:4px;">
+          <span style="flex:5;text-align:center;color:var(--primary);">Data bagian bawah</span>
+          <span style="flex:1;text-align:center;color:var(--accent);">Q2</span>
+          <span style="flex:5;text-align:center;color:var(--success);">Data bagian atas</span>
+        </div>
+        <p class="vm-label" style="margin-top:4px;font-weight:700;color:var(--orange);">Q3 = median bagian atas = 85</p>
+      </div>
+
+      <h4>Contoh 2: n genap (n = 8)</h4>
+      <p>Data: 12, 15, 18, 22, 25, 28, 31, 35</p>
+      <p>Q2 = (22+25)/2 = 23,5</p>
+      <p>Data bagian atas: 25, 28, 31, 35 (4 data)</p>
+      <p>Q3 = rata rata data ke-2 dan ke-3 = \(\frac{28+31}{2} = 29{,}5\)</p>
+
+      <div class="visual-membagi" style="border-color:var(--success);background:var(--soft-green);">
+        <p class="vm-label"><strong>Visual Metode Membagi Data untuk Q3 (n = 8, genap)</strong></p>
+        <p class="vm-label">Data: 12, 15, 18, 22, 25, 28, 31, 35</p>
+        <div class="vm-row">
+          <div class="vm-cell lower">12</div><div class="vm-cell lower">15</div><div class="vm-cell lower">18</div><div class="vm-cell lower">22</div>
+          <div style="width:4px;background:var(--accent);margin:0 2px;border-radius:2px;"></div>
+          <div class="vm-cell upper">25</div><div class="vm-cell q3">28</div><div class="vm-cell q3">31</div><div class="vm-cell upper">35</div>
+        </div>
+        <div style="display:flex;font-size:10px;margin-top:4px;">
+          <span style="flex:1;text-align:center;color:var(--primary);">Data bagian bawah</span>
+          <span style="flex:1;text-align:center;color:var(--success);">Data bagian atas</span>
+        </div>
+        <p class="vm-label" style="margin-top:4px;">Q2 = (22+25)/2 = 23,5</p>
+        <p class="vm-label" style="font-weight:700;color:var(--orange);">Q3 = (28+31)/2 = 29,5</p>
+      </div>
+
+      <h3>Metode Rumus Letak</h3>
+      <div class="formula">\[ \text{Letak } Q_3 = \text{data ke-}\frac{3(n+1)}{4} \]</div>
+
+      <h4>Contoh 1: n ganjil (n = 11)</h4>
+      <p>Data: 42, 48, 50, 55, 63, 67, 73, 78, 85, 88, 91</p>
+      <p>Letak Q3 = data ke-\(\frac{3 \times 12}{4}\) = data ke-\(\frac{36}{4}\) = data ke-9</p>
+      <p>Q3 = data ke-9 = <strong>85</strong></p>
+
+      <h4>Contoh 2: n genap (n = 8)</h4>
+      <p>Data: 12, 15, 18, 22, 25, 28, 31, 35</p>
+      <p>Letak Q3 = data ke-\(\frac{3 \times 9}{4}\) = data ke-\(\frac{27}{4}\) = data ke-6,75</p>
+      <p>Interpolasi: data ke-6 = 28, data ke-7 = 31</p>
+      <p>Q3 = 28 + 0,75 x (31 dikurangi 28) = 28 + 2,25 = <strong>30,25</strong></p>
+
+      <div class="quiz-box" id="quiz5">
+        <h4>Cek Pemahaman Bagian 5</h4>
+
+        <p><strong>Soal A: Metode Membagi Data, n ganjil</strong></p>
+        <p>Data (n = 9): 10, 15, 20, 25, 30, 35, 40, 45, 50</p>
+        <p>Q2 = 30 (data ke-5)</p>
+        <p style="font-size:12px;color:var(--muted);">Data bagian atas (tidak termasuk Q2): 35, 40, 45, 50</p>
+        <input type="number" id="q5a_ans" placeholder="Q3 = ..." step="any"/>
+
+        <p style="margin-top:10px;"><strong>Soal B: Metode Membagi Data, n genap</strong></p>
+        <p>Data (n = 8): 4, 8, 12, 16, 20, 24, 28, 32</p>
+        <p>Q2 = (16+20)/2 = 18</p>
+        <p style="font-size:12px;color:var(--muted);">Data bagian atas: 20, 24, 28, 32</p>
+        <input type="number" id="q5b_ans" placeholder="Q3 = ..." step="any"/>
+
+        <p style="margin-top:10px;"><strong>Soal C: Metode Rumus Letak, n ganjil</strong></p>
+        <p>Data (n = 9): 10, 15, 20, 25, 30, 35, 40, 45, 50</p>
+        <p style="font-size:12px;color:var(--muted);">Letak Q3 = data ke-3(9+1)/4 = data ke-7,5. Lakukan interpolasi.</p>
+        <input type="number" id="q5c_ans" placeholder="Q3 = ..." step="any"/>
+
+        <p style="margin-top:10px;"><strong>Soal D: Metode Rumus Letak, n genap</strong></p>
+        <p>Data (n = 8): 4, 8, 12, 16, 20, 24, 28, 32</p>
+        <p style="font-size:12px;color:var(--muted);">Letak Q3 = data ke-3(8+1)/4 = data ke-6,75. Lakukan interpolasi.</p>
+        <input type="number" id="q5d_ans" placeholder="Q3 = ..." step="any"/>
+
+        <div class="quiz-feedback" id="q5fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q5check">Periksa</button>
+          <button class="hint-btn" id="q5hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q5hintText">Soal A: data bagian atas 4 data (genap), Q3 = rata rata data ke-2 dan ke-3 = (40+45)/2. Soal B: data bagian atas 4 data (genap), Q3 = rata rata data ke-2 dan ke-3 = (24+28)/2. Soal C: data ke-7 = 40, data ke-8 = 45, interpolasi = 40 + 0,5 x (45 dikurangi 40). Soal D: data ke-6 = 24, data ke-7 = 28, interpolasi = 24 + 0,75 x (28 dikurangi 24).</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 6 ========== -->
+    <div class="bagian" id="bagian6">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num6">6</div>
+        <div class="bagian-title">Range (Jangkauan) Data Tunggal</div>
+      </div>
+      <p><strong>Range</strong> atau jangkauan adalah selisih antara data terbesar dan data terkecil. Range menunjukkan seberapa lebar sebaran data secara keseluruhan.</p>
+      <div class="formula">\[ \text{Range} = x_{maks} - x_{min} \]</div>
+      <h4>Contoh</h4>
+      <p>Data penjualan harian toko (n = 11): 42, 48, 50, 55, 63, 67, 73, 78, 85, 88, 91</p>
+      <p>Range = 91 dikurangi 42 = <strong>49</strong> ribu rupiah</p>
+      <div class="note">Range mudah dihitung, tetapi kelemahannya adalah mudah terpengaruh oleh <strong>nilai ekstrem</strong>. Misalnya, jika ada satu hari dengan penjualan sangat tinggi atau sangat rendah, Range akan berubah drastis.</div>
+      <div class="quiz-box" id="quiz6">
+        <h4>Cek Pemahaman Bagian 6</h4>
+        <p>Data harga barang (ribu rupiah): 15, 22, 28, 35, 40, 48, 55, 62, 70</p>
+        <p>Tentukan Range dari data tersebut.</p>
+        <input type="number" id="q6ans" placeholder="Range = ..." step="any"/>
+        <div class="quiz-feedback" id="q6fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q6check">Periksa</button>
+          <button class="hint-btn" id="q6hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q6hintText">Range = data terbesar dikurangi data terkecil = 70 dikurangi 15 = ?</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 7 ========== -->
+    <div class="bagian" id="bagian7">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num7">7</div>
+        <div class="bagian-title">IQR (Jangkauan Interkuartil) Data Tunggal</div>
+      </div>
+      <p><strong>IQR</strong> atau Jangkauan Interkuartil adalah selisih antara Q3 dan Q1. IQR mengukur sebaran <strong>50 persen data di tengah</strong>, yaitu data antara Q1 dan Q3.</p>
+      <div class="formula">\[ \text{IQR} = Q_3 - Q_1 \]</div>
+      <h4>Contoh</h4>
+      <p>Data penjualan harian toko (n = 11): 42, 48, 50, 55, 63, 67, 73, 78, 85, 88, 91</p>
+      <p>Dari perhitungan sebelumnya: Q1 = 50 dan Q3 = 85</p>
+      <p>IQR = 85 dikurangi 50 = <strong>35</strong> ribu rupiah</p>
+      <h3>Perbedaan Range dan IQR</h3>
+      <table>
+        <tr><th>Aspek</th><th>Range</th><th>IQR</th></tr>
+        <tr><td>Rumus</td><td>\(x_{maks} - x_{min}\)</td><td>\(Q_3 - Q_1\)</td></tr>
+        <tr><td>Mengukur</td><td>Selisih data terbesar dan terkecil</td><td>Lebar 50% data di tengah</td></tr>
+        <tr><td>Terpengaruh nilai ekstrem</td><td>Ya, sangat terpengaruh</td><td>Tidak</td></tr>
+        <tr><td>Kapan lebih tepat</td><td>Data tanpa nilai ekstrem</td><td>Data dengan nilai ekstrem</td></tr>
+      </table>
+      <h4>Contoh perbandingan</h4>
+      <p>Data pengunjung toko 9 hari: 5, 12, 18, 25, 30, 42, 55, 68, 120</p>
+      <p>Q1 = 15, Q3 = 61,5</p>
+      <p>Range = 120 dikurangi 5 = <strong>115</strong></p>
+      <p>IQR = 61,5 dikurangi 15 = <strong>46,5</strong></p>
+      <div class="info-box">Range (115) jauh lebih besar dari IQR (46,5) karena ada nilai 120 yang sangat jauh dari data lainnya. IQR lebih stabil karena tidak terpengaruh oleh nilai 120 tersebut.</div>
+      <div class="quiz-box" id="quiz7">
+        <h4>Cek Pemahaman Bagian 7</h4>
+        <p>Diketahui Q1 = 22 dan Q3 = 58. Tentukan IQR.</p>
+        <input type="number" id="q7ans" placeholder="IQR = ..." step="any"/>
+        <div class="quiz-feedback" id="q7fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q7check">Periksa</button>
+          <button class="hint-btn" id="q7hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q7hintText">IQR = Q3 dikurangi Q1 = 58 dikurangi 22 = ?</div>
+      </div>
+    </div>
+
+<!-- POTONGAN 2 SELESAI -->
+<!-- Tempelkan Potongan 3 di bawah baris ini -->
+<!-- Tempelkan Potongan 3 di bawah baris ini -->
+    <!-- ========== BAGIAN 8 ========== -->
+    <div class="bagian" id="bagian8">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num8">8</div>
+        <div class="bagian-title">Letak Kuartil Data Kelompok</div>
+      </div>
+      <p>Pada data kelompok, data sudah diringkas dalam tabel distribusi frekuensi sehingga nilai individual tidak terlihat. Oleh karena itu, kuartil data kelompok memerlukan <strong>rumus</strong>.</p>
+      <p>Langkah pertama adalah menentukan <strong>letak kuartil</strong>:</p>
+      <table>
+        <tr><th>Kuartil</th><th>Letak</th></tr>
+        <tr><td>Q1</td><td>\(\frac{n}{4}\)</td></tr>
+        <tr><td>Q2</td><td>\(\frac{2n}{4} = \frac{n}{2}\)</td></tr>
+        <tr><td>Q3</td><td>\(\frac{3n}{4}\)</td></tr>
+      </table>
+      <div class="note">Letak kuartil data tunggal = \(\frac{i(n+1)}{4}\), sedangkan data kelompok = \(\frac{i \cdot n}{4}\). Jangan tertukar.</div>
+
+      <h3>Menentukan Kelas Kuartil</h3>
+      <ol>
+        <li>Hitung letak kuartil</li>
+        <li>Lihat kolom fk</li>
+        <li>Cari fk pertama yang <strong>mencapai atau melewati</strong> letak kuartil</li>
+        <li>Kelas pada baris tersebut adalah kelas kuartil</li>
+      </ol>
+      <h4>Contoh</h4>
+      <table id="tabel8ref">
+        <tr><th>Kelas</th><th>\(f\)</th><th>fk</th></tr>
+        <tr><td>10 sampai 19</td><td>5</td><td>5</td></tr>
+        <tr><td>20 sampai 29</td><td>8</td><td>13</td></tr>
+        <tr><td>30 sampai 39</td><td>12</td><td>25</td></tr>
+        <tr><td>40 sampai 49</td><td>10</td><td>35</td></tr>
+        <tr><td>50 sampai 59</td><td>5</td><td>40</td></tr>
+      </table>
+      <p>\(n = 40\). Letak Q1 = \(\frac{40}{4} = 10\). fk pertama yang mencapai atau melewati 10 adalah <strong>13</strong> pada kelas <strong>20 sampai 29</strong>.</p>
+
+      <div class="quiz-box" id="quiz8">
+        <h4>Cek Pemahaman Bagian 8</h4>
+        <p>Gunakan tabel di atas (n = 40). Tentukan letak Q3 dan kelas Q3.</p>
+        <label>Letak Q3 = </label>
+        <input type="number" id="q8ans1" placeholder="Letak Q3 = ..." step="any"/>
+        <label style="margin-top:6px;display:block;">Kelas Q3:</label>
+        <select id="q8ans2">
+          <option value="">Pilih kelas...</option>
+          <option value="10">10 sampai 19</option>
+          <option value="20">20 sampai 29</option>
+          <option value="30">30 sampai 39</option>
+          <option value="40">40 sampai 49</option>
+          <option value="50">50 sampai 59</option>
+        </select>
+        <div class="quiz-feedback" id="q8fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q8check">Periksa</button>
+          <button class="hint-btn" id="q8hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q8hintText">Letak Q3 = 3 x 40 / 4 = 30. Cari fk pertama yang mencapai atau melewati 30. fk = 25 belum cukup, fk = 35 sudah melewati. Kelas pada fk = 35 adalah?</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 9 ========== -->
+    <div class="bagian" id="bagian9">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num9">9</div>
+        <div class="bagian-title">Komponen Rumus Kuartil Data Kelompok</div>
+      </div>
+      <h3>Rumus Kuartil Data Kelompok</h3>
+      <div class="formula">\[ Q_i = Tb + p \times \left(\frac{\frac{i \cdot n}{4} - F}{f}\right) \]</div>
+      <table>
+        <tr><th style="width:15%">Simbol</th><th>Keterangan</th><th style="width:30%">Cara Menentukan</th></tr>
+        <tr><td>\(Tb\)</td><td>Tepi bawah kelas kuartil</td><td>Batas bawah kelas dikurangi 0,5</td></tr>
+        <tr><td>\(p\)</td><td>Panjang kelas</td><td>Batas atas dikurangi batas bawah ditambah 1</td></tr>
+        <tr><td>\(n\)</td><td>Jumlah seluruh frekuensi</td><td>Jumlahkan seluruh kolom f</td></tr>
+        <tr><td>\(F\)</td><td>fk sebelum kelas kuartil</td><td>fk pada baris tepat sebelum kelas kuartil</td></tr>
+        <tr><td>\(f\)</td><td>Frekuensi kelas kuartil</td><td>Nilai f pada baris kelas kuartil</td></tr>
+      </table>
+      <div class="warning-box"><strong>Kesalahan umum:</strong> Tertukar antara F dan f. F (huruf besar) = fk <strong>sebelum</strong> kelas kuartil. f (huruf kecil) = frekuensi kelas kuartil itu sendiri.</div>
+
+      <h4>Tabel Referensi</h4>
+      <table>
+        <tr><th>Kelas</th><th>\(f\)</th><th>fk</th></tr>
+        <tr><td>10 sampai 19</td><td>5</td><td>5</td></tr>
+        <tr><td>20 sampai 29</td><td>8</td><td>13</td></tr>
+        <tr><td>30 sampai 39</td><td>12</td><td>25</td></tr>
+        <tr><td>40 sampai 49</td><td>10</td><td>35</td></tr>
+        <tr><td>50 sampai 59</td><td>5</td><td>40</td></tr>
+      </table>
+      <p>\(n = 40\), \(p = 10\). Kelas Q3 = 40 sampai 49.</p>
+
+      <div class="quiz-box" id="quiz9">
+        <h4>Cek Pemahaman Bagian 9</h4>
+        <p>Dari tabel di atas, kelas Q3 = 40 sampai 49. Tentukan komponen berikut:</p>
+        <label>Tb = </label>
+        <input type="number" id="q9ans1" placeholder="Tb = ..." step="any"/>
+        <label style="margin-top:4px;display:block;">F (fk sebelum kelas Q3) = </label>
+        <input type="number" id="q9ans2" placeholder="F = ..."/>
+        <label style="margin-top:4px;display:block;">f (frekuensi kelas Q3) = </label>
+        <input type="number" id="q9ans3" placeholder="f = ..."/>
+        <div class="quiz-feedback" id="q9fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q9check">Periksa</button>
+          <button class="hint-btn" id="q9hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q9hintText">Tb = batas bawah kelas dikurangi 0,5 = 40 dikurangi 0,5 = 39,5. F = fk pada baris sebelum kelas Q3, yaitu fk kelas 30 sampai 39 = 25. f = frekuensi kelas 40 sampai 49 = 10.</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 10 ========== -->
+    <div class="bagian" id="bagian10">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num10">10</div>
+        <div class="bagian-title">Menghitung Q1 Data Kelompok</div>
+      </div>
+      <p>Sekarang kita akan menghitung Q1 data kelompok secara lengkap.</p>
+      <h4>Contoh Lengkap</h4>
+      <table>
+        <tr><th>Kelas</th><th>\(f\)</th><th>fk</th></tr>
+        <tr><td>0 sampai 19</td><td>4</td><td>4</td></tr>
+        <tr><td>20 sampai 39</td><td>8</td><td>12</td></tr>
+        <tr><td>40 sampai 59</td><td>12</td><td>24</td></tr>
+        <tr><td>60 sampai 79</td><td>10</td><td>34</td></tr>
+        <tr><td>80 sampai 99</td><td>6</td><td>40</td></tr>
+      </table>
+      <p>\(n = 40\), \(p = 20\)</p>
+
+      <h4>Langkah 1: Hitung letak Q1</h4>
+      <p>Letak Q1 = \(\frac{1 \times 40}{4} = 10\)</p>
+      <h4>Langkah 2: Tentukan kelas Q1</h4>
+      <p>fk pertama yang mencapai atau melewati 10 adalah <strong>12</strong> pada kelas <strong>20 sampai 39</strong></p>
+      <h4>Langkah 3: Identifikasi komponen</h4>
+      <p>Tb = 19,5, p = 20, F = 4, f = 8</p>
+      <h4>Langkah 4: Substitusi ke rumus</h4>
+      <p>Tuliskan rumus terlebih dahulu:</p>
+      <div class="formula">\[ Q_1 = Tb + p \times \frac{\frac{n}{4} - F}{f} \]</div>
+      <p>Masukkan nilai:</p>
+      <div class="formula">\[ Q_1 = 19{,}5 + 20 \times \frac{10 - 4}{8} = 19{,}5 + 20 \times \frac{6}{8} = 19{,}5 + 15 = 34{,}5 \]</div>
+
+      <div class="success-box">Q1 = <strong>34,5</strong>. Artinya 25 persen pengeluaran harian berada di bawah 34.500 rupiah.</div>
+
+      <div class="quiz-box" id="quiz10">
+        <h4>Cek Pemahaman Bagian 10</h4>
+        <table>
+          <tr><th>Kelas</th><th>\(f\)</th><th>fk</th></tr>
+          <tr><td>10 sampai 19</td><td>4</td><td>4</td></tr>
+          <tr><td>20 sampai 29</td><td>6</td><td>10</td></tr>
+          <tr><td>30 sampai 39</td><td>10</td><td>20</td></tr>
+          <tr><td>40 sampai 49</td><td>8</td><td>28</td></tr>
+          <tr><td>50 sampai 59</td><td>2</td><td>30</td></tr>
+        </table>
+        <p>\(n = 30\), \(p = 10\). Hitung Q1.</p>
+        <input type="number" id="q10ans" placeholder="Q1 = ..." step="any"/>
+        <div class="quiz-feedback" id="q10fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q10check">Periksa</button>
+          <button class="hint-btn" id="q10hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q10hintText">Letak Q1 = 30/4 = 7,5. fk pertama yang melewati 7,5 adalah 10 pada kelas 20 sampai 29. Tb = 19,5, F = 4, f = 6. Q1 = 19,5 + 10 x (7,5 dikurangi 4) / 6 = 19,5 + 10 x 3,5 / 6 = ?</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 11 ========== -->
+    <div class="bagian" id="bagian11">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num11">11</div>
+        <div class="bagian-title">Menghitung Q2 dan Q3 Data Kelompok</div>
+      </div>
+      <p>Cara menghitung Q2 dan Q3 sama persis dengan Q1, hanya berbeda pada letak kuartilnya.</p>
+
+      <h3>Menghitung Q2 (Median Data Kelompok)</h3>
+      <p>Menggunakan tabel pengeluaran harian (n = 40, p = 20):</p>
+      <p>Tuliskan rumus:</p>
+      <div class="formula">\[ Q_2 = Tb + p \times \frac{\frac{2n}{4} - F}{f} \]</div>
+      <p>Letak Q2 = 20. Kelas Q2 = 40 sampai 59. Tb = 39,5, F = 12, f = 12.</p>
+      <div class="formula">\[ Q_2 = 39{,}5 + 20 \times \frac{20 - 12}{12} = 39{,}5 + 13{,}33 = 52{,}83 \]</div>
+
+      <div class="info-box">Q2 data kelompok sama dengan <strong>median data kelompok</strong> yang sudah dipelajari pada pertemuan sebelumnya.</div>
+
+      <h3>Menghitung Q3</h3>
+      <p>Tuliskan rumus:</p>
+      <div class="formula">\[ Q_3 = Tb + p \times \frac{\frac{3n}{4} - F}{f} \]</div>
+      <p>Letak Q3 = 30. Kelas Q3 = 60 sampai 79. Tb = 59,5, F = 24, f = 10.</p>
+      <div class="formula">\[ Q_3 = 59{,}5 + 20 \times \frac{30 - 24}{10} = 59{,}5 + 12 = 71{,}5 \]</div>
+
+      <div class="quiz-box" id="quiz11">
+        <h4>Cek Pemahaman Bagian 11</h4>
+        <p>Gunakan tabel dari Bagian 10:</p>
+        <table>
+          <tr><th>Kelas</th><th>\(f\)</th><th>fk</th></tr>
+          <tr><td>10 sampai 19</td><td>4</td><td>4</td></tr>
+          <tr><td>20 sampai 29</td><td>6</td><td>10</td></tr>
+          <tr><td>30 sampai 39</td><td>10</td><td>20</td></tr>
+          <tr><td>40 sampai 49</td><td>8</td><td>28</td></tr>
+          <tr><td>50 sampai 59</td><td>2</td><td>30</td></tr>
+        </table>
+        <p>\(n = 30\), \(p = 10\). Hitung Q3.</p>
+        <input type="number" id="q11ans" placeholder="Q3 = ..." step="any"/>
+        <div class="quiz-feedback" id="q11fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q11check">Periksa</button>
+          <button class="hint-btn" id="q11hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q11hintText">Letak Q3 = 3 x 30 / 4 = 22,5. fk pertama yang melewati 22,5 adalah 28 pada kelas 40 sampai 49. Tb = 39,5, F = 20, f = 8. Q3 = 39,5 + 10 x (22,5 dikurangi 20) / 8 = ?</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 12 ========== -->
+    <div class="bagian" id="bagian12">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num12">12</div>
+        <div class="bagian-title">Range dan IQR Data Kelompok</div>
+      </div>
+      <h3>Range Data Kelompok</h3>
+      <div class="formula">\[ \text{Range} = \text{tepi atas kelas terakhir} - \text{tepi bawah kelas pertama} \]</div>
+      <h4>Contoh</h4>
+      <p>Kelas pertama 0 sampai 19, kelas terakhir 80 sampai 99:</p>
+      <p>Range = 99,5 dikurangi (-0,5) = <strong>100</strong></p>
+
+      <h3>IQR Data Kelompok</h3>
+      <div class="formula">\[ \text{IQR} = Q_3 - Q_1 \]</div>
+      <p>Q1 = 34,5 dan Q3 = 71,5. IQR = 71,5 dikurangi 34,5 = <strong>37</strong></p>
+
+      <div class="info-box">Range data kelompok (100) jauh lebih besar dari IQR (37). IQR lebih stabil untuk menggambarkan sebaran data yang sebenarnya.</div>
+
+      <div class="quiz-box" id="quiz12">
+        <h4>Cek Pemahaman Bagian 12</h4>
+        <p>Dari Bagian 10 dan 11, kamu sudah menghitung:</p>
+        <p>Q1 = 25,33 dan Q3 = 42,63</p>
+        <p>Hitung IQR. Bulatkan dua angka di belakang koma.</p>
+        <input type="number" id="q12ans" placeholder="IQR = ..." step="any"/>
+        <div class="quiz-feedback" id="q12fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q12check">Periksa</button>
+          <button class="hint-btn" id="q12hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q12hintText">IQR = Q3 dikurangi Q1 = 42,63 dikurangi 25,33 = ?</div>
+      </div>
+    </div>
+
+<!-- POTONGAN 3 SELESAI -->
+<!-- Tempelkan Potongan 4 di bawah baris ini -->
+    <!-- ========== BAGIAN 13 ========== -->
+    <div class="bagian" id="bagian13">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num13">13</div>
+        <div class="bagian-title">Catatan Wajib</div>
+      </div>
+      <div class="warning-box"><strong>Penting:</strong> Bagian ini wajib disalin ke buku catatan fisik. Catatan ini digunakan sebagai salah satu komponen penilaian dan boleh dibuka saat mengerjakan post test di kelas.</div>
+
+      <h3>A. Kuartil Data Tunggal: Metode Membagi Data</h3>
+      <ol>
+        <li>Urutkan data dari terkecil ke terbesar</li>
+        <li>Tentukan Q2 (median)</li>
+        <li>Bagi data menjadi bagian bawah dan bagian atas (tidak termasuk Q2 jika n ganjil)</li>
+        <li>Q1 = median data bagian bawah</li>
+        <li>Q3 = median data bagian atas</li>
+      </ol>
+
+      <!-- VISUAL METODE MEMBAGI DATA -->
+      <div class="visual-membagi">
+        <p class="vm-label"><strong>Visual Metode Membagi Data (n ganjil, contoh n = 11)</strong></p>
+        <p class="vm-label">Data: 42, 48, 50, 55, 63, 67, 73, 78, 85, 88, 91</p>
+        <div class="vm-row">
+          <div class="vm-cell lower">42</div><div class="vm-cell lower">48</div><div class="vm-cell q1">50</div><div class="vm-cell lower">55</div><div class="vm-cell lower">63</div>
+          <div class="vm-cell median">67</div>
+          <div class="vm-cell upper">73</div><div class="vm-cell upper">78</div><div class="vm-cell q3">85</div><div class="vm-cell upper">88</div><div class="vm-cell upper">91</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:4px;">
+          <span style="flex:5;text-align:center;color:var(--primary);">Data bagian bawah</span>
+          <span style="flex:1;text-align:center;color:var(--accent);">Q2</span>
+          <span style="flex:5;text-align:center;color:var(--success);">Data bagian atas</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:2px;font-weight:700;">
+          <span style="flex:5;text-align:center;color:var(--purple);">Q1 = 50</span>
+          <span style="flex:1;text-align:center;color:var(--accent);">67</span>
+          <span style="flex:5;text-align:center;color:var(--orange);">Q3 = 85</span>
+        </div>
+      </div>
+
+      <div class="visual-membagi" style="border-color:var(--success);background:var(--soft-green);">
+        <p class="vm-label"><strong>Visual Metode Membagi Data (n genap, contoh n = 8)</strong></p>
+        <p class="vm-label">Data: 12, 15, 18, 22, 25, 28, 31, 35</p>
+        <div class="vm-row">
+          <div class="vm-cell lower">12</div><div class="vm-cell q1" style="font-size:10px;">15|18</div><div class="vm-cell lower">22</div>
+          <div style="width:2px;background:var(--accent);margin:0 2px;border-radius:2px;"></div>
+          <div class="vm-cell upper">25</div><div class="vm-cell q3" style="font-size:10px;">28|31</div><div class="vm-cell upper">35</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:4px;">
+          <span style="flex:1;text-align:center;color:var(--primary);">Data bagian bawah</span>
+          <span style="flex:1;text-align:center;color:var(--success);">Data bagian atas</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:2px;font-weight:700;">
+          <span style="flex:1;text-align:center;color:var(--purple);">Q1 = (15+18)/2 = 16,5</span>
+          <span style="flex:1;text-align:center;color:var(--orange);">Q3 = (28+31)/2 = 29,5</span>
+        </div>
+        <p class="vm-label" style="margin-top:4px;">Q2 = (22+25)/2 = 23,5</p>
+      </div>
+
+      <h3>B. Kuartil Data Tunggal: Metode Rumus Letak</h3>
+      <div class="formula">\[ Q_1 = \text{data ke-}\frac{n+1}{4} \qquad Q_2 = \text{data ke-}\frac{2(n+1)}{4} \qquad Q_3 = \text{data ke-}\frac{3(n+1)}{4} \]</div>
+      <p>Jika posisi desimal, lakukan interpolasi antara dua data terdekat.</p>
+
+      <h3>C. Kuartil Data Kelompok</h3>
+      <div class="formula">\[ Q_i = Tb + p \times \left(\frac{\frac{i \cdot n}{4} - F}{f}\right) \]</div>
+      <table>
+        <tr><th>Simbol</th><th>Arti</th></tr>
+        <tr><td>Tb</td><td>Tepi bawah kelas kuartil = batas bawah dikurangi 0,5</td></tr>
+        <tr><td>p</td><td>Panjang kelas</td></tr>
+        <tr><td>n</td><td>Jumlah seluruh frekuensi</td></tr>
+        <tr><td>F</td><td>fk sebelum kelas kuartil</td></tr>
+        <tr><td>f</td><td>Frekuensi kelas kuartil</td></tr>
+      </table>
+      <div class="note">Letak kuartil data kelompok: Q1 = n/4, Q2 = 2n/4, Q3 = 3n/4. Berbeda dengan data tunggal yang menggunakan (n+1)/4.</div>
+
+      <h3>D. Range dan IQR</h3>
+      <table>
+        <tr><th>Ukuran</th><th>Rumus</th></tr>
+        <tr><td>Range</td><td>\(x_{maks} - x_{min}\) (data tunggal) atau tepi atas terakhir dikurangi tepi bawah pertama (data kelompok)</td></tr>
+        <tr><td>IQR</td><td>\(Q_3 - Q_1\)</td></tr>
+      </table>
+
+      <h3>E. Peringatan Penting</h3>
+      <table>
+        <tr><th style="width:8%">No</th><th>Peringatan</th></tr>
+        <tr><td>1</td><td>Selalu urutkan data sebelum mencari kuartil</td></tr>
+        <tr><td>2</td><td>Pada Metode Membagi Data dengan n ganjil, Q2 tidak disertakan di data bagian bawah maupun atas</td></tr>
+        <tr><td>3</td><td>Letak kuartil data tunggal = (n+1)/4, letak kuartil data kelompok = n/4</td></tr>
+        <tr><td>4</td><td>F (huruf besar) = fk sebelum kelas kuartil, f (huruf kecil) = frekuensi kelas kuartil</td></tr>
+        <tr><td>5</td><td>Kelas kuartil ditentukan dari fk pertama yang mencapai atau melewati letak kuartil</td></tr>
+        <tr><td>6</td><td>IQR lebih stabil dari Range karena tidak terpengaruh nilai ekstrem</td></tr>
+      </table>
+
+      <div class="success-box" style="margin-top:16px;"><strong>Selamat!</strong> Kamu telah menyelesaikan seluruh 13 bagian materi. Pastikan kamu sudah menyalin catatan di atas ke buku catatan fisik.</div>
+      <div style="text-align:center;margin-top:16px;">
+        <button class="btn btn-success" id="btnSelesaiCatatan">Saya Sudah Menyalin Catatan</button>
+        <button class="btn btn-primary" id="btnCetakCatatan" style="margin-left:8px;">Cetak Catatan sebagai PDF</button>
+      </div>
+    </div>
+
+  </div><!-- end bagianContainer -->
+</div><!-- end app -->
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const API = 'https://script.google.com/macros/s/AKfycbwNkT0t7ZXdy5f-iIofi_Q7u42-nzU9wI73UkOtJiwht4eMCGowSx9Ykf0MVCKRgYGm/exec';
+  const TOTAL_BAGIAN = 13;
+
+  const FALLBACK_NAMES = [
+    'AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA',
+    'AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI',
+    'DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI',
+    'LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI',
+    'NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH',
+    'NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA',
+    'RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI',
+    'SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'
+  ];
+
+  /* ANSWERS: key = bagian, val = jawaban benar */
+  const ANSWERS = {
+    1: { type:'number', val:4 },
+    2: { type:'array', val:'10,15,18,22,25,30,35' },
+    3: { type:'multi_num', vals:[12, 20] },       // soal A=12, soal B=20
+    4: { type:'multi_num', vals:[17.5, 10, 17.5, 9] }, // A=17.5, B=10, C=17.5, D=9
+    5: { type:'multi_num', vals:[42.5, 26, 42.5, 27] }, // A=42.5, B=26, C=42.5, D=27
+    6: { type:'number', val:55 },
+    7: { type:'number', val:36 },
+    8: { type:'select_num', vals:[30, '40'] },     // letak=30, kelas batas bawah=40
+    9: { type:'multi_num', vals:[39.5, 25, 10] },  // Tb, F, f
+    10: { type:'number', val:25.33, tol:0.02 },
+    11: { type:'number', val:42.63, tol:0.02 },
+    12: { type:'number', val:17.3, tol:0.02 }
+  };
+
+  let currentUser = '';
+  let allNames = [];
+  let selectedName = '';
+  let progress = {};
+  let attempts = {};
+  let sheetsOK = false;
+
+  for (let i = 1; i <= TOTAL_BAGIAN; i++) { progress[i] = 0; attempts[i] = 0; }
+
+  const loginSection = document.getElementById('loginSection');
+  const app = document.getElementById('app');
+  const searchName = document.getElementById('searchName');
+  const nameList = document.getElementById('nameList');
+  const btnLogin = document.getElementById('btnLogin');
+  const loginMsg = document.getElementById('loginMsg');
+  const userName = document.getElementById('userName');
+  const userStatus = document.getElementById('userStatus');
+  const progressText = document.getElementById('progressText');
+  const progressFill = document.getElementById('progressFill');
+  const navDots = document.getElementById('navDots');
+
+  function callAPI(params, callback) {
+    const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+    params.callback = cbName;
+    const url = API + '?' + Object.keys(params).map(k => k + '=' + encodeURIComponent(params[k])).join('&');
+    const script = document.createElement('script');
+    window[cbName] = function(data) {
+      delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+      if (callback) callback(data);
+    };
+    script.src = url;
+    script.onerror = function() {
+      delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+      if (callback) callback(null);
+    };
+    document.head.appendChild(script);
+  }
+
+  function loadNames() {
+    callAPI({ action: 'getNames' }, function(data) {
+      if (data && data.ok && data.names && data.names.length > 0) {
+        allNames = data.names;
+        sheetsOK = true;
+      } else {
+        allNames = FALLBACK_NAMES;
+      }
+      renderNames('');
+    });
+    setTimeout(() => { if (!allNames.length) { allNames = FALLBACK_NAMES; renderNames(''); } }, 5000);
+  }
+
+  function renderNames(filter) {
+    const f = filter.trim().toUpperCase();
+    const filtered = f ? allNames.filter(n => n.toUpperCase().includes(f)) : allNames;
+    nameList.innerHTML = '';
+    filtered.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'name-item' + (name === selectedName ? ' selected' : '');
+      div.textContent = name;
+      div.addEventListener('click', () => { selectedName = name; searchName.value = name; btnLogin.disabled = false; renderNames(name); });
+      nameList.appendChild(div);
+    });
+  }
+
+  searchName.addEventListener('input', () => { selectedName = ''; btnLogin.disabled = true; renderNames(searchName.value); });
+
+  btnLogin.addEventListener('click', () => {
+    if (!selectedName) return;
+    currentUser = selectedName;
+    btnLogin.disabled = true;
+    loginMsg.textContent = 'Memuat data...';
+    callAPI({ action: 'login', nama: currentUser, sumber: 'MATERI', device: 'HP' }, function() { loadProgress(); });
+    setTimeout(() => { if (loginSection.style.display !== 'none') loadProgress(); }, 4000);
+  });
+
+  function loadProgress() {
+    callAPI({ action: 'getProgress', nama: currentUser }, function(data) {
+      if (data && data.ok && data.materi) {
+        for (let i = 1; i <= TOTAL_BAGIAN; i++) {
+          progress[i] = Number(data.materi['BAGIAN_' + i]) || 0;
+          attempts[i] = Number(data.materi['PERCOBAAN_' + i]) || 0;
+        }
+      }
+      startApp();
+    });
+    setTimeout(() => { if (loginSection.style.display !== 'none') startApp(); }, 4000);
+  }
+
+  function startApp() {
+    loginSection.style.display = 'none';
+    app.style.display = 'block';
+    userName.textContent = currentUser;
+    updateUI();
+    showCurrentBagian();
+  }
+
+  function countDone() { let c = 0; for (let i = 1; i <= TOTAL_BAGIAN; i++) if (progress[i]) c++; return c; }
+
+  function updateUI() {
+    const done = countDone();
+    progressText.textContent = done + ' / ' + TOTAL_BAGIAN;
+    progressFill.style.width = (done / TOTAL_BAGIAN * 100) + '%';
+    userStatus.textContent = done === TOTAL_BAGIAN ? 'Semua bagian selesai' : 'Sedang belajar';
+    navDots.innerHTML = '';
+    for (let i = 1; i <= TOTAL_BAGIAN; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'nav-dot';
+      if (progress[i]) dot.classList.add('done');
+      const canAccess = i === 1 || progress[i - 1] || progress[i];
+      if (!canAccess) dot.classList.add('locked');
+      dot.textContent = i;
+      dot.addEventListener('click', () => { if (canAccess) scrollToBagian(i); });
+      navDots.appendChild(dot);
+    }
+    for (let i = 1; i <= TOTAL_BAGIAN; i++) {
+      const num = document.getElementById('num' + i);
+      if (num) { num.className = 'bagian-num'; if (progress[i]) num.classList.add('done'); }
+    }
+  }
+
+  function showCurrentBagian() {
+    for (let i = 1; i <= TOTAL_BAGIAN; i++) {
+      const el = document.getElementById('bagian' + i);
+      if (el) {
+        const canAccess = i === 1 || progress[i - 1] || progress[i];
+        el.classList.toggle('active', canAccess);
+        el.classList.toggle('locked', !canAccess);
+      }
+    }
+    let scrollTo = 1;
+    for (let i = 1; i <= TOTAL_BAGIAN; i++) { if (!progress[i]) { scrollTo = i; break; } if (i === TOTAL_BAGIAN) scrollTo = TOTAL_BAGIAN; }
+    setTimeout(() => scrollToBagian(scrollTo), 300);
+  }
+
+  function scrollToBagian(num) {
+    const el = document.getElementById('bagian' + num);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    navDots.querySelectorAll('.nav-dot').forEach((dot, idx) => { dot.classList.toggle('current', idx + 1 === num); });
+  }
+
+  function getInputs(num) {
+    const ans = ANSWERS[num];
+    const inputs = [];
+    if (ans.type === 'number') {
+      inputs.push(document.getElementById('q' + num + 'ans'));
+    } else if (ans.type === 'array') {
+      inputs.push(document.getElementById('q' + num + 'ans'));
+    } else if (ans.type === 'multi_num') {
+      const suffixes = ['a','b','c','d','e','f'];
+      for (let j = 0; j < ans.vals.length; j++) {
+        const el = document.getElementById('q' + num + suffixes[j] + '_ans');
+        if (el) inputs.push(el);
+      }
+      if (!inputs.length) {
+        for (let j = 1; j <= ans.vals.length; j++) {
+          const el = document.getElementById('q' + num + 'ans' + j);
+          if (el) inputs.push(el);
+        }
+      }
+    } else if (ans.type === 'select_num') {
+      inputs.push(document.getElementById('q' + num + 'ans1'));
+      inputs.push(document.getElementById('q' + num + 'ans2'));
+    }
+    return inputs;
+  }
+
+  function checkAnswer(num) {
+    const ans = ANSWERS[num];
+    let correct = true;
+    let userVal = '';
+    const tol = ans.tol || 0.01;
+
+    if (ans.type === 'number') {
+      const input = document.getElementById('q' + num + 'ans');
+      const uv = parseFloat(input.value.trim());
+      const ok = !isNaN(uv) && Math.abs(uv - ans.val) <= tol;
+      input.className = ok ? 'correct' : 'wrong';
+      correct = ok;
+      userVal = input.value.trim();
+    }
+    else if (ans.type === 'array') {
+      const input = document.getElementById('q' + num + 'ans');
+      const userArr = input.value.trim().replace(/\s/g,'').split(',').map(Number);
+      const correctArr = ans.val.split(',').map(Number);
+      const ok = userArr.length === correctArr.length && userArr.every((v,i) => v === correctArr[i]);
+      input.className = ok ? 'correct' : 'wrong';
+      correct = ok;
+      userVal = input.value.trim();
+    }
+    else if (ans.type === 'multi_num') {
+      const inputs = getInputs(num);
+      const vals = ans.vals;
+      inputs.forEach((inp, idx) => {
+        if (!inp) return;
+        const uv = parseFloat(inp.value.trim());
+        const ok = !isNaN(uv) && Math.abs(uv - vals[idx]) <= tol;
+        inp.className = ok ? 'correct' : 'wrong';
+        if (!ok) correct = false;
+      });
+      userVal = inputs.map(inp => inp ? inp.value.trim() : '').join('|');
+    }
+    else if (ans.type === 'select_num') {
+      const inp1 = document.getElementById('q' + num + 'ans1');
+      const inp2 = document.getElementById('q' + num + 'ans2');
+      const uv1 = parseFloat(inp1.value.trim());
+      const ok1 = !isNaN(uv1) && Math.abs(uv1 - ans.vals[0]) <= tol;
+      inp1.className = ok1 ? 'correct' : 'wrong';
+      const uv2 = String(inp2.value);
+      const ok2 = uv2 === String(ans.vals[1]);
+      inp2.className = ok2 ? 'correct' : 'wrong';
+      correct = ok1 && ok2;
+      userVal = inp1.value.trim() + '|' + inp2.value;
+    }
+
+    const fb = document.getElementById('q' + num + 'fb');
+    fb.classList.add('show');
+    fb.classList.remove('correct', 'wrong');
+    attempts[num] = (attempts[num] || 0) + 1;
+
+    if (correct) {
+      fb.classList.add('correct');
+      fb.textContent = 'Benar! Kamu bisa lanjut ke bagian berikutnya.';
+      progress[num] = 1;
+      if (sheetsOK) {
+        callAPI({ action:'quiz', nama:currentUser, bagian:num, status:'benar', petunjuk:'tidak', detail:'jawaban: '+userVal }, function(){});
+      }
+      updateUI();
+      if (num < TOTAL_BAGIAN) {
+        const nextEl = document.getElementById('bagian' + (num + 1));
+        if (nextEl) { nextEl.classList.add('active'); nextEl.classList.remove('locked'); }
+        setTimeout(() => scrollToBagian(num + 1), 500);
+      }
+    } else {
+      fb.classList.add('wrong');
+      fb.textContent = 'Belum tepat. Coba periksa kembali. Percobaan ke-' + attempts[num] + '.';
+      if (sheetsOK) {
+        callAPI({ action:'quiz', nama:currentUser, bagian:num, status:'salah', petunjuk:'tidak', detail:'jawaban: '+userVal+' percobaan: '+attempts[num] }, function(){});
+      }
+    }
+  }
+
+  function showHint(num) {
+    const ht = document.getElementById('q' + num + 'hintText');
+    ht.classList.toggle('show');
+    if (ht.classList.contains('show') && sheetsOK) {
+      callAPI({ action:'quiz', nama:currentUser, bagian:num, status:'petunjuk', petunjuk:'ya', detail:'membuka petunjuk bagian '+num }, function(){});
+    }
+  }
+
+  /* BIND QUIZ EVENTS */
+  for (let i = 1; i <= 12; i++) {
+    const checkBtn = document.getElementById('q' + i + 'check');
+    const hintBtn = document.getElementById('q' + i + 'hint');
+    if (checkBtn) checkBtn.addEventListener('click', () => checkAnswer(i));
+    if (hintBtn) hintBtn.addEventListener('click', () => showHint(i));
+  }
+
+  /* BAGIAN 13 BUTTONS */
+  const btnSelesaiCatatan = document.getElementById('btnSelesaiCatatan');
+  const btnCetakCatatan = document.getElementById('btnCetakCatatan');
+
+  if (btnSelesaiCatatan) {
+    btnSelesaiCatatan.addEventListener('click', () => {
+      progress[13] = 1;
+      updateUI();
+      if (sheetsOK) {
+        callAPI({ action:'saveProgress', nama:currentUser, bagian:13, selesaiMateri: countDone() >= TOTAL_BAGIAN ? 1 : 0, catatanSelesai:1 }, function(){});
+        callAPI({ action:'selesai', nama:currentUser, komponen:'MATERI', status:'SELESAI', detail:'13 bagian dan catatan selesai' }, function(){});
+      }
+      btnSelesaiCatatan.disabled = true;
+      btnSelesaiCatatan.textContent = 'Catatan Sudah Dicatat';
+      btnSelesaiCatatan.style.background = '#94a3b8';
+      if (countDone() >= TOTAL_BAGIAN) {
+        const msg = document.createElement('div');
+        msg.className = 'success-box';
+        msg.innerHTML = '<strong>Seluruh materi selesai!</strong> Langkah selanjutnya adalah mengerjakan <a href="Assessment8.html" style="color:#166534;font-weight:700;">Pre Test</a> untuk menentukan level LKPD kamu.';
+        btnSelesaiCatatan.parentNode.appendChild(msg);
+      }
+    });
+  }
+
+  if (btnCetakCatatan) {
+    btnCetakCatatan.addEventListener('click', () => {
+      const bagian13 = document.getElementById('bagian13');
+      if (!bagian13) return;
+      const printWin = window.open('', '_blank');
+      printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"/>');
+      printWin.document.write('<title>Catatan Wajib Pertemuan 8</title>');
+      printWin.document.write('<script>window.MathJax={tex:{inlineMath:[[\'\\\\(\',\'\\\\)\'],[\'$\',\'$\']],displayMath:[[\'\\\\[\',\'\\\\]\']]},svg:{fontCache:\'global\'}};<\/script>');
+      printWin.document.write('<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"><\/script>');
+      printWin.document.write('<style>');
+      printWin.document.write('body{font-family:Segoe UI,Arial,sans-serif;padding:20px;font-size:13px;line-height:1.6;color:#1e293b;}');
+      printWin.document.write('h3{color:#1d4ed8;margin:14px 0 6px;font-size:14px;border-bottom:1px solid #cbd5e1;padding-bottom:3px;}');
+      printWin.document.write('h4{color:#ea580c;margin:10px 0 4px;font-size:13px;}');
+      printWin.document.write('table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px;}');
+      printWin.document.write('th,td{border:1px solid #cbd5e1;padding:5px 8px;vertical-align:top;}');
+      printWin.document.write('th{background:#dbeafe;color:#1e3a8a;font-weight:700;}');
+      printWin.document.write('.formula{background:#1e3a8a;color:#fff;padding:10px;border-radius:6px;text-align:center;margin:8px 0;}');
+      printWin.document.write('.note{background:#fffbeb;border-left:4px solid #f59e0b;padding:8px;border-radius:4px;margin:8px 0;font-size:12px;}');
+      printWin.document.write('ol{padding-left:20px;}li{margin:3px 0;}');
+      printWin.document.write('.visual-membagi{border:2px solid #1d4ed8;border-radius:10px;padding:16px;margin:12px 0;}');
+      printWin.document.write('.vm-row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;justify-content:center;}');
+      printWin.document.write('.vm-cell{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid #cbd5e1;background:#fff;}');
+      printWin.document.write('.vm-cell.lower{background:#dbeafe;border-color:#1d4ed8;}.vm-cell.upper{background:#dcfce7;border-color:#16a34a;}');
+      printWin.document.write('.vm-cell.median{background:#fef3c7;border-color:#f59e0b;}.vm-cell.q1{background:#ede9fe;border-color:#7c3aed;}.vm-cell.q3{background:#ffedd5;border-color:#ea580c;}');
+      printWin.document.write('.vm-label{text-align:center;font-size:11px;color:#64748b;margin:2px 0;}');
+      printWin.document.write('.warning-box,.success-box,button{display:none;}');
+      printWin.document.write('</style></head><body>');
+      printWin.document.write('<h2 style="text-align:center;color:#1e3a8a;">Catatan Wajib Pertemuan 8</h2>');
+      printWin.document.write('<p style="text-align:center;color:#64748b;margin-bottom:16px;">Kuartil dan Jangkauan Data Tunggal dan Data Kelompok</p>');
+      printWin.document.write(bagian13.innerHTML);
+      printWin.document.write('</body></html>');
+      printWin.document.close();
+      setTimeout(() => { printWin.print(); }, 1500);
+    });
+  }
+
+  /* ENTER KEY */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+      if (e.target.id === 'searchName' && selectedName) { btnLogin.click(); return; }
+      const match = e.target.id.match(/q(\d+)/);
+      if (match) {
+        const num = parseInt(match[1]);
+        const checkBtn = document.getElementById('q' + num + 'check');
+        if (checkBtn) checkBtn.click();
+      }
+    }
+  });
+
+  loadNames();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LKPD Pertemuan 8 | Kuartil dan Jangkauan</title>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}
+.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+.login-box{background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:400px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:12px;font-size:18px;}
+.login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:8px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box .name-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;text-align:left;}
+.login-box .name-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;}
+.login-box .name-item:hover{background:var(--soft-blue);}
+.login-box .name-item.selected{background:#dbeafe;font-weight:700;color:var(--primary);}
+.login-box button{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.login-box button:disabled{opacity:.5;cursor:not-allowed;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--muted);}
+.card{background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:500px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.card h2{color:var(--primary-dark);margin-bottom:12px;font-size:20px;}
+.level-badge{display:inline-block;padding:10px 28px;border-radius:999px;font-size:18px;font-weight:700;margin:16px 0;}
+.level-1{background:#fef2f2;color:#991b1b;border:2px solid #fca5a5;}
+.level-2{background:#fef3c7;color:#92400e;border:2px solid #fcd34d;}
+.level-3{background:#dcfce7;color:#166534;border:2px solid #86efac;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:12px;border-radius:6px;margin:12px 0;font-size:13px;text-align:left;}
+.info-box{background:var(--soft-blue);border-left:4px solid var(--primary);padding:12px;border-radius:6px;margin:12px 0;font-size:13px;text-align:left;}
+.btn{border:none;padding:12px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin:6px;text-decoration:none;display:inline-block;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}
+.spinner{display:inline-block;width:20px;height:20px;border:3px solid #e2e8f0;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;margin:20px auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="Pertemuan8.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>LKPD Pertemuan 8</h1>
+  <p>Kuartil dan Jangkauan Data Tunggal dan Data Kelompok</p>
+</div>
+
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>Masuk ke LKPD</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ketik nama lalu pilih dari daftar</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button id="btnLogin" disabled>Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<div class="container" id="resultSection" style="display:none;"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const API = 'https://script.google.com/macros/s/AKfycbwNkT0t7ZXdy5f-iIofi_Q7u42-nzU9wI73UkOtJiwht4eMCGowSx9Ykf0MVCKRgYGm/exec';
+  const FALLBACK_NAMES = [
+    'AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA',
+    'AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI',
+    'DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI',
+    'LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI',
+    'NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH',
+    'NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA',
+    'RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI',
+    'SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'
+  ];
+
+  let allNames = [], selectedName = '', sheetsOK = false;
+  const loginSection = document.getElementById('loginSection');
+  const resultSection = document.getElementById('resultSection');
+  const searchName = document.getElementById('searchName');
+  const nameList = document.getElementById('nameList');
+  const btnLogin = document.getElementById('btnLogin');
+  const loginMsg = document.getElementById('loginMsg');
+
+  function callAPI(p, cb) {
+    const c = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+    p.callback = c;
+    const u = API + '?' + Object.keys(p).map(k => k + '=' + encodeURIComponent(p[k])).join('&');
+    const sc = document.createElement('script');
+    window[c] = function(d) { delete window[c]; if (sc.parentNode) sc.parentNode.removeChild(sc); if (cb) cb(d); };
+    sc.src = u; sc.onerror = function() { delete window[c]; if (sc.parentNode) sc.parentNode.removeChild(sc); if (cb) cb(null); };
+    document.head.appendChild(sc);
+  }
+
+  function loadNames() {
+    callAPI({ action: 'getNames' }, function(d) {
+      if (d && d.ok && d.names && d.names.length) { allNames = d.names; sheetsOK = true; }
+      else { allNames = FALLBACK_NAMES; }
+      renderNames('');
+    });
+    setTimeout(() => { if (!allNames.length) { allNames = FALLBACK_NAMES; renderNames(''); } }, 5000);
+  }
+
+  function renderNames(f) {
+    const fl = f.trim().toUpperCase();
+    const list = fl ? allNames.filter(n => n.toUpperCase().includes(fl)) : allNames;
+    nameList.innerHTML = '';
+    list.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'name-item' + (name === selectedName ? ' selected' : '');
+      div.textContent = name;
+      div.addEventListener('click', () => { selectedName = name; searchName.value = name; btnLogin.disabled = false; renderNames(name); });
+      nameList.appendChild(div);
+    });
+  }
+
+  searchName.addEventListener('input', () => { selectedName = ''; btnLogin.disabled = true; renderNames(searchName.value); });
+
+  btnLogin.addEventListener('click', () => {
+    if (!selectedName) return;
+    btnLogin.disabled = true;
+    loginMsg.textContent = 'Memeriksa data pre test...';
+    loginSection.style.display = 'none';
+    resultSection.style.display = 'block';
+    resultSection.innerHTML = '<div style="text-align:center;padding:40px;"><div class="spinner"></div><p style="margin-top:12px;color:var(--muted);">Memuat data...</p></div>';
+
+    callAPI({ action: 'getPretest', nama: selectedName }, function(d) {
+      if (d && d.ok && d.data) {
+        const skor = Number(d.data.SKOR) || 0;
+        const level = d.data.LEVEL_LKPD || 'LEVEL 1';
+        showLevelResult(selectedName, skor, level);
+      } else {
+        showNoPretestResult(selectedName);
+      }
+    });
+
+    setTimeout(() => {
+      if (resultSection.querySelector('.spinner')) {
+        showNoPretestResult(selectedName);
+      }
+    }, 6000);
+  });
+
+  function getLevelNum(level) {
+    if (String(level).includes('1')) return 1;
+    if (String(level).includes('2')) return 2;
+    if (String(level).includes('3')) return 3;
+    return 1;
+  }
+
+  function getLevelCSS(num) {
+    if (num === 1) return 'level-1';
+    if (num === 2) return 'level-2';
+    return 'level-3';
+  }
+
+  function getLevelDesc(num) {
+    if (num === 1) return 'Panduan langkah demi langkah yang sangat lengkap dengan rumus di setiap langkah.';
+    if (num === 2) return 'Panduan sedang dengan rumus tersedia. Beberapa langkah kamu hitung sendiri.';
+    return 'Panduan singkat tanpa rumus. Kamu mengerjakan secara mandiri dengan penekanan pada analisis.';
+  }
+
+  function showLevelResult(nama, skor, level) {
+    const num = getLevelNum(level);
+    const file = 'LKPD8L' + num + '.html';
+    const url = file + '?nama=' + encodeURIComponent(nama) + '&level=' + num + '&skor=' + skor;
+
+    let h = '<div class="card">';
+    h += '<h2>LKPD Siap Dikerjakan</h2>';
+    h += '<p style="font-size:13px;color:var(--muted);margin-bottom:8px;">Nama: <strong>' + nama + '</strong></p>';
+    h += '<p style="font-size:13px;color:var(--muted);">Skor Pre Test: <strong>' + skor + '</strong></p>';
+    h += '<div class="level-badge ' + getLevelCSS(num) + '">Level ' + num + '</div>';
+    h += '<p style="font-size:13px;color:var(--muted);margin-bottom:16px;">' + getLevelDesc(num) + '</p>';
+    h += '<div class="info-box"><strong>Isi LKPD:</strong><br>';
+    h += '• Latihan Terbimbing: 1 soal data tunggal + 1 soal data kelompok<br>';
+    h += '• Latihan Mandiri: 1 soal data tunggal + 1 soal data kelompok<br>';
+    h += '• Setiap langkah dicek satu per satu</div>';
+    h += '<a href="' + url + '" class="btn btn-success">Mulai Mengerjakan LKPD Level ' + num + '</a>';
+    h += '</div>';
+    resultSection.innerHTML = h;
+  }
+
+  function showNoPretestResult(nama) {
+    let h = '<div class="card">';
+    h += '<h2>Pre Test Belum Dikerjakan</h2>';
+    h += '<p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Nama: <strong>' + nama + '</strong></p>';
+    h += '<div class="warning-box"><strong>Perhatian:</strong> Kamu harus mengerjakan Pre Test terlebih dahulu sebelum membuka LKPD. Hasil Pre Test digunakan untuk menentukan level LKPD kamu.</div>';
+    h += '<a href="Assessment8.html" class="btn btn-orange">Kerjakan Pre Test</a>';
+    h += '<a href="Pertemuan8.html" class="btn btn-primary" style="margin-left:8px;">Kembali</a>';
+    h += '</div>';
+    resultSection.innerHTML = h;
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.id === 'searchName' && selectedName) btnLogin.click();
+  });
+
+  loadNames();
+});
+</script>
+</body>
+</html>

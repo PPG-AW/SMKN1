@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pre Test Pertemuan 8 | Kuartil dan Jangkauan</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-light:#f97316;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;--teal:#0f766e;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}
+.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+
+/* LOGIN */
+.login-box{background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:400px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:12px;font-size:18px;}
+.login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:8px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box .name-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;text-align:left;}
+.login-box .name-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;}
+.login-box .name-item:hover{background:var(--soft-blue);}
+.login-box .name-item.selected{background:#dbeafe;font-weight:700;color:var(--primary);}
+.login-box button{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.login-box button:disabled{opacity:.5;cursor:not-allowed;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--muted);}
+
+/* UMUM */
+.user-info{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.user-info .name{font-weight:700;color:var(--primary-dark);}
+.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid #e2e8f0;}
+.card h3{color:var(--primary-dark);font-size:16px;margin-bottom:10px;}
+
+/* SOAL */
+.soal-box{background:#fff;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);border-left:5px solid var(--primary);}
+.soal-box.answered{border-left-color:var(--success);}
+.soal-num{display:inline-block;background:var(--primary);color:#fff;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:8px;}
+.soal-skor{display:inline-block;background:var(--soft-yellow);color:#92400e;border:1px solid var(--accent);padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-left:6px;}
+.soal-kktp{display:inline-block;background:var(--soft-purple);color:var(--purple);border:1px solid #c4b5fd;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-left:4px;}
+.soal-box p{margin:0 0 8px;font-size:14px;}
+.data-display{background:#f8fafc;border:2px solid var(--border);border-radius:8px;padding:10px 14px;font-weight:700;color:var(--primary-dark);font-size:14px;margin:8px 0;text-align:center;line-height:1.8;}
+
+/* TABEL */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--border);padding:6px 8px;vertical-align:top;}
+th{background:#dbeafe;color:#1e3a8a;font-weight:700;text-align:left;}
+tr:nth-child(even) td{background:#f8fafc;}
+.formula{background:var(--primary-dark);color:#fff;padding:10px;border-radius:8px;text-align:center;font-size:13px;margin:8px 0;overflow-x:auto;}
+
+/* BOXES */
+.note{background:var(--soft-yellow);border-left:4px solid var(--accent);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.info-box{background:var(--soft-blue);border-left:4px solid var(--primary);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+
+/* INPUT */
+.input-group{margin:8px 0;}
+.input-group label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:4px;}
+.input-group input{width:100%;padding:10px 12px;border:2px solid var(--border);border-radius:8px;font-size:15px;}
+.input-group input:focus{outline:none;border-color:var(--primary);}
+.input-group input.filled{border-color:var(--success);background:var(--soft-green);}
+.input-row-inline{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;}
+.input-row-inline .input-group{flex:1;min-width:100px;}
+
+/* PROGRESS */
+.progress-bar-wrap{background:#e2e8f0;border-radius:999px;height:8px;margin:10px 0;}
+.progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--success));transition:width .4s;}
+
+/* BUTTONS */
+.submit-area{text-align:center;padding:20px 0;}
+.btn{border:none;padding:12px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin:4px;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* RESULT */
+.result-card{background:#fff;border-radius:16px;padding:28px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.1);margin-top:16px;}
+.result-card .skor-besar{font-size:64px;font-weight:800;line-height:1;}
+.result-card .skor-label{font-size:14px;color:var(--muted);margin-top:4px;}
+.result-card .level-badge{display:inline-block;padding:8px 24px;border-radius:999px;font-size:16px;font-weight:700;margin:16px 0;}
+.level-1{background:#fef2f2;color:#991b1b;border:2px solid #fca5a5;}
+.level-2{background:#fef3c7;color:#92400e;border:2px solid #fcd34d;}
+.level-3{background:#dcfce7;color:#166534;border:2px solid #86efac;}
+.detail-skor{text-align:left;margin-top:16px;}
+.detail-skor table{font-size:12px;}
+
+#app{display:none;}
+#hasilArea{display:none;}
+
+@media(max-width:480px){
+  .container{padding:8px;}
+  .soal-box{padding:14px;}
+  .input-row-inline{flex-direction:column;}
+  .input-row-inline .input-group{min-width:100%;}
+  table{font-size:11px;}
+  th,td{padding:4px 6px;}
+  .result-card{padding:20px;}
+  .result-card .skor-besar{font-size:48px;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="Pertemuan8.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>Pre Test Pertemuan 8</h1>
+  <p>Kuartil dan Jangkauan Data Tunggal dan Data Kelompok</p>
+</div>
+
+<!-- ========== LOGIN ========== -->
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>Masuk ke Pre Test</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ketik nama lalu pilih dari daftar</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button id="btnLogin" disabled>Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- ========== APP ========== -->
+<div class="container" id="app">
+
+  <div class="user-info">
+    <span class="name" id="userName"></span>
+    <span id="userStatus" style="color:var(--muted);font-size:12px;"></span>
+  </div>
+
+  <!-- INSTRUKSI -->
+  <div class="card" id="cardInstruksi">
+    <h3>Petunjuk Pre Test</h3>
+    <ul style="padding-left:18px;font-size:13px;">
+      <li>Pre test terdiri dari <strong>10 soal</strong> dengan total skor <strong>100</strong>.</li>
+      <li>Kerjakan semua soal secara <strong>jujur dan mandiri</strong>.</li>
+      <li>Pre test <strong>hanya bisa dikerjakan satu kali</strong>.</li>
+      <li>Hasilnya digunakan untuk menentukan <strong>level LKPD</strong> kamu di kelas.</li>
+      <li>Jawaban boleh berupa bilangan desimal. Gunakan <strong>titik</strong> sebagai pemisah desimal.</li>
+    </ul>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="card" id="cardProgress" style="padding:14px;">
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;">
+      <span>Progres Pengisian</span>
+      <span id="progressText">0 / 10 soal terisi</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- ========== SOAL 1: Q2 ========== -->
+  <div class="soal-box" id="soalBox1">
+    <span class="soal-num">Soal 1</span>
+    <span class="soal-skor">8 poin</span>
+    <span class="soal-kktp">KKTP 1 dan 2</span>
+    <p style="margin-top:8px;">Tentukan <strong>Q2 (median)</strong> dari data berikut.</p>
+    <div class="data-display">
+      Data pengunjung harian toko selama 11 hari (sudah diurutkan):<br>
+      10, 15, 20, 25, 32, <strong>40</strong>, 48, 55, 65, 78, 90 &nbsp;&nbsp; \(n = 11\)
+    </div>
+    <div class="input-group">
+      <label>Q2 =</label>
+      <input type="number" id="s1" placeholder="Ketik jawaban..." step="any"/>
+    </div>
+  </div>
+
+  <!-- ========== SOAL 2: Q1 MEMBAGI DATA ========== -->
+  <div class="soal-box" id="soalBox2">
+    <span class="soal-num">Soal 2</span>
+    <span class="soal-skor">10 poin</span>
+    <span class="soal-kktp">KKTP 2</span>
+    <p style="margin-top:8px;">Tentukan <strong>Q1</strong> dari data berikut menggunakan <strong>Metode Membagi Data</strong>.</p>
+    <div class="data-display">
+      10, 15, 20, 25, 32, <strong>40</strong>, 48, 55, 65, 78, 90 &nbsp;&nbsp; \(n = 11\)
+    </div>
+    <div class="input-group">
+      <label>Q1 (Membagi Data) =</label>
+      <input type="number" id="s2" placeholder="Ketik jawaban..." step="any"/>
+    </div>
+  </div>
+
+  <!-- ========== SOAL 3: Q3 MEMBAGI DATA ========== -->
+  <div class="soal-box" id="soalBox3">
+    <span class="soal-num">Soal 3</span>
+    <span class="soal-skor">10 poin</span>
+    <span class="soal-kktp">KKTP 2</span>
+    <p style="margin-top:8px;">Tentukan <strong>Q3</strong> dari data berikut menggunakan <strong>Metode Membagi Data</strong>.</p>
+    <div class="data-display">
+      10, 15, 20, 25, 32, <strong>40</strong>, 48, 55, 65, 78, 90 &nbsp;&nbsp; \(n = 11\)
+    </div>
+    <div class="input-group">
+      <label>Q3 (Membagi Data) =</label>
+      <input type="number" id="s3" placeholder="Ketik jawaban..." step="any"/>
+    </div>
+  </div>
+
+  <!-- ========== SOAL 4: Q1 RUMUS LETAK ========== -->
+  <div class="soal-box" id="soalBox4">
+    <span class="soal-num">Soal 4</span>
+    <span class="soal-skor">10 poin</span>
+    <span class="soal-kktp">KKTP 2</span>
+    <p style="margin-top:8px;">Tentukan <strong>Q1</strong> dari data berikut menggunakan <strong>Metode Rumus Letak</strong>.</p>
+    <div class="data-display">
+      10, 15, 20, 25, 32, <strong>40</strong>, 48, 55, 65, 78, 90 &nbsp;&nbsp; \(n = 11\)
+    </div>
+    <div class="formula">\[ \text{Letak } Q_1 = \text{data ke-}\frac{n+1}{4} \]</div>
+    <div class="input-group">
+      <label>Q1 (Rumus Letak) =</label>
+      <input type="number" id="s4" placeholder="Ketik jawaban..." step="any"/>
+    </div>
+  </div>
+
+  <!-- ========== SOAL 5: Q3 RUMUS LETAK ========== -->
+  <div class="soal-box" id="soalBox5">
+    <span class="soal-num">Soal 5</span>
+    <span class="soal-skor">10 poin</span>
+    <span class="soal-kktp">KKTP 2</span>
+    <p style="margin-top:8px;">Tentukan <strong>Q3</strong> dari data berikut menggunakan <strong>Metode Rumus Letak</strong>.</p>
+    <div class="data-display">
+      10, 15, 20, 25, 32, <strong>40</strong>, 48, 55, 65, 78, 90 &nbsp;&nbsp; \(n = 11\)
+    </div>
+    <div class="formula">\[ \text{Letak } Q_3 = \text{data ke-}\frac{3(n+1)}{4} \]</div>
+    <div class="input-group">
+      <label>Q3 (Rumus Letak) =</label>
+      <input type="number" id="s5" placeholder="Ketik jawaban..." step="any"/>
+    </div>
+  </div>
+
+  <!-- ========== SOAL 6: RANGE ========== -->
+  <div class="soal-box" id="soalBox6">
+    <span class="soal-num">Soal 6</span>
+    <span class="soal-skor">8 poin</span>
+    <span class="soal-kktp">KKTP 3</span>
+    <p style="margin-top:8px;">Hitung <strong>Range</strong> dari data berikut.</p>
+    <div class="data-display">
+      10, 15, 20, 25, 32, 40, 48, 55, 65, 78, 90 &nbsp;&nbsp; \(n = 11\)
+    </div>
+    <div class="input-group">
+      <label>Range =</label>
+      <input type="number" id="s6" placeholder="Ketik jawaban..." step="any"/>
+    </div>
+  </div>
+
+  <!-- ========== SOAL 7: IQR ========== -->
+  <div class="soal-box" id="soalBox7">
+    <span class="soal-num">Soal 7</span>
+    <span class="soal-skor">9 poin</span>
+    <span class="soal-kktp">KKTP 3</span>
+    <p style="margin-top:8px;">Hitung <strong>IQR</strong> dari data berikut. Gunakan hasil Q1 dan Q3 dari Metode Membagi Data.</p>
+    <div class="data-display">
+      10, 15, 20, 25, 32, 40, 48, 55, 65, 78, 90 &nbsp;&nbsp; \(n = 11\)<br>
+      Q1 = 20 &nbsp;&nbsp; Q3 = 65
+    </div>
+    <div class="input-group">
+      <label>IQR =</label>
+      <input type="number" id="s7" placeholder="Ketik jawaban..." step="any"/>
+    </div>
+  </div>
+
+  <!-- ========== SOAL 8: LETAK DAN KELAS Q1 ========== -->
+  <div class="soal-box" id="soalBox8">
+    <span class="soal-num">Soal 8</span>
+    <span class="soal-skor">10 poin</span>
+    <span class="soal-kktp">KKTP 4</span>
+    <p style="margin-top:8px;">Tentukan <strong>letak Q1</strong> dan <strong>kelas Q1</strong> dari data kelompok berikut.</p>
+    <p style="font-size:13px;color:var(--muted);">Data pengeluaran belanja di sebuah toko (ribu rupiah):</p>
+    <table>
+      <tr><th>Pengeluaran (ribu Rp)</th><th>\(f\)</th><th>fk</th></tr>
+      <tr><td>10 sampai 19</td><td>4</td><td>4</td></tr>
+      <tr><td>20 sampai 29</td><td>6</td><td>10</td></tr>
+      <tr><td>30 sampai 39</td><td>12</td><td>22</td></tr>
+      <tr><td>40 sampai 49</td><td>10</td><td>32</td></tr>
+      <tr><td>50 sampai 59</td><td>8</td><td>40</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--muted);">\(n = 40\), \(p = 10\)</p>
+    <div class="input-row-inline">
+      <div class="input-group">
+        <label>Letak Q1 =</label>
+        <input type="number" id="s8a" placeholder="Letak Q1 = ..." step="any"/>
+      </div>
+      <div class="input-group">
+        <label>Kelas Q1 = (ketik batas bawah)</label>
+        <input type="number" id="s8b" placeholder="contoh: 20" step="any"/>
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);">Letak benar = 5 poin. Kelas benar = 5 poin.</p>
+  </div>
+
+  <!-- ========== SOAL 9: KOMPONEN RUMUS ========== -->
+  <div class="soal-box" id="soalBox9">
+    <span class="soal-num">Soal 9</span>
+    <span class="soal-skor">10 poin</span>
+    <span class="soal-kktp">KKTP 4</span>
+    <p style="margin-top:8px;">Tentukan komponen rumus untuk menghitung <strong>Q1 data kelompok</strong>.</p>
+    <p style="font-size:13px;color:var(--muted);">Data pengeluaran belanja di sebuah toko (ribu rupiah):</p>
+    <table>
+      <tr><th>Pengeluaran (ribu Rp)</th><th>\(f\)</th><th>fk</th></tr>
+      <tr><td>10 sampai 19</td><td>4</td><td>4</td></tr>
+      <tr><td>20 sampai 29</td><td>6</td><td>10</td></tr>
+      <tr><td>30 sampai 39</td><td>12</td><td>22</td></tr>
+      <tr><td>40 sampai 49</td><td>10</td><td>32</td></tr>
+      <tr><td>50 sampai 59</td><td>8</td><td>40</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--muted);">\(n = 40\), \(p = 10\). Kelas Q1 = 20 sampai 29.</p>
+    <div class="input-row-inline">
+      <div class="input-group">
+        <label>Tb =</label>
+        <input type="number" id="s9a" placeholder="Tb = ..." step="any"/>
+      </div>
+      <div class="input-group">
+        <label>p =</label>
+        <input type="number" id="s9b" placeholder="p = ..." step="any"/>
+      </div>
+      <div class="input-group">
+        <label>F =</label>
+        <input type="number" id="s9c" placeholder="F = ..." step="any"/>
+      </div>
+      <div class="input-group">
+        <label>f =</label>
+        <input type="number" id="s9d" placeholder="f = ..." step="any"/>
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);">Setiap komponen benar = 2,5 poin.</p>
+  </div>
+
+  <!-- ========== SOAL 10: HITUNG Q1 KELOMPOK ========== -->
+  <div class="soal-box" id="soalBox10">
+    <span class="soal-num">Soal 10</span>
+    <span class="soal-skor">15 poin</span>
+    <span class="soal-kktp">KKTP 5</span>
+    <p style="margin-top:8px;">Hitung <strong>Q1 data kelompok</strong> menggunakan rumus berikut.</p>
+    <div class="formula">
+      \[ Q_1 = Tb + p \times \frac{\frac{n}{4} - F}{f} \]
+    </div>
+    <p style="font-size:13px;color:var(--muted);">Data pengeluaran belanja di sebuah toko (ribu rupiah):</p>
+    <table>
+      <tr><th>Pengeluaran (ribu Rp)</th><th>\(f\)</th><th>fk</th></tr>
+      <tr><td>10 sampai 19</td><td>4</td><td>4</td></tr>
+      <tr><td>20 sampai 29</td><td>6</td><td>10</td></tr>
+      <tr><td>30 sampai 39</td><td>12</td><td>22</td></tr>
+      <tr><td>40 sampai 49</td><td>10</td><td>32</td></tr>
+      <tr><td>50 sampai 59</td><td>8</td><td>40</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--muted);">\(n = 40\), \(p = 10\)</p>
+    <div class="input-group">
+      <label>Q1 =</label>
+      <input type="number" id="s10" placeholder="Ketik jawaban..." step="any"/>
+    </div>
+    <p style="font-size:11px;color:var(--muted);">Jawaban benar = 15 poin. Komponen benar tetapi salah hitung = 8 poin.</p>
+  </div>
+
+  <!-- ========== SUBMIT ========== -->
+  <div class="submit-area" id="submitArea">
+    <div class="warning-box" style="text-align:left;margin-bottom:14px;">
+      <strong>Perhatian:</strong> Pastikan semua soal sudah diisi sebelum mengirim. Pre test hanya bisa dikerjakan <strong>satu kali</strong> dan tidak bisa diulang.
+    </div>
+    <button class="btn btn-success" id="btnSubmit" disabled>Kirim Jawaban</button>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;" id="submitMsg"></p>
+  </div>
+
+  <!-- ========== HASIL ========== -->
+  <div id="hasilArea"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const API = 'https://script.google.com/macros/s/AKfycbwNkT0t7ZXdy5f-iIofi_Q7u42-nzU9wI73UkOtJiwht4eMCGowSx9Ykf0MVCKRgYGm/exec';
+  const FALLBACK_NAMES = [
+    'AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA',
+    'AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI',
+    'DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI',
+    'LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI',
+    'NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH',
+    'NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA',
+    'RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI',
+    'SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'
+  ];
+
+  /* ========================
+     KUNCI JAWABAN
+  ======================== */
+  const KUNCI = {
+    s1:  40,      // Q2
+    s2:  20,      // Q1 Membagi Data
+    s3:  65,      // Q3 Membagi Data
+    s4:  20,      // Q1 Rumus Letak
+    s5:  65,      // Q3 Rumus Letak
+    s6:  80,      // Range
+    s7:  45,      // IQR
+    s8a: 10,      // Letak Q1
+    s8b: 20,      // Kelas Q1 (batas bawah)
+    s9a: 19.5,    // Tb
+    s9b: 10,      // p
+    s9c: 4,       // F
+    s9d: 6,       // f
+    s10: 29.5     // Q1 data kelompok
+  };
+
+  const TOL = 0.1;
+
+  let currentUser = '', allNames = [], selectedName = '', sheetsOK = false;
+  let submitted = false;
+
+  const loginSection = document.getElementById('loginSection');
+  const app = document.getElementById('app');
+  const searchName = document.getElementById('searchName');
+  const nameList = document.getElementById('nameList');
+  const btnLogin = document.getElementById('btnLogin');
+  const loginMsg = document.getElementById('loginMsg');
+  const btnSubmit = document.getElementById('btnSubmit');
+  const submitMsg = document.getElementById('submitMsg');
+  const hasilArea = document.getElementById('hasilArea');
+
+  /* ========================
+     API
+  ======================== */
+  function callAPI(p, cb) {
+    const c = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+    p.callback = c;
+    const u = API + '?' + Object.keys(p).map(k => k + '=' + encodeURIComponent(p[k])).join('&');
+    const sc = document.createElement('script');
+    window[c] = function(d) { delete window[c]; if (sc.parentNode) sc.parentNode.removeChild(sc); if (cb) cb(d); };
+    sc.src = u;
+    sc.onerror = function() { delete window[c]; if (sc.parentNode) sc.parentNode.removeChild(sc); if (cb) cb(null); };
+    document.head.appendChild(sc);
+  }
+
+  /* ========================
+     LOGIN
+  ======================== */
+  function loadNames() {
+    callAPI({ action: 'getNames' }, function(d) {
+      if (d && d.ok && d.names && d.names.length) { allNames = d.names; sheetsOK = true; }
+      else { allNames = FALLBACK_NAMES; }
+      renderNames('');
+    });
+    setTimeout(() => { if (!allNames.length) { allNames = FALLBACK_NAMES; renderNames(''); } }, 5000);
+  }
+
+  function renderNames(f) {
+    const fl = f.trim().toUpperCase();
+    const list = fl ? allNames.filter(n => n.toUpperCase().includes(fl)) : allNames;
+    nameList.innerHTML = '';
+    list.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'name-item' + (name === selectedName ? ' selected' : '');
+      div.textContent = name;
+      div.addEventListener('click', () => {
+        selectedName = name; searchName.value = name; btnLogin.disabled = false; renderNames(name);
+      });
+      nameList.appendChild(div);
+    });
+  }
+
+  searchName.addEventListener('input', () => { selectedName = ''; btnLogin.disabled = true; renderNames(searchName.value); });
+
+  btnLogin.addEventListener('click', () => {
+    if (!selectedName) return;
+    currentUser = selectedName;
+    btnLogin.disabled = true;
+    loginMsg.textContent = 'Memeriksa data...';
+    callAPI({ action: 'login', nama: currentUser, sumber: 'PRETEST', device: 'HP' }, function() {
+      checkAlreadyDone();
+    });
+    setTimeout(() => { if (loginSection.style.display !== 'none') checkAlreadyDone(); }, 4000);
+  });
+
+  /* ========================
+     CEK SUDAH DIKERJAKAN
+  ======================== */
+  function checkAlreadyDone() {
+    callAPI({ action: 'getPretest', nama: currentUser }, function(d) {
+      if (d && d.ok && d.data) { showAlreadyDone(d.data); }
+      else { showApp(); }
+    });
+    setTimeout(() => { if (loginSection.style.display !== 'none') showApp(); }, 4000);
+  }
+
+  function showAlreadyDone(data) {
+    loginSection.style.display = 'none';
+    app.style.display = 'block';
+    document.getElementById('userName').textContent = currentUser;
+    document.getElementById('userStatus').textContent = 'Pre test sudah dikerjakan';
+    hideAllSoal();
+    hasilArea.style.display = 'block';
+    hasilArea.innerHTML = buildHasilHTML(Number(data.SKOR) || 0, data.LEVEL_LKPD || '-', null, true);
+    if (window.MathJax) MathJax.typesetPromise();
+  }
+
+  function showApp() {
+    loginSection.style.display = 'none';
+    app.style.display = 'block';
+    document.getElementById('userName').textContent = currentUser;
+    document.getElementById('userStatus').textContent = 'Pre test belum dikerjakan';
+    setupInputListeners();
+    if (window.MathJax) MathJax.typesetPromise();
+  }
+
+  function hideAllSoal() {
+    document.getElementById('cardInstruksi').style.display = 'none';
+    document.getElementById('cardProgress').style.display = 'none';
+    for (let i = 1; i <= 10; i++) {
+      const el = document.getElementById('soalBox' + i);
+      if (el) el.style.display = 'none';
+    }
+    document.getElementById('submitArea').style.display = 'none';
+  }
+
+  /* ========================
+     INPUT MONITORING
+  ======================== */
+  const SOAL_GROUPS = [
+    { box: 1, ids: ['s1'] },
+    { box: 2, ids: ['s2'] },
+    { box: 3, ids: ['s3'] },
+    { box: 4, ids: ['s4'] },
+    { box: 5, ids: ['s5'] },
+    { box: 6, ids: ['s6'] },
+    { box: 7, ids: ['s7'] },
+    { box: 8, ids: ['s8a', 's8b'] },
+    { box: 9, ids: ['s9a', 's9b', 's9c', 's9d'] },
+    { box: 10, ids: ['s10'] }
+  ];
+
+  function setupInputListeners() {
+    SOAL_GROUPS.forEach(group => {
+      group.ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', () => {
+            el.classList.toggle('filled', el.value.trim() !== '');
+            updateProgress();
+          });
+        }
+      });
+    });
+  }
+
+  function updateProgress() {
+    let filled = 0;
+    SOAL_GROUPS.forEach(group => {
+      const allFilled = group.ids.every(id => {
+        const el = document.getElementById(id);
+        return el && el.value.trim() !== '';
+      });
+      if (allFilled) filled++;
+      const box = document.getElementById('soalBox' + group.box);
+      if (box) box.classList.toggle('answered', allFilled);
+    });
+    const pct = Math.round(filled / 10 * 100);
+    document.getElementById('progressText').textContent = filled + ' / 10 soal terisi';
+    document.getElementById('progressFill').style.width = pct + '%';
+    btnSubmit.disabled = (filled < 10);
+  }
+
+  /* ========================
+     CEK JAWABAN
+  ======================== */
+  function cek(id) {
+    const el = document.getElementById(id);
+    if (!el || el.value.trim() === '') return false;
+    const uv = parseFloat(el.value.trim());
+    return !isNaN(uv) && Math.abs(uv - KUNCI[id]) <= TOL;
+  }
+
+  function getVal(id) {
+    const el = document.getElementById(id);
+    return el ? (el.value.trim() || '') : '';
+  }
+
+  /* ========================
+     HITUNG SKOR
+  ======================== */
+  function hitungSkor() {
+    const d = {};
+
+    // Soal 1: Q2 = 8 poin
+    d.s1 = cek('s1') ? 8 : 0;
+
+    // Soal 2: Q1 Membagi = 10 poin
+    d.s2 = cek('s2') ? 10 : 0;
+
+    // Soal 3: Q3 Membagi = 10 poin
+    d.s3 = cek('s3') ? 10 : 0;
+
+    // Soal 4: Q1 Rumus Letak = 10 poin
+    d.s4 = cek('s4') ? 10 : 0;
+
+    // Soal 5: Q3 Rumus Letak = 10 poin
+    d.s5 = cek('s5') ? 10 : 0;
+
+    // Soal 6: Range = 8 poin
+    d.s6 = cek('s6') ? 8 : 0;
+
+    // Soal 7: IQR = 9 poin
+    d.s7 = cek('s7') ? 9 : 0;
+
+    // Soal 8: Letak Q1 (5) + Kelas Q1 (5) = 10 poin
+    const s8aOk = cek('s8a');
+    const s8bOk = cek('s8b');
+    d.s8 = (s8aOk ? 5 : 0) + (s8bOk ? 5 : 0);
+
+    // Soal 9: Tb (2.5) + p (2.5) + F (2.5) + f (2.5) = 10 poin
+    const s9aOk = cek('s9a');
+    const s9bOk = cek('s9b');
+    const s9cOk = cek('s9c');
+    const s9dOk = cek('s9d');
+    d.s9 = (s9aOk ? 2.5 : 0) + (s9bOk ? 2.5 : 0) + (s9cOk ? 2.5 : 0) + (s9dOk ? 2.5 : 0);
+    const s9SemuaOk = s9aOk && s9bOk && s9cOk && s9dOk;
+
+    // Soal 10: Q1 kelompok = 15 poin (partial: komponen benar tapi hitung salah = 8)
+    const s10ok = cek('s10');
+    if (s10ok) {
+      d.s10 = 15;
+    } else if (s9SemuaOk && s8aOk && s8bOk) {
+      d.s10 = 8;
+    } else {
+      d.s10 = 0;
+    }
+
+    let total = 0;
+    Object.values(d).forEach(v => total += v);
+
+    return { total: total, detail: d };
+  }
+
+  /* ========================
+     LEVEL
+  ======================== */
+  function getLevel(skor) {
+    if (skor <= 59) return 'LEVEL 1';
+    if (skor <= 79) return 'LEVEL 2';
+    return 'LEVEL 3';
+  }
+
+  function getLevelNum(skor) {
+    if (skor <= 59) return 1;
+    if (skor <= 79) return 2;
+    return 3;
+  }
+
+  function getLevelInfo(skor) {
+    if (skor <= 59) return {
+      css: 'level-1', judul: 'Level 1',
+      pesan: 'Kamu akan mengerjakan LKPD Level 1 dengan panduan langkah demi langkah yang sangat lengkap. Ini dirancang untuk membantu kamu memahami konsep dari dasar.',
+      warna: '#991b1b'
+    };
+    if (skor <= 79) return {
+      css: 'level-2', judul: 'Level 2',
+      pesan: 'Kamu akan mengerjakan LKPD Level 2 dengan panduan sedang. Kamu sudah memahami konsep dasar dan siap untuk penguatan lebih lanjut.',
+      warna: '#92400e'
+    };
+    return {
+      css: 'level-3', judul: 'Level 3',
+      pesan: 'Kamu akan mengerjakan LKPD Level 3 dengan panduan singkat dan penekanan pada analisis. Kamu sudah siap untuk tantangan lebih tinggi!',
+      warna: '#166534'
+    };
+  }
+
+  /* ========================
+     BUILD HASIL
+  ======================== */
+  function buildHasilHTML(skor, level, detail, isReview) {
+    const li = getLevelInfo(skor);
+    const ln = getLevelNum(skor);
+    const skorColor = skor >= 80 ? 'var(--success)' : skor >= 60 ? 'var(--accent)' : 'var(--danger)';
+
+    let h = '<div class="result-card">';
+    h += '<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">' + (isReview ? 'Hasil Pre Test Kamu' : 'Pre Test Selesai!') + '</div>';
+    h += '<div class="skor-besar" style="color:' + skorColor + ';">' + skor + '</div>';
+    h += '<div class="skor-label">dari 100 poin</div>';
+    h += '<div class="level-badge ' + li.css + '">' + li.judul + ' &bull; LKPD Level ' + ln + '</div>';
+    h += '<p style="font-size:13px;color:var(--muted);margin-bottom:16px;">' + li.pesan + '</p>';
+
+    if (detail && !isReview) {
+      h += '<div class="detail-skor">';
+      h += '<p style="font-weight:700;font-size:13px;color:var(--primary-dark);margin-bottom:8px;">Detail Penilaian</p>';
+      h += '<table>';
+      h += '<tr><th>Soal</th><th>Fokus</th><th>KKTP</th><th>Maks</th><th>Skor</th></tr>';
+      h += '<tr><td>1</td><td>Q2</td><td>1, 2</td><td>8</td><td>' + detail.s1 + '</td></tr>';
+      h += '<tr><td>2</td><td>Q1 Membagi Data</td><td>2</td><td>10</td><td>' + detail.s2 + '</td></tr>';
+      h += '<tr><td>3</td><td>Q3 Membagi Data</td><td>2</td><td>10</td><td>' + detail.s3 + '</td></tr>';
+      h += '<tr><td>4</td><td>Q1 Rumus Letak</td><td>2</td><td>10</td><td>' + detail.s4 + '</td></tr>';
+      h += '<tr><td>5</td><td>Q3 Rumus Letak</td><td>2</td><td>10</td><td>' + detail.s5 + '</td></tr>';
+      h += '<tr><td>6</td><td>Range</td><td>3</td><td>8</td><td>' + detail.s6 + '</td></tr>';
+      h += '<tr><td>7</td><td>IQR</td><td>3</td><td>9</td><td>' + detail.s7 + '</td></tr>';
+      h += '<tr><td>8</td><td>Letak dan Kelas Q1</td><td>4</td><td>10</td><td>' + detail.s8 + '</td></tr>';
+      h += '<tr><td>9</td><td>Komponen Rumus</td><td>4</td><td>10</td><td>' + detail.s9 + '</td></tr>';
+      h += '<tr><td>10</td><td>Q1 Data Kelompok</td><td>5</td><td>15</td><td>' + detail.s10 + '</td></tr>';
+      h += '<tr style="font-weight:700;background:#dbeafe;"><td colspan="3">Total</td><td>100</td><td>' + skor + '</td></tr>';
+      h += '</table>';
+      h += '</div>';
+    }
+
+    h += '<div style="margin-top:20px;">';
+    if (skor >= 78) {
+      h += '<div class="success-box" style="text-align:left;"><strong>Selamat!</strong> Kamu sudah mencapai KKTP (78). Lanjutkan ke LKPD di kelas nanti.</div>';
+    } else {
+      h += '<div class="note" style="text-align:left;"><strong>Semangat!</strong> Hasil pre test ini digunakan untuk menyesuaikan LKPD agar pembelajaran lebih efektif. Manfaatkan web materi dan latihan generator untuk persiapan.</div>';
+    }
+    h += '<div style="margin-top:12px;">';
+    h += '<a href="Pertemuan8.html" style="display:inline-block;background:var(--primary);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin:4px;">Kembali ke Halaman Utama</a>';
+    h += '<a href="WebInteraktif8.html" style="display:inline-block;background:var(--orange);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin:4px;">Latihan Generator</a>';
+    h += '</div>';
+    h += '</div>';
+    h += '</div>';
+    return h;
+  }
+
+  /* ========================
+     SUBMIT
+  ======================== */
+  btnSubmit.addEventListener('click', () => {
+    if (submitted) return;
+    if (!confirm('Apakah kamu yakin ingin mengirim jawaban?\nPre test hanya bisa dikerjakan satu kali.')) return;
+
+    submitted = true;
+    btnSubmit.disabled = true;
+    submitMsg.textContent = 'Menghitung skor...';
+
+    const { total, detail } = hitungSkor();
+    const skor = total;
+    const level = getLevel(skor);
+
+    // Tampilkan hasil
+    hideAllSoal();
+    hasilArea.style.display = 'block';
+    hasilArea.innerHTML = buildHasilHTML(skor, level, detail, false);
+    hasilArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.MathJax) MathJax.typesetPromise();
+
+    // Kirim ke Sheets
+    if (sheetsOK) {
+      const s1v = getVal('s1');
+      const s2v = getVal('s2');
+      const s3v = getVal('s3');
+      const s4v = getVal('s4');
+      const s5v = getVal('s5');
+      const s6v = getVal('s6');
+      const s7v = getVal('s7');
+      const s8v = getVal('s8a') + '|' + getVal('s8b');
+      const s9v = getVal('s9a') + '|' + getVal('s9b') + '|' + getVal('s9c') + '|' + getVal('s9d');
+      const s10v = getVal('s10');
+      const detailStr = Object.entries(detail).map(e => e[0] + ':' + e[1]).join('|');
+
+      callAPI({
+        action: 'pretest',
+        nama: currentUser,
+        s1: s1v, s2: s2v, s3: s3v, s4: s4v, s5: s5v,
+        s6: s6v + '|' + s7v + '|' + s8v + '|' + s9v + '|' + s10v,
+        skor: skor,
+        detail: detailStr
+      }, function(d) {
+        if (d && d.ok) console.log('Pre test tersimpan. Level:', level);
+      });
+
+      callAPI({
+        action: 'selesai',
+        nama: currentUser,
+        komponen: 'PRETEST',
+        status: 'SELESAI',
+        detail: 'skor=' + skor + ' level=' + level
+      }, function() {});
+    }
+  });
+
+  /* ========================
+     ENTER KEY
+  ======================== */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.id === 'searchName' && selectedName) {
+      btnLogin.click();
+    }
+  });
+
+  loadNames();
+});
+</script>
+</body>
+</html>

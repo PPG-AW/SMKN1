@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LKPD Level 1 | Kuartil dan Jangkauan</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:#991b1b;color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}
+.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+.user-info{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.user-info .name{font-weight:700;color:var(--primary-dark);}
+.level-tag{background:#fef2f2;color:#991b1b;border:2px solid #fca5a5;padding:3px 12px;border-radius:999px;font-size:12px;font-weight:700;}
+.progress-wrap{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;}
+.progress-bar{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#991b1b,var(--danger));border-radius:999px;transition:width .5s;}
+.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.card h4{color:var(--orange);font-size:14px;margin:12px 0 6px;}
+.soal-header{background:#991b1b;color:#fff;border-radius:10px;padding:14px;margin-bottom:14px;text-align:center;}
+.soal-header h3{color:#fff;border:none;padding:0;margin:0 0 4px;font-size:18px;}
+.soal-header p{margin:0;font-size:12px;opacity:.8;}
+.data-display{background:#f8fafc;border:2px solid var(--border);border-radius:8px;padding:12px 14px;font-weight:700;color:var(--primary-dark);font-size:14px;margin:10px 0;text-align:center;line-height:1.8;}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--border);padding:6px 8px;vertical-align:top;}
+th{background:#dbeafe;color:#1e3a8a;font-weight:700;text-align:left;}
+tr:nth-child(even) td{background:#f8fafc;}
+.tbl-sm{font-size:11px;margin:6px 0;}.tbl-sm th,.tbl-sm td{padding:4px 6px;}
+.formula{background:var(--primary-dark);color:#fff;padding:10px;border-radius:8px;text-align:center;font-size:13px;margin:8px 0;overflow-x:auto;}
+.note{background:var(--soft-yellow);border-left:4px solid var(--accent);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.step{background:var(--soft-purple);border:2px solid var(--purple);border-radius:10px;padding:14px;margin:10px 0;display:none;}
+.step.active{display:block;}
+.step.done{border-color:var(--success);background:var(--soft-green);}
+.step-label{font-size:12px;font-weight:700;color:var(--purple);margin-bottom:6px;}
+.step.done .step-label{color:var(--success);}
+.step p{font-size:13px;margin:0 0 6px;}
+.step .guide{background:var(--soft-yellow);border-radius:6px;padding:8px;margin:6px 0;font-size:12px;color:#92400e;border:1px solid #fcd34d;}
+.step input[type="number"],.step select{width:100%;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin:4px 0;}
+.step input:focus,.step select:focus{outline:none;border-color:var(--primary);}
+.step input.correct,.step select.correct{border-color:var(--success);background:var(--soft-green);}
+.step input.wrong,.step select.wrong{border-color:var(--danger);background:var(--soft-red);}
+.step-fb{margin-top:6px;padding:6px;border-radius:6px;font-size:12px;display:none;}
+.step-fb.show{display:block;}
+.step-fb.ok{background:var(--soft-green);color:#166534;border:1px solid #86efac;}
+.step-fb.err{background:var(--soft-red);color:#991b1b;border:1px solid #fca5a5;}
+.step-row{display:flex;gap:8px;align-items:center;margin:4px 0;}
+.step-row label{font-weight:700;color:var(--primary-dark);min-width:90px;font-size:13px;}
+.step-row input,.step-row select{flex:1;min-width:0;}
+.btn{border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.section-divider{border:none;height:3px;background:linear-gradient(90deg,var(--primary),var(--orange));border-radius:999px;margin:20px 0;}
+.result-card{background:#fff;border-radius:16px;padding:28px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.1);margin-top:16px;display:none;}
+.result-card .skor-besar{font-size:48px;font-weight:800;line-height:1;}
+.result-card .skor-label{font-size:13px;color:var(--muted);margin-top:4px;}
+@media(max-width:480px){
+.container{padding:8px;}.card{padding:14px;}.step{padding:10px;}
+table{font-size:11px;}th,td{padding:4px 6px;}
+.step-row{flex-wrap:wrap;}.step-row label{min-width:100%;margin-bottom:2px;}
+.formula{font-size:11px;padding:8px;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="LKPD8.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>LKPD Level 1</h1>
+  <p>Kuartil dan Jangkauan | Panduan Lengkap</p>
+</div>
+
+<div class="container">
+
+  <div class="user-info">
+    <span class="name" id="userName">Siswa</span>
+    <span class="level-tag">Level 1</span>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Progres LKPD</span><span id="progressText">0 / 27 langkah</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- ========== SOAL 1: DATA TUNGGAL ========== -->
+  <div class="soal-header">
+    <h3>Soal 1 — Data Tunggal</h3>
+    <p>Tentukan Q1, Q2, Q3 (kedua metode), Range, dan IQR</p>
+  </div>
+
+  <div class="card">
+    <h4>Konteks Soal</h4>
+    <p>Data jumlah pelanggan harian toko, sudah diurutkan:</p>
+    <div class="data-display">6, 14, 20, 28, 35, 42, 50, 58, 70, 82, 95</div>
+  </div>
+
+  <div id="stepsS1">
+
+    <!-- S1-1: n -->
+    <div class="step active" id="s1s1">
+      <div class="step-label">Langkah 1 dari 15</div>
+      <p><strong>Tentukan jumlah data</strong></p>
+      <div class="guide">Hitung berapa banyak data yang ada pada barisan berikut.</div>
+      <div class="data-display">6, 14, 20, 28, 35, 42, 50, 58, 70, 82, 95</div>
+      <div class="step-row"><label>\(n =\)</label><input type="number" id="s1s1_ans" placeholder="Jumlah data..."/></div>
+      <div class="step-fb" id="s1s1_fb"></div>
+      <button class="btn btn-primary" id="s1s1_btn">Periksa</button>
+    </div>
+
+    <!-- S1-2: ganjil/genap -->
+    <div class="step" id="s1s2">
+      <div class="step-label">Langkah 2 dari 15</div>
+      <p><strong>Apakah \(n\) ganjil atau genap?</strong></p>
+      <div class="guide">Bilangan ganjil: 1, 3, 5, 7, 9, 11, ... Bilangan genap: 2, 4, 6, 8, 10, ...</div>
+      <select id="s1s2_ans"><option value="">Pilih...</option><option value="ganjil">Ganjil</option><option value="genap">Genap</option></select>
+      <div class="step-fb" id="s1s2_fb"></div>
+      <button class="btn btn-primary" id="s1s2_btn">Periksa</button>
+    </div>
+
+    <!-- S1-3: posisi Q2 -->
+    <div class="step" id="s1s3">
+      <div class="step-label">Langkah 3 dari 15</div>
+      <p><strong>Tentukan posisi Q2</strong></p>
+      <div class="guide">Karena \(n\) ganjil, gunakan rumus berikut untuk menentukan posisi Q2.</div>
+      <div class="formula">\[ \text{Posisi Q2} = \frac{n+1}{2} = \frac{11+1}{2} = \text{data ke-}? \]</div>
+      <div class="step-row"><label>Posisi Q2 = data ke-</label><input type="number" id="s1s3_ans" placeholder="..."/></div>
+      <div class="step-fb" id="s1s3_fb"></div>
+      <button class="btn btn-primary" id="s1s3_btn">Periksa</button>
+    </div>
+
+    <!-- S1-4: nilai Q2 -->
+    <div class="step" id="s1s4">
+      <div class="step-label">Langkah 4 dari 15</div>
+      <p><strong>Tentukan nilai Q2</strong></p>
+      <div class="guide">Q2 = data ke-6. Lihat data urutan ke-6 dari barisan yang sudah diurutkan.</div>
+      <div class="data-display">6, 14, 20, 28, 35, <strong style="color:var(--danger);">?</strong>, 50, 58, 70, 82, 95</div>
+      <div class="step-row"><label>Q2 =</label><input type="number" id="s1s4_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s1s4_fb"></div>
+      <button class="btn btn-primary" id="s1s4_btn">Periksa</button>
+    </div>
+
+    <!-- S1-5: jumlah data bawah -->
+    <div class="step" id="s1s5">
+      <div class="step-label">Langkah 5 dari 15</div>
+      <p><strong>Metode Membagi Data: Berapa jumlah data bagian bawah?</strong></p>
+      <div class="guide">Karena \(n\) ganjil, Q2 <strong>tidak disertakan</strong> ke data bagian bawah maupun atas. Data bagian bawah = semua data di bawah Q2.</div>
+      <div class="data-display">
+        <span style="color:var(--primary);">6, 14, 20, 28, 35</span> &nbsp;|&nbsp;
+        <span style="color:var(--accent);">42</span> &nbsp;|&nbsp;
+        <span style="color:var(--success);">50, 58, 70, 82, 95</span>
+      </div>
+      <div class="step-row"><label>Jumlah data bagian bawah =</label><input type="number" id="s1s5_ans" placeholder="..."/></div>
+      <div class="step-fb" id="s1s5_fb"></div>
+      <button class="btn btn-primary" id="s1s5_btn">Periksa</button>
+    </div>
+
+    <!-- S1-6: Q1 Membagi -->
+    <div class="step" id="s1s6">
+      <div class="step-label">Langkah 6 dari 15</div>
+      <p><strong>Metode Membagi Data: Tentukan Q1</strong></p>
+      <div class="guide">Q1 = median dari data bagian bawah. Data bagian bawah: 6, 14, 20, 28, 35 (5 data, ganjil). Median = data ke-3.</div>
+      <div class="data-display">6, 14, 20, 28, 35, 42, 50, 58, 70, 82, 95</div>
+      <div class="step-row"><label>Q1 =</label><input type="number" id="s1s6_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s1s6_fb"></div>
+      <button class="btn btn-primary" id="s1s6_btn">Periksa</button>
+    </div>
+
+    <!-- S1-7: jumlah data atas -->
+    <div class="step" id="s1s7">
+      <div class="step-label">Langkah 7 dari 15</div>
+      <p><strong>Metode Membagi Data: Berapa jumlah data bagian atas?</strong></p>
+      <div class="guide">Data bagian atas = semua data di atas Q2 (tidak termasuk Q2).</div>
+      <div class="data-display">
+        <span style="color:var(--primary);">6, 14, 20, 28, 35</span> &nbsp;|&nbsp;
+        <span style="color:var(--accent);">42</span> &nbsp;|&nbsp;
+        <span style="color:var(--success);">50, 58, 70, 82, 95</span>
+      </div>
+      <div class="step-row"><label>Jumlah data bagian atas =</label><input type="number" id="s1s7_ans" placeholder="..."/></div>
+      <div class="step-fb" id="s1s7_fb"></div>
+      <button class="btn btn-primary" id="s1s7_btn">Periksa</button>
+    </div>
+
+    <!-- S1-8: Q3 Membagi -->
+    <div class="step" id="s1s8">
+      <div class="step-label">Langkah 8 dari 15</div>
+      <p><strong>Metode Membagi Data: Tentukan Q3</strong></p>
+      <div class="guide">Q3 = median dari data bagian atas. Data bagian atas: 50, 58, 70, 82, 95 (5 data, ganjil). Median = data ke-3.</div>
+      <div class="data-display">6, 14, 20, 28, 35, 42, 50, 58, 70, 82, 95</div>
+      <div class="step-row"><label>Q3 =</label><input type="number" id="s1s8_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s1s8_fb"></div>
+      <button class="btn btn-primary" id="s1s8_btn">Periksa</button>
+    </div>
+
+    <!-- S1-9: n+1 -->
+    <div class="step" id="s1s9">
+      <div class="step-label">Langkah 9 dari 15</div>
+      <p><strong>Metode Rumus Letak: Hitung \(n + 1\)</strong></p>
+      <div class="guide">Langkah pertama dalam Metode Rumus Letak adalah menghitung \(n + 1\).</div>
+      <div class="formula">\[ n + 1 = 11 + 1 = ? \]</div>
+      <div class="step-row"><label>\(n + 1 =\)</label><input type="number" id="s1s9_ans" placeholder="..."/></div>
+      <div class="step-fb" id="s1s9_fb"></div>
+      <button class="btn btn-primary" id="s1s9_btn">Periksa</button>
+    </div>
+
+    <!-- S1-10: letak Q1 -->
+    <div class="step" id="s1s10">
+      <div class="step-label">Langkah 10 dari 15</div>
+      <p><strong>Metode Rumus Letak: Hitung letak Q1</strong></p>
+      <div class="formula">\[ \text{Letak } Q_1 = \frac{n+1}{4} = \frac{12}{4} = \text{data ke-}? \]</div>
+      <div class="step-row"><label>Letak Q1 = data ke-</label><input type="number" id="s1s10_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s1s10_fb"></div>
+      <button class="btn btn-primary" id="s1s10_btn">Periksa</button>
+    </div>
+
+    <!-- S1-11: nilai Q1 Rumus Letak -->
+    <div class="step" id="s1s11">
+      <div class="step-label">Langkah 11 dari 15</div>
+      <p><strong>Metode Rumus Letak: Tentukan nilai Q1</strong></p>
+      <div class="guide">Letak Q1 = data ke-3. Lihat data urutan ke-3 dari barisan berikut.</div>
+      <div class="data-display">6, 14, <strong style="color:var(--danger);">?</strong>, 28, 35, 42, 50, 58, 70, 82, 95</div>
+      <div class="step-row"><label>Q1 =</label><input type="number" id="s1s11_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s1s11_fb"></div>
+      <button class="btn btn-primary" id="s1s11_btn">Periksa</button>
+    </div>
+
+    <!-- S1-12: letak Q3 -->
+    <div class="step" id="s1s12">
+      <div class="step-label">Langkah 12 dari 15</div>
+      <p><strong>Metode Rumus Letak: Hitung letak Q3</strong></p>
+      <div class="formula">\[ \text{Letak } Q_3 = \frac{3(n+1)}{4} = \frac{3 \times 12}{4} = \frac{36}{4} = \text{data ke-}? \]</div>
+      <div class="step-row"><label>Letak Q3 = data ke-</label><input type="number" id="s1s12_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s1s12_fb"></div>
+      <button class="btn btn-primary" id="s1s12_btn">Periksa</button>
+    </div>
+
+    <!-- S1-13: nilai Q3 Rumus Letak -->
+    <div class="step" id="s1s13">
+      <div class="step-label">Langkah 13 dari 15</div>
+      <p><strong>Metode Rumus Letak: Tentukan nilai Q3</strong></p>
+      <div class="guide">Letak Q3 = data ke-9. Lihat data urutan ke-9 dari barisan berikut.</div>
+      <div class="data-display">6, 14, 20, 28, 35, 42, 50, 58, <strong style="color:var(--danger);">?</strong>, 82, 95</div>
+      <div class="step-row"><label>Q3 =</label><input type="number" id="s1s13_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s1s13_fb"></div>
+      <button class="btn btn-primary" id="s1s13_btn">Periksa</button>
+    </div>
+
+    <!-- S1-14: Range -->
+    <div class="step" id="s1s14">
+      <div class="step-label">Langkah 14 dari 15</div>
+      <p><strong>Hitung Range</strong></p>
+      <div class="guide">Range = data terbesar dikurangi data terkecil.</div>
+      <div class="data-display">6, 14, 20, 28, 35, 42, 50, 58, 70, 82, 95</div>
+      <div class="formula">\[ \text{Range} = x_{maks} - x_{min} = 95 - 6 = ? \]</div>
+      <div class="step-row"><label>Range =</label><input type="number" id="s1s14_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s1s14_fb"></div>
+      <button class="btn btn-primary" id="s1s14_btn">Periksa</button>
+    </div>
+
+    <!-- S1-15: IQR -->
+    <div class="step" id="s1s15">
+      <div class="step-label">Langkah 15 dari 15</div>
+      <p><strong>Hitung IQR</strong></p>
+      <div class="guide">IQR = Q3 dikurangi Q1. Gunakan Q1 dan Q3 dari Metode Membagi Data: Q1 = 20, Q3 = 70.</div>
+      <div class="formula">\[ \text{IQR} = Q_3 - Q_1 = 70 - 20 = ? \]</div>
+      <div class="step-row"><label>IQR =</label><input type="number" id="s1s15_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s1s15_fb"></div>
+      <button class="btn btn-primary" id="s1s15_btn">Periksa</button>
+    </div>
+
+  </div>
+
+  <hr class="section-divider"/>
+
+  <!-- ========== SOAL 2: DATA KELOMPOK ========== -->
+  <div class="soal-header" id="headerS2" style="display:none;">
+    <h3>Soal 2 — Data Kelompok</h3>
+    <p>Tentukan Q1 data kelompok</p>
+  </div>
+
+  <div class="card" id="konteksS2" style="display:none;">
+    <h4>Konteks Soal</h4>
+    <p>Data pengeluaran harian siswa (ribu rupiah):</p>
+    <table>
+      <tr><th>Pengeluaran (ribu Rp)</th><th>\(f\)</th><th>fk</th></tr>
+      <tr><td>0 sampai 9</td><td>4</td><td>4</td></tr>
+      <tr><td>10 sampai 19</td><td>8</td><td>12</td></tr>
+      <tr><td>20 sampai 29</td><td>12</td><td>24</td></tr>
+      <tr><td>30 sampai 39</td><td>10</td><td>34</td></tr>
+      <tr><td>40 sampai 49</td><td>6</td><td>40</td></tr>
+    </table>
+  </div>
+
+  <div id="stepsS2">
+
+    <!-- S2-1: n -->
+    <div class="step" id="s2s1">
+      <div class="step-label">Langkah 1 dari 12</div>
+      <p><strong>Tentukan jumlah seluruh data</strong></p>
+      <div class="guide">Jumlahkan seluruh frekuensi pada kolom \(f\): 4 + 8 + 12 + 10 + 6 = ?</div>
+      <table class="tbl-sm"><tr><th>Kelas</th><th>\(f\)</th><th>fk</th></tr><tr><td>0-9</td><td>4</td><td>4</td></tr><tr><td>10-19</td><td>8</td><td>12</td></tr><tr><td>20-29</td><td>12</td><td>24</td></tr><tr><td>30-39</td><td>10</td><td>34</td></tr><tr><td>40-49</td><td>6</td><td>40</td></tr></table>
+      <div class="step-row"><label>\(n =\)</label><input type="number" id="s2s1_ans" placeholder="..."/></div>
+      <div class="step-fb" id="s2s1_fb"></div>
+      <button class="btn btn-primary" id="s2s1_btn">Periksa</button>
+    </div>
+
+    <!-- S2-2: p -->
+    <div class="step" id="s2s2">
+      <div class="step-label">Langkah 2 dari 12</div>
+      <p><strong>Tentukan panjang kelas</strong></p>
+      <div class="guide">Panjang kelas = batas atas dikurangi batas bawah ditambah 1. Contoh kelas pertama: 9 - 0 + 1 = ?</div>
+      <table class="tbl-sm"><tr><th>Kelas</th><th>\(f\)</th><th>fk</th></tr><tr><td>0-9</td><td>4</td><td>4</td></tr><tr><td>10-19</td><td>8</td><td>12</td></tr><tr><td>20-29</td><td>12</td><td>24</td></tr><tr><td>30-39</td><td>10</td><td>34</td></tr><tr><td>40-49</td><td>6</td><td>40</td></tr></table>
+      <div class="step-row"><label>\(p =\)</label><input type="number" id="s2s2_ans" placeholder="..."/></div>
+      <div class="step-fb" id="s2s2_fb"></div>
+      <button class="btn btn-primary" id="s2s2_btn">Periksa</button>
+    </div>
+
+    <!-- S2-3: i x n -->
+    <div class="step" id="s2s3">
+      <div class="step-label">Langkah 3 dari 12</div>
+      <p><strong>Hitung \(i \times n\) untuk Q1</strong></p>
+      <div class="guide">Untuk Q1, \(i = 1\). Hitung \(1 \times n\).</div>
+      <div class="formula">\[ i \times n = 1 \times 40 = ? \]</div>
+      <div class="step-row"><label>\(i \times n =\)</label><input type="number" id="s2s3_ans" placeholder="..."/></div>
+      <div class="step-fb" id="s2s3_fb"></div>
+      <button class="btn btn-primary" id="s2s3_btn">Periksa</button>
+    </div>
+
+    <!-- S2-4: letak Q1 -->
+    <div class="step" id="s2s4">
+      <div class="step-label">Langkah 4 dari 12</div>
+      <p><strong>Hitung letak Q1</strong></p>
+      <div class="formula">\[ \text{Letak } Q_1 = \frac{i \times n}{4} = \frac{40}{4} = ? \]</div>
+      <div class="step-row"><label>Letak Q1 =</label><input type="number" id="s2s4_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s2s4_fb"></div>
+      <button class="btn btn-primary" id="s2s4_btn">Periksa</button>
+    </div>
+
+    <!-- S2-5: kelas Q1 -->
+    <div class="step" id="s2s5">
+      <div class="step-label">Langkah 5 dari 12</div>
+      <p><strong>Tentukan kelas Q1</strong></p>
+      <div class="guide">Letak Q1 = 10. Cari fk pertama yang mencapai atau melewati 10. Lihat kolom fk: 4, 12, 24, 34, 40. fk pertama yang ≥ 10 adalah 12 pada kelas 10 sampai 19.</div>
+      <table class="tbl-sm"><tr><th>Kelas</th><th>\(f\)</th><th>fk</th></tr><tr><td>0-9</td><td>4</td><td>4</td></tr><tr><td>10-19</td><td>8</td><td>12</td></tr><tr><td>20-29</td><td>12</td><td>24</td></tr><tr><td>30-39</td><td>10</td><td>34</td></tr><tr><td>40-49</td><td>6</td><td>40</td></tr></table>
+      <select id="s2s5_ans"><option value="">Pilih kelas Q1...</option><option value="0">0 sampai 9</option><option value="10">10 sampai 19</option><option value="20">20 sampai 29</option><option value="30">30 sampai 39</option><option value="40">40 sampai 49</option></select>
+      <div class="step-fb" id="s2s5_fb"></div>
+      <button class="btn btn-primary" id="s2s5_btn">Periksa</button>
+    </div>
+
+    <!-- S2-6: Tb -->
+    <div class="step" id="s2s6">
+      <div class="step-label">Langkah 6 dari 12</div>
+      <p><strong>Tentukan Tb (tepi bawah kelas Q1)</strong></p>
+      <div class="guide">Tb = batas bawah kelas Q1 dikurangi 0,5. Kelas Q1 = 10 sampai 19. Batas bawah = 10.</div>
+      <div class="formula">\[ Tb = 10 - 0{,}5 = ? \]</div>
+      <div class="step-row"><label>Tb =</label><input type="number" id="s2s6_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s2s6_fb"></div>
+      <button class="btn btn-primary" id="s2s6_btn">Periksa</button>
+    </div>
+
+    <!-- S2-7: F -->
+    <div class="step" id="s2s7">
+      <div class="step-label">Langkah 7 dari 12</div>
+      <p><strong>Tentukan F (fk sebelum kelas Q1)</strong></p>
+      <div class="guide">F = fk pada baris tepat <strong>sebelum</strong> kelas Q1. Kelas Q1 = 10-19. Baris sebelumnya = 0-9 dengan fk = 4.</div>
+      <table class="tbl-sm"><tr><th>Kelas</th><th>\(f\)</th><th>fk</th></tr><tr><td>0-9</td><td>4</td><td>4</td></tr><tr><td>10-19</td><td>8</td><td>12</td></tr><tr><td>20-29</td><td>12</td><td>24</td></tr><tr><td>30-39</td><td>10</td><td>34</td></tr><tr><td>40-49</td><td>6</td><td>40</td></tr></table>
+      <div class="step-row"><label>F =</label><input type="number" id="s2s7_ans" placeholder="..."/></div>
+      <div class="step-fb" id="s2s7_fb"></div>
+      <button class="btn btn-primary" id="s2s7_btn">Periksa</button>
+    </div>
+
+    <!-- S2-8: f -->
+    <div class="step" id="s2s8">
+      <div class="step-label">Langkah 8 dari 12</div>
+      <p><strong>Tentukan f (frekuensi kelas Q1)</strong></p>
+      <div class="guide">f = frekuensi pada baris kelas Q1. Kelas Q1 = 10-19, frekuensinya = 8.</div>
+      <table class="tbl-sm"><tr><th>Kelas</th><th>\(f\)</th><th>fk</th></tr><tr><td>0-9</td><td>4</td><td>4</td></tr><tr><td>10-19</td><td>8</td><td>12</td></tr><tr><td>20-29</td><td>12</td><td>24</td></tr><tr><td>30-39</td><td>10</td><td>34</td></tr><tr><td>40-49</td><td>6</td><td>40</td></tr></table>
+      <div class="step-row"><label>f =</label><input type="number" id="s2s8_ans" placeholder="..."/></div>
+      <div class="step-fb" id="s2s8_fb"></div>
+      <button class="btn btn-primary" id="s2s8_btn">Periksa</button>
+    </div>
+
+    <!-- S2-9: pembilang -->
+    <div class="step" id="s2s9">
+      <div class="step-label">Langkah 9 dari 12</div>
+      <p><strong>Hitung pembilang: letak Q1 dikurangi F</strong></p>
+      <div class="formula">\[ \frac{n}{4} - F = 10 - 4 = ? \]</div>
+      <div class="step-row"><label>Hasil =</label><input type="number" id="s2s9_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s2s9_fb"></div>
+      <button class="btn btn-primary" id="s2s9_btn">Periksa</button>
+    </div>
+
+    <!-- S2-10: pembagian -->
+    <div class="step" id="s2s10">
+      <div class="step-label">Langkah 10 dari 12</div>
+      <p><strong>Hitung pembilang dibagi f</strong></p>
+      <div class="formula">\[ \frac{6}{8} = ? \]</div>
+      <div class="step-row"><label>Hasil =</label><input type="number" id="s2s10_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s2s10_fb"></div>
+      <button class="btn btn-primary" id="s2s10_btn">Periksa</button>
+    </div>
+
+    <!-- S2-11: kali p -->
+    <div class="step" id="s2s11">
+      <div class="step-label">Langkah 11 dari 12</div>
+      <p><strong>Kalikan dengan p</strong></p>
+      <div class="formula">\[ p \times 0{,}75 = 10 \times 0{,}75 = ? \]</div>
+      <div class="step-row"><label>Hasil =</label><input type="number" id="s2s11_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s2s11_fb"></div>
+      <button class="btn btn-primary" id="s2s11_btn">Periksa</button>
+    </div>
+
+    <!-- S2-12: Q1 -->
+    <div class="step" id="s2s12">
+      <div class="step-label">Langkah 12 dari 12</div>
+      <p><strong>Hitung Q1</strong></p>
+      <div class="guide">Tambahkan Tb dengan hasil perkalian p sebelumnya.</div>
+      <div class="formula">\[ Q_1 = Tb + p \times \frac{\frac{n}{4} - F}{f} = 9{,}5 + 7{,}5 = ? \]</div>
+      <div class="step-row"><label>Q1 =</label><input type="number" id="s2s12_ans" placeholder="..." step="any"/></div>
+      <div class="step-fb" id="s2s12_fb"></div>
+      <button class="btn btn-primary" id="s2s12_btn">Periksa</button>
+    </div>
+
+  </div>
+
+  <!-- HASIL -->
+  <div class="result-card" id="hasilCard">
+    <h3 style="color:var(--success);margin-bottom:12px;">LKPD Level 1 Selesai!</h3>
+    <div class="skor-besar" id="skorAkhir" style="color:var(--success);">0</div>
+    <div class="skor-label">Skor LKPD</div>
+    <div id="detailSkor" style="text-align:left;margin-top:16px;"></div>
+    <div style="margin-top:16px;">
+      <a href="Pertemuan8.html" class="btn btn-primary" style="text-decoration:none;">Kembali ke Halaman Utama</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+
+  const API='https://script.google.com/macros/s/AKfycbwNkT0t7ZXdy5f-iIofi_Q7u42-nzU9wI73UkOtJiwht4eMCGowSx9Ykf0MVCKRgYGm/exec';
+  const TOL=0.1;
+  const params=new URLSearchParams(window.location.search);
+  const currentUser=params.get('nama')||'Siswa';
+  document.getElementById('userName').textContent=currentUser;
+
+  function callAPI(p,cb){const c='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);p.callback=c;const u=API+'?'+Object.keys(p).map(k=>k+'='+encodeURIComponent(p[k])).join('&');const sc=document.createElement('script');window[c]=function(d){delete window[c];if(sc.parentNode)sc.parentNode.removeChild(sc);if(cb)cb(d);};sc.src=u;sc.onerror=function(){delete window[c];if(sc.parentNode)sc.parentNode.removeChild(sc);if(cb)cb(null);};document.head.appendChild(sc);}
+
+  const KEYS={
+    s1s1:{ans:11,type:'num'},s1s2:{ans:'ganjil',type:'select'},
+    s1s3:{ans:6,type:'num'},s1s4:{ans:42,type:'num'},
+    s1s5:{ans:5,type:'num'},s1s6:{ans:20,type:'num'},
+    s1s7:{ans:5,type:'num'},s1s8:{ans:70,type:'num'},
+    s1s9:{ans:12,type:'num'},s1s10:{ans:3,type:'num'},
+    s1s11:{ans:20,type:'num'},s1s12:{ans:9,type:'num'},
+    s1s13:{ans:70,type:'num'},s1s14:{ans:89,type:'num'},
+    s1s15:{ans:50,type:'num'},
+
+    s2s1:{ans:40,type:'num'},s2s2:{ans:10,type:'num'},
+    s2s3:{ans:40,type:'num'},s2s4:{ans:10,type:'num'},
+    s2s5:{ans:'10',type:'select'},s2s6:{ans:9.5,type:'num'},
+    s2s7:{ans:4,type:'num'},s2s8:{ans:8,type:'num'},
+    s2s9:{ans:6,type:'num'},s2s10:{ans:0.75,type:'num'},
+    s2s11:{ans:7.5,type:'num'},s2s12:{ans:17,type:'num'}
+  };
+
+  const SECTIONS=[
+    {prefix:'s1',count:15,showAfter:null},
+    {prefix:'s2',count:12,showAfter:['headerS2','konteksS2']}
+  ];
+
+  let totalSteps=0,completedSteps=0,sectionScores={s1:0,s2:0};
+  SECTIONS.forEach(s=>totalSteps+=s.count);
+
+  function updateProgress(){
+    const pct=Math.round(completedSteps/totalSteps*100);
+    document.getElementById('progressText').textContent=completedSteps+' / '+totalSteps+' langkah';
+    document.getElementById('progressFill').style.width=pct+'%';
+  }
+
+  function bindAllSteps(){
+    SECTIONS.forEach((section,secIdx)=>{
+      for(let i=1;i<=section.count;i++){
+        const id=section.prefix+'s'+i;
+        const stepEl=document.getElementById(id);
+        const btn=document.getElementById(id+'_btn');
+        const inp=document.getElementById(id+'_ans');
+        const fb=document.getElementById(id+'_fb');
+        const key=KEYS[id];
+        if(!btn||!key)continue;
+
+        btn.addEventListener('click',()=>{
+          let correct=false;
+          if(key.type==='select'){correct=inp.value===key.ans;inp.className=correct?'correct':'wrong';}
+          else{const uv=parseFloat(inp.value.trim());correct=!isNaN(uv)&&Math.abs(uv-key.ans)<=TOL;inp.className=correct?'correct':'wrong';}
+          fb.classList.add('show');fb.classList.remove('ok','err');
+          if(correct){
+            fb.classList.add('ok');fb.textContent='Benar!';
+            btn.disabled=true;btn.textContent='Benar ✓';btn.style.background='#16a34a';
+            stepEl.classList.add('done');completedSteps++;sectionScores[section.prefix]++;updateProgress();
+            if(i<section.count){
+              const nextEl=document.getElementById(section.prefix+'s'+(i+1));
+              if(nextEl){nextEl.classList.add('active');setTimeout(()=>nextEl.scrollIntoView({behavior:'smooth',block:'center'}),300);}
+            }else if(secIdx<SECTIONS.length-1){
+              const ns=SECTIONS[secIdx+1];
+              if(ns.showAfter)ns.showAfter.forEach(eid=>{const el=document.getElementById(eid);if(el)el.style.display='block';});
+              const fs=document.getElementById(ns.prefix+'s1');
+              if(fs){fs.classList.add('active');setTimeout(()=>fs.scrollIntoView({behavior:'smooth',block:'center'}),500);}
+            }else{showHasil();}
+            if(window.MathJax)MathJax.typesetPromise();
+          }else{fb.classList.add('err');fb.textContent='Belum tepat. Coba lagi.';}
+        });
+        if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')btn.click();});
+      }
+    });
+  }
+
+  function showHasil(){
+    const skorS1=Math.round(sectionScores.s1/15*100);
+    const skorS2=Math.round(sectionScores.s2/12*100);
+    const skorTotal=Math.round((skorS1+skorS2)/2);
+
+    document.getElementById('skorAkhir').textContent=skorTotal;
+    document.getElementById('skorAkhir').style.color=skorTotal>=78?'var(--success)':skorTotal>=60?'var(--accent)':'var(--danger)';
+
+    let h='<table style="font-size:12px;"><tr><th>Soal</th><th>Benar</th><th>Total</th><th>Skor</th></tr>';
+    h+='<tr><td>Soal 1 (Data Tunggal)</td><td>'+sectionScores.s1+'</td><td>15</td><td>'+skorS1+'</td></tr>';
+    h+='<tr><td>Soal 2 (Data Kelompok)</td><td>'+sectionScores.s2+'</td><td>12</td><td>'+skorS2+'</td></tr>';
+    h+='<tr style="font-weight:700;background:#fef3c7;"><td colspan="3">Skor Total</td><td>'+skorTotal+'</td></tr></table>';
+    document.getElementById('detailSkor').innerHTML=h;
+
+    const card=document.getElementById('hasilCard');card.style.display='block';
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+
+    callAPI({action:'lkpd',nama:currentUser,level:'LEVEL 1',terbimbing1:skorS1,terbimbing2:skorS2,mandiri1:'',mandiri2:'',skorTerbimbing:'',skorMandiri:skorS2,skorTotal:skorTotal},function(){});
+    callAPI({action:'selesai',nama:currentUser,komponen:'LKPD',status:'SELESAI',detail:'level=1 skor='+skorTotal},function(){});
+  }
+
+  callAPI({action:'login',nama:currentUser,sumber:'LKPD_L1',device:'HP'},function(){});
+  bindAllSteps();updateProgress();
+  if(window.MathJax)MathJax.typesetPromise();
+});
+</script>
+</body>
+</html>

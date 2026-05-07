@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard Guru | Pertemuan 8</title>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;--teal:#0f766e;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.5;font-size:14px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.container{max-width:1100px;margin:0 auto;padding:12px;}
+.login-box{background:#fff;border-radius:12px;padding:24px;margin:40px auto;max-width:380px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:16px;}
+.login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:12px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box button{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--danger);}
+#app{display:none;}
+
+/* TABS */
+.tab-bar{display:flex;gap:4px;overflow-x:auto;background:#fff;border-radius:10px;padding:6px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);flex-wrap:nowrap;}
+.tab-btn{padding:8px 14px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;background:transparent;color:var(--muted);transition:.2s;}
+.tab-btn:hover{background:var(--soft-blue);color:var(--primary);}
+.tab-btn.active{background:var(--primary);color:#fff;}
+.tab-content{display:none;}.tab-content.active{display:block;}
+
+/* CARDS */
+.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.card h3{color:var(--primary-dark);font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:10px 0;}
+.stat-box{background:var(--soft-blue);border-radius:10px;padding:14px;text-align:center;}
+.stat-box .stat-num{font-size:28px;font-weight:800;color:var(--primary-dark);}
+.stat-box .stat-label{font-size:11px;color:var(--muted);margin-top:2px;}
+.stat-box.green{background:var(--soft-green);}.stat-box.green .stat-num{color:var(--success);}
+.stat-box.red{background:var(--soft-red);}.stat-box.red .stat-num{color:var(--danger);}
+.stat-box.yellow{background:var(--soft-yellow);}.stat-box.yellow .stat-num{color:#92400e;}
+.stat-box.purple{background:var(--soft-purple);}.stat-box.purple .stat-num{color:var(--purple);}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0;}
+th,td{border:1px solid var(--border);padding:5px 7px;vertical-align:top;text-align:left;}
+th{background:#dbeafe;color:#1e3a8a;font-weight:700;position:sticky;top:0;z-index:1;}
+tr:nth-child(even) td{background:#f8fafc;}
+tr:hover td{background:#eff6ff;}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;}
+.badge-green{background:#dcfce7;color:#166534;}.badge-red{background:#fef2f2;color:#991b1b;}
+.badge-yellow{background:#fef3c7;color:#92400e;}.badge-blue{background:#dbeafe;color:#1d4ed8;}
+.badge-purple{background:#ede9fe;color:#6d28d9;}
+
+/* TABLE SCROLL */
+.table-wrap{overflow-x:auto;max-height:500px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;}
+
+/* INPUT FORMS */
+.form-row{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;flex-wrap:wrap;}
+.form-row .fr-name{font-weight:700;min-width:200px;font-size:13px;color:var(--primary-dark);}
+.form-row input,.form-row select,.form-row textarea{padding:8px;border:2px solid var(--border);border-radius:6px;font-size:13px;}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{outline:none;border-color:var(--primary);}
+.form-row input[type="number"]{width:60px;}
+.form-row textarea{width:100%;min-height:40px;resize:vertical;margin-top:4px;}
+.form-row .fr-btn{padding:6px 14px;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;background:var(--primary);color:#fff;}
+.form-row .fr-btn:disabled{opacity:.5;cursor:not-allowed;}
+.form-row .fr-btn.saved{background:var(--success);}
+.form-row .fr-status{font-size:11px;color:var(--success);margin-left:4px;}
+
+.info-box{background:var(--soft-blue);border-left:4px solid var(--primary);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.note{background:var(--soft-yellow);border-left:4px solid var(--accent);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.spinner{display:inline-block;width:18px;height:18px;border:3px solid #e2e8f0;border-top:3px solid var(--primary);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.refresh-btn{background:var(--orange);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;}
+
+@media(max-width:768px){
+.container{padding:8px;}.card{padding:14px;}.stats-grid{grid-template-columns:repeat(2,1fr);}
+.tab-btn{font-size:11px;padding:6px 10px;}.form-row .fr-name{min-width:100%;margin-bottom:4px;}
+table{font-size:11px;}th,td{padding:3px 5px;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>Dashboard Guru — Pertemuan 8</h1>
+  <p>Kuartil dan Jangkauan | SMKN 1 Salatiga</p>
+</div>
+
+<!-- LOGIN -->
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>🔒 Login Dashboard Guru</h2>
+    <input type="password" id="passInput" placeholder="Masukkan password..."/>
+    <button id="btnLoginGuru">Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="container" id="app">
+
+  <button class="refresh-btn" id="btnRefresh"><span id="refreshIcon">🔄</span> Refresh Data</button>
+
+  <!-- TABS -->
+  <div class="tab-bar" id="tabBar">
+    <button class="tab-btn active" data-tab="ringkasan">📊 Ringkasan</button>
+    <button class="tab-btn" data-tab="materi">📖 Materi</button>
+    <button class="tab-btn" data-tab="pretest">📝 Pre Test</button>
+    <button class="tab-btn" data-tab="lkpd">📋 LKPD</button>
+    <button class="tab-btn" data-tab="posttest">✅ Post Test</button>
+    <button class="tab-btn" data-tab="latihan">🔄 Latihan</button>
+    <button class="tab-btn" data-tab="refleksi">💭 Refleksi</button>
+    <button class="tab-btn" data-tab="sikap">👤 Sikap</button>
+    <button class="tab-btn" data-tab="catatan">📝 Catatan</button>
+  </div>
+
+  <!-- TAB CONTENTS -->
+  <div class="tab-content active" id="tab-ringkasan"></div>
+  <div class="tab-content" id="tab-materi"></div>
+  <div class="tab-content" id="tab-pretest"></div>
+  <div class="tab-content" id="tab-lkpd"></div>
+  <div class="tab-content" id="tab-posttest"></div>
+  <div class="tab-content" id="tab-latihan"></div>
+  <div class="tab-content" id="tab-refleksi"></div>
+  <div class="tab-content" id="tab-sikap"></div>
+  <div class="tab-content" id="tab-catatan"></div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const API = 'https://script.google.com/macros/s/AKfycbwNkT0t7ZXdy5f-iIofi_Q7u42-nzU9wI73UkOtJiwht4eMCGowSx9Ykf0MVCKRgYGm/exec';
+  const PASSWORD = 'GuruSMKN1Salatiga';
+  let allData = null;
+
+  const loginSection = document.getElementById('loginSection');
+  const app = document.getElementById('app');
+  const passInput = document.getElementById('passInput');
+  const btnLoginGuru = document.getElementById('btnLoginGuru');
+  const loginMsg = document.getElementById('loginMsg');
+
+  function callAPI(p, cb) {
+    const c = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+    p.callback = c;
+    const u = API + '?' + Object.keys(p).map(k => k + '=' + encodeURIComponent(p[k])).join('&');
+    const sc = document.createElement('script');
+    window[c] = function(d) { delete window[c]; if(sc.parentNode) sc.parentNode.removeChild(sc); if(cb) cb(d); };
+    sc.src = u; sc.onerror = function(){ delete window[c]; if(sc.parentNode) sc.parentNode.removeChild(sc); if(cb) cb(null); };
+    document.head.appendChild(sc);
+  }
+
+  /* LOGIN */
+  btnLoginGuru.addEventListener('click', () => {
+    if (passInput.value === PASSWORD) {
+      loginSection.style.display = 'none';
+      app.style.display = 'block';
+      loadData();
+    } else {
+      loginMsg.textContent = 'Password salah. Coba lagi.';
+    }
+  });
+  passInput.addEventListener('keydown', e => { if(e.key === 'Enter') btnLoginGuru.click(); });
+
+  /* TABS */
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  /* REFRESH */
+  document.getElementById('btnRefresh').addEventListener('click', loadData);
+
+  function loadData() {
+    document.getElementById('refreshIcon').innerHTML = '<span class="spinner"></span>';
+    callAPI({ action: 'getAllData', password: PASSWORD }, function(d) {
+      document.getElementById('refreshIcon').textContent = '🔄';
+      if (d && d.ok) { allData = d; renderAll(); }
+      else { document.getElementById('tab-ringkasan').innerHTML = '<div class="warning-box">Gagal memuat data. Coba refresh.</div>'; }
+    });
+    setTimeout(() => { document.getElementById('refreshIcon').textContent = '🔄'; }, 10000);
+  }
+
+  /* HELPERS */
+  function num(v) { const n = Number(v); return isNaN(n) ? 0 : n; }
+  function findByName(arr, nama) { return arr.find(r => String(r.NAMA||'').toUpperCase() === String(nama||'').toUpperCase()); }
+  function latestByName(arr, nama) {
+    const key = String(nama||'').toUpperCase();
+    const rows = arr.filter(r => String(r.NAMA||'').toUpperCase() === key);
+    return rows.length ? rows[rows.length - 1] : null;
+  }
+
+  /* ========================
+     RENDER ALL TABS
+  ======================== */
+  function renderAll() {
+    if (!allData) return;
+    const siswa = allData.dataSiswa || [];
+    const materi = allData.materi || [];
+    const pre = allData.pretest || [];
+    const post = allData.posttest || [];
+    const lkpd = allData.lkpd || [];
+    const latihan = allData.latihan || [];
+    const refleksi = allData.refleksi || [];
+    const sikap = allData.penilaianSikap || [];
+    const catatan = allData.catatanGuru || [];
+    const tindak = allData.tindakLanjut || [];
+    const names = siswa.map(s => s.NAMA).sort();
+
+    renderRingkasan(names, materi, pre, post, lkpd, refleksi, tindak);
+    renderMateri(names, materi);
+    renderPretest(names, pre);
+    renderLKPD(names, lkpd);
+    renderPosttest(names, post);
+    renderLatihan(names, latihan, tindak);
+    renderRefleksi(names, refleksi);
+    renderSikap(names, sikap);
+    renderCatatan(names, catatan);
+  }
+
+  /* ========================
+     TAB: RINGKASAN
+  ======================== */
+  function renderRingkasan(names, materi, pre, post, lkpd, refleksi, tindak) {
+    const total = names.length;
+    let materiSelesai=0, preSelesai=0, lkpdSelesai=0, postSelesai=0, refleksiSelesai=0;
+    let postTuntas=0, postBelum=0;
+
+    names.forEach(n => {
+      const m = findByName(materi, n);
+      if (m) { let c=0; for(let i=1;i<=13;i++) if(num(m['BAGIAN_'+i])) c++; if(c>=13) materiSelesai++; }
+      if (latestByName(pre, n)) preSelesai++;
+      if (latestByName(lkpd, n)) lkpdSelesai++;
+      const p = latestByName(post, n);
+      if (p) { postSelesai++; if(num(p.SKOR)>=78) postTuntas++; else postBelum++; }
+      if (latestByName(refleksi, n)) refleksiSelesai++;
+    });
+
+    const tindakWajib = (tindak||[]).filter(t => t.WAJIB_GENERATOR === 'YA').length;
+    const tindakTuntas = (tindak||[]).filter(t => t.STATUS === 'TUNTAS').length;
+
+    let l1=0,l2=0,l3=0;
+    pre.forEach(p => { const lv = String(p.LEVEL_LKPD||''); if(lv.includes('1')) l1++; else if(lv.includes('2')) l2++; else if(lv.includes('3')) l3++; });
+
+    let h = '<div class="card"><h3>📊 Ringkasan Pertemuan 8</h3>';
+    h += '<div class="stats-grid">';
+    h += `<div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">Total Siswa</div></div>`;
+    h += `<div class="stat-box green"><div class="stat-num">${materiSelesai}</div><div class="stat-label">Materi Selesai</div></div>`;
+    h += `<div class="stat-box"><div class="stat-num">${preSelesai}</div><div class="stat-label">Pre Test</div></div>`;
+    h += `<div class="stat-box"><div class="stat-num">${lkpdSelesai}</div><div class="stat-label">LKPD Selesai</div></div>`;
+    h += `<div class="stat-box"><div class="stat-num">${postSelesai}</div><div class="stat-label">Post Test</div></div>`;
+    h += `<div class="stat-box green"><div class="stat-num">${postTuntas}</div><div class="stat-label">Post ≥ 78</div></div>`;
+    h += `<div class="stat-box red"><div class="stat-num">${postBelum}</div><div class="stat-label">Post &lt; 78</div></div>`;
+    h += `<div class="stat-box purple"><div class="stat-num">${refleksiSelesai}</div><div class="stat-label">Refleksi</div></div>`;
+    h += '</div></div>';
+
+    h += '<div class="card"><h3>📊 Distribusi Level LKPD</h3>';
+    h += '<div class="stats-grid">';
+    h += `<div class="stat-box red"><div class="stat-num">${l1}</div><div class="stat-label">Level 1 (0-59)</div></div>`;
+    h += `<div class="stat-box yellow"><div class="stat-num">${l2}</div><div class="stat-label">Level 2 (60-79)</div></div>`;
+    h += `<div class="stat-box green"><div class="stat-num">${l3}</div><div class="stat-label">Level 3 (80-100)</div></div>`;
+    h += '</div></div>';
+
+    if (tindakWajib > 0) {
+      h += '<div class="card"><h3>⚠️ Tindak Lanjut</h3>';
+      h += '<div class="stats-grid">';
+      h += `<div class="stat-box red"><div class="stat-num">${tindakWajib}</div><div class="stat-label">Wajib Latihan</div></div>`;
+      h += `<div class="stat-box green"><div class="stat-num">${tindakTuntas}</div><div class="stat-label">Sudah Tuntas</div></div>`;
+      h += `<div class="stat-box yellow"><div class="stat-num">${tindakWajib - tindakTuntas}</div><div class="stat-label">Belum Tuntas</div></div>`;
+      h += '</div></div>';
+    }
+
+    document.getElementById('tab-ringkasan').innerHTML = h;
+  }
+
+  /* ========================
+     TAB: MATERI
+  ======================== */
+  function renderMateri(names, materi) {
+    let h = '<div class="card"><h3>📖 Progres Materi</h3><div class="table-wrap"><table><tr><th>No</th><th>Nama</th>';
+    for(let i=1;i<=13;i++) h += `<th>B${i}</th>`;
+    h += '<th>Total</th><th>Paling Sulit</th></tr>';
+
+    names.forEach((n, idx) => {
+      const m = findByName(materi, n);
+      let total=0, maxP=0, maxB=0;
+      h += `<tr><td>${idx+1}</td><td>${n}</td>`;
+      for(let i=1;i<=13;i++) {
+        const done = m ? num(m['BAGIAN_'+i]) : 0;
+        const perc = m ? num(m['PERCOBAAN_'+i]) : 0;
+        total += done;
+        if(perc > maxP) { maxP = perc; maxB = i; }
+        h += `<td style="text-align:center;">${done ? '✅' : '—'}${perc > 1 ? '<br><span style="font-size:9px;color:var(--danger);">'+perc+'x</span>' : ''}</td>`;
+      }
+      h += `<td style="text-align:center;font-weight:700;">${total}/13</td>`;
+      h += `<td>${maxP > 1 ? 'B' + maxB + ' (' + maxP + 'x)' : '—'}</td></tr>`;
+    });
+    h += '</table></div></div>';
+    document.getElementById('tab-materi').innerHTML = h;
+  }
+
+  /* ========================
+     TAB: PRE TEST
+  ======================== */
+  function renderPretest(names, pre) {
+    let h = '<div class="card"><h3>📝 Hasil Pre Test</h3><div class="table-wrap"><table><tr><th>No</th><th>Nama</th><th>Skor</th><th>Level</th><th>Waktu</th></tr>';
+    names.forEach((n, idx) => {
+      const p = latestByName(pre, n);
+      const skor = p ? num(p.SKOR) : '';
+      const level = p ? (p.LEVEL_LKPD || '') : '';
+      const lv = String(level).includes('1') ? 'badge-red' : String(level).includes('2') ? 'badge-yellow' : String(level).includes('3') ? 'badge-green' : '';
+      h += `<tr><td>${idx+1}</td><td>${n}</td><td style="font-weight:700;">${skor !== '' ? skor : '—'}</td>`;
+      h += `<td>${level ? '<span class="badge '+lv+'">'+level+'</span>' : '—'}</td>`;
+      h += `<td style="font-size:10px;">${p ? (p.TIMESTAMP||'') : '—'}</td></tr>`;
+    });
+    h += '</table></div></div>';
+    document.getElementById('tab-pretest').innerHTML = h;
+  }
+
+  /* ========================
+     TAB: LKPD
+  ======================== */
+  function renderLKPD(names, lkpd) {
+    let h = '<div class="card"><h3>📋 Hasil LKPD</h3><div class="table-wrap"><table><tr><th>No</th><th>Nama</th><th>Level</th><th>Soal 1</th><th>Soal 2</th><th>Total</th><th>Status</th></tr>';
+    names.forEach((n, idx) => {
+      const l = latestByName(lkpd, n);
+      if (!l) { h += `<tr><td>${idx+1}</td><td>${n}</td><td colspan="5" style="color:var(--muted);">Belum mengerjakan</td></tr>`; return; }
+      const total = num(l.SKOR_TOTAL);
+      const status = total >= 78 ? '<span class="badge badge-green">Tuntas</span>' : '<span class="badge badge-red">Belum</span>';
+      h += `<tr><td>${idx+1}</td><td>${n}</td><td>${l.LEVEL||''}</td><td>${l.TERBIMBING_1||''}</td><td>${l.TERBIMBING_2||''}</td><td style="font-weight:700;">${total}</td><td>${status}</td></tr>`;
+    });
+    h += '</table></div></div>';
+    document.getElementById('tab-lkpd').innerHTML = h;
+  }
+
+  /* ========================
+     TAB: POST TEST
+  ======================== */
+  function renderPosttest(names, post) {
+    let h = '<div class="card"><h3>✅ Hasil Post Test</h3><div class="table-wrap"><table><tr><th>No</th><th>Nama</th><th>Skor</th><th>Kategori</th><th>Waktu</th></tr>';
+    names.forEach((n, idx) => {
+      const p = latestByName(post, n);
+      if (!p) { h += `<tr><td>${idx+1}</td><td>${n}</td><td colspan="3" style="color:var(--muted);">Belum mengerjakan</td></tr>`; return; }
+      const skor = num(p.SKOR);
+      const kat = p.KATEGORI || '';
+      const katCls = skor>=90?'badge-green':skor>=78?'badge-blue':skor>=60?'badge-yellow':'badge-red';
+      h += `<tr><td>${idx+1}</td><td>${n}</td><td style="font-weight:700;">${skor}</td><td><span class="badge ${katCls}">${kat}</span></td><td style="font-size:10px;">${p.TIMESTAMP||''}</td></tr>`;
+    });
+    h += '</table></div></div>';
+    document.getElementById('tab-posttest').innerHTML = h;
+  }
+
+  /* ========================
+     TAB: LATIHAN
+  ======================== */
+  function renderLatihan(names, latihan, tindak) {
+    let h = '<div class="card"><h3>🔄 Latihan Generator & Tindak Lanjut</h3><div class="table-wrap"><table><tr><th>No</th><th>Nama</th><th>Wajib?</th><th>Set Selesai</th><th>Target</th><th>Akurasi Terakhir</th><th>Status</th></tr>';
+    names.forEach((n, idx) => {
+      const t = findByName(tindak||[], n);
+      const lats = (latihan||[]).filter(l => String(l.NAMA||'').toUpperCase() === n.toUpperCase());
+      const totalLat = lats.length;
+      if (!t) { h += `<tr><td>${idx+1}</td><td>${n}</td><td colspan="5" style="color:var(--muted);">Belum ada data</td></tr>`; return; }
+      const wajib = t.WAJIB_GENERATOR === 'YA';
+      const status = t.STATUS || '';
+      const stCls = status === 'TUNTAS' ? 'badge-green' : status === 'TIDAK PERLU' ? 'badge-blue' : 'badge-red';
+      h += `<tr><td>${idx+1}</td><td>${n}</td><td>${wajib?'Ya':'Tidak'}</td><td>${t.SET_SELESAI||0}</td><td>${t.TARGET_SET||3}</td><td>${t.AKURASI_TERAKHIR||0}%</td><td><span class="badge ${stCls}">${status}</span></td></tr>`;
+    });
+    h += '</table></div></div>';
+    document.getElementById('tab-latihan').innerHTML = h;
+  }
+
+  /* ========================
+     TAB: REFLEKSI
+  ======================== */
+  function renderRefleksi(names, refleksi) {
+    let h = '<div class="card"><h3>💭 Refleksi Siswa</h3><div class="table-wrap"><table><tr><th>No</th><th>Nama</th><th>Paling Mudah</th><th>Masih Sulit</th><th>Web ⭐</th><th>LKPD Bantu?</th><th>Hal Baru</th><th>Saran</th></tr>';
+    names.forEach((n, idx) => {
+      const r = findByName(refleksi, n);
+      if (!r) { h += `<tr><td>${idx+1}</td><td>${n}</td><td colspan="6" style="color:var(--muted);">Belum mengisi</td></tr>`; return; }
+      h += `<tr><td>${idx+1}</td><td>${n}</td><td style="font-size:11px;">${r.MUDAH||'—'}</td><td style="font-size:11px;">${r.SULIT||'—'}</td><td>${r.WEB_SKOR||'—'}/5</td><td>${r.LKPD_BANTU||'—'}</td><td style="font-size:11px;">${r.HAL_BARU||'—'}</td><td style="font-size:11px;">${r.SARAN||'—'}</td></tr>`;
+    });
+    h += '</table></div></div>';
+    document.getElementById('tab-refleksi').innerHTML = h;
+  }
+
+  /* ========================
+     TAB: SIKAP
+  ======================== */
+  function renderSikap(names, sikap) {
+    let h = '<div class="card"><h3>👤 Penilaian Sikap</h3>';
+    h += '<div class="note">Isi skor 1 sampai 4 untuk setiap dimensi. Klik Simpan untuk menyimpan ke Google Sheets.</div>';
+
+    names.forEach((n, idx) => {
+      const s = findByName(sikap, n);
+      const pk = s ? (s.PENALARAN_KRITIS || '') : '';
+      const km = s ? (s.KEMANDIRIAN || '') : '';
+      const kl = s ? (s.KOLABORASI || '') : '';
+      const ko = s ? (s.KOMUNIKASI || '') : '';
+      const ct = s ? (s.CATATAN || '') : '';
+
+      h += `<div class="form-row" id="sikap-row-${idx}">`;
+      h += `<span class="fr-name">${idx+1}. ${n}</span>`;
+      h += `<label style="font-size:11px;">PK</label><input type="number" id="sk_pk_${idx}" min="1" max="4" value="${pk}" placeholder="-" style="width:45px;"/>`;
+      h += `<label style="font-size:11px;">KM</label><input type="number" id="sk_km_${idx}" min="1" max="4" value="${km}" placeholder="-" style="width:45px;"/>`;
+      h += `<label style="font-size:11px;">KL</label><input type="number" id="sk_kl_${idx}" min="1" max="4" value="${kl}" placeholder="-" style="width:45px;"/>`;
+      h += `<label style="font-size:11px;">KO</label><input type="number" id="sk_ko_${idx}" min="1" max="4" value="${ko}" placeholder="-" style="width:45px;"/>`;
+      h += `<button class="fr-btn" id="sk_btn_${idx}" data-nama="${n}" data-idx="${idx}">Simpan</button>`;
+      h += `<span class="fr-status" id="sk_st_${idx}">${s ? '✓' : ''}</span>`;
+      h += '</div>';
+    });
+    h += '</div>';
+    document.getElementById('tab-sikap').innerHTML = h;
+
+    names.forEach((n, idx) => {
+      const btn = document.getElementById('sk_btn_' + idx);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        btn.disabled = true; btn.textContent = '...';
+        callAPI({
+          action: 'sikap', nama: n,
+          penalaranKritis: document.getElementById('sk_pk_'+idx).value,
+          kemandirian: document.getElementById('sk_km_'+idx).value,
+          kolaborasi: document.getElementById('sk_kl_'+idx).value,
+          komunikasi: document.getElementById('sk_ko_'+idx).value,
+          catatan: ''
+        }, function(d) {
+          btn.disabled = false;
+          if (d && d.ok) { btn.textContent = 'Tersimpan'; btn.classList.add('saved'); document.getElementById('sk_st_'+idx).textContent = '✓'; }
+          else { btn.textContent = 'Gagal'; }
+          setTimeout(() => { btn.textContent = 'Simpan'; btn.classList.remove('saved'); }, 2000);
+        });
+      });
+    });
+  }
+
+  /* ========================
+     TAB: CATATAN GURU
+  ======================== */
+  function renderCatatan(names, catatan) {
+    let h = '<div class="card"><h3>📝 Catatan Guru untuk Siswa</h3>';
+    h += '<div class="note">Tulis catatan untuk siswa. Catatan ini akan tampil di halaman utama siswa (Pertemuan8.html).</div>';
+
+    names.forEach((n, idx) => {
+      const c = findByName(catatan, n);
+      const isi = c ? (c.CATATAN || '') : '';
+
+      h += `<div class="form-row" id="cat-row-${idx}">`;
+      h += `<span class="fr-name">${idx+1}. ${n}</span>`;
+      h += `<textarea id="cat_isi_${idx}" placeholder="Tulis catatan...">${isi}</textarea>`;
+      h += `<button class="fr-btn" id="cat_btn_${idx}" data-nama="${n}" data-idx="${idx}">Simpan</button>`;
+      h += `<span class="fr-status" id="cat_st_${idx}">${isi ? '✓' : ''}</span>`;
+      h += '</div>';
+    });
+    h += '</div>';
+    document.getElementById('tab-catatan').innerHTML = h;
+
+    names.forEach((n, idx) => {
+      const btn = document.getElementById('cat_btn_' + idx);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        btn.disabled = true; btn.textContent = '...';
+        const isi = document.getElementById('cat_isi_'+idx).value.trim();
+        callAPI({ action: 'catatanGuru', nama: n, catatan: isi, status: 'AKTIF' }, function(d) {
+          btn.disabled = false;
+          if (d && d.ok) { btn.textContent = 'Tersimpan'; btn.classList.add('saved'); document.getElementById('cat_st_'+idx).textContent = '✓'; }
+          else { btn.textContent = 'Gagal'; }
+          setTimeout(() => { btn.textContent = 'Simpan'; btn.classList.remove('saved'); }, 2000);
+        });
+      });
+    });
+  }
+
+});
+</script>
+</body>
+</html>

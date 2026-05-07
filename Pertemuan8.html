@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pertemuan 8 | Kuartil dan Jangkauan</title>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;--teal:#0f766e;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25);}
+.top-bar h1{font-size:18px;margin:0 0 2px;}
+.top-bar p{font-size:12px;opacity:.85;margin:0;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+
+/* LOGIN */
+.login-box{background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:400px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:12px;font-size:18px;}
+.login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:8px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box .name-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;text-align:left;}
+.login-box .name-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;}
+.login-box .name-item:hover{background:var(--soft-blue);}
+.login-box .name-item.selected{background:#dbeafe;font-weight:700;color:var(--primary);}
+.login-box button{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.login-box button:disabled{opacity:.5;cursor:not-allowed;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--muted);}
+
+/* APP */
+#app{display:none;}
+.user-card{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 4px 16px rgba(30,58,138,.3);}
+.user-card .greeting{font-size:13px;opacity:.85;}
+.user-card .user-name{font-size:20px;font-weight:800;margin:4px 0 8px;}
+.user-card .user-status{font-size:12px;background:rgba(255,255,255,.2);display:inline-block;padding:3px 12px;border-radius:999px;}
+
+/* PROGRESS OVERVIEW */
+.overview{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.overview h3{color:var(--primary-dark);font-size:15px;margin-bottom:10px;}
+.progress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.pg-item{text-align:center;padding:10px 6px;border-radius:8px;background:var(--soft-blue);}
+.pg-item.done{background:var(--soft-green);}
+.pg-item.active{background:var(--soft-yellow);border:2px solid var(--accent);}
+.pg-item .pg-icon{font-size:20px;margin-bottom:4px;}
+.pg-item .pg-label{font-size:10px;color:var(--muted);font-weight:600;}
+.pg-item .pg-status{font-size:10px;font-weight:700;margin-top:2px;}
+.pg-item.done .pg-status{color:var(--success);}
+.pg-item.active .pg-status{color:var(--accent);}
+
+/* CARDS */
+.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.card h3{color:var(--primary-dark);font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.card h3 .icon{font-size:18px;}
+
+/* ALUR */
+.alur-step{display:flex;gap:12px;margin:10px 0;padding:12px;border-radius:10px;border:2px solid var(--border);background:#fff;transition:.2s;}
+.alur-step.done{border-color:var(--success);background:var(--soft-green);}
+.alur-step.current{border-color:var(--accent);background:var(--soft-yellow);}
+.alur-step.locked{opacity:.5;}
+.alur-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;background:var(--border);color:var(--muted);}
+.alur-step.done .alur-num{background:var(--success);color:#fff;}
+.alur-step.current .alur-num{background:var(--accent);color:#fff;}
+.alur-info{flex:1;}
+.alur-info .alur-title{font-weight:700;font-size:14px;color:var(--text);margin-bottom:2px;}
+.alur-info .alur-desc{font-size:12px;color:var(--muted);}
+.alur-action{display:flex;align-items:center;}
+.alur-action a{background:var(--primary);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;}
+.alur-step.done .alur-action a{background:var(--success);}
+.alur-step.locked .alur-action a{background:var(--border);color:var(--muted);pointer-events:none;}
+
+/* NILAI */
+.nilai-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px;}
+.nilai-item{background:var(--soft-blue);border-radius:8px;padding:10px;text-align:center;}
+.nilai-item .nilai-num{font-size:24px;font-weight:800;color:var(--primary-dark);}
+.nilai-item .nilai-label{font-size:11px;color:var(--muted);}
+.nilai-item.highlight{background:var(--soft-green);border:2px solid var(--success);}
+.nilai-item.highlight .nilai-num{color:var(--success);}
+.nilai-item.warning{background:var(--soft-red);border:2px solid var(--danger);}
+.nilai-item.warning .nilai-num{color:var(--danger);}
+
+/* CATATAN GURU */
+.catatan-box{background:var(--soft-yellow);border:2px solid var(--accent);border-radius:10px;padding:14px;margin-top:8px;}
+.catatan-box .catatan-title{font-weight:700;font-size:13px;color:#92400e;margin-bottom:6px;}
+.catatan-box .catatan-isi{font-size:13px;color:var(--text);}
+
+/* TINDAK LANJUT */
+.tindak-box{background:var(--soft-red);border:2px solid var(--danger);border-radius:10px;padding:14px;margin-top:8px;}
+.tindak-box .tindak-title{font-weight:700;font-size:13px;color:#991b1b;margin-bottom:6px;}
+.tindak-box .tindak-isi{font-size:13px;color:var(--text);}
+.tindak-box a{color:var(--primary);font-weight:700;}
+
+/* LEVEL BADGE */
+.level-badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:11px;font-weight:700;}
+.level-1{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;}
+.level-2{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;}
+.level-3{background:#dcfce7;color:#166534;border:1px solid #86efac;}
+
+.info-box{background:var(--soft-blue);border-left:4px solid var(--primary);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.spinner{display:inline-block;width:20px;height:20px;border:3px solid #e2e8f0;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media(max-width:480px){
+.container{padding:8px;}.card{padding:14px;}
+.progress-grid{grid-template-columns:repeat(2,1fr);}
+.nilai-grid{grid-template-columns:1fr 1fr;}
+.alur-step{flex-wrap:wrap;}.alur-action{width:100%;margin-top:8px;}
+.alur-action a{width:100%;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>Pertemuan 8</h1>
+  <p>Kuartil dan Jangkauan Data Tunggal dan Data Kelompok</p>
+</div>
+
+<!-- LOGIN -->
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>Selamat Datang</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ketik nama lalu pilih dari daftar untuk melihat progres belajar kamu</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button id="btnLogin" disabled>Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="container" id="app">
+
+  <div class="user-card">
+    <div class="greeting">Selamat belajar,</div>
+    <div class="user-name" id="userName">Siswa</div>
+    <div class="user-status" id="userStatus">Memuat data...</div>
+  </div>
+
+  <!-- PROGRESS OVERVIEW -->
+  <div class="overview">
+    <h3>Progres Pembelajaran</h3>
+    <div class="progress-grid" id="progressGrid">
+      <div class="pg-item" id="pg-materi"><div class="pg-icon">📖</div><div class="pg-label">Materi</div><div class="pg-status" id="pgMateriStatus">—</div></div>
+      <div class="pg-item" id="pg-pretest"><div class="pg-icon">📝</div><div class="pg-label">Pre Test</div><div class="pg-status" id="pgPretestStatus">—</div></div>
+      <div class="pg-item" id="pg-lkpd"><div class="pg-icon">📋</div><div class="pg-label">LKPD</div><div class="pg-status" id="pgLkpdStatus">—</div></div>
+      <div class="pg-item" id="pg-posttest"><div class="pg-icon">✅</div><div class="pg-label">Post Test</div><div class="pg-status" id="pgPosttestStatus">—</div></div>
+      <div class="pg-item" id="pg-latihan"><div class="pg-icon">🔄</div><div class="pg-label">Latihan</div><div class="pg-status" id="pgLatihanStatus">—</div></div>
+      <div class="pg-item" id="pg-refleksi"><div class="pg-icon">💭</div><div class="pg-label">Refleksi</div><div class="pg-status" id="pgRefleksiStatus">—</div></div>
+    </div>
+  </div>
+
+  <!-- ALUR PEMBELAJARAN -->
+  <div class="card">
+    <h3><span class="icon">🗺️</span> Alur Pembelajaran</h3>
+    <div id="alurContainer"></div>
+  </div>
+
+  <!-- NILAI -->
+  <div class="card" id="nilaiCard" style="display:none;">
+    <h3><span class="icon">📊</span> Nilai Kamu</h3>
+    <div class="nilai-grid" id="nilaiGrid"></div>
+  </div>
+
+  <!-- CATATAN GURU -->
+  <div id="catatanArea"></div>
+
+  <!-- TINDAK LANJUT -->
+  <div id="tindakArea"></div>
+
+  <!-- INFO -->
+  <div class="card">
+    <h3><span class="icon">ℹ️</span> Informasi</h3>
+    <div class="info-box">
+      <strong>Mata Pelajaran:</strong> Matematika<br>
+      <strong>Kelas / Fase:</strong> X / Fase E<br>
+      <strong>Topik:</strong> Kuartil dan Jangkauan<br>
+      <strong>Guru:</strong> Awang Haris Prasetyo Adhi, S.Pd.<br>
+      <strong>SMKN 1 Salatiga</strong> | Tahun Pelajaran 2025/2026
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const API = 'https://script.google.com/macros/s/AKfycbwNkT0t7ZXdy5f-iIofi_Q7u42-nzU9wI73UkOtJiwht4eMCGowSx9Ykf0MVCKRgYGm/exec';
+  const FALLBACK_NAMES = [
+    'AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA',
+    'AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI',
+    'DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI',
+    'LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI',
+    'NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH',
+    'NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA',
+    'RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI',
+    'SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'
+  ];
+
+  let currentUser = '', allNames = [], selectedName = '', sheetsOK = false;
+  let progresData = null;
+
+  const loginSection = document.getElementById('loginSection');
+  const app = document.getElementById('app');
+  const searchName = document.getElementById('searchName');
+  const nameList = document.getElementById('nameList');
+  const btnLogin = document.getElementById('btnLogin');
+  const loginMsg = document.getElementById('loginMsg');
+
+  function callAPI(p, cb) {
+    const c = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+    p.callback = c;
+    const u = API + '?' + Object.keys(p).map(k => k + '=' + encodeURIComponent(p[k])).join('&');
+    const sc = document.createElement('script');
+    window[c] = function(d) { delete window[c]; if (sc.parentNode) sc.parentNode.removeChild(sc); if (cb) cb(d); };
+    sc.src = u; sc.onerror = function() { delete window[c]; if (sc.parentNode) sc.parentNode.removeChild(sc); if (cb) cb(null); };
+    document.head.appendChild(sc);
+  }
+
+  /* LOGIN */
+  function loadNames() {
+    callAPI({ action: 'getNames' }, function(d) {
+      if (d && d.ok && d.names && d.names.length) { allNames = d.names; sheetsOK = true; }
+      else { allNames = FALLBACK_NAMES; }
+      renderNames('');
+    });
+    setTimeout(() => { if (!allNames.length) { allNames = FALLBACK_NAMES; renderNames(''); } }, 5000);
+  }
+
+  function renderNames(f) {
+    const fl = f.trim().toUpperCase();
+    const list = fl ? allNames.filter(n => n.toUpperCase().includes(fl)) : allNames;
+    nameList.innerHTML = '';
+    list.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'name-item' + (name === selectedName ? ' selected' : '');
+      div.textContent = name;
+      div.addEventListener('click', () => { selectedName = name; searchName.value = name; btnLogin.disabled = false; renderNames(name); });
+      nameList.appendChild(div);
+    });
+  }
+
+  searchName.addEventListener('input', () => { selectedName = ''; btnLogin.disabled = true; renderNames(searchName.value); });
+
+  btnLogin.addEventListener('click', () => {
+    if (!selectedName) return;
+    currentUser = selectedName;
+    btnLogin.disabled = true;
+    loginMsg.textContent = 'Memuat data...';
+    callAPI({ action: 'login', nama: currentUser, sumber: 'INDEX', device: 'HP' }, function() {});
+    loadProgres();
+  });
+
+  function loadProgres() {
+    callAPI({ action: 'getProgress', nama: currentUser }, function(d) {
+      progresData = (d && d.ok) ? d : null;
+      showApp();
+    });
+    setTimeout(() => { if (loginSection.style.display !== 'none') { progresData = null; showApp(); } }, 6000);
+  }
+
+  function showApp() {
+    loginSection.style.display = 'none';
+    app.style.display = 'block';
+    document.getElementById('userName').textContent = currentUser;
+    renderAll();
+  }
+
+  /* RENDER */
+  function renderAll() {
+    const d = progresData;
+    const materi = d && d.materi ? d.materi : null;
+    const pretest = d && d.pretest ? d.pretest : null;
+    const lkpd = d && d.lkpd ? d.lkpd : null;
+    const posttest = d && d.posttest ? d.posttest : null;
+    const refleksi = d && d.refleksi ? d.refleksi : null;
+    const catatan = d && d.catatanGuru ? d.catatanGuru : null;
+    const tindak = d && d.tindakLanjut ? d.tindakLanjut : null;
+    const ringkasan = d && d.ringkasan ? d.ringkasan : { bagianSelesai: 0, totalBagian: 13 };
+
+    const materiDone = ringkasan.bagianSelesai >= 13;
+    const pretestDone = !!pretest;
+    const lkpdDone = !!lkpd;
+    const posttestDone = !!posttest;
+    const refleksiDone = !!refleksi;
+
+    /* STATUS */
+    let statusText = 'Belum mulai';
+    if (refleksiDone) statusText = 'Semua selesai ✓';
+    else if (posttestDone) statusText = 'Tinggal refleksi';
+    else if (lkpdDone) statusText = 'Tinggal post test';
+    else if (pretestDone) statusText = 'Siap LKPD';
+    else if (materiDone) statusText = 'Siap pre test';
+    else if (ringkasan.bagianSelesai > 0) statusText = 'Sedang belajar materi';
+    document.getElementById('userStatus').textContent = statusText;
+
+    /* PROGRESS GRID */
+    setGridItem('pg-materi', 'pgMateriStatus', materiDone, materiDone ? 'Selesai' : ringkasan.bagianSelesai + '/13', !materiDone && ringkasan.bagianSelesai > 0);
+    setGridItem('pg-pretest', 'pgPretestStatus', pretestDone, pretestDone ? (pretest.SKOR || 0) + ' poin' : 'Belum', false);
+    setGridItem('pg-lkpd', 'pgLkpdStatus', lkpdDone, lkpdDone ? (lkpd.SKOR_TOTAL || 0) + ' poin' : 'Belum', false);
+    setGridItem('pg-posttest', 'pgPosttestStatus', posttestDone, posttestDone ? (posttest.SKOR || 0) + ' poin' : 'Belum', false);
+    setGridItem('pg-refleksi', 'pgRefleksiStatus', refleksiDone, refleksiDone ? 'Selesai' : 'Belum', false);
+
+    /* Latihan generator - cek dari tindak lanjut */
+    const latihanStatus = tindak ? (tindak.STATUS === 'TUNTAS' ? 'Tuntas' : (tindak.SET_SELESAI || 0) + '/' + (tindak.TARGET_SET || 3)) : '—';
+    const latihanDone = tindak && tindak.STATUS === 'TUNTAS';
+    setGridItem('pg-latihan', 'pgLatihanStatus', latihanDone, latihanStatus, false);
+
+    /* ALUR */
+    renderAlur(materiDone, pretestDone, lkpdDone, posttestDone, refleksiDone, pretest);
+
+    /* NILAI */
+    renderNilai(pretest, lkpd, posttest);
+
+    /* CATATAN GURU */
+    renderCatatan(catatan);
+
+    /* TINDAK LANJUT */
+    renderTindak(tindak, lkpd);
+  }
+
+  function setGridItem(boxId, statusId, done, text, isActive) {
+    const box = document.getElementById(boxId);
+    const status = document.getElementById(statusId);
+    box.className = 'pg-item' + (done ? ' done' : (isActive ? ' active' : ''));
+    status.textContent = text;
+  }
+
+  /* ALUR PEMBELAJARAN */
+  function renderAlur(materiDone, pretestDone, lkpdDone, posttestDone, refleksiDone, pretest) {
+    const levelNum = pretest ? getLevelNum(pretest.LEVEL_LKPD) : 0;
+
+    const steps = [
+      {
+        num: 1, title: 'Belajar Materi', desc: '13 bagian materi interaktif + catatan wajib',
+        link: 'MateriAjar8.html', linkText: 'Buka Materi',
+        done: materiDone, current: !materiDone
+      },
+      {
+        num: 2, title: 'Pre Test', desc: '10 soal untuk menentukan level LKPD',
+        link: 'Assessment8.html', linkText: pretestDone ? 'Lihat Hasil' : 'Kerjakan',
+        done: pretestDone, current: materiDone && !pretestDone, locked: !materiDone
+      },
+      {
+        num: 3, title: 'Latihan Generator', desc: 'Latihan soal tanpa batas untuk penguatan',
+        link: 'WebInteraktif8.html', linkText: 'Buka Latihan',
+        done: false, current: false, locked: false, always: true
+      },
+      {
+        num: 4, title: 'LKPD' + (levelNum ? ' Level ' + levelNum : ''), desc: 'Lembar kerja sesuai level dari pre test',
+        link: 'LKPD8.html', linkText: lkpdDone ? 'Lihat Hasil' : 'Kerjakan',
+        done: lkpdDone, current: pretestDone && !lkpdDone, locked: !pretestDone
+      },
+      {
+        num: 5, title: 'Post Test', desc: 'Evaluasi akhir pertemuan',
+        link: 'AssessmentPost8.html', linkText: posttestDone ? 'Lihat Hasil' : 'Kerjakan',
+        done: posttestDone, current: lkpdDone && !posttestDone, locked: !lkpdDone
+      },
+      {
+        num: 6, title: 'Refleksi', desc: 'Isi refleksi pembelajaran',
+        link: 'Refleksi8.html', linkText: refleksiDone ? 'Sudah Diisi' : 'Isi Refleksi',
+        done: refleksiDone, current: posttestDone && !refleksiDone, locked: !posttestDone
+      }
+    ];
+
+    const container = document.getElementById('alurContainer');
+    container.innerHTML = '';
+
+    steps.forEach(s => {
+      const cls = s.done ? 'done' : (s.current ? 'current' : (s.locked ? 'locked' : ''));
+      let h = '<div class="alur-step ' + cls + '">';
+      h += '<div class="alur-num">' + (s.done ? '✓' : s.num) + '</div>';
+      h += '<div class="alur-info"><div class="alur-title">' + s.title + '</div><div class="alur-desc">' + s.desc + '</div></div>';
+      h += '<div class="alur-action"><a href="' + s.link + '">' + s.linkText + '</a></div>';
+      h += '</div>';
+      container.innerHTML += h;
+    });
+  }
+
+  /* NILAI */
+  function renderNilai(pretest, lkpd, posttest) {
+    const card = document.getElementById('nilaiCard');
+    const grid = document.getElementById('nilaiGrid');
+
+    if (!pretest && !lkpd && !posttest) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+
+    let h = '';
+
+    if (pretest) {
+      const skor = Number(pretest.SKOR) || 0;
+      const level = pretest.LEVEL_LKPD || '';
+      const levelNum = getLevelNum(level);
+      h += '<div class="nilai-item"><div class="nilai-num">' + skor + '</div><div class="nilai-label">Pre Test</div></div>';
+      h += '<div class="nilai-item"><div class="nilai-num"><span class="level-badge level-' + levelNum + '">Level ' + levelNum + '</span></div><div class="nilai-label">Level LKPD</div></div>';
+    }
+
+    if (lkpd) {
+      const skor = Number(lkpd.SKOR_TOTAL) || 0;
+      const cls = skor >= 78 ? 'highlight' : (skor >= 60 ? '' : 'warning');
+      h += '<div class="nilai-item ' + cls + '"><div class="nilai-num">' + skor + '</div><div class="nilai-label">LKPD</div></div>';
+    }
+
+    if (posttest) {
+      const skor = Number(posttest.SKOR) || 0;
+      const kategori = posttest.KATEGORI || '';
+      const cls = skor >= 78 ? 'highlight' : (skor >= 60 ? '' : 'warning');
+      h += '<div class="nilai-item ' + cls + '"><div class="nilai-num">' + skor + '</div><div class="nilai-label">Post Test<br><span style="font-size:9px;">' + kategori + '</span></div></div>';
+    }
+
+    grid.innerHTML = h;
+  }
+
+  /* CATATAN GURU */
+  function renderCatatan(catatan) {
+    const area = document.getElementById('catatanArea');
+    if (!catatan || !catatan.CATATAN) {
+      area.innerHTML = '';
+      return;
+    }
+    area.innerHTML = '<div class="card"><h3><span class="icon">📝</span> Catatan dari Guru</h3><div class="catatan-box"><div class="catatan-title">Pesan untuk kamu:</div><div class="catatan-isi">' + catatan.CATATAN + '</div></div></div>';
+  }
+
+  /* TINDAK LANJUT */
+  function renderTindak(tindak, lkpd) {
+    const area = document.getElementById('tindakArea');
+
+    if (!tindak || tindak.WAJIB_GENERATOR !== 'YA') {
+      area.innerHTML = '';
+      return;
+    }
+
+    if (tindak.STATUS === 'TUNTAS') {
+      area.innerHTML = '<div class="card"><h3><span class="icon">✅</span> Tindak Lanjut</h3><div style="background:var(--soft-green);border:2px solid var(--success);border-radius:10px;padding:14px;font-size:13px;color:#166534;"><strong>Tindak lanjut sudah selesai.</strong> Kamu telah menyelesaikan ' + (tindak.TARGET_SET || 3) + ' set latihan dengan akurasi memenuhi target.</div></div>';
+      return;
+    }
+
+    const setSelesai = Number(tindak.SET_SELESAI) || 0;
+    const targetSet = Number(tindak.TARGET_SET) || 3;
+    const targetAkurasi = Number(tindak.TARGET_AKURASI) || 80;
+    const skorMandiri = Number(tindak.SKOR_MANDIRI) || 0;
+
+    let h = '<div class="card"><h3><span class="icon">⚠️</span> Tindak Lanjut</h3>';
+    h += '<div class="tindak-box">';
+    h += '<div class="tindak-title">Kamu wajib mengerjakan latihan tambahan</div>';
+    h += '<div class="tindak-isi">';
+    h += '<p>Skor LKPD kamu (' + skorMandiri + ') belum mencapai KKTP (78).</p>';
+    h += '<p style="margin-top:6px;"><strong>Kewajiban:</strong> Selesaikan minimal <strong>' + targetSet + ' set</strong> latihan di Web Generator dengan akurasi minimal <strong>' + targetAkurasi + '%</strong>.</p>';
+    h += '<p style="margin-top:6px;">Progres: <strong>' + setSelesai + ' / ' + targetSet + '</strong> set selesai.</p>';
+    h += '<p style="margin-top:8px;"><a href="WebInteraktif8.html">Buka Latihan Generator →</a></p>';
+    h += '</div></div></div>';
+    area.innerHTML = h;
+  }
+
+  function getLevelNum(level) {
+    const s = String(level || '');
+    if (s.includes('1')) return 1;
+    if (s.includes('2')) return 2;
+    if (s.includes('3')) return 3;
+    return 1;
+  }
+
+  /* ENTER */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.id === 'searchName' && selectedName) btnLogin.click();
+  });
+
+  loadNames();
+});
+</script>
+</body>
+</html>
