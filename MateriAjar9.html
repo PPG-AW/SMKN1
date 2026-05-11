@@ -922,13 +922,37 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSelesaiCatatan=document.getElementById('btnSelesaiCatatan');
   const btnCetakCatatan=document.getElementById('btnCetakCatatan');
 
-  if(btnSelesaiCatatan){
-    btnSelesaiCatatan.addEventListener('click',()=>{
-      progress[8]=1;updateUI();
-      if(sheetsOK){
-        callAPI({action:'saveProgress',nama:currentUser,bagian:8,selesaiMateri:countDone()>=TOTAL_BAGIAN?1:0,catatanSelesai:1},function(){});
-        callAPI({action:'selesai',nama:currentUser,komponen:'MATERI',status:'SELESAI',detail:'8 bagian dan catatan selesai'},function(){});
-      }
+ if(btnSelesaiCatatan){
+  btnSelesaiCatatan.addEventListener('click',()=>{
+    progress[8]=1;updateUI();
+    if(sheetsOK){
+
+      // ✅ INI YANG KURANG — update BAGIAN_8 di MateriProgress
+      callAPI({
+        action:'quiz',
+        nama:currentUser,
+        bagian:8,
+        status:'benar',
+        petunjuk:'tidak',
+        detail:'catatan wajib selesai disalin'
+      },function(){});
+
+      callAPI({
+        action:'saveProgress',
+        nama:currentUser,
+        bagian:8,
+        selesaiMateri:countDone()>=TOTAL_BAGIAN?1:0,
+        catatanSelesai:1
+      },function(){});
+
+      callAPI({
+        action:'selesai',
+        nama:currentUser,
+        komponen:'MATERI',
+        status:'SELESAI',
+        detail:'8 bagian dan catatan selesai'
+      },function(){});
+    }
       btnSelesaiCatatan.disabled=true;
       btnSelesaiCatatan.textContent='Catatan Sudah Dicatat';
       btnSelesaiCatatan.style.background='#94a3b8';
