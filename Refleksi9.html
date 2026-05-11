@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Refleksi Pertemuan 9 | Varians dan Simpangan Baku</title>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Segoe UI',Arial,sans-serif;
+  background:#f1f5f9;
+  color:var(--text);
+  line-height:1.6;
+  font-size:15px;
+}
+.top-bar{
+  background:linear-gradient(135deg,var(--primary-dark),var(--primary));
+  color:#fff;
+  padding:12px 16px;
+  text-align:center;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+.top-bar h1{font-size:16px;margin:0 0 2px;}
+.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:#fff;text-decoration:none;font-size:20px;font-weight:700;
+}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+
+/* LOGIN */
+.login-box{
+  background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:400px;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;
+}
+.login-box h2{color:var(--primary-dark);margin-bottom:12px;font-size:18px;}
+.login-box input{
+  width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;
+  font-size:15px;margin-bottom:8px;
+}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box .name-list{
+  max-height:200px;overflow-y:auto;border:1px solid var(--border);
+  border-radius:8px;margin-bottom:12px;text-align:left;
+}
+.login-box .name-item{
+  padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;
+}
+.login-box .name-item:hover{background:var(--soft-blue);}
+.login-box .name-item.selected{background:#dbeafe;font-weight:700;color:var(--primary);}
+.login-box button{
+  background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;
+  font-size:15px;font-weight:700;cursor:pointer;width:100%;
+}
+.login-box button:disabled{opacity:.5;cursor:not-allowed;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--muted);}
+
+/* APP */
+#app{display:none;}
+.user-info{
+  background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:10px;
+  display:flex;justify-content:space-between;align-items:center;font-size:13px;
+  box-shadow:0 2px 6px rgba(0,0,0,.04);
+}
+.user-info .name{font-weight:700;color:var(--primary-dark);}
+.card{
+  background:#fff;border-radius:12px;padding:18px;margin-bottom:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.card h3{
+  color:var(--primary-dark);font-size:16px;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.card h4{color:var(--orange);font-size:14px;margin:12px 0 6px;}
+.info-box{
+  background:var(--soft-blue);border-left:4px solid var(--primary);
+  padding:10px;border-radius:6px;margin:8px 0;font-size:13px;
+}
+.success-box{
+  background:var(--soft-green);border-left:4px solid var(--success);
+  padding:10px;border-radius:6px;margin:8px 0;font-size:13px;
+}
+.warning-box{
+  background:var(--soft-red);border-left:4px solid var(--danger);
+  padding:10px;border-radius:6px;margin:8px 0;font-size:13px;
+}
+.note{
+  background:var(--soft-yellow);border-left:4px solid var(--accent);
+  padding:10px;border-radius:6px;margin:8px 0;font-size:13px;
+}
+
+.question-box{
+  border:1px solid #e2e8f0;border-radius:10px;padding:14px;margin:10px 0;
+  background:#fff;
+}
+.question-num{
+  display:inline-block;background:var(--primary);color:#fff;padding:3px 10px;
+  border-radius:999px;font-size:11px;font-weight:700;margin-bottom:8px;
+}
+.question-box label.main-label{
+  display:block;font-weight:700;color:var(--primary-dark);margin-bottom:8px;
+}
+.question-box select,
+.question-box textarea,
+.question-box input[type="text"]{
+  width:100%;padding:11px 12px;border:2px solid var(--border);border-radius:8px;
+  font-size:14px;
+}
+.question-box select:focus,
+.question-box textarea:focus,
+.question-box input[type="text"]:focus{
+  outline:none;border-color:var(--primary);
+}
+.question-box textarea{min-height:110px;resize:vertical;}
+.question-box.filled{border-color:var(--success);background:var(--soft-green);}
+
+.radio-row{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;
+}
+.radio-pill{
+  border:2px solid var(--border);border-radius:999px;padding:8px 14px;
+  cursor:pointer;font-size:13px;font-weight:700;background:#fff;
+}
+.radio-pill input{display:none;}
+.radio-pill.active-yes{border-color:var(--success);background:var(--soft-green);color:#166534;}
+.radio-pill.active-no{border-color:var(--danger);background:var(--soft-red);color:#991b1b;}
+
+/* STAR */
+.star-wrap{margin-top:10px;}
+.star-label{
+  font-size:13px;color:var(--muted);margin-bottom:8px;display:block;
+}
+.stars{
+  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;
+}
+.star-btn{
+  width:44px;height:44px;border-radius:50%;border:2px solid var(--border);
+  background:#fff;cursor:pointer;font-size:20px;display:flex;align-items:center;
+  justify-content:center;transition:.2s;
+}
+.star-btn:hover{border-color:var(--accent);background:var(--soft-yellow);}
+.star-btn.active{
+  border-color:var(--accent);background:#fef3c7;color:#b45309;
+}
+.star-caption{
+  text-align:center;margin-top:8px;font-size:12px;color:var(--muted);
+}
+
+/* SUBMIT */
+.submit-area{text-align:center;padding:8px 0 20px;}
+.btn{
+  border:none;padding:12px 28px;border-radius:10px;font-size:15px;
+  font-weight:700;cursor:pointer;margin:4px;text-decoration:none;display:inline-block;
+}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* RESULT */
+.result-card{
+  background:#fff;border-radius:16px;padding:28px;text-align:center;
+  box-shadow:0 6px 24px rgba(0,0,0,.1);margin-top:16px;
+}
+.result-card .icon-big{font-size:52px;margin-bottom:10px;}
+.result-card h2{color:var(--success);font-size:22px;margin-bottom:8px;}
+.result-card p{font-size:13px;color:var(--muted);margin-bottom:12px;}
+.result-list{
+  text-align:left;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
+  padding:14px;margin-top:14px;
+}
+.result-list .item{padding:6px 0;border-bottom:1px solid #e2e8f0;font-size:13px;}
+.result-list .item:last-child{border-bottom:none;}
+.result-list .label{font-weight:700;color:var(--primary-dark);}
+
+/* BLOCKED */
+.block-card{
+  background:#fff;border-radius:12px;padding:24px;text-align:center;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+}
+
+@media(max-width:480px){
+  .container{padding:8px;}
+  .card{padding:14px;}
+  .result-card{padding:20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="Pertemuan9.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>Refleksi Pertemuan 9</h1>
+  <p>Varians dan Simpangan Baku Data Tunggal</p>
+</div>
+
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>Masuk ke Refleksi</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ketik nama lalu pilih dari daftar</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button id="btnLogin" disabled>Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<div class="container" id="app">
+
+  <div class="user-info">
+    <span class="name" id="userName">Siswa</span>
+    <span id="userStatus" style="color:var(--muted);font-size:12px;">Memuat data...</span>
+  </div>
+
+  <div id="contentArea"></div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const API = 'https://script.google.com/macros/s/AKfycbwCAdUtxlTHA1mT086VoXVw_Gkx7bAqR_3qdhSOVBN9B_cAKO9wg0xfOXy-FdjwP0Jb/exec';
+  const FALLBACK_NAMES = [
+    'AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA',
+    'AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI',
+    'DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI',
+    'LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI',
+    'NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH',
+    'NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA',
+    'RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI',
+    'SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'
+  ];
+
+  const BAGIAN_MATERI = [
+    '1. Pengertian Varians dan Simpangan Baku',
+    '2. Menghitung Rata-rata (Mean)',
+    '3. Menghitung Selisih (xi - x̄)',
+    '4. Menguadratkan Selisih',
+    '5. Menjumlahkan Kuadrat Selisih',
+    '6. Rumus & Perhitungan Varians',
+    '7. Rumus & Perhitungan Simpangan Baku',
+    '8. Membedakan Varian dan Simpangan Baku'
+  ];
+
+  let currentUser = '';
+  let allNames = [];
+  let selectedName = '';
+  let progressData = null;
+  let starValue = 0;
+  let submitLocked = false;
+
+  const loginSection = document.getElementById('loginSection');
+  const app = document.getElementById('app');
+  const searchName = document.getElementById('searchName');
+  const nameList = document.getElementById('nameList');
+  const btnLogin = document.getElementById('btnLogin');
+  const loginMsg = document.getElementById('loginMsg');
+  const contentArea = document.getElementById('contentArea');
+
+  // FUNGSI CALL API YANG DIPERKUAT
+  function callAPI(p, cb) {
+    const c = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+    p.callback = c;
+    const u = API + '?' + Object.keys(p).map(k => k + '=' + encodeURIComponent(p[k])).join('&');
+    const sc = document.createElement('script');
+    
+    let isTimeout = false;
+    const timeoutId = setTimeout(() => {
+      isTimeout = true;
+      delete window[c];
+      if (sc.parentNode) sc.parentNode.removeChild(sc);
+      if (cb) cb({ok: false, message: "Koneksi terputus atau lambat."});
+    }, 15000);
+
+    window[c] = function(d) {
+      if (isTimeout) return;
+      clearTimeout(timeoutId);
+      delete window[c];
+      if (sc.parentNode) sc.parentNode.removeChild(sc);
+      if (cb) cb(d);
+    };
+    sc.src = u;
+    sc.onerror = function() {
+      if (isTimeout) return;
+      clearTimeout(timeoutId);
+      delete window[c];
+      if (sc.parentNode) sc.parentNode.removeChild(sc);
+      if (cb) cb({ok: false, message: "Gagal memanggil server."});
+    };
+    document.head.appendChild(sc);
+  }
+
+  function loadNames() {
+    callAPI({ action: 'getNames' }, function(d) {
+      if (d && d.ok && d.names && d.names.length) {
+        allNames = d.names;
+      } else {
+        allNames = FALLBACK_NAMES;
+      }
+      renderNames('');
+    });
+    setTimeout(() => {
+      if (!allNames.length) {
+        allNames = FALLBACK_NAMES;
+        renderNames('');
+      }
+    }, 5000);
+  }
+
+  function renderNames(f) {
+    const fl = f.trim().toUpperCase();
+    const list = fl ? allNames.filter(n => n.toUpperCase().includes(fl)) : allNames;
+    nameList.innerHTML = '';
+    list.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'name-item' + (name === selectedName ? ' selected' : '');
+      div.textContent = name;
+      div.addEventListener('click', () => {
+        selectedName = name;
+        searchName.value = name;
+        btnLogin.disabled = false;
+        renderNames(name);
+      });
+      nameList.appendChild(div);
+    });
+  }
+
+  searchName.addEventListener('input', () => {
+    selectedName = '';
+    btnLogin.disabled = true;
+    renderNames(searchName.value);
+  });
+
+  btnLogin.addEventListener('click', () => {
+    if (!selectedName) return;
+    currentUser = selectedName;
+    btnLogin.disabled = true;
+    loginMsg.textContent = 'Memuat data...';
+    callAPI({ action: 'login', nama: currentUser, sumber: 'REFLEKSI', device: 'HP' }, function() {});
+    loadProgress();
+  });
+
+  function loadProgress() {
+    callAPI({ action: 'getProgress', nama: currentUser }, function(d) {
+      progressData = (d && d.ok) ? d : null;
+      showApp();
+    });
+    setTimeout(() => {
+      if (loginSection.style.display !== 'none') {
+        progressData = null;
+        showApp();
+      }
+    }, 6000);
+  }
+
+  function showApp() {
+    loginSection.style.display = 'none';
+    app.style.display = 'block';
+    document.getElementById('userName').textContent = currentUser;
+
+    const posttest = progressData && progressData.posttest ? progressData.posttest : null;
+    const refleksi = progressData && progressData.refleksi ? progressData.refleksi : null;
+
+    if (refleksi) {
+      document.getElementById('userStatus').textContent = 'Refleksi sudah diisi';
+      renderExistingRefleksi(refleksi, posttest);
+      return;
+    }
+
+    if (!posttest) {
+      document.getElementById('userStatus').textContent = 'Post test belum selesai';
+      renderBlocked();
+      return;
+    }
+
+    document.getElementById('userStatus').textContent = 'Siap mengisi refleksi';
+    renderForm(posttest);
+  }
+
+  function renderBlocked() {
+    contentArea.innerHTML = `
+      <div class="block-card">
+        <h2 style="color:var(--danger);font-size:22px;margin-bottom:10px;">Refleksi Belum Bisa Dibuka</h2>
+        <div class="warning-box" style="text-align:left;">
+          <strong>Perhatian:</strong> Kamu perlu menyelesaikan <strong>Post Test</strong> terlebih dahulu sebelum mengisi refleksi.
+        </div>
+        <div style="margin-top:12px;">
+          <a href="AssesmentPost9.html" class="btn btn-orange">Kerjakan Post Test</a>
+          <a href="Pertemuan9.html" class="btn btn-primary">Kembali</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderExistingRefleksi(refleksi, posttest) {
+    const skor = posttest ? (posttest.SKOR || '-') : '-';
+    const kategori = posttest ? (posttest.KATEGORI || '-') : '-';
+
+    contentArea.innerHTML = `
+      <div class="result-card">
+        <div class="icon-big">✅</div>
+        <h2>Refleksi Sudah Terkirim</h2>
+        <p>Terima kasih. Jawaban refleksi kamu sudah tersimpan.</p>
+
+        <div class="info-box" style="text-align:left;">
+          <strong>Skor Post Test:</strong> ${skor}<br>
+          <strong>Kategori:</strong> ${kategori}
+        </div>
+
+        <div class="result-list">
+          <div class="item"><span class="label">Bagian paling mudah:</span><br>${refleksi.MUDAH || '-'}</div>
+          <div class="item"><span class="label">Bagian yang masih membingungkan:</span><br>${refleksi.SULIT || '-'}</div>
+          <div class="item"><span class="label">Skor bantuan web materi:</span><br>${refleksi.WEB_SKOR || '-'} / 5</div>
+          <div class="item"><span class="label">LKPD sesuai level membantu?</span><br>${refleksi.LKPD_BANTU || '-'}<br>${refleksi.LKPD_ALASAN || ''}</div>
+          <div class="item"><span class="label">Hal baru yang dipelajari:</span><br>${refleksi.HAL_BARU || '-'}</div>
+          <div class="item"><span class="label">Saran untuk guru:</span><br>${refleksi.SARAN || '-'}</div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <a href="Pertemuan9.html" class="btn btn-primary">Kembali ke Halaman Utama</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderForm(posttest) {
+    const skor = posttest ? (posttest.SKOR || '-') : '-';
+    const kategori = posttest ? (posttest.KATEGORI || '-') : '-';
+
+    let optionsMateri = '<option value="">Pilih salah satu bagian...</option>';
+    BAGIAN_MATERI.forEach(b => optionsMateri += `<option value="${b}">${b}</option>`);
+
+    contentArea.innerHTML = `
+      <div class="card">
+        <h3>💭 Refleksi Pembelajaran</h3>
+        <div class="info-box">
+          <strong>Skor Post Test:</strong> ${skor}<br>
+          <strong>Kategori:</strong> ${kategori}
+        </div>
+        <div class="note">
+          Jawablah dengan jujur. Refleksi ini membantu Bapak memahami bagian yang sudah kamu kuasai dan bagian yang masih perlu diperbaiki.
+        </div>
+      </div>
+
+      <div class="card" id="formCard">
+        <div class="question-box" id="q1box">
+          <div class="question-num">Pertanyaan 1</div>
+          <label class="main-label">Bagian mana yang paling mudah dipahami?</label>
+          <select id="mudah">${optionsMateri}</select>
+        </div>
+
+        <div class="question-box" id="q2box">
+          <div class="question-num">Pertanyaan 2</div>
+          <label class="main-label">Bagian mana yang masih membingungkan?</label>
+          <select id="sulit">${optionsMateri}</select>
+        </div>
+
+        <div class="question-box" id="q3box">
+          <div class="question-num">Pertanyaan 3</div>
+          <label class="main-label">Apakah web materi membantu kamu belajar Varians dan Simpangan Baku?</label>
+          <div class="star-wrap">
+            <span class="star-label">Beri nilai 1 sampai 5 bintang</span>
+            <div class="stars" id="starsWrap">
+              <button type="button" class="star-btn" data-value="1">★</button>
+              <button type="button" class="star-btn" data-value="2">★</button>
+              <button type="button" class="star-btn" data-value="3">★</button>
+              <button type="button" class="star-btn" data-value="4">★</button>
+              <button type="button" class="star-btn" data-value="5">★</button>
+            </div>
+            <div class="star-caption" id="starCaption">Belum memilih</div>
+          </div>
+        </div>
+
+        <div class="question-box" id="q4box">
+          <div class="question-num">Pertanyaan 4</div>
+          <label class="main-label">Apakah pembagian LKPD sesuai Level (Pre Test) membantu kamu memahami materi?</label>
+          <div class="radio-row">
+            <label class="radio-pill" id="pillYa"><input type="radio" name="lkpdBantu" value="Ya">Ya</label>
+            <label class="radio-pill" id="pillTidak"><input type="radio" name="lkpdBantu" value="Tidak">Tidak</label>
+          </div>
+          <div style="margin-top:10px;">
+            <label class="main-label" style="font-size:13px;">Tuliskan alasanmu</label>
+            <textarea id="lkpdAlasan" placeholder="Contoh: LKPD Level 1 membantu langkah demi langkah..."></textarea>
+          </div>
+        </div>
+
+        <div class="question-box" id="q5box">
+          <div class="question-num">Pertanyaan 5</div>
+          <label class="main-label">Apa hal baru yang kamu pelajari hari ini?</label>
+          <textarea id="halBaru" placeholder="Tulis jawabanmu di sini..."></textarea>
+        </div>
+
+        <div class="question-box" id="q6box">
+          <div class="question-num">Pertanyaan 6</div>
+          <label class="main-label">Saran untuk guru agar pembelajaran berikutnya lebih baik?</label>
+          <textarea id="saran" placeholder="Tulis saranmu di sini..."></textarea>
+        </div>
+
+        <div class="submit-area">
+          <button class="btn btn-success" id="btnSubmit" disabled>Kirim Refleksi</button>
+          <p style="font-size:12px;color:var(--muted);margin-top:8px;" id="submitMsg"></p>
+        </div>
+      </div>
+    `;
+
+    bindFormEvents();
+  }
+
+  function bindFormEvents() {
+    const mudah = document.getElementById('mudah');
+    const sulit = document.getElementById('sulit');
+    const lkpdAlasan = document.getElementById('lkpdAlasan');
+    const halBaru = document.getElementById('halBaru');
+    const saran = document.getElementById('saran');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const submitMsg = document.getElementById('submitMsg');
+
+    if (!mudah) return;
+
+    /* star */
+    document.querySelectorAll('.star-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        starValue = Number(btn.dataset.value);
+        document.querySelectorAll('.star-btn').forEach(b => {
+          b.classList.toggle('active', Number(b.dataset.value) <= starValue);
+        });
+        const captions = {
+          1:'1 bintang — sangat kurang membantu',
+          2:'2 bintang — kurang membantu',
+          3:'3 bintang — cukup membantu',
+          4:'4 bintang — membantu',
+          5:'5 bintang — sangat membantu'
+        };
+        document.getElementById('starCaption').textContent = captions[starValue];
+        updateFormStatus();
+      });
+    });
+
+    /* radio */
+    document.querySelectorAll('input[name="lkpdBantu"]').forEach(r => {
+      r.addEventListener('change', () => {
+        document.getElementById('pillYa').classList.toggle('active-yes', r.value === 'Ya' && r.checked);
+        document.getElementById('pillTidak').classList.toggle('active-no', r.value === 'Tidak' && r.checked);
+        if (r.value === 'Ya' && r.checked) {
+          document.getElementById('pillTidak').classList.remove('active-no');
+        }
+        if (r.value === 'Tidak' && r.checked) {
+          document.getElementById('pillYa').classList.remove('active-yes');
+        }
+        updateFormStatus();
+      });
+    });
+
+    [mudah, sulit, lkpdAlasan, halBaru, saran].forEach(el => {
+      el.addEventListener('input', updateFormStatus);
+      el.addEventListener('change', updateFormStatus);
+    });
+
+    function updateFormStatus() {
+      toggleFilled('q1box', mudah.value.trim() !== '');
+      toggleFilled('q2box', sulit.value.trim() !== '');
+      toggleFilled('q3box', starValue > 0);
+      const lkpdRadio = document.querySelector('input[name="lkpdBantu"]:checked');
+      toggleFilled('q4box', !!lkpdRadio && lkpdAlasan.value.trim() !== '');
+      toggleFilled('q5box', halBaru.value.trim() !== '');
+      toggleFilled('q6box', saran.value.trim() !== '');
+
+      const ready = (
+        mudah.value.trim() !== '' &&
+        sulit.value.trim() !== '' &&
+        starValue > 0 &&
+        !!lkpdRadio &&
+        lkpdAlasan.value.trim() !== '' &&
+        halBaru.value.trim() !== '' &&
+        saran.value.trim() !== ''
+      );
+
+      btnSubmit.disabled = !ready;
+      submitMsg.textContent = ready ? 'Semua pertanyaan sudah terisi. Kamu bisa mengirim refleksi.' : '';
+    }
+
+    function toggleFilled(id, filled) {
+      const box = document.getElementById(id);
+      if (box) box.classList.toggle('filled', filled);
+    }
+
+    btnSubmit.addEventListener('click', () => {
+      if (submitLocked) return;
+      if (!confirm('Apakah kamu yakin ingin mengirim refleksi?')) return;
+      submitLocked = true;
+      btnSubmit.disabled = true;
+      submitMsg.textContent = 'Menyimpan refleksi... mohon tunggu.';
+
+      const lkpdRadio = document.querySelector('input[name="lkpdBantu"]:checked');
+
+      // PAKSA KIRIM DATA KE API
+      callAPI({
+        action: 'refleksi',
+        nama: currentUser,
+        mudah: mudah.value,
+        sulit: sulit.value,
+        webSkor: starValue,
+        lkpdBantu: lkpdRadio ? lkpdRadio.value : '',
+        lkpdAlasan: lkpdAlasan.value.trim(),
+        halBaru: halBaru.value.trim(),
+        saran: saran.value.trim()
+      }, function(res) {
+        
+        if (!res || !res.ok) {
+           submitLocked = false;
+           btnSubmit.disabled = false;
+           submitMsg.textContent = '';
+           alert("Gagal mengirim refleksi: " + (res ? res.message : "Jaringan bermasalah. Coba lagi."));
+           return;
+        }
+
+        callAPI({
+          action: 'selesai',
+          nama: currentUser,
+          komponen: 'REFLEKSI',
+          status: 'SELESAI',
+          detail: 'refleksi terkirim'
+        }, function(){});
+
+        showSuccess({
+          mudah: mudah.value,
+          sulit: sulit.value,
+          webSkor: starValue,
+          lkpdBantu: lkpdRadio ? lkpdRadio.value : '',
+          lkpdAlasan: lkpdAlasan.value.trim(),
+          halBaru: halBaru.value.trim(),
+          saran: saran.value.trim()
+        });
+      });
+    });
+  }
+
+  function showSuccess(data) {
+    contentArea.innerHTML = `
+      <div class="result-card">
+        <div class="icon-big">✅</div>
+        <h2>Refleksi Berhasil Dikirim</h2>
+        <p>Terima kasih <strong>${currentUser}</strong>. Jawaban refleksi kamu sudah tersimpan.</p>
+
+        <div class="success-box" style="text-align:left;">
+          <strong>Refleksi membantu Bapak</strong> memahami bagian yang sudah kamu kuasai dan bagian yang masih perlu diperkuat pada pembelajaran berikutnya.
+        </div>
+
+        <div class="result-list">
+          <div class="item"><span class="label">Bagian paling mudah:</span><br>${data.mudah || data.MUDAH}</div>
+          <div class="item"><span class="label">Bagian yang masih membingungkan:</span><br>${data.sulit || data.SULIT}</div>
+          <div class="item"><span class="label">Skor bantuan web materi:</span><br>${data.webSkor || data.WEB_SKOR} / 5</div>
+          <div class="item"><span class="label">LKPD sesuai level membantu?</span><br>${data.lkpdBantu || data.LKPD_BANTU}<br>${data.lkpdAlasan || data.LKPD_ALASAN}</div>
+          <div class="item"><span class="label">Hal baru yang dipelajari:</span><br>${data.halBaru || data.HAL_BARU}</div>
+          <div class="item"><span class="label">Saran untuk guru:</span><br>${data.saran || data.SARAN}</div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <a href="Pertemuan9.html" class="btn btn-primary">Kembali ke Halaman Utama</a>
+        </div>
+      </div>
+    `;
+    document.getElementById('userStatus').textContent = 'Refleksi sudah diisi';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.id === 'searchName' && selectedName) {
+      btnLogin.click();
+    }
+  });
+
+  loadNames();
+});
+</script>
+</body>
+</html>

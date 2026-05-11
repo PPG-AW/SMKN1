@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Materi Ajar Pertemuan 9 | Varians dan Simpangan Baku</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}
+.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+.login-box{background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:400px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:12px;font-size:18px;}
+.login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:8px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box .name-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;text-align:left;}
+.login-box .name-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;}
+.login-box .name-item:hover{background:var(--soft-blue);}
+.login-box .name-item.selected{background:#dbeafe;font-weight:700;color:var(--primary);}
+.login-box button{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.login-box button:disabled{opacity:.5;cursor:not-allowed;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--muted);}
+.progress-wrap{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;}
+.progress-bar{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));border-radius:999px;transition:width .5s;}
+.bagian{background:#fff;border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);display:none;}
+.bagian.active{display:block;}
+.bagian.locked{opacity:.5;pointer-events:none;}
+.bagian-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.bagian-num{width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;}
+.bagian-num.done{background:var(--success);}
+.bagian-title{font-size:16px;font-weight:700;color:var(--primary-dark);}
+.bagian h3{color:var(--primary);font-size:14px;margin:12px 0 6px;border-bottom:1px solid #e2e8f0;padding-bottom:4px;}
+.bagian h4{color:var(--orange);font-size:13px;margin:10px 0 4px;}
+.bagian p{margin:0 0 8px;}
+.bagian ul,.bagian ol{padding-left:20px;margin:0 0 8px;}
+.bagian li{margin:0 0 4px;}
+.formula{background:var(--primary-dark);color:#fff;padding:12px;border-radius:8px;text-align:center;font-size:14px;margin:8px 0;overflow-x:auto;}
+.note{background:var(--soft-yellow);border-left:4px solid var(--accent);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.info-box{background:var(--soft-blue);border-left:4px solid var(--primary);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--border);padding:7px 8px;vertical-align:middle;text-align:center;}
+th{background:#dbeafe;color:#1e3a8a;font-weight:700;}
+tr.jumlah-row td,tr.jumlah-row th{background:#fef3c7;font-weight:700;}
+
+/* CEL TABEL RUMPANG */
+.cell-input{background:#f5f3ff;border:2px dashed var(--purple) !important;}
+.cell-done{background:#ecfdf5 !important;border:2px solid var(--success) !important;}
+.cell-wrong{background:#fef2f2 !important;border:2px solid var(--danger) !important;}
+
+/* INPUT DALAM TABEL */
+.tabel-input-wrap{display:flex;align-items:center;justify-content:center;gap:4px;}
+.tabel-input{
+  width:64px;padding:6px;
+  border:2px solid var(--border);border-radius:6px;
+  font-size:13px;text-align:center;background:#fff;
+}
+.tabel-input:focus{outline:none;border-color:var(--primary);}
+.tabel-input.correct{border-color:var(--success);background:#f0fdf4;color:#166534;font-weight:700;}
+.tabel-input.wrong{border-color:var(--danger);background:#fef2f2;color:#991b1b;font-weight:700;}
+
+/* INPUT BAWAH TABEL */
+.below-input-wrap{
+  display:flex;align-items:center;justify-content:center;
+  gap:8px;margin:6px auto;padding:8px 10px;
+  background:#f8fafc;border:1px solid var(--border);
+  border-radius:8px;max-width:320px;
+}
+.below-input-wrap label{font-weight:700;color:var(--primary-dark);font-size:13px;min-width:80px;}
+.below-input{
+  flex:0 0 110px;max-width:120px;
+  padding:8px 10px;border:2px solid var(--border);
+  border-radius:8px;font-size:14px;text-align:center;background:#fff;
+}
+.below-input:focus{outline:none;border-color:var(--primary);}
+.below-input.correct{border-color:var(--success);background:#f0fdf4;color:#166534;font-weight:700;}
+.below-input.wrong{border-color:var(--danger);background:#fef2f2;color:#991b1b;font-weight:700;}
+
+/* TOMBOL √ */
+.sqrt-btn{
+  background:var(--purple);color:#fff;border:none;
+  padding:8px 12px;border-radius:6px;font-size:16px;
+  font-weight:700;cursor:pointer;flex-shrink:0;
+}
+.sqrt-btn:hover{background:#6d28d9;}
+
+/* QUIZ */
+.quiz-box{background:var(--soft-purple);border:2px solid var(--purple);border-radius:10px;padding:16px;margin:14px 0;}
+.quiz-box h4{color:var(--purple);margin:0 0 10px;font-size:14px;}
+.quiz-fb{margin-top:8px;padding:8px;border-radius:6px;font-size:13px;display:none;}
+.quiz-fb.show{display:block;}
+.quiz-fb.correct{background:var(--soft-green);color:#166534;border:1px solid #86efac;}
+.quiz-fb.wrong{background:var(--soft-red);color:#991b1b;border:1px solid #fca5a5;}
+.hint-btn{background:none;border:1px solid var(--purple);color:var(--purple);padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;margin-top:6px;}
+.hint-text{background:var(--soft-yellow);padding:8px;border-radius:6px;margin-top:6px;font-size:12px;display:none;}
+.hint-text.show{display:block;}
+
+.btn{border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+
+.nav-bagian{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;justify-content:center;}
+.nav-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;transition:.2s;}
+.nav-dot.done{background:var(--success);color:#fff;border-color:var(--success);}
+.nav-dot.current{background:var(--primary);color:#fff;border-color:var(--primary);}
+.nav-dot.locked{opacity:.4;cursor:not-allowed;}
+.user-info{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.user-info .name{font-weight:700;color:var(--primary-dark);}
+#app{display:none;}
+.input-note{font-size:11px;color:var(--muted);margin:2px 0 6px;text-align:center;}
+
+@media(max-width:480px){
+  .container{padding:8px;}.bagian{padding:14px;}
+  table{font-size:11px;}th,td{padding:5px 3px;}
+  .tabel-input{width:52px;font-size:11px;}
+  .below-input-wrap{max-width:100%;justify-content:flex-start;}
+  .below-input{flex:0 0 90px;max-width:100px;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="Pertemuan9.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>Materi Pertemuan 9</h1>
+  <p>Varians dan Simpangan Baku Data Tunggal</p>
+</div>
+
+<!-- LOGIN -->
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>Masuk ke Materi</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ketik nama lalu pilih dari daftar</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button id="btnLogin" disabled>Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="container" id="app">
+  <div class="user-info">
+    <span class="name" id="userName"></span>
+    <span id="userStatus" style="color:var(--muted);font-size:12px;"></span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Progres Materi</span>
+      <span id="progressText">0 / 8</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="nav-bagian" id="navDots"></div>
+  <div id="bagianContainer">
+
+    <!-- ========== BAGIAN 1 ========== -->
+    <div class="bagian" id="bagian1">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num1">1</div>
+        <div class="bagian-title">Mengapa Mean Saja Tidak Cukup?</div>
+      </div>
+      <p>Kamu sudah belajar cara menghitung <strong>mean</strong> (rata-rata). Tapi apakah mean sudah cukup untuk menggambarkan data?</p>
+      <p>Perhatikan dua data penjualan harian dua toko selama 5 hari (ribu rupiah):</p>
+      <table>
+        <tr><th>Hari</th><th>Toko A</th><th>Toko B</th></tr>
+        <tr><td>1</td><td>48</td><td>10</td></tr>
+        <tr><td>2</td><td>50</td><td>30</td></tr>
+        <tr><td>3</td><td>52</td><td>50</td></tr>
+        <tr><td>4</td><td>48</td><td>70</td></tr>
+        <tr><td>5</td><td>52</td><td>90</td></tr>
+        <tr class="jumlah-row"><th>Mean</th><th>50</th><th>50</th></tr>
+      </table>
+      <div class="info-box">
+        Mean kedua toko <strong>sama</strong> yaitu 50 ribu rupiah. Namun <strong>Toko A sangat stabil</strong> sedangkan <strong>Toko B sangat naik-turun</strong>. Mean tidak bisa menunjukkan perbedaan ini.
+      </div>
+      <p>Untuk mengukur seberapa jauh data menyebar dari mean-nya, kita gunakan <strong>varians</strong> dan <strong>simpangan baku</strong>.</p>
+
+      <div class="quiz-box" id="quiz1">
+        <h4>Cek Pemahaman Bagian 1</h4>
+        <p>Dari dua toko di atas, toko mana yang penjualannya <strong>lebih bervariasi</strong>?</p>
+        <select id="q1ans" style="width:100%;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin:6px 0;background:#fff;">
+          <option value="">Pilih jawaban...</option>
+          <option value="A">Toko A</option>
+          <option value="B">Toko B</option>
+          <option value="sama">Keduanya sama</option>
+        </select>
+        <div class="quiz-fb" id="q1fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q1check">Periksa</button>
+          <button class="hint-btn" id="q1hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q1hintText">Toko A: 48, 50, 52, 48, 52 nilainya sangat dekat. Toko B: 10, 30, 50, 70, 90 nilainya sangat jauh berbeda. Toko mana yang lebih naik-turun?</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 2 ========== -->
+    <div class="bagian" id="bagian2">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num2">2</div>
+        <div class="bagian-title">Mengingat Kembali Mean</div>
+      </div>
+      <p>Sebelum menghitung varians, kita perlu menghitung <strong>mean</strong> terlebih dahulu karena varians mengukur jarak setiap data terhadap mean.</p>
+      <div class="formula">\[ \bar{x} = \frac{\sum x_i}{n} \]</div>
+      <h4>Contoh</h4>
+      <p>Data penjualan harian sebuah toko selama 5 hari (ribu rupiah): <strong>4, 6, 8, 10, 12</strong></p>
+      <div class="formula">\[ \bar{x} = \frac{4+6+8+10+12}{5} = \frac{40}{5} = 8 \]</div>
+      <p>Mean penjualan harian adalah <strong>8 ribu rupiah</strong>.</p>
+      <div class="note">Mean adalah titik pusat data. Varians mengukur rata-rata kuadrat jarak setiap data terhadap titik pusat ini.</div>
+
+      <div class="quiz-box" id="quiz2">
+        <h4>Cek Pemahaman Bagian 2</h4>
+        <p>Data jumlah pengunjung toko selama 5 hari (orang): <strong>2, 4, 6, 8, 10</strong></p>
+        <p>Lengkapi perhitungan mean berikut:</p>
+        <div class="formula">\[ \bar{x} = \frac{2+4+6+8+10}{5} = \frac{[...]}{5} = [...] \]</div>
+        <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px 0;">
+          <div class="below-input-wrap" style="max-width:170px;">
+            <label>\(\sum x_i =\)</label>
+            <input type="number" id="q2a" class="below-input" placeholder="..."/>
+          </div>
+          <div class="below-input-wrap" style="max-width:170px;">
+            <label>Mean =</label>
+            <input type="number" id="q2b" class="below-input" placeholder="..."/>
+          </div>
+        </div>
+        <div class="quiz-fb" id="q2fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q2check">Periksa</button>
+          <button class="hint-btn" id="q2hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q2hintText">Jumlahkan semua data: 2+4+6+8+10 = ? Kemudian bagi dengan 5.</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 3 ========== -->
+    <div class="bagian" id="bagian3">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num3">3</div>
+        <div class="bagian-title">Menghitung Selisih terhadap Mean</div>
+      </div>
+      <p>Langkah berikutnya adalah menghitung <strong>selisih setiap data terhadap mean</strong>, yaitu \(x_i - \bar{x}\). Kita gunakan tabel bantu.</p>
+      <p>Selisih bisa bernilai positif, negatif, atau nol. <strong>Jumlah seluruh selisih selalu nol</strong>.</p>
+      <h4>Contoh</h4>
+      <p>Data: 4, 6, 8, 10, 12 dengan mean = 8</p>
+      <table>
+        <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th></tr>
+        <tr><td>1</td><td>4</td><td>4 − 8 = <strong>−4</strong></td></tr>
+        <tr><td>2</td><td>6</td><td>6 − 8 = <strong>−2</strong></td></tr>
+        <tr><td>3</td><td>8</td><td>8 − 8 = <strong>0</strong></td></tr>
+        <tr><td>4</td><td>10</td><td>10 − 8 = <strong>2</strong></td></tr>
+        <tr><td>5</td><td>12</td><td>12 − 8 = <strong>4</strong></td></tr>
+        <tr class="jumlah-row"><th>Jumlah</th><th>40</th><th><strong>0</strong></th></tr>
+      </table>
+      <div class="note"><strong>Cek:</strong> Jumlah kolom selisih = 0. Jika bukan nol, periksa kembali nilai mean atau pengisian kolom selisih.</div>
+
+      <div class="quiz-box" id="quiz3">
+        <h4>Cek Pemahaman Bagian 3</h4>
+        <p>Data: 2, 4, 6, 8, 10 dengan mean = 6. Isi kolom \(x_i - \bar{x}\) pada tabel berikut:</p>
+        <table>
+          <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th></tr>
+          <tr>
+            <td>1</td><td>2</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t3r1" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+          <tr>
+            <td>2</td><td>4</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t3r2" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+          <tr>
+            <td>3</td><td>6</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t3r3" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+          <tr>
+            <td>4</td><td>8</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t3r4" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+          <tr>
+            <td>5</td><td>10</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t3r5" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+          <tr class="jumlah-row">
+            <th>Jumlah</th><th>30</th>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t3jumlah" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+        </table>
+        <div class="quiz-fb" id="q3fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q3check">Periksa</button>
+          <button class="hint-btn" id="q3hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q3hintText">Kurangi setiap data dengan mean: 2−6=?, 4−6=?, 6−6=?, 8−6=?, 10−6=? Kemudian jumlahkan semua selisih.</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 4 ========== -->
+    <div class="bagian" id="bagian4">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num4">4</div>
+        <div class="bagian-title">Mengkuadratkan Selisih</div>
+      </div>
+      <p>Mengapa selisih perlu dikuadratkan? Karena jumlah selisih selalu nol sehingga tidak bisa langsung dijumlahkan. Dengan dikuadratkan, semua nilai menjadi <strong>positif</strong>.</p>
+      <div class="warning-box"><strong>Penting:</strong> Kuadrat bilangan negatif selalu positif. Contoh: \((-4)^2 = 16\), bukan \(-16\).</div>
+      <h4>Contoh</h4>
+      <p>Data: 4, 6, 8, 10, 12 dengan mean = 8</p>
+      <table>
+        <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\((x_i - \bar{x})^2\)</th></tr>
+        <tr><td>1</td><td>4</td><td>−4</td><td>(−4)² = <strong>16</strong></td></tr>
+        <tr><td>2</td><td>6</td><td>−2</td><td>(−2)² = <strong>4</strong></td></tr>
+        <tr><td>3</td><td>8</td><td>0</td><td>0² = <strong>0</strong></td></tr>
+        <tr><td>4</td><td>10</td><td>2</td><td>2² = <strong>4</strong></td></tr>
+        <tr><td>5</td><td>12</td><td>4</td><td>4² = <strong>16</strong></td></tr>
+        <tr class="jumlah-row"><th>Jumlah</th><th>40</th><th>0</th><th><strong>40</strong></th></tr>
+      </table>
+
+      <div class="quiz-box" id="quiz4">
+        <h4>Cek Pemahaman Bagian 4</h4>
+        <p>Data: 2, 4, 6, 8, 10 dengan mean = 6. Selisih sudah diketahui: −4, −2, 0, 2, 4.</p>
+        <p>Isi kolom \((x_i - \bar{x})^2\) pada tabel berikut:</p>
+        <table>
+          <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\((x_i - \bar{x})^2\)</th></tr>
+          <tr>
+            <td>1</td><td>2</td><td>−4</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t4r1" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+          <tr>
+            <td>2</td><td>4</td><td>−2</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t4r2" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+          <tr>
+            <td>3</td><td>6</td><td>0</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t4r3" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+          <tr>
+            <td>4</td><td>8</td><td>2</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t4r4" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+          <tr>
+            <td>5</td><td>10</td><td>4</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t4r5" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+          <tr class="jumlah-row">
+            <th>Jumlah</th><th>30</th><th>0</th>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="t4jumlah" class="tabel-input" placeholder="..."/></div></td>
+          </tr>
+        </table>
+        <div class="quiz-fb" id="q4fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q4check">Periksa</button>
+          <button class="hint-btn" id="q4hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q4hintText">Kuadratkan setiap selisih: (−4)²=16, (−2)²=4, 0²=0, 2²=4, 4²=16. Kemudian jumlahkan: 16+4+0+4+16=?</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 5 ========== -->
+    <div class="bagian" id="bagian5">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num5">5</div>
+        <div class="bagian-title">Menjumlahkan Kuadrat Selisih</div>
+      </div>
+      <p>Baris terakhir tabel bantu adalah <strong>jumlah seluruh kuadrat selisih</strong>:</p>
+      <div class="formula">\[ \sum(x_i - \bar{x})^2 \]</div>
+      <p>Nilai ini menjadi <strong>pembilang</strong> dalam rumus varians.</p>
+      <h4>Contoh</h4>
+      <p>Dari tabel bagian 4: kolom \((x_i-\bar{x})^2\) berisi 16, 4, 0, 4, 16.</p>
+      <div class="formula">\[ \sum(x_i - \bar{x})^2 = 16 + 4 + 0 + 4 + 16 = 40 \]</div>
+      <div class="info-box">Nilai 40 ini adalah baris jumlah tabel bantu yang akan digunakan untuk menghitung varians.</div>
+
+      <div class="quiz-box" id="quiz5">
+        <h4>Cek Pemahaman Bagian 5</h4>
+        <p>Dari Bagian 4: kolom \((x_i-\bar{x})^2\) berisi 16, 4, 0, 4, 16.</p>
+        <p>Hitung \(\sum(x_i - \bar{x})^2\):</p>
+        <div class="formula">\[ \sum(x_i - \bar{x})^2 = 16 + 4 + 0 + 4 + 16 = [...] \]</div>
+        <div class="below-input-wrap">
+          <label>\(\sum(x_i-\bar{x})^2 =\)</label>
+          <input type="number" id="q5ans" class="below-input" placeholder="..."/>
+        </div>
+        <div class="quiz-fb" id="q5fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q5check">Periksa</button>
+          <button class="hint-btn" id="q5hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q5hintText">Jumlahkan: 16 + 4 + 0 + 4 + 16 = ?</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 6 ========== -->
+    <div class="bagian" id="bagian6">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num6">6</div>
+        <div class="bagian-title">Menghitung Varians</div>
+      </div>
+      <p><strong>Varians</strong> adalah rata-rata dari kuadrat selisih. Rumusnya:</p>
+      <div class="formula">\[ \sigma^2 = \frac{\sum(x_i - \bar{x})^2}{n} \]</div>
+      <table>
+        <tr><th>Simbol</th><th>Keterangan</th></tr>
+        <tr><td>\(\sigma^2\)</td><td>Varians</td></tr>
+        <tr><td>\(\sum(x_i - \bar{x})^2\)</td><td>Jumlah kuadrat selisih (baris jumlah tabel bantu)</td></tr>
+        <tr><td>\(n\)</td><td>Banyak data</td></tr>
+      </table>
+      <h4>Contoh</h4>
+      <p>Data: 4, 6, 8, 10, 12. Mean = 8. \(\sum(x_i-\bar{x})^2 = 40\). \(n = 5\).</p>
+      <div class="formula">\[ \sigma^2 = \frac{40}{5} = 8 \]</div>
+      <div class="info-box">
+        <strong>Makna varians = 8:</strong> Rata-rata kuadrat jarak setiap data terhadap mean adalah 8.
+        Semakin besar varians, semakin besar penyebaran data dari mean-nya.
+      </div>
+
+      <div class="quiz-box" id="quiz6">
+        <h4>Cek Pemahaman Bagian 6</h4>
+        <p>Dari Bagian 5: \(\sum(x_i-\bar{x})^2 = 40\) dan \(n = 5\).</p>
+        <p>Hitung varians:</p>
+        <div class="formula">\[ \sigma^2 = \frac{40}{5} = [...] \]</div>
+        <div class="below-input-wrap">
+          <label>\(\sigma^2 =\)</label>
+          <input type="number" id="q6ans" class="below-input" placeholder="..."/>
+        </div>
+        <div class="quiz-fb" id="q6fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q6check">Periksa</button>
+          <button class="hint-btn" id="q6hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q6hintText">Varians = 40 dibagi 5 = ?</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 7 ========== -->
+    <div class="bagian" id="bagian7">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num7">7</div>
+        <div class="bagian-title">Menghitung Simpangan Baku dan Menafsirkan</div>
+      </div>
+      <p><strong>Simpangan baku</strong> adalah akar kuadrat dari varians:</p>
+      <div class="formula">\[ \sigma = \sqrt{\sigma^2} \]</div>
+      <p>Simpangan baku memiliki <strong>satuan yang sama</strong> dengan data asli. Hasilnya ditulis dalam <strong>bentuk akar yang disederhanakan</strong>.</p>
+
+      <h4>Cara menyederhanakan akar</h4>
+      <div class="info-box">
+        <strong>Langkah:</strong> Cari bilangan kuadrat sempurna yang menjadi faktor.
+        <ul style="margin-top:6px;">
+          <li>\(\sqrt{8} = \sqrt{4 \times 2} = \sqrt{4} \times \sqrt{2} = 2\sqrt{2}\)</li>
+          <li>\(\sqrt{12} = \sqrt{4 \times 3} = 2\sqrt{3}\)</li>
+          <li>\(\sqrt{18} = \sqrt{9 \times 2} = 3\sqrt{2}\)</li>
+          <li>\(\sqrt{4} = 2\) (sudah bilangan bulat)</li>
+        </ul>
+      </div>
+
+      <h4>Contoh perhitungan</h4>
+      <p>Data: 4, 6, 8, 10, 12. Varians = 8.</p>
+      <div class="formula">\[ \sigma = \sqrt{8} = \sqrt{4 \times 2} = 2\sqrt{2} \]</div>
+      <div class="success-box">
+        <strong>Tafsiran:</strong> Simpangan baku = \(2\sqrt{2}\) ribu rupiah.
+        Artinya rata-rata penjualan harian menyimpang sekitar \(2\sqrt{2}\) ribu rupiah dari mean (8 ribu rupiah).
+        <ul style="margin-top:6px;">
+          <li>Simpangan baku <strong>kecil</strong> → data lebih stabil</li>
+          <li>Simpangan baku <strong>besar</strong> → data lebih bervariasi</li>
+        </ul>
+      </div>
+
+      <h4>Perbandingan Toko A dan Toko B</h4>
+      <table>
+        <tr><th>Hari</th><th>Toko A</th><th>Toko B</th></tr>
+        <tr><td>1</td><td>48</td><td>30</td></tr>
+        <tr><td>2</td><td>49</td><td>40</td></tr>
+        <tr><td>3</td><td>50</td><td>50</td></tr>
+        <tr><td>4</td><td>51</td><td>60</td></tr>
+        <tr><td>5</td><td>52</td><td>70</td></tr>
+        <tr class="jumlah-row"><th>Mean</th><th>50</th><th>50</th></tr>
+      </table>
+      <table>
+        <tr><th>Ukuran</th><th>Toko A</th><th>Toko B</th></tr>
+        <tr><td>Varians</td><td>2</td><td>200</td></tr>
+        <tr><td>Simpangan Baku</td><td>\(\sqrt{2}\)</td><td>\(10\sqrt{2}\)</td></tr>
+      </table>
+      <div class="info-box">
+        Simpangan baku Toko A adalah \(\sqrt{2}\), sedangkan simpangan baku Toko B adalah \(10\sqrt{2}\).
+        Karena \(\sqrt{2} \ll 10\sqrt{2}\), maka penjualan Toko A jauh lebih stabil.
+      </div>
+
+      <div class="quiz-box" id="quiz7">
+        <h4>Cek Pemahaman Bagian 7</h4>
+        <p>Dari Bagian 6: varians = 8.</p>
+        <p>Hitung simpangan baku, kemudian sederhanakan bentuk akarnya.</p>
+        <div class="formula">\[ \sigma = \sqrt{8} = \sqrt{4 \times 2} = [...]\sqrt{[...]} \]</div>
+        <p class="input-note">Ketik dalam format: <strong>2√2</strong>. Gunakan tombol <strong>√</strong> untuk menyisipkan simbol.</p>
+        <div class="below-input-wrap">
+          <label>\(\sigma =\)</label>
+          <input type="text" id="q7ans" class="below-input" placeholder="contoh: 2√2"/>
+          <button class="sqrt-btn" id="btnSqrt7">√</button>
+        </div>
+        <div class="quiz-fb" id="q7fb"></div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-primary" id="q7check">Periksa</button>
+          <button class="hint-btn" id="q7hint">Minta Petunjuk</button>
+        </div>
+        <div class="hint-text" id="q7hintText">\(\sqrt{8} = \sqrt{4 \times 2} = \sqrt{4} \times \sqrt{2} = 2 \times \sqrt{2} = 2\sqrt{2}\).</div>
+      </div>
+    </div>
+
+    <!-- ========== BAGIAN 8: CATATAN WAJIB ========== -->
+    <div class="bagian" id="bagian8">
+      <div class="bagian-header">
+        <div class="bagian-num" id="num8">8</div>
+        <div class="bagian-title">Catatan Wajib</div>
+      </div>
+      <div class="warning-box"><strong>Penting:</strong> Wajib disalin ke buku catatan fisik. Boleh dibuka saat post test di kelas.</div>
+
+      <h3>A. Rumus</h3>
+      <div class="formula">
+        \[ \bar{x} = \frac{\sum x_i}{n} \qquad \sigma^2 = \frac{\sum(x_i - \bar{x})^2}{n} \qquad \sigma = \sqrt{\sigma^2} \]
+      </div>
+
+      <h3>B. Tabel Bantu (salin tabel kosong ini ke buku)</h3>
+      <table>
+        <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\((x_i - \bar{x})^2\)</th></tr>
+        <tr><td>1</td><td>...</td><td>...</td><td>...</td></tr>
+        <tr><td>2</td><td>...</td><td>...</td><td>...</td></tr>
+        <tr><td>3</td><td>...</td><td>...</td><td>...</td></tr>
+        <tr><td>4</td><td>...</td><td>...</td><td>...</td></tr>
+        <tr><td>5</td><td>...</td><td>...</td><td>...</td></tr>
+        <tr class="jumlah-row"><th>Jumlah</th><th>...</th><th>0</th><th>\(\sum(x_i-\bar{x})^2\) = ...</th></tr>
+      </table>
+
+      <h3>C. Langkah Perhitungan</h3>
+      <ol>
+        <li>Hitung <strong>mean</strong>: \(\bar{x} = \frac{\sum x_i}{n}\)</li>
+        <li>Isi kolom <strong>selisih</strong> \(x_i - \bar{x}\) untuk setiap data</li>
+        <li>Isi kolom <strong>kuadrat selisih</strong> \((x_i - \bar{x})^2\) untuk setiap data</li>
+        <li>Isi <strong>baris jumlah</strong>: \(\sum(x_i - \bar{x})^2\)</li>
+        <li>Hitung <strong>varians</strong>: \(\sigma^2 = \frac{\sum(x_i - \bar{x})^2}{n}\)</li>
+        <li>Hitung <strong>simpangan baku</strong>: \(\sigma = \sqrt{\sigma^2}\), sederhanakan jika memungkinkan</li>
+      </ol>
+
+      <h3>D. Cara Menyederhanakan Akar</h3>
+      <table>
+        <tr><th>Varians</th><th>Langkah</th><th>Simpangan Baku</th></tr>
+        <tr><td>\(\sigma^2 = 4\)</td><td>\(\sqrt{4} = 2\)</td><td>\(\sigma = 2\)</td></tr>
+        <tr><td>\(\sigma^2 = 8\)</td><td>\(\sqrt{8} = \sqrt{4 \times 2} = 2\sqrt{2}\)</td><td>\(\sigma = 2\sqrt{2}\)</td></tr>
+        <tr><td>\(\sigma^2 = 12\)</td><td>\(\sqrt{12} = \sqrt{4 \times 3} = 2\sqrt{3}\)</td><td>\(\sigma = 2\sqrt{3}\)</td></tr>
+        <tr><td>\(\sigma^2 = 18\)</td><td>\(\sqrt{18} = \sqrt{9 \times 2} = 3\sqrt{2}\)</td><td>\(\sigma = 3\sqrt{2}\)</td></tr>
+        <tr><td>\(\sigma^2 = 20\)</td><td>\(\sqrt{20} = \sqrt{4 \times 5} = 2\sqrt{5}\)</td><td>\(\sigma = 2\sqrt{5}\)</td></tr>
+      </table>
+
+      <h3>E. Peringatan Penting</h3>
+      <table>
+        <tr><th style="width:8%">No</th><th>Peringatan</th></tr>
+        <tr><td>1</td><td>Kuadrat bilangan negatif selalu positif. Contoh: \((-4)^2 = 16\), bukan \(-16\).</td></tr>
+        <tr><td>2</td><td>Jumlah kolom selisih harus nol. Jika tidak nol, ada kesalahan pada mean atau pengisian selisih.</td></tr>
+        <tr><td>3</td><td>Pembagi varians adalah \(n\) (banyak data), bukan \(n-1\).</td></tr>
+        <tr><td>4</td><td>Simpangan baku adalah akar dari varians. Tulis dalam bentuk akar yang disederhanakan.</td></tr>
+        <tr><td>5</td><td>Semakin kecil simpangan baku, semakin stabil data tersebut.</td></tr>
+      </table>
+
+      <h3>F. Contoh Lengkap</h3>
+      <p>Data: 4, 6, 8, 10, 12. \(n = 5\). Mean = 8.</p>
+      <table>
+        <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\((x_i - \bar{x})^2\)</th></tr>
+        <tr><td>1</td><td>4</td><td>−4</td><td>16</td></tr>
+        <tr><td>2</td><td>6</td><td>−2</td><td>4</td></tr>
+        <tr><td>3</td><td>8</td><td>0</td><td>0</td></tr>
+        <tr><td>4</td><td>10</td><td>2</td><td>4</td></tr>
+        <tr><td>5</td><td>12</td><td>4</td><td>16</td></tr>
+        <tr class="jumlah-row"><th>Jumlah</th><th>40</th><th>0</th><th>40</th></tr>
+      </table>
+      <p>Mean = \(\frac{40}{5}\) = <strong>8</strong>. &nbsp; Varians = \(\frac{40}{5}\) = <strong>8</strong>. &nbsp; Simpangan baku = \(\sqrt{8}\) = <strong>\(2\sqrt{2}\)</strong>.</p>
+
+      <div class="success-box" style="margin-top:16px;">
+        <strong>Selamat!</strong> Kamu telah menyelesaikan seluruh 8 bagian materi. Salin tabel dan rumus di atas ke buku catatan fisik.
+      </div>
+      <div style="text-align:center;margin-top:16px;">
+        <button class="btn btn-success" id="btnSelesaiCatatan">Saya Sudah Menyalin Catatan</button>
+        <button class="btn btn-primary" id="btnCetakCatatan" style="margin-left:8px;">Cetak Catatan sebagai PDF</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const API = 'https://script.google.com/macros/s/AKfycbwCAdUtxlTHA1mT086VoXVw_Gkx7bAqR_3qdhSOVBN9B_cAKO9wg0xfOXy-FdjwP0Jb/exec';
+  const TOTAL_BAGIAN = 8;
+  const TOL = 0.05;
+
+  const FALLBACK_NAMES = [
+    'AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA',
+    'AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI',
+    'DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI',
+    'LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI',
+    'NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH',
+    'NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA',
+    'RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI',
+    'SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'
+  ];
+
+  let currentUser='', allNames=[], selectedName='', sheetsOK=false;
+  let progress={}, attempts={};
+  for(let i=1;i<=TOTAL_BAGIAN;i++){progress[i]=0;attempts[i]=0;}
+
+  const loginSection=document.getElementById('loginSection');
+  const app=document.getElementById('app');
+  const searchName=document.getElementById('searchName');
+  const nameList=document.getElementById('nameList');
+  const btnLogin=document.getElementById('btnLogin');
+  const loginMsg=document.getElementById('loginMsg');
+  const progressText=document.getElementById('progressText');
+  const progressFill=document.getElementById('progressFill');
+  const navDots=document.getElementById('navDots');
+
+  /* ========================
+     TOMBOL √
+  ======================== */
+  function insertSqrt(inputId) {
+    const inp = document.getElementById(inputId);
+    if (!inp) return;
+    const pos = inp.selectionStart || inp.value.length;
+    const val = inp.value;
+    inp.value = val.slice(0, pos) + '√' + val.slice(pos);
+    inp.setSelectionRange(pos+1, pos+1);
+    inp.focus();
+  }
+
+  document.getElementById('btnSqrt7').addEventListener('click', () => insertSqrt('q7ans'));
+
+  /* ========================
+     PARSE & CEK AKAR
+  ======================== */
+  function parseAkar(str) {
+    str = String(str).trim().replace(/\s/g,'');
+    if (!str) return NaN;
+    const plain = parseFloat(str);
+    if (!isNaN(plain) && !str.includes('√')) return plain;
+    const match = str.match(/^(\d*\.?\d*)√(\d+\.?\d*)$/);
+    if (match) {
+      const a = match[1] === '' ? 1 : parseFloat(match[1]);
+      const b = parseFloat(match[2]);
+      return a * Math.sqrt(b);
+    }
+    return NaN;
+  }
+
+  function normalizeAkar(str) {
+    return String(str).trim().replace(/\s/g,'').toLowerCase();
+  }
+
+  function cekAkar(userInput, kunciTeks, kunciNilai) {
+    const userNorm = normalizeAkar(userInput);
+    const kunciNorm = normalizeAkar(kunciTeks);
+
+    /* Cocok persis teks */
+    if (userNorm === kunciNorm) return true;
+
+    /* Jika kunci berbentuk akar, jawaban siswa harus mengandung √ */
+    if (kunciNorm.includes('√') && !userNorm.includes('√')) return false;
+
+    /* Cocok nilai numerik untuk bentuk akar berbeda yang setara */
+    const userVal = parseAkar(userInput);
+    if (isNaN(userVal)) return false;
+    return Math.abs(userVal - kunciNilai) <= TOL;
+  }
+
+  /* ========================
+     KUNCI JAWABAN
+  ======================== */
+  const ANSWERS = {
+    1: { type:'select', val:'B' },
+    2: { type:'multi_num', fields:['q2a','q2b'], vals:[30, 6] },
+    3: { type:'tabel_num', fields:['t3r1','t3r2','t3r3','t3r4','t3r5','t3jumlah'], vals:[-4,-2,0,2,4,0] },
+    4: { type:'tabel_num', fields:['t4r1','t4r2','t4r3','t4r4','t4r5','t4jumlah'], vals:[16,4,0,4,16,40] },
+    5: { type:'num', field:'q5ans', val:40 },
+    6: { type:'num', field:'q6ans', val:8 },
+    7: { type:'akar', field:'q7ans', kunci:'2√2', nilai: 2*Math.sqrt(2) }
+  };
+
+  /* ========================
+     CEK JAWABAN
+  ======================== */
+  function checkAnswer(num) {
+    const ans = ANSWERS[num];
+    if (!ans) return;
+    const fb = document.getElementById('q'+num+'fb');
+    attempts[num] = (attempts[num]||0)+1;
+    let correct = false;
+    let userVal = '';
+
+    if (ans.type === 'select') {
+      const inp = document.getElementById('q'+num+'ans');
+      correct = inp.value === ans.val;
+      inp.style.borderColor = correct ? 'var(--success)' : 'var(--danger)';
+      inp.style.background = correct ? '#f0fdf4' : '#fef2f2';
+      userVal = inp.value;
+    }
+    else if (ans.type === 'num') {
+      const inp = document.getElementById(ans.field);
+      const uv = parseFloat(inp.value.trim());
+      correct = !isNaN(uv) && Math.abs(uv - ans.val) <= TOL;
+      inp.className = 'below-input ' + (correct ? 'correct' : 'wrong');
+      userVal = inp.value.trim();
+    }
+    else if (ans.type === 'multi_num') {
+      let allOk = true;
+      ans.fields.forEach((fid, idx) => {
+        const inp = document.getElementById(fid);
+        const uv = parseFloat(inp.value.trim());
+        const ok = !isNaN(uv) && Math.abs(uv - ans.vals[idx]) <= TOL;
+        inp.className = 'below-input ' + (ok ? 'correct' : 'wrong');
+        if (!ok) allOk = false;
+      });
+      correct = allOk;
+      userVal = ans.fields.map(fid => document.getElementById(fid).value.trim()).join('|');
+    }
+    else if (ans.type === 'tabel_num') {
+      let allOk = true;
+      ans.fields.forEach((fid, idx) => {
+        const inp = document.getElementById(fid);
+        if (!inp) return;
+        const uv = parseFloat(inp.value.trim());
+        const ok = !isNaN(uv) && Math.abs(uv - ans.vals[idx]) <= TOL;
+        inp.className = 'tabel-input ' + (ok ? 'correct' : 'wrong');
+        const td = inp.closest('td');
+        if (td) {
+          td.classList.remove('cell-input','cell-done','cell-wrong');
+          td.classList.add(ok ? 'cell-done' : 'cell-wrong');
+        }
+        if (!ok) allOk = false;
+      });
+      correct = allOk;
+      userVal = ans.fields.map(fid => {
+        const el = document.getElementById(fid);
+        return el ? el.value.trim() : '';
+      }).join('|');
+    }
+    else if (ans.type === 'akar') {
+      const inp = document.getElementById(ans.field);
+      correct = cekAkar(inp.value, ans.kunci, ans.nilai);
+      inp.className = 'below-input ' + (correct ? 'correct' : 'wrong');
+      userVal = inp.value.trim();
+    }
+
+    fb.classList.add('show');
+    fb.classList.remove('correct','wrong');
+
+    if (correct) {
+      fb.classList.add('correct');
+      fb.textContent = 'Benar! Kamu bisa lanjut ke bagian berikutnya.';
+      progress[num] = 1;
+      if (sheetsOK) {
+        callAPI({action:'quiz',nama:currentUser,bagian:num,status:'benar',petunjuk:'tidak',detail:'jawaban: '+userVal},function(){});
+      }
+      updateUI();
+      if (num < TOTAL_BAGIAN) {
+        const nextEl = document.getElementById('bagian'+(num+1));
+        if (nextEl) { nextEl.classList.add('active'); nextEl.classList.remove('locked'); }
+        setTimeout(() => scrollToBagian(num+1), 500);
+      }
+    } else {
+      fb.classList.add('wrong');
+      fb.textContent = 'Belum tepat. Coba periksa kembali. Percobaan ke-'+attempts[num]+'.';
+      if (sheetsOK) {
+        callAPI({action:'quiz',nama:currentUser,bagian:num,status:'salah',petunjuk:'tidak',detail:'percobaan: '+attempts[num]},function(){});
+      }
+    }
+  }
+
+  function showHint(num) {
+    const ht = document.getElementById('q'+num+'hintText');
+    ht.classList.toggle('show');
+    if (ht.classList.contains('show') && sheetsOK) {
+      callAPI({action:'quiz',nama:currentUser,bagian:num,status:'petunjuk',petunjuk:'ya',detail:'petunjuk bagian '+num},function(){});
+    }
+  }
+
+  /* ========================
+     BIND EVENTS
+  ======================== */
+  for (let i=1; i<=7; i++) {
+    const checkBtn = document.getElementById('q'+i+'check');
+    const hintBtn = document.getElementById('q'+i+'hint');
+    if (checkBtn) checkBtn.addEventListener('click', () => checkAnswer(i));
+    if (hintBtn) hintBtn.addEventListener('click', () => showHint(i));
+  }
+
+  /* ========================
+     API
+  ======================== */
+  function callAPI(params, callback) {
+    const cbName='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
+    params.callback=cbName;
+    const url=API+'?'+Object.keys(params).map(k=>k+'='+encodeURIComponent(params[k])).join('&');
+    const script=document.createElement('script');
+    window[cbName]=function(data){delete window[cbName];if(script.parentNode)script.parentNode.removeChild(script);if(callback)callback(data);};
+    script.src=url;
+    script.onerror=function(){delete window[cbName];if(script.parentNode)script.parentNode.removeChild(script);if(callback)callback(null);};
+    document.head.appendChild(script);
+  }
+
+  function loadNames() {
+    callAPI({action:'getNames'},function(data){
+      if(data&&data.ok&&data.names&&data.names.length){allNames=data.names;sheetsOK=true;}
+      else{allNames=FALLBACK_NAMES;}
+      renderNames('');
+    });
+    setTimeout(()=>{if(!allNames.length){allNames=FALLBACK_NAMES;renderNames('');}},5000);
+  }
+
+  function renderNames(filter) {
+    const f=filter.trim().toUpperCase();
+    const filtered=f?allNames.filter(n=>n.toUpperCase().includes(f)):allNames;
+    nameList.innerHTML='';
+    filtered.forEach(name=>{
+      const div=document.createElement('div');
+      div.className='name-item'+(name===selectedName?' selected':'');
+      div.textContent=name;
+      div.addEventListener('click',()=>{selectedName=name;searchName.value=name;btnLogin.disabled=false;renderNames(name);});
+      nameList.appendChild(div);
+    });
+  }
+
+  searchName.addEventListener('input',()=>{selectedName='';btnLogin.disabled=true;renderNames(searchName.value);});
+
+  btnLogin.addEventListener('click',()=>{
+    if(!selectedName)return;
+    currentUser=selectedName;btnLogin.disabled=true;loginMsg.textContent='Memuat data...';
+    callAPI({action:'login',nama:currentUser,sumber:'MATERI',device:'HP'},function(){loadProgress();});
+    setTimeout(()=>{if(loginSection.style.display!=='none')loadProgress();},4000);
+  });
+
+  function loadProgress() {
+    callAPI({action:'getProgress',nama:currentUser},function(data){
+      if(data&&data.ok&&data.materi){
+        for(let i=1;i<=TOTAL_BAGIAN;i++){
+          progress[i]=Number(data.materi['BAGIAN_'+i])||0;
+          attempts[i]=Number(data.materi['PERCOBAAN_'+i])||0;
+        }
+      }
+      startApp();
+    });
+    setTimeout(()=>{if(loginSection.style.display!=='none')startApp();},4000);
+  }
+
+  function startApp() {
+    loginSection.style.display='none';
+    app.style.display='block';
+    document.getElementById('userName').textContent=currentUser;
+    updateUI();
+    showCurrentBagian();
+  }
+
+  function countDone(){let c=0;for(let i=1;i<=TOTAL_BAGIAN;i++)if(progress[i])c++;return c;}
+
+  function updateUI() {
+    const done=countDone();
+    progressText.textContent=done+' / '+TOTAL_BAGIAN;
+    progressFill.style.width=(done/TOTAL_BAGIAN*100)+'%';
+    document.getElementById('userStatus').textContent=done===TOTAL_BAGIAN?'Semua bagian selesai':'Sedang belajar';
+    navDots.innerHTML='';
+    for(let i=1;i<=TOTAL_BAGIAN;i++){
+      const dot=document.createElement('div');
+      dot.className='nav-dot';
+      if(progress[i])dot.classList.add('done');
+      const canAccess=i===1||progress[i-1]||progress[i];
+      if(!canAccess)dot.classList.add('locked');
+      dot.textContent=i;
+      dot.addEventListener('click',()=>{if(canAccess)scrollToBagian(i);});
+      navDots.appendChild(dot);
+    }
+    for(let i=1;i<=TOTAL_BAGIAN;i++){
+      const num=document.getElementById('num'+i);
+      if(num){num.className='bagian-num';if(progress[i])num.classList.add('done');}
+    }
+  }
+
+  function showCurrentBagian() {
+    for(let i=1;i<=TOTAL_BAGIAN;i++){
+      const el=document.getElementById('bagian'+i);
+      if(el){
+        const canAccess=i===1||progress[i-1]||progress[i];
+        el.classList.toggle('active',canAccess);
+        el.classList.toggle('locked',!canAccess);
+      }
+    }
+    let scrollTo=1;
+    for(let i=1;i<=TOTAL_BAGIAN;i++){if(!progress[i]){scrollTo=i;break;}if(i===TOTAL_BAGIAN)scrollTo=TOTAL_BAGIAN;}
+    setTimeout(()=>scrollToBagian(scrollTo),300);
+  }
+
+  function scrollToBagian(num) {
+    const el=document.getElementById('bagian'+num);
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+    navDots.querySelectorAll('.nav-dot').forEach((dot,idx)=>{dot.classList.toggle('current',idx+1===num);});
+  }
+
+  /* ========================
+     BAGIAN 8: CATATAN WAJIB
+  ======================== */
+  const btnSelesaiCatatan=document.getElementById('btnSelesaiCatatan');
+  const btnCetakCatatan=document.getElementById('btnCetakCatatan');
+
+  if(btnSelesaiCatatan){
+    btnSelesaiCatatan.addEventListener('click',()=>{
+      progress[8]=1;updateUI();
+      if(sheetsOK){
+        callAPI({action:'saveProgress',nama:currentUser,bagian:8,selesaiMateri:countDone()>=TOTAL_BAGIAN?1:0,catatanSelesai:1},function(){});
+        callAPI({action:'selesai',nama:currentUser,komponen:'MATERI',status:'SELESAI',detail:'8 bagian dan catatan selesai'},function(){});
+      }
+      btnSelesaiCatatan.disabled=true;
+      btnSelesaiCatatan.textContent='Catatan Sudah Dicatat';
+      btnSelesaiCatatan.style.background='#94a3b8';
+      if(countDone()>=TOTAL_BAGIAN){
+        const msg=document.createElement('div');
+        msg.className='success-box';
+        msg.style.marginTop='12px';
+        msg.innerHTML='<strong>Seluruh materi selesai!</strong> Langkah selanjutnya adalah mengerjakan <a href="Assessment9.html" style="color:#166534;font-weight:700;">Pre Test</a> untuk menentukan level LKPD kamu.';
+        btnSelesaiCatatan.parentNode.appendChild(msg);
+      }
+    });
+  }
+
+  if(btnCetakCatatan){
+    btnCetakCatatan.addEventListener('click',()=>{
+      const bagian8=document.getElementById('bagian8');
+      if(!bagian8)return;
+      const printWin=window.open('','_blank');
+      printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"/>');
+      printWin.document.write('<title>Catatan Wajib Pertemuan 9</title>');
+      printWin.document.write('<script>window.MathJax={tex:{inlineMath:[[\'\\\\(\',\'\\\\)\'],[\'$\',\'$\']],displayMath:[[\'\\\\[\',\'\\\\]\']]},svg:{fontCache:\'global\'}};<\/script>');
+      printWin.document.write('<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"><\/script>');
+      printWin.document.write('<style>');
+      printWin.document.write('body{font-family:"Times New Roman",serif;padding:1.5cm 2cm;font-size:11pt;line-height:1.4;color:#000;}');
+      printWin.document.write('h2{text-align:center;color:#1e3a8a;margin-bottom:4px;font-size:14pt;}');
+      printWin.document.write('h3{color:#1d4ed8;margin:12px 0 6px;font-size:12pt;border-bottom:1px solid #ccc;padding-bottom:3px;}');
+      printWin.document.write('table{width:100%;border-collapse:collapse;margin:8px 0;font-size:10pt;}');
+      printWin.document.write('th,td{border:1px solid #555;padding:4px 6px;text-align:center;vertical-align:middle;}');
+      printWin.document.write('th{background:#dbeafe;color:#1e3a8a;font-weight:700;}');
+      printWin.document.write('tr.jumlah-row td,tr.jumlah-row th{background:#fef3c7;font-weight:700;}');
+      printWin.document.write('.formula{background:#1e3a8a;color:#fff;padding:8px;border-radius:4px;text-align:center;margin:8px 0;}');
+      printWin.document.write('ol{padding-left:18px;}li{margin:3px 0;}');
+      printWin.document.write('.warning-box,.success-box,button,.bagian-header{display:none;}');
+      printWin.document.write('</style></head><body>');
+      printWin.document.write('<h2>Catatan Wajib Pertemuan 9</h2>');
+      printWin.document.write('<p style="text-align:center;color:#666;margin-bottom:14px;font-size:10pt;">Varians dan Simpangan Baku Data Tunggal | SMKN 1 Salatiga</p>');
+      printWin.document.write(bagian8.innerHTML);
+      printWin.document.write('</body></html>');
+      printWin.document.close();
+      setTimeout(()=>{printWin.print();},1500);
+    });
+  }
+
+  /* ========================
+     ENTER KEY
+  ======================== */
+  document.addEventListener('keydown',(e)=>{
+    if(e.key==='Enter'&&e.target.tagName==='INPUT'){
+      if(e.target.id==='searchName'&&selectedName){btnLogin.click();return;}
+      const match=e.target.id.match(/q(\d+)/);
+      if(match){
+        const num=parseInt(match[1]);
+        const checkBtn=document.getElementById('q'+num+'check');
+        if(checkBtn)checkBtn.click();
+      }
+    }
+  });
+
+  loadNames();
+});
+</script>
+</body>
+</html>

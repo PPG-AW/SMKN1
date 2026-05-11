@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LKPD Level 2 | Varians dan Simpangan Baku</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;
+--orange:#ea580c;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:#92400e;color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}
+.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+.user-info{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.user-info .name{font-weight:700;color:var(--primary-dark);}
+.level-tag{background:#fef3c7;color:#92400e;border:2px solid #fcd34d;padding:3px 12px;border-radius:999px;font-size:12px;font-weight:700;}
+.progress-wrap{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;}
+.progress-bar{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#92400e,var(--accent));border-radius:999px;transition:width .5s;}
+.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.card h3{color:var(--primary-dark);font-size:15px;margin-bottom:10px;}
+.card h4{color:var(--orange);font-size:14px;margin:10px 0 6px;}
+.soal-header{background:#92400e;color:#fff;border-radius:10px;padding:14px;margin-bottom:14px;text-align:center;}
+.soal-header h3{color:#fff;margin:0 0 4px;font-size:17px;}
+.soal-header p{margin:0;font-size:12px;opacity:.8;}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--border);padding:7px 8px;vertical-align:middle;text-align:center;}
+th{background:#dbeafe;color:#1e3a8a;font-weight:700;}
+tr.jumlah-row td,tr.jumlah-row th{background:#fef3c7;font-weight:700;}
+.cell-input{background:#f5f3ff;border:2px dashed var(--purple) !important;}
+.cell-done{background:#ecfdf5 !important;border:2px solid var(--success) !important;}
+.cell-wrong{background:#fef2f2 !important;border:2px solid var(--danger) !important;}
+.tabel-input-wrap{display:flex;align-items:center;justify-content:center;gap:4px;}
+.tabel-input{width:72px;padding:7px 4px;border:2px solid var(--border);border-radius:6px;font-size:14px;text-align:center;background:#fff;}
+.tabel-input:focus{outline:none;border-color:var(--primary);}
+.tabel-input.correct{border-color:var(--success);background:#f0fdf4;color:#166534;font-weight:700;}
+.tabel-input.wrong{border-color:var(--danger);background:#fef2f2;color:#991b1b;font-weight:700;}
+.below-row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;justify-content:center;}
+.below-item{display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:8px 12px;min-width:140px;flex:0 0 auto;}
+.below-item label{font-weight:700;color:var(--primary-dark);font-size:13px;white-space:nowrap;}
+.below-input{width:90px;padding:8px;border:2px solid var(--border);border-radius:8px;font-size:14px;text-align:center;background:#fff;}
+.below-input:focus{outline:none;border-color:var(--primary);}
+.below-input.correct{border-color:var(--success);background:#f0fdf4;color:#166534;font-weight:700;}
+.below-input.wrong{border-color:var(--danger);background:#fef2f2;color:#991b1b;font-weight:700;}
+.sqrt-btn{background:var(--purple);color:#fff;border:none;padding:7px 11px;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;flex-shrink:0;}
+.sqrt-btn:hover{background:#6d28d9;}
+.formula{background:var(--primary-dark);color:#fff;padding:10px;border-radius:8px;text-align:center;font-size:13px;margin:8px 0;overflow-x:auto;}
+.note{background:var(--soft-yellow);border-left:4px solid var(--accent);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.info-box{background:var(--soft-blue);border-left:4px solid var(--primary);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.input-note{font-size:11px;color:var(--muted);margin:2px 0 4px;text-align:center;}
+.btn{border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;text-decoration:none;display:inline-block;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.section-divider{border:none;height:3px;background:linear-gradient(90deg,var(--primary),var(--orange));border-radius:999px;margin:20px 0;}
+.result-card{background:#fff;border-radius:16px;padding:28px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.1);margin-top:16px;display:none;}
+.result-card .skor-besar{font-size:48px;font-weight:800;line-height:1;}
+.result-card .skor-label{font-size:13px;color:var(--muted);margin-top:4px;}
+@media(max-width:480px){
+  .container{padding:8px;}.card{padding:14px;}
+  table{font-size:11px;}th,td{padding:5px 3px;}
+  .tabel-input{width:56px;font-size:12px;}
+  .below-item{min-width:120px;}.below-input{width:75px;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="LKPD9.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>LKPD Level 2</h1>
+  <p>Varians dan Simpangan Baku | Panduan Sedang</p>
+</div>
+
+<div class="container">
+  <div class="user-info">
+    <span class="name" id="userName">Siswa</span>
+    <span class="level-tag">Level 2</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Progres LKPD</span><span id="progressText">0 / 2 soal selesai</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- ========== SOAL 1 ========== -->
+  <div class="soal-header">
+    <h3>Soal 1</h3>
+    <p>Data Pendapatan Harian Pedagang (ribu rupiah)</p>
+  </div>
+  <div class="card">
+    <p>Data pendapatan harian seorang pedagang selama 5 hari (ribu rupiah):</p>
+    <div style="background:#f8fafc;border:2px solid var(--border);border-radius:8px;padding:12px;text-align:center;font-weight:700;font-size:17px;color:var(--primary-dark);margin:10px 0;letter-spacing:3px;">
+      3 &nbsp;,&nbsp; 7 &nbsp;,&nbsp; 9 &nbsp;,&nbsp; 11 &nbsp;,&nbsp; 15
+    </div>
+    <p style="font-size:13px;color:var(--muted);text-align:center;">Hitung mean, isi tabel bantu, kemudian tentukan varians dan simpangan baku.</p>
+  </div>
+
+  <div class="card">
+    <h4>Langkah 1 — Mean</h4>
+    <div class="formula">\[ \bar{x} = \frac{\sum x_i}{n} \]</div>
+    <div class="below-row">
+      <div class="below-item">
+        <label>\(\sum x_i =\)</label>
+        <input type="number" id="s1_sumx" class="below-input" placeholder="..." step="any"/>
+      </div>
+      <div class="below-item">
+        <label>\(\bar{x} =\)</label>
+        <input type="number" id="s1_mean" class="below-input" placeholder="..." step="any"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Langkah 2 — Tabel Bantu</h4>
+    <p style="font-size:13px;color:var(--muted);">Isi seluruh kolom tabel bantu.</p>
+    <table>
+      <tr><th style="width:14%">Data ke-</th><th style="width:14%">\(x_i\)</th><th style="width:33%">\(x_i - \bar{x}\)</th><th style="width:33%">\((x_i - \bar{x})^2\)</th></tr>
+      <tr><td>1</td><td>3</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_sel1" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_kuad1" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr><td>2</td><td>7</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_sel2" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_kuad2" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr><td>3</td><td>9</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_sel3" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_kuad3" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr><td>4</td><td>11</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_sel4" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_kuad4" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr><td>5</td><td>15</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_sel5" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_kuad5" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr class="jumlah-row"><th>Jumlah</th><th>45</th>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_jmlSel" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s1_jmlKuad" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+    </table>
+    <p style="font-size:12px;color:var(--muted);">Cek: jumlah kolom selisih harus nol.</p>
+  </div>
+
+  <div class="card">
+    <h4>Langkah 3 — Varians</h4>
+    <div class="formula">\[ \sigma^2 = \frac{\sum(x_i - \bar{x})^2}{n} \]</div>
+    <div class="below-row">
+      <div class="below-item">
+        <label>\(\sum(x_i-\bar{x})^2 =\)</label>
+        <input type="number" id="s1_jmlKuad2" class="below-input" placeholder="..." step="any"/>
+      </div>
+      <div class="below-item">
+        <label>\(\sigma^2 =\)</label>
+        <input type="number" id="s1_varians" class="below-input" placeholder="..." step="any"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Langkah 4 — Simpangan Baku</h4>
+    <div class="formula">\[ \sigma = \sqrt{\sigma^2} \]</div>
+    <p class="input-note">Tulis dalam bentuk akar yang sudah disederhanakan. Gunakan tombol √.</p>
+    <div class="below-row">
+      <div class="below-item">
+        <label>\(\sigma =\)</label>
+        <input type="text" id="s1_sd" class="below-input" placeholder="contoh: 4"/>
+        <button class="sqrt-btn" id="btnSqrt1">√</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="btn btn-primary" id="btnSoal1">Selesai Soal 1</button>
+    </div>
+    <div id="fb1" style="margin-top:8px;font-size:13px;display:none;"></div>
+  </div>
+
+  <hr class="section-divider"/>
+
+  <!-- ========== SOAL 2 ========== -->
+  <div class="soal-header" id="headerSoal2" style="display:none;">
+    <h3>Soal 2</h3>
+    <p>Data Penjualan Harian Toko (ribu rupiah)</p>
+  </div>
+  <div class="card" id="konteksSoal2" style="display:none;">
+    <p>Data penjualan harian sebuah toko selama 5 hari (ribu rupiah):</p>
+    <div style="background:#f8fafc;border:2px solid var(--border);border-radius:8px;padding:12px;text-align:center;font-weight:700;font-size:17px;color:var(--primary-dark);margin:10px 0;letter-spacing:3px;">
+      2 &nbsp;,&nbsp; 4 &nbsp;,&nbsp; 6 &nbsp;,&nbsp; 8 &nbsp;,&nbsp; 10
+    </div>
+    <p style="font-size:13px;color:var(--muted);text-align:center;">Hitung mean, isi tabel bantu, kemudian tentukan varians dan simpangan baku.</p>
+  </div>
+
+  <div class="card" id="soal2Mean" style="display:none;">
+    <h4>Langkah 1 — Mean</h4>
+    <div class="formula">\[ \bar{x} = \frac{\sum x_i}{n} \]</div>
+    <div class="below-row">
+      <div class="below-item">
+        <label>\(\sum x_i =\)</label>
+        <input type="number" id="s2_sumx" class="below-input" placeholder="..." step="any"/>
+      </div>
+      <div class="below-item">
+        <label>\(\bar{x} =\)</label>
+        <input type="number" id="s2_mean" class="below-input" placeholder="..." step="any"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="soal2Tabel" style="display:none;">
+    <h4>Langkah 2 — Tabel Bantu</h4>
+    <table>
+      <tr><th style="width:14%">Data ke-</th><th style="width:14%">\(x_i\)</th><th style="width:33%">\(x_i - \bar{x}\)</th><th style="width:33%">\((x_i - \bar{x})^2\)</th></tr>
+      <tr><td>1</td><td>2</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_sel1" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_kuad1" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr><td>2</td><td>4</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_sel2" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_kuad2" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr><td>3</td><td>6</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_sel3" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_kuad3" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr><td>4</td><td>8</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_sel4" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_kuad4" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr><td>5</td><td>10</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_sel5" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_kuad5" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr class="jumlah-row"><th>Jumlah</th><th>30</th>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_jmlSel" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="s2_jmlKuad" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card" id="soal2Varians" style="display:none;">
+    <h4>Langkah 3 — Varians</h4>
+    <div class="formula">\[ \sigma^2 = \frac{\sum(x_i - \bar{x})^2}{n} \]</div>
+    <div class="below-row">
+      <div class="below-item">
+        <label>\(\sum(x_i-\bar{x})^2 =\)</label>
+        <input type="number" id="s2_jmlKuad2" class="below-input" placeholder="..." step="any"/>
+      </div>
+      <div class="below-item">
+        <label>\(\sigma^2 =\)</label>
+        <input type="number" id="s2_varians" class="below-input" placeholder="..." step="any"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="soal2SD" style="display:none;">
+    <h4>Langkah 4 — Simpangan Baku</h4>
+    <div class="formula">\[ \sigma = \sqrt{\sigma^2} \]</div>
+    <p class="input-note">Tulis dalam bentuk akar yang sudah disederhanakan. Gunakan tombol √.</p>
+    <div class="below-row">
+      <div class="below-item">
+        <label>\(\sigma =\)</label>
+        <input type="text" id="s2_sd" class="below-input" placeholder="contoh: 2√2"/>
+        <button class="sqrt-btn" id="btnSqrt2">√</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="btn btn-primary" id="btnSoal2">Selesai Soal 2</button>
+    </div>
+    <div id="fb2" style="margin-top:8px;font-size:13px;display:none;"></div>
+  </div>
+
+  <div class="result-card" id="hasilCard">
+    <h3 style="color:var(--success);margin-bottom:12px;">LKPD Level 2 Selesai!</h3>
+    <div class="skor-besar" id="skorAkhir" style="color:var(--success);">0</div>
+    <div class="skor-label">Skor LKPD</div>
+    <div id="detailSkor" style="text-align:left;margin-top:16px;"></div>
+    <div style="margin-top:16px;">
+      <a href="AssessmentPost9.html" class="btn btn-success" style="text-decoration:none;">Kerjakan Post Test</a>
+      <a href="Pertemuan9.html" class="btn btn-primary" style="text-decoration:none;">Kembali</a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+
+  const API='https://script.google.com/macros/s/AKfycbwCAdUtxlTHA1mT086VoXVw_Gkx7bAqR_3qdhSOVBN9B_cAKO9wg0xfOXy-FdjwP0Jb/exec';
+  const TOL=0.05;
+  const params=new URLSearchParams(window.location.search);
+  const currentUser=params.get('nama')||'Siswa';
+  document.getElementById('userName').textContent=currentUser;
+
+  const K1={sumx:45,mean:9,sel:[-6,-2,0,2,6],kuad:[36,4,0,4,36],jmlSel:0,jmlKuad:80,jmlKuad2:80,varians:16,sd:{teks:'4',nilai:4}};
+  const K2={sumx:30,mean:6,sel:[-4,-2,0,2,4],kuad:[16,4,0,4,16],jmlSel:0,jmlKuad:40,jmlKuad2:40,varians:8,sd:{teks:'2√2',nilai:2*Math.sqrt(2)}};
+
+  let skorS1=0,skorS2=0,soal1Done=false,soal2Done=false;
+
+  function callAPI(p,cb){
+    const c='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
+    p.callback=c;
+    const u=API+'?'+Object.keys(p).map(k=>k+'='+encodeURIComponent(p[k])).join('&');
+    const sc=document.createElement('script');
+    window[c]=function(d){delete window[c];if(sc.parentNode)sc.parentNode.removeChild(sc);if(cb)cb(d);};
+    sc.src=u;sc.onerror=function(){delete window[c];if(sc.parentNode)sc.parentNode.removeChild(sc);if(cb)cb(null);};
+    document.head.appendChild(sc);
+  }
+
+  function parseAkar(str){
+    str=String(str).trim().replace(/\s/g,'');
+    if(!str)return NaN;
+    const plain=parseFloat(str);
+    if(!isNaN(plain)&&!str.includes('√'))return plain;
+    const match=str.match(/^(\d*\.?\d*)√(\d+\.?\d*)$/);
+    if(match){const a=match[1]===''?1:parseFloat(match[1]);const b=parseFloat(match[2]);return a*Math.sqrt(b);}
+    return NaN;
+  }
+  function normalizeAkar(str){return String(str).trim().replace(/\s/g,'').toLowerCase();}
+  function cekAkar(userInput,kunciTeks,kunciNilai){
+    const uN=normalizeAkar(userInput),kN=normalizeAkar(kunciTeks);
+    if(uN===kN)return true;
+    if(kN.includes('√')&&!uN.includes('√'))return false;
+    const uV=parseAkar(userInput);
+    if(isNaN(uV))return false;
+    return Math.abs(uV-kunciNilai)<=TOL;
+  }
+
+  document.getElementById('btnSqrt1').addEventListener('click',()=>insertSqrt('s1_sd'));
+  document.getElementById('btnSqrt2').addEventListener('click',()=>insertSqrt('s2_sd'));
+  function insertSqrt(id){
+    const inp=document.getElementById(id);
+    const pos=inp.selectionStart||inp.value.length;
+    inp.value=inp.value.slice(0,pos)+'√'+inp.value.slice(pos);
+    inp.setSelectionRange(pos+1,pos+1);inp.focus();
+  }
+
+  function cekSel(id,kunci){
+    const inp=document.getElementById(id);const td=inp.closest('td');
+    const uv=parseFloat(inp.value.trim());
+    const ok=!isNaN(uv)&&Math.abs(uv-kunci)<=TOL;
+    inp.className='tabel-input '+(ok?'correct':'wrong');
+    if(td){td.classList.remove('cell-input','cell-done','cell-wrong');td.classList.add(ok?'cell-done':'cell-wrong');}
+    return ok;
+  }
+  function cekNum(id,kunci){
+    const inp=document.getElementById(id);
+    const uv=parseFloat(inp.value.trim());
+    const ok=!isNaN(uv)&&Math.abs(uv-kunci)<=TOL;
+    inp.className='below-input '+(ok?'correct':'wrong');
+    return ok;
+  }
+
+  function hitungSkorSoal(prefix,kunci){
+    let skor=0;
+    cekNum(prefix+'_sumx',kunci.sumx);
+    if(cekNum(prefix+'_mean',kunci.mean))skor+=10;
+    let s=0;kunci.sel.forEach((v,i)=>{if(cekSel(prefix+'_sel'+(i+1),v))s+=8;});skor+=s;
+    let k=0;kunci.kuad.forEach((v,i)=>{if(cekSel(prefix+'_kuad'+(i+1),v))k+=6;});skor+=k;
+    cekSel(prefix+'_jmlSel',kunci.jmlSel);
+    if(cekSel(prefix+'_jmlKuad',kunci.jmlKuad))skor+=10;
+    cekNum(prefix+'_jmlKuad2',kunci.jmlKuad2);
+    if(cekNum(prefix+'_varians',kunci.varians))skor+=5;
+    const sdInp=document.getElementById(prefix+'_sd');
+    const okSD=cekAkar(sdInp.value,kunci.sd.teks,kunci.sd.nilai);
+    sdInp.className='below-input '+(okSD?'correct':'wrong');
+    if(okSD)skor+=5;
+    return skor;
+  }
+
+  function showFb(fbId,msg){
+    const fb=document.getElementById(fbId);
+    fb.style.display='block';
+    fb.style.background='var(--soft-blue)';fb.style.color='#1d4ed8';
+    fb.style.border='1px solid #93c5fd';fb.style.padding='8px';
+    fb.style.borderRadius='6px';fb.textContent=msg;
+  }
+
+  function updateProgress(){
+    const done=[soal1Done,soal2Done].filter(Boolean).length;
+    document.getElementById('progressText').textContent=done+' / 2 soal selesai';
+    document.getElementById('progressFill').style.width=(done/2*100)+'%';
+  }
+
+  document.getElementById('btnSoal1').addEventListener('click',()=>{
+    skorS1=hitungSkorSoal('s1',K1);
+    soal1Done=true;updateProgress();
+    showFb('fb1','Soal 1 selesai. Skor: '+skorS1+'/100. Lanjut ke Soal 2.');
+    ['headerSoal2','konteksSoal2','soal2Mean','soal2Tabel','soal2Varians','soal2SD'].forEach(id=>{
+      document.getElementById(id).style.display='block';
+    });
+    setTimeout(()=>document.getElementById('headerSoal2').scrollIntoView({behavior:'smooth',block:'start'}),300);
+    if(window.MathJax)MathJax.typesetPromise();
+  });
+
+  document.getElementById('btnSoal2').addEventListener('click',()=>{
+    skorS2=hitungSkorSoal('s2',K2);
+    soal2Done=true;updateProgress();
+    showFb('fb2','Soal 2 selesai. Skor: '+skorS2+'/100. LKPD selesai!');
+    const skorTotal=Math.round((skorS1+skorS2)/2);
+    const card=document.getElementById('hasilCard');
+    document.getElementById('skorAkhir').textContent=skorTotal;
+    document.getElementById('skorAkhir').style.color=skorTotal>=78?'var(--success)':skorTotal>=60?'var(--accent)':'var(--danger)';
+    document.getElementById('detailSkor').innerHTML='<p style="font-size:13px;">Soal 1: <strong>'+skorS1+'</strong> &nbsp;|&nbsp; Soal 2: <strong>'+skorS2+'</strong></p>';
+    card.style.display='block';
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+    callAPI({action:'lkpd',nama:currentUser,level:'LEVEL 2',terbimbing1:skorS1,terbimbing2:skorS2,mandiri1:'',mandiri2:'',skorTerbimbing:'',skorMandiri:skorTotal,skorTotal:skorTotal},function(){});
+    callAPI({action:'selesai',nama:currentUser,komponen:'LKPD',status:'SELESAI',detail:'level=2 skor='+skorTotal},function(){});
+  });
+
+  callAPI({action:'login',nama:currentUser,sumber:'LKPD_L2',device:'HP'},function(){});
+  if(window.MathJax)MathJax.typesetPromise();
+});
+</script>
+</body>
+</html>

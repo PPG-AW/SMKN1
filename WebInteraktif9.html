@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Latihan Soal Generator | Varians dan Simpangan Baku</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-light:#f97316;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;--teal:#0f766e;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+.login-box{background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:400px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:12px;font-size:18px;}
+.login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:8px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box .name-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;text-align:left;}
+.login-box .name-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;}
+.login-box .name-item:hover{background:var(--soft-blue);}
+.login-box .name-item.selected{background:#dbeafe;font-weight:700;color:var(--primary);}
+.login-box button{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.login-box button:disabled{opacity:.5;cursor:not-allowed;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--muted);}
+.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.card h3{color:var(--primary-dark);font-size:16px;margin-bottom:10px;}
+.card h4{color:var(--orange);font-size:14px;margin:10px 0 6px;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0;}
+.stat-box{background:var(--soft-blue);border-radius:8px;padding:10px;text-align:center;}
+.stat-box .stat-num{font-size:22px;font-weight:800;color:var(--primary-dark);}
+.stat-box .stat-label{font-size:11px;color:var(--muted);}
+.mode-selector{display:flex;gap:8px;margin:12px 0;}
+.mode-btn{flex:1;padding:14px;border:2px solid var(--border);border-radius:10px;text-align:center;cursor:pointer;font-weight:700;font-size:14px;transition:.2s;background:#fff;}
+.mode-btn:hover{border-color:var(--primary);background:var(--soft-blue);}
+.mode-btn.active{border-color:var(--primary);background:var(--primary);color:#fff;}
+.focus-group{margin:12px 0;}
+.focus-group h4{color:var(--primary);font-size:13px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid #e2e8f0;}
+.type-selector{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.type-btn{padding:8px 12px;border:2px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;font-size:11px;font-weight:600;transition:.2s;background:#fff;}
+.type-btn:hover{border-color:var(--orange);background:var(--orange-soft);}
+.type-btn.active{border-color:var(--orange);background:var(--orange);color:#fff;}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--border);padding:6px 8px;vertical-align:middle;}
+th{background:#dbeafe;color:#1e3a8a;font-weight:700;text-align:center;}
+td{text-align:center;}
+.formula{background:var(--primary-dark);color:#fff;padding:10px;border-radius:8px;text-align:center;font-size:14px;margin:8px 0;overflow-x:auto;}
+.step-box{background:var(--soft-purple);border:2px solid var(--purple);border-radius:10px;padding:14px;margin:10px 0;}
+.step-box h4{color:var(--purple);margin:0 0 6px;font-size:13px;}
+.step-box input[type="number"],.step-box input[type="text"]{width:100%;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin:4px 0;}
+.step-box input.correct{border-color:var(--success);background:var(--soft-green);}
+.step-box input.wrong{border-color:var(--danger);background:var(--soft-red);}
+.step-box .step-fb{margin-top:6px;padding:6px;border-radius:6px;font-size:12px;display:none;}
+.step-box .step-fb.show{display:block;}
+.step-box .step-fb.ok{background:var(--soft-green);color:#166534;border:1px solid #86efac;}
+.step-box .step-fb.err{background:var(--soft-red);color:#991b1b;border:1px solid #fca5a5;}
+.input-row{display:flex;align-items:center;gap:8px;margin:6px 0;padding:8px;border:2px solid var(--border);border-radius:8px;background:#fff;}
+.input-row label{font-weight:700;color:var(--primary-dark);min-width:55px;font-size:14px;}
+.input-row input{flex:1;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:15px;min-width:0;}
+.input-row input:focus{outline:none;border-color:var(--primary);}
+.input-row input.correct{border-color:var(--success);background:var(--soft-green);}
+.input-row input.wrong{border-color:var(--danger);background:var(--soft-red);}
+.input-row .row-btn{padding:8px 14px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:var(--primary);color:#fff;white-space:nowrap;}
+.input-row .row-btn:disabled{opacity:.5;cursor:not-allowed;}
+.input-row .row-fb{font-size:11px;min-width:20px;text-align:center;}
+.sqrt-input-wrap{display:flex;align-items:center;gap:4px;flex:1;}
+.sqrt-input-wrap input{flex:1;}
+.sqrt-btn{padding:8px 12px;border:2px solid var(--purple);border-radius:8px;background:var(--soft-purple);color:var(--purple);font-size:16px;font-weight:700;cursor:pointer;line-height:1;}
+.sqrt-btn:hover{background:var(--purple);color:#fff;}
+.btn{border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.hint-btn{background:none;border:1px solid var(--purple);color:var(--purple);padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;}
+.hint-text{background:var(--soft-yellow);padding:8px;border-radius:6px;margin-top:6px;font-size:12px;display:none;}
+.hint-text.show{display:block;}
+.solution-box{background:var(--soft-green);border:2px solid var(--success);border-radius:10px;padding:16px;margin:12px 0;display:none;}
+.solution-box.show{display:block;}
+.solution-box h4{color:#166534;margin:0 0 8px;}
+.user-info{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.user-info .name{font-weight:700;color:var(--primary-dark);}
+.conn-status{font-size:11px;padding:3px 8px;border-radius:10px;font-weight:600;}
+.conn-ok{background:var(--soft-green);color:#166534;}
+.conn-fail{background:var(--soft-red);color:#991b1b;}
+.conn-loading{background:var(--soft-yellow);color:#92400e;}
+#app{display:none;}
+#soalArea{display:none;}
+.tabel-kerja input{width:80px;padding:6px;border:2px solid var(--border);border-radius:6px;font-size:14px;text-align:center;}
+.tabel-kerja input:focus{outline:none;border-color:var(--primary);}
+.tabel-kerja input.correct{border-color:var(--success);background:var(--soft-green);}
+.tabel-kerja input.wrong{border-color:var(--danger);background:var(--soft-red);}
+@media(max-width:480px){.container{padding:8px;}.card{padding:14px;}.stats-grid{grid-template-columns:repeat(2,1fr);}.mode-selector{flex-direction:column;}.formula{font-size:12px;padding:8px;}table{font-size:11px;}.input-row{flex-wrap:wrap;}.input-row label{min-width:100%;}.tabel-kerja input{width:60px;font-size:12px;}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="Pertemuan9.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>Latihan Soal Generator</h1>
+  <p>Varians & Simpangan Baku Data Tunggal</p>
+</div>
+
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>Masuk ke Latihan</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ketik nama lalu pilih dari daftar</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button id="btnLogin" disabled>Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<div class="container" id="app">
+  <div class="user-info">
+    <span class="name" id="userName"></span>
+    <span class="conn-status conn-loading" id="connStatus">⏳ Cek koneksi...</span>
+  </div>
+  <div class="card">
+    <h3>📊 Statistik Latihan</h3>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-num" id="stTotal">0</div><div class="stat-label">Total Klik</div></div>
+      <div class="stat-box"><div class="stat-num" id="stBenar">0</div><div class="stat-label">Benar</div></div>
+      <div class="stat-box"><div class="stat-num" id="stAkurasi">0%</div><div class="stat-label">Akurasi</div></div>
+    </div>
+    <div id="stLangkahSalah" style="margin-top:8px;font-size:12px;color:var(--muted);"></div>
+  </div>
+  <div class="card">
+    <h3>⚙️ Pengaturan</h3>
+    <div class="mode-selector">
+      <div class="mode-btn" id="modeTerbimbing">
+        <div style="font-size:16px;margin-bottom:2px;">📖 Terbimbing</div>
+        <div style="font-size:10px;font-weight:400;">Step by step + rumus</div>
+      </div>
+      <div class="mode-btn" id="modeMandiri">
+        <div style="font-size:16px;margin-bottom:2px;">✍️ Mandiri</div>
+        <div style="font-size:10px;font-weight:400;">Langsung jawab</div>
+      </div>
+    </div>
+    <div class="focus-group">
+      <h4>Fokus Latihan</h4>
+      <div class="type-selector">
+        <div class="type-btn" data-type="V1">Rata-rata (x̄)</div>
+        <div class="type-btn" data-type="V2">Tabel Kuadrat</div>
+        <div class="type-btn" data-type="V3">Jumlah Kuadrat (Σ)</div>
+        <div class="type-btn" data-type="V4">Varians (σ²)</div>
+        <div class="type-btn" data-type="V5">Simpangan Baku (σ)</div>
+        <div class="type-btn" data-type="V6">Lengkap</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="btn btn-primary" id="btnGenerate" disabled>Buat Soal Baru</button>
+    </div>
+  </div>
+  <div id="soalArea"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+
+const API='https://script.google.com/macros/s/AKfycbwCAdUtxlTHA1mT086VoXVw_Gkx7bAqR_3qdhSOVBN9B_cAKO9wg0xfOXy-FdjwP0Jb/exec';
+const FALLBACK_NAMES=['AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA','AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI','DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI','LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI','NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH','NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA','RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI','SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'];
+const KONTEKS=[
+  {nama:'nilai ulangan harian siswa',satuan:''},
+  {nama:'jumlah pengunjung perpustakaan per hari',satuan:'orang'},
+  {nama:'suhu harian kota',satuan:'°C'},
+  {nama:'jumlah produksi harian pabrik',satuan:'unit'},
+  {nama:'berat badan siswa',satuan:'kg'},
+  {nama:'tinggi tanaman percobaan',satuan:'cm'},
+  {nama:'jumlah jam belajar siswa per hari',satuan:'jam'}
+];
+
+let currentUser='',allNames=[],selectedName='';
+let selectedMode='',selectedType='';
+let totalPeriksa=0,totalBenar=0,langkahSalahMap={};
+let currentSoal=null,setKe=0;
+
+const $=id=>document.getElementById(id);
+const connStatus=$('connStatus');
+const soalArea=$('soalArea');
+
+/* ========================
+   JSONP API
+======================== */
+function callAPI(params,cb,timeout){
+  const cbName='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
+  params.callback=cbName;
+  const url=API+'?'+Object.keys(params).map(k=>k+'='+encodeURIComponent(params[k])).join('&');
+  const sc=document.createElement('script');
+  let done=false;
+  const ms=timeout||15000;
+  const timer=setTimeout(()=>{
+    if(!done){done=true;delete window[cbName];if(sc.parentNode)sc.remove();if(cb)cb(null);}
+  },ms);
+  window[cbName]=function(data){
+    if(done)return;done=true;clearTimeout(timer);
+    delete window[cbName];if(sc.parentNode)sc.remove();if(cb)cb(data);
+  };
+  sc.src=url;
+  sc.onerror=function(){
+    if(done)return;done=true;clearTimeout(timer);
+    delete window[cbName];if(sc.parentNode)sc.remove();if(cb)cb(null);
+  };
+  document.head.appendChild(sc);
+}
+
+/* ========================
+   KIRIM KE SHEETS (setiap klik periksa)
+======================== */
+function kirimKeSheets(langkahLabel, benar, percobaan){
+  const s=currentSoal;
+  if(!s||!currentUser) return;
+  const akurasi=totalPeriksa>0?Math.round(totalBenar/totalPeriksa*100):0;
+  const lsStr=Object.entries(langkahSalahMap).map(x=>x[0]+'('+x[1]+'x)').join(', ')||'-';
+
+  callAPI({
+    action:'latihan',
+    nama:currentUser,
+    mode:selectedMode,
+    jenis:'VARIANS',
+    konteks:s.konteks?s.konteks.nama:'data tunggal',
+    benar:benar?1:0,
+    skor:benar?100:0,
+    akurasi:akurasi,
+    langkahSalah:langkahLabel,
+    setKe:String(setKe),
+    detail:'n='+s.n+' fokus='+selectedType+' langkah='+langkahLabel+' percobaan='+percobaan+' status='+(benar?'BENAR':'SALAH')
+  },function(d){
+    if(d&&d.ok){
+      connStatus.className='conn-status conn-ok';
+      connStatus.textContent='🟢 Tersimpan';
+    } else {
+      setTimeout(()=>{
+        callAPI({
+          action:'latihan',nama:currentUser,mode:selectedMode,jenis:'VARIANS',
+          konteks:s.konteks?s.konteks.nama:'data tunggal',
+          benar:benar?1:0,skor:benar?100:0,akurasi:akurasi,
+          langkahSalah:langkahLabel,setKe:String(setKe),
+          detail:'n='+s.n+' fokus='+selectedType+' langkah='+langkahLabel+' percobaan='+percobaan+' status='+(benar?'BENAR':'SALAH')+' RETRY'
+        },function(d2){
+          if(d2&&d2.ok){connStatus.className='conn-status conn-ok';connStatus.textContent='🟢 Tersimpan';}
+          else{connStatus.className='conn-status conn-fail';connStatus.textContent='🔴 Gagal';}
+        },15000);
+      },3000);
+    }
+  },15000);
+}
+
+/* ========================
+   KONEKSI & LOGIN
+======================== */
+function pingServer(){
+  connStatus.className='conn-status conn-loading';connStatus.textContent='⏳ Cek...';
+  callAPI({action:'ping'},function(d){
+    if(d&&d.ok){connStatus.className='conn-status conn-ok';connStatus.textContent='🟢 Online';}
+    else{connStatus.className='conn-status conn-fail';connStatus.textContent='🔴 Offline';}
+  },8000);
+}
+
+function loadNames(){
+  callAPI({action:'getNames'},function(d){
+    if(d&&d.ok&&d.names&&d.names.length) allNames=d.names;
+    else allNames=FALLBACK_NAMES;
+    renderNames('');
+  },10000);
+  setTimeout(()=>{if(!allNames.length){allNames=FALLBACK_NAMES;renderNames('');}},12000);
+}
+
+function renderNames(f){
+  const fl=f.trim().toUpperCase();
+  const list=fl?allNames.filter(n=>n.toUpperCase().includes(fl)):allNames;
+  const el=$('nameList');el.innerHTML='';
+  list.forEach(name=>{
+    const div=document.createElement('div');
+    div.className='name-item'+(name===selectedName?' selected':'');
+    div.textContent=name;
+    div.onclick=()=>{selectedName=name;$('searchName').value=name;$('btnLogin').disabled=false;renderNames(name);};
+    el.appendChild(div);
+  });
+}
+
+$('searchName').addEventListener('input',function(){selectedName='';$('btnLogin').disabled=true;renderNames(this.value);});
+
+$('btnLogin').addEventListener('click',()=>{
+  if(!selectedName)return;
+  currentUser=selectedName;
+  $('btnLogin').disabled=true;$('loginMsg').textContent='Memuat...';
+  callAPI({action:'login',nama:currentUser,sumber:'GENERATOR_VARIANS',device:navigator.userAgent.indexOf('Mobile')>-1?'HP':'PC'},function(){showApp();},8000);
+  setTimeout(()=>{if($('loginSection').style.display!=='none')showApp();},6000);
+});
+
+function showApp(){
+  $('loginSection').style.display='none';$('app').style.display='block';
+  $('userName').textContent=currentUser;updateStats();pingServer();
+}
+
+function updateStats(){
+  $('stTotal').textContent=totalPeriksa;
+  $('stBenar').textContent=totalBenar;
+  $('stAkurasi').textContent=totalPeriksa?Math.round(totalBenar/totalPeriksa*100)+'%':'0%';
+  const e=Object.entries(langkahSalahMap).sort((a,b)=>b[1]-a[1]);
+  $('stLangkahSalah').innerHTML=e.length?'<strong>Sering salah:</strong> '+e.map(x=>x[0]+' ('+x[1]+'x)').join(', '):'';
+}
+
+/* ========================
+   MODE & TYPE
+======================== */
+$('modeTerbimbing').onclick=function(){selectedMode='TERBIMBING';document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');checkReady();};
+$('modeMandiri').onclick=function(){selectedMode='MANDIRI';document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');checkReady();};
+document.querySelectorAll('.type-btn').forEach(btn=>{
+  btn.onclick=function(){selectedType=this.dataset.type;document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active');checkReady();};
+});
+function checkReady(){$('btnGenerate').disabled=!(selectedMode&&selectedType);}
+$('btnGenerate').onclick=()=>generateSoal();
+
+/* ========================
+   MATH
+======================== */
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function randPick(a){return a[Math.floor(Math.random()*a.length)];}
+function simpleSqrt(v){
+  if(v===0)return{a:0,b:0,text:'0',latex:'0'};
+  let a=1,b=v;
+  for(let i=Math.floor(Math.sqrt(v));i>=2;i--){if(v%(i*i)===0){a=i;b=v/(i*i);break;}}
+  if(b===1)return{a,b:1,text:''+a,latex:''+a};
+  if(a===1)return{a:1,b,text:'√'+b,latex:'\\sqrt{'+b+'}'};
+  return{a,b,text:a+'√'+b,latex:a+'\\sqrt{'+b+'}'};
+}
+function parseAkar(s){
+  s=s.trim().replace(/\s/g,'');if(!s)return null;
+  if(/^\d+$/.test(s))return{a:parseInt(s),b:1};
+  let m=s.match(/^√(\d+)$/);if(m)return{a:1,b:parseInt(m[1])};
+  m=s.match(/^(\d+)√(\d+)$/);if(m)return{a:parseInt(m[1]),b:parseInt(m[2])};
+  return null;
+}
+function cekAkar(us,co){const u=parseAkar(us);if(!u)return false;return(u.a*u.a*u.b)===(co.a*co.a*co.b);}
+
+/* ========================
+   GENERATE DATA
+======================== */
+function generateData(){
+  const n=randInt(5,8),konteks=randPick(KONTEKS);
+  let att=0,data,mean,selisih,kuadrat,sumKuadrat,varians;
+  while(att<2000){
+    att++;data=[];const base=randInt(3,20);
+    for(let i=0;i<n;i++)data.push(base+randInt(-8,8));
+    if(new Set(data).size<2)continue;
+    const sum=data.reduce((a,b)=>a+b,0);
+    if(sum%n!==0)continue;mean=sum/n;
+    selisih=data.map(x=>x-mean);kuadrat=selisih.map(x=>x*x);
+    sumKuadrat=kuadrat.reduce((a,b)=>a+b,0);
+    if(sumKuadrat%n!==0)continue;varians=sumKuadrat/n;
+    if(varians===0)continue;break;
+  }
+  if(att>=2000){data=[2,4,6,8,10];mean=6;selisih=[-4,-2,0,2,4];kuadrat=[16,4,0,4,16];sumKuadrat=40;varians=8;}
+  return{konteks,data,n:data.length,mean,selisih,kuadrat,sumKuadrat,varians,sd:simpleSqrt(varians)};
+}
+
+/* ========================
+   UI HELPERS
+======================== */
+function headerSoal(s){
+  let h='<div class="card"><h3>📝 Soal #'+setKe+'</h3>';
+  h+='<p>Data '+s.konteks.nama+(s.konteks.satuan?' ('+s.konteks.satuan+')':'')+':</p>';
+  h+='<p style="font-size:18px;font-weight:800;color:var(--primary-dark);text-align:center;padding:12px;background:var(--soft-blue);border-radius:8px;border:2px dashed var(--primary);margin:8px 0;">'+s.data.join(', ')+'</p>';
+  h+='<p style="font-size:13px;color:var(--muted);">\\(n = '+s.n+'\\)</p></div>';
+  return h;
+}
+function sqrtInputHTML(id,ph){
+  return'<div class="sqrt-input-wrap"><input type="text" id="'+id+'" placeholder="'+(ph||'misal: 3 atau 2√5')+'" autocomplete="off"/><button class="sqrt-btn" onclick="insertSqrt(\''+id+'\')" type="button">√</button></div>';
+}
+window.insertSqrt=function(id){
+  const inp=$(id);if(!inp)return;
+  const p=inp.selectionStart||inp.value.length;
+  inp.value=inp.value.slice(0,p)+'√'+inp.value.slice(p);
+  inp.focus();inp.setSelectionRange(p+1,p+1);
+};
+
+/* ========================
+   STEP BUILDERS
+======================== */
+function stepMean(s,num){
+  const total=s.data.reduce((a,b)=>a+b,0);
+  let h='<h4>Langkah '+num+': Rata-rata \\(\\bar{x}\\)</h4>';
+  h+='<div class="formula">\\[ \\bar{x} = \\frac{'+s.data.join('+')+'}{'+s.n+'} = ? \\]</div>';
+  h+='<label>Jumlah = </label><input type="number" id="s'+num+'sum" placeholder="Jumlah data..."/>';
+  h+='<label style="display:block;margin-top:6px;">\\(\\bar{x}\\) = </label><input type="number" id="s'+num+'ans" placeholder="Rata-rata..."/>';
+  h+='<div class="step-fb" id="s'+num+'fb"></div>';
+  h+='<button class="btn btn-primary" id="s'+num+'check">Periksa</button> ';
+  h+='<button class="hint-btn" id="s'+num+'hint">Petunjuk</button>';
+  h+='<div class="hint-text" id="s'+num+'hintText">'+s.data.join(' + ')+' = '+total+'. Bagi '+total+' ÷ '+s.n+' = '+s.mean+'</div>';
+  return{html:h,label:'Rata-rata',check:()=>{
+    const a=parseFloat($('s'+num+'sum').value),b=parseFloat($('s'+num+'ans').value);
+    const ok1=a===total,ok2=b===s.mean;
+    $('s'+num+'sum').className=ok1?'correct':'wrong';$('s'+num+'ans').className=ok2?'correct':'wrong';
+    return ok1&&ok2;
+  }};
+}
+function stepTabel(s,num){
+  let h='<h4>Langkah '+num+': Tabel Selisih & Kuadrat</h4>';
+  h+='<p style="font-size:12px;color:var(--muted);">\\(\\bar{x} = '+s.mean+'\\)</p>';
+  h+='<table class="tabel-kerja"><thead><tr><th>\\(x_i\\)</th><th>\\(x_i - \\bar{x}\\)</th><th>\\((x_i - \\bar{x})^2\\)</th></tr></thead><tbody>';
+  for(let i=0;i<s.n;i++) h+='<tr><td>'+s.data[i]+'</td><td><input type="number" id="s'+num+'s'+i+'"/></td><td><input type="number" id="s'+num+'k'+i+'"/></td></tr>';
+  h+='</tbody></table><div class="step-fb" id="s'+num+'fb"></div>';
+  h+='<button class="btn btn-primary" id="s'+num+'check">Periksa</button> ';
+  h+='<button class="hint-btn" id="s'+num+'hint">Petunjuk</button>';
+  h+='<div class="hint-text" id="s'+num+'hintText">'+s.data[0]+' − '+s.mean+' = '+s.selisih[0]+', ('+s.selisih[0]+')² = '+s.kuadrat[0]+'</div>';
+  return{html:h,label:'Tabel Kuadrat',check:()=>{
+    let ok=true;for(let i=0;i<s.n;i++){
+      const a=$('s'+num+'s'+i),b=$('s'+num+'k'+i);
+      const o1=parseFloat(a.value)===s.selisih[i],o2=parseFloat(b.value)===s.kuadrat[i];
+      a.className=o1?'correct':'wrong';b.className=o2?'correct':'wrong';if(!o1||!o2)ok=false;
+    }return ok;}};
+}
+function stepSum(s,num){
+  let h='<h4>Langkah '+num+': Jumlah Kuadrat \\(\\sum(x_i-\\bar{x})^2\\)</h4>';
+  h+='<div class="formula">\\['+s.kuadrat.join(' + ')+' = ?\\]</div>';
+  h+='<label>Σ = </label><input type="number" id="s'+num+'ans" placeholder="Jumlah..."/>';
+  h+='<div class="step-fb" id="s'+num+'fb"></div>';
+  h+='<button class="btn btn-primary" id="s'+num+'check">Periksa</button> ';
+  h+='<button class="hint-btn" id="s'+num+'hint">Petunjuk</button>';
+  h+='<div class="hint-text" id="s'+num+'hintText">'+s.kuadrat.join(' + ')+' = '+s.sumKuadrat+'</div>';
+  return{html:h,label:'Σ Kuadrat',check:()=>{const v=parseFloat($('s'+num+'ans').value),ok=v===s.sumKuadrat;$('s'+num+'ans').className=ok?'correct':'wrong';return ok;}};
+}
+function stepVar(s,num){
+  let h='<h4>Langkah '+num+': Varians \\(\\sigma^2\\)</h4>';
+  h+='<div class="formula">\\[ \\sigma^2 = \\frac{'+s.sumKuadrat+'}{'+s.n+'} = ? \\]</div>';
+  h+='<label>σ² = </label><input type="number" id="s'+num+'ans" placeholder="Varians..."/>';
+  h+='<div class="step-fb" id="s'+num+'fb"></div>';
+  h+='<button class="btn btn-primary" id="s'+num+'check">Periksa</button> ';
+  h+='<button class="hint-btn" id="s'+num+'hint">Petunjuk</button>';
+  h+='<div class="hint-text" id="s'+num+'hintText">'+s.sumKuadrat+' ÷ '+s.n+' = '+s.varians+'</div>';
+  return{html:h,label:'Varians',check:()=>{const v=parseFloat($('s'+num+'ans').value),ok=v===s.varians;$('s'+num+'ans').className=ok?'correct':'wrong';return ok;}};
+}
+function stepSd(s,num){
+  let h='<h4>Langkah '+num+': Simpangan Baku \\(\\sigma\\)</h4>';
+  h+='<div class="formula">\\[ \\sigma = \\sqrt{'+s.varians+'} = ? \\]</div>';
+  h+='<p style="font-size:12px;color:var(--muted);">Format: <code>3</code>, <code>√5</code>, <code>2√3</code></p>';
+  h+='<label>σ = </label>'+sqrtInputHTML('s'+num+'ans');
+  h+='<div class="step-fb" id="s'+num+'fb"></div>';
+  h+='<button class="btn btn-primary" id="s'+num+'check">Periksa</button> ';
+  h+='<button class="hint-btn" id="s'+num+'hint">Petunjuk</button>';
+  let ht='√'+s.varians+' = '+s.sd.text;if(s.sd.a>1&&s.sd.b>1)ht+='. Karena '+s.varians+' = '+(s.sd.a*s.sd.a)+'×'+s.sd.b;
+  h+='<div class="hint-text" id="s'+num+'hintText">'+ht+'</div>';
+  return{html:h,label:'Simpangan Baku',check:()=>{const inp=$('s'+num+'ans'),ok=cekAkar(inp.value,s.sd);inp.className=ok?'correct':'wrong';return ok;}};
+}
+
+/* FOKUS V1-V5 */
+function stepTabelOnly(s,num){
+  let h='<h4>Langkah '+num+': Tabel Kuadrat Selisih</h4>';
+  h+='<p>Data: '+s.data.join(', ')+', \\(\\bar{x} = '+s.mean+'\\)</p>';
+  h+='<table class="tabel-kerja"><thead><tr><th>\\(x_i\\)</th><th>\\(x_i-\\bar{x}\\)</th><th>\\((x_i-\\bar{x})^2\\)</th></tr></thead><tbody>';
+  for(let i=0;i<s.n;i++) h+='<tr><td>'+s.data[i]+'</td><td><input type="number" id="s'+num+'s'+i+'"/></td><td><input type="number" id="s'+num+'k'+i+'"/></td></tr>';
+  h+='</tbody></table><div class="step-fb" id="s'+num+'fb"></div><button class="btn btn-primary" id="s'+num+'check">Periksa</button> ';
+  h+='<button class="hint-btn" id="s'+num+'hint">Petunjuk</button>';
+  h+='<div class="hint-text" id="s'+num+'hintText">'+s.data[0]+' − '+s.mean+' = '+s.selisih[0]+'</div>';
+  return{html:h,label:'Tabel Kuadrat',check:()=>{
+    let ok=true;for(let i=0;i<s.n;i++){
+      const a=$('s'+num+'s'+i),b=$('s'+num+'k'+i);
+      const o1=parseFloat(a.value)===s.selisih[i],o2=parseFloat(b.value)===s.kuadrat[i];
+      a.className=o1?'correct':'wrong';b.className=o2?'correct':'wrong';if(!o1||!o2)ok=false;
+    }return ok;}};
+}
+function stepSumOnly(s,num){
+  let h='<h4>Langkah '+num+': Σ(xᵢ−x̄)²</h4><p>Kuadrat selisih: '+s.kuadrat.join(', ')+'</p>';
+  h+='<div class="formula">\\['+s.kuadrat.join('+')+' = ?\\]</div>';
+  h+='<label>Σ = </label><input type="number" id="s'+num+'ans"/>';
+  h+='<div class="step-fb" id="s'+num+'fb"></div><button class="btn btn-primary" id="s'+num+'check">Periksa</button> ';
+  h+='<button class="hint-btn" id="s'+num+'hint">Petunjuk</button><div class="hint-text" id="s'+num+'hintText">= '+s.sumKuadrat+'</div>';
+  return{html:h,label:'Σ Kuadrat',check:()=>{const v=parseFloat($('s'+num+'ans').value),ok=v===s.sumKuadrat;$('s'+num+'ans').className=ok?'correct':'wrong';return ok;}};
+}
+function stepVarOnly(s,num){
+  let h='<h4>Langkah '+num+': Varians</h4><p>Σ = '+s.sumKuadrat+', n = '+s.n+'</p>';
+  h+='<div class="formula">\\[\\sigma^2 = \\frac{'+s.sumKuadrat+'}{'+s.n+'} = ?\\]</div>';
+  h+='<label>σ² = </label><input type="number" id="s'+num+'ans"/>';
+  h+='<div class="step-fb" id="s'+num+'fb"></div><button class="btn btn-primary" id="s'+num+'check">Periksa</button> ';
+  h+='<button class="hint-btn" id="s'+num+'hint">Petunjuk</button><div class="hint-text" id="s'+num+'hintText">= '+s.varians+'</div>';
+  return{html:h,label:'Varians',check:()=>{const v=parseFloat($('s'+num+'ans').value),ok=v===s.varians;$('s'+num+'ans').className=ok?'correct':'wrong';return ok;}};
+}
+function stepSdOnly(s,num){
+  let h='<h4>Langkah '+num+': Simpangan Baku</h4><p>σ² = '+s.varians+'</p>';
+  h+='<div class="formula">\\[\\sigma = \\sqrt{'+s.varians+'} = ?\\]</div>';
+  h+='<p style="font-size:12px;color:var(--muted);">Format: 3, √5, 2√3</p>';
+  h+='<label>σ = </label>'+sqrtInputHTML('s'+num+'ans');
+  h+='<div class="step-fb" id="s'+num+'fb"></div><button class="btn btn-primary" id="s'+num+'check">Periksa</button> ';
+  h+='<button class="hint-btn" id="s'+num+'hint">Petunjuk</button>';
+  let ht='√'+s.varians+' = '+s.sd.text;if(s.sd.a>1&&s.sd.b>1)ht+='. '+s.varians+'='+(s.sd.a*s.sd.a)+'×'+s.sd.b;
+  h+='<div class="hint-text" id="s'+num+'hintText">'+ht+'</div>';
+  return{html:h,label:'Simpangan Baku',check:()=>{const inp=$('s'+num+'ans'),ok=cekAkar(inp.value,s.sd);inp.className=ok?'correct':'wrong';return ok;}};
+}
+
+/* ========================
+   DISPATCH
+======================== */
+function generateSoal(){
+  currentSoal=generateData();setKe++;
+  soalArea.style.display='block';soalArea.innerHTML='';
+  if(selectedMode==='TERBIMBING') renderTerbimbing(selectedType);
+  else renderMandiri(selectedType);
+  soalArea.scrollIntoView({behavior:'smooth'});
+  if(window.MathJax)MathJax.typesetPromise();
+}
+
+/* ========================
+   TERBIMBING
+======================== */
+function renderTerbimbing(t){
+  const s=currentSoal,steps=[];
+  let html=headerSoal(s);
+  if(t==='V1') steps.push(stepMean(s,1));
+  else if(t==='V2') steps.push(stepTabelOnly(s,1));
+  else if(t==='V3') steps.push(stepSumOnly(s,1));
+  else if(t==='V4') steps.push(stepVarOnly(s,1));
+  else if(t==='V5') steps.push(stepSdOnly(s,1));
+  else{steps.push(stepMean(s,1));steps.push(stepTabel(s,2));steps.push(stepSum(s,3));steps.push(stepVar(s,4));steps.push(stepSd(s,5));}
+  steps.forEach((st,i)=>{html+='<div class="step-box" id="step'+(i+1)+'"'+(i?' style="display:none;"':'')+'>'+st.html+'</div>';});
+  html+='<div class="solution-box" id="solusi"><h4>✅ Solusi Lengkap</h4><div id="solusiIsi"></div></div>';
+  html+='<div style="text-align:center;margin-top:14px;"><button class="btn btn-orange" id="btnSoalBaru" style="display:none;">Soal Baru</button></div>';
+  soalArea.innerHTML=html;
+  if(window.MathJax)MathJax.typesetPromise();
+  bindSteps(steps,s);
+}
+
+function bindSteps(steps,s){
+  let errs={};
+  steps.forEach((st,i)=>{
+    const n=i+1;
+    const btn=$('s'+n+'check'),hint=$('s'+n+'hint');
+    if(btn) btn.onclick=()=>{
+      const ok=st.check();
+      const fb=$('s'+n+'fb');
+      fb.classList.add('show');fb.classList.remove('ok','err');
+
+      // Update statistik
+      totalPeriksa++;
+      if(ok) totalBenar++;
+      if(!ok) langkahSalahMap[st.label]=(langkahSalahMap[st.label]||0)+1;
+      updateStats();
+
+      // Hitung percobaan
+      if(!errs[n]) errs[n]=0;
+      errs[n]++;
+
+      // KIRIM KE SHEETS setiap klik
+      kirimKeSheets(st.label, ok, errs[n]);
+
+      if(ok){
+        fb.classList.add('ok');fb.textContent='✅ Benar!';
+        btn.disabled=true;btn.textContent='✔';btn.style.background='var(--success)';
+        if(i<steps.length-1){
+          const nx=$('step'+(n+1));
+          if(nx){nx.style.display='block';setTimeout(()=>nx.scrollIntoView({behavior:'smooth'}),300);}
+        } else {
+          showSolusi(s);
+        }
+      } else {
+        fb.classList.add('err');
+        fb.textContent='❌ Coba lagi (percobaan '+errs[n]+')';
+      }
+    };
+    if(hint) hint.onclick=()=>{const ht=$('s'+n+'hintText');if(ht)ht.classList.toggle('show');};
+  });
+}
+
+/* ========================
+   MANDIRI
+======================== */
+function renderMandiri(t){
+  const s=currentSoal;
+  let html=headerSoal(s);
+  const fields=getMandiriFields(s,t);
+  html+='<div class="card"><h4>✍️ Jawab:</h4>';
+  if(t==='V2') html+='<p style="font-size:12px;color:var(--muted);">\\(\\bar{x}='+s.mean+'\\)</p>';
+  fields.forEach(f=>{
+    if(f.type==='tabel'){
+      html+='<p style="font-weight:700;margin-top:8px;">'+f.label+'</p>';
+      html+='<table class="tabel-kerja"><thead><tr><th>\\(x_i\\)</th><th>\\(x_i-\\bar{x}\\)</th><th>\\((x_i-\\bar{x})^2\\)</th></tr></thead><tbody>';
+      for(let i=0;i<s.n;i++) html+='<tr><td>'+s.data[i]+'</td><td><input type="number" id="'+f.id+'s'+i+'"/></td><td><input type="number" id="'+f.id+'k'+i+'"/></td></tr>';
+      html+='</tbody></table><button class="row-btn" id="btn_'+f.id+'" style="width:100%;">Cek Tabel</button>';
+      html+='<div class="step-fb" id="fb_'+f.id+'"></div>';
+    } else if(f.type==='sqrt'){
+      html+='<div class="input-row"><label>'+f.label+' =</label>'+sqrtInputHTML(f.id)+'<button class="row-btn" id="btn_'+f.id+'">Cek</button><span class="row-fb" id="fbs_'+f.id+'"></span></div>';
+    } else {
+      html+='<div class="input-row"><label>'+f.label+' =</label><input type="number" id="'+f.id+'" step="any" placeholder="..."/><button class="row-btn" id="btn_'+f.id+'">Cek</button><span class="row-fb" id="fbs_'+f.id+'"></span></div>';
+    }
+  });
+  html+='</div><div class="solution-box" id="solusi"><h4>✅ Solusi Lengkap</h4><div id="solusiIsi"></div></div>';
+  html+='<div style="text-align:center;margin-top:14px;"><button class="btn btn-orange" id="btnSoalBaru" style="display:none;">Soal Baru</button></div>';
+  soalArea.innerHTML=html;
+  if(window.MathJax)MathJax.typesetPromise();
+  bindMandiri(fields,s);
+}
+
+function getMandiriFields(s,t){
+  const f=[];
+  if(t==='V1'||t==='V6') f.push({id:'mm',label:'x̄',answer:s.mean,type:'number',fl:'Rata-rata'});
+  if(t==='V2'||t==='V6') f.push({id:'mt',label:'Tabel',type:'tabel',fl:'Tabel Kuadrat'});
+  if(t==='V3'||t==='V6') f.push({id:'ms',label:'Σ',answer:s.sumKuadrat,type:'number',fl:'Σ Kuadrat'});
+  if(t==='V4'||t==='V6') f.push({id:'mv',label:'σ²',answer:s.varians,type:'number',fl:'Varians'});
+  if(t==='V5'||t==='V6') f.push({id:'md',label:'σ',answer:s.sd,type:'sqrt',fl:'Simpangan Baku'});
+  return f;
+}
+
+function bindMandiri(fields,s){
+  let cc=0;
+  let fieldErrs={};
+  fields.forEach(f=>{
+    const btn=$('btn_'+f.id);let done=false;
+    if(!fieldErrs[f.id]) fieldErrs[f.id]=0;
+
+    btn.onclick=()=>{
+      let ok=false;
+      fieldErrs[f.id]++;
+
+      if(f.type==='tabel'){
+        ok=true;const fb=$('fb_'+f.id);
+        for(let i=0;i<s.n;i++){
+          const a=$(f.id+'s'+i),b=$(f.id+'k'+i);
+          const o1=parseFloat(a.value)===s.selisih[i],o2=parseFloat(b.value)===s.kuadrat[i];
+          a.className=o1?'correct':'wrong';b.className=o2?'correct':'wrong';
+          if(!o1||!o2)ok=false;
+        }
+        fb.classList.add('show');fb.classList.remove('ok','err');
+        if(ok){fb.classList.add('ok');fb.textContent='✅ Benar!';btn.disabled=true;btn.style.background='#16a34a';btn.textContent='✔';}
+        else{fb.classList.add('err');fb.textContent='❌ Cek lagi';}
+      } else if(f.type==='sqrt'){
+        const inp=$(f.id),fb=$('fbs_'+f.id);
+        ok=cekAkar(inp.value,f.answer);inp.className=ok?'correct':'wrong';
+        fb.textContent=ok?'✅':'❌';fb.style.color=ok?'#166534':'#991b1b';
+        if(ok){btn.disabled=true;btn.textContent='✔';btn.style.background='#16a34a';}
+      } else {
+        const inp=$(f.id),fb=$('fbs_'+f.id),v=parseFloat(inp.value);
+        ok=!isNaN(v)&&v===f.answer;inp.className=ok?'correct':'wrong';
+        fb.textContent=ok?'✅':'❌';fb.style.color=ok?'#166534':'#991b1b';
+        if(ok){btn.disabled=true;btn.textContent='✔';btn.style.background='#16a34a';}
+      }
+
+      // Update statistik
+      totalPeriksa++;
+      if(ok) totalBenar++;
+      if(!ok) langkahSalahMap[f.fl]=(langkahSalahMap[f.fl]||0)+1;
+      updateStats();
+
+      // KIRIM KE SHEETS setiap klik
+      kirimKeSheets(f.fl, ok, fieldErrs[f.id]);
+
+      if(ok&&!done){cc++;done=true;}
+      if(cc>=fields.length) showSolusi(s);
+    };
+  });
+}
+
+/* ========================
+   SOLUSI
+======================== */
+function showSolusi(s){
+  const sol=$('solusi'),isi=$('solusiIsi');
+  let h='<p><b>Data:</b> '+s.data.join(', ')+'</p>';
+  h+='<p><b>1.</b> \\(\\bar{x}=\\frac{'+s.data.join('+')+'}{'+s.n+'}='+s.mean+'\\)</p>';
+  h+='<p><b>2. Tabel:</b></p><table><thead><tr><th>\\(x_i\\)</th><th>\\(x_i-\\bar{x}\\)</th><th>\\((x_i-\\bar{x})^2\\)</th></tr></thead><tbody>';
+  for(let i=0;i<s.n;i++) h+='<tr><td>'+s.data[i]+'</td><td>'+s.selisih[i]+'</td><td>'+s.kuadrat[i]+'</td></tr>';
+  h+='<tr style="font-weight:700;background:#dbeafe;"><td colspan="2">Jumlah</td><td>'+s.sumKuadrat+'</td></tr></tbody></table>';
+  h+='<p><b>3.</b> \\(\\sigma^2=\\frac{'+s.sumKuadrat+'}{'+s.n+'}='+s.varians+'\\)</p>';
+  h+='<p><b>4.</b> \\(\\sigma=\\sqrt{'+s.varians+'}='+s.sd.latex+'\\)</p>';
+  isi.innerHTML=h;sol.classList.add('show');
+  if(window.MathJax)MathJax.typesetPromise();
+  const btn=$('btnSoalBaru');
+  if(btn){btn.style.display='inline-block';btn.onclick=()=>generateSoal();}
+}
+
+/* ========================
+   ENTER KEY
+======================== */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.tagName==='INPUT'){
+    if(e.target.id==='searchName'&&selectedName){$('btnLogin').click();return;}
+    const p=e.target.closest('.step-box');
+    if(p){const b=p.querySelector('.btn-primary');if(b&&!b.disabled)b.click();}
+    const r=e.target.closest('.input-row');
+    if(r){const b=r.querySelector('.row-btn');if(b&&!b.disabled)b.click();}
+  }
+});
+
+loadNames();
+});
+</script>
+</body>
+</html>

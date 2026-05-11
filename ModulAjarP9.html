@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>modul-ajar.html | Varians dan Simpangan Baku | SMKN 1 Salatiga</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$','$']],
+        displayMath: [['\\[','\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    @page{
+      size:A4;
+      margin:1.4cm 1.4cm 1.4cm 1.8cm;
+    }
+
+    :root{
+      --blue:#dbeafe;
+      --blue-text:#1e3a8a;
+      --border:#555;
+      --text:#000;
+      --muted:#444;
+      --bg:#d9dde3;
+      --white:#fff;
+      --mindful-bg:#dbeafe;
+      --mindful-text:#1e40af;
+      --meaningful-bg:#dcfce7;
+      --meaningful-text:#166534;
+      --joyful-bg:#fef3c7;
+      --joyful-text:#92400e;
+    }
+
+    *{ box-sizing:border-box; margin:0; padding:0; }
+
+    body{
+      font-family:"Times New Roman", Times, serif;
+      background:var(--bg);
+      color:var(--text);
+      font-size:10.5pt;
+      line-height:1.1;
+    }
+
+    .toolbar{
+      position:sticky;
+      top:0;
+      z-index:999;
+      background:#1f2937;
+      color:#fff;
+      padding:6px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:5px;
+      justify-content:center;
+      box-shadow:0 2px 8px rgba(0,0,0,.2);
+    }
+
+    .toolbar button{
+      border:none;
+      border-radius:4px;
+      padding:6px 10px;
+      cursor:pointer;
+      font-size:11px;
+      font-weight:700;
+      font-family:Arial, sans-serif;
+    }
+
+    .btn-edit{background:#facc15;color:#111827;}
+    .btn-save{background:#22c55e;color:#fff;}
+    .btn-download{background:#3b82f6;color:#fff;}
+    .btn-print{background:#a855f7;color:#fff;}
+    .btn-pb{background:#14b8a6;color:#fff;}
+    .btn-reset{background:#ef4444;color:#fff;}
+
+    .page{
+      width:210mm;
+      min-height:297mm;
+      margin:8px auto;
+      background:var(--white);
+      padding:1.4cm 1.4cm 1.4cm 1.8cm;
+      box-shadow:0 0 10px rgba(0,0,0,.08);
+    }
+
+    .cover-page{
+      width:210mm;
+      min-height:297mm;
+      margin:8px auto;
+      background:var(--white);
+      padding:1.8cm 1.8cm 1.8cm 2.3cm;
+      box-shadow:0 0 10px rgba(0,0,0,.08);
+      page-break-after:always;
+      position:relative;
+    }
+
+    .cover-page::before{
+      content:"";
+      position:absolute;
+      top:0; left:0; bottom:0;
+      width:1cm;
+      background:#1e3a8a;
+    }
+
+    .cover-school{
+      text-align:center;
+      font-size:14pt;
+      font-weight:700;
+      margin-bottom:8pt;
+      text-transform:uppercase;
+      letter-spacing:.3px;
+    }
+
+    .cover-label{
+      text-align:center;
+      font-size:10.5pt;
+      margin-bottom:14pt;
+    }
+
+    .cover-title{
+      text-align:center;
+      font-size:20pt;
+      font-weight:700;
+      margin-bottom:4pt;
+      text-transform:uppercase;
+    }
+
+    .cover-subtitle{
+      text-align:center;
+      font-size:12pt;
+      margin-bottom:14pt;
+    }
+
+    .cover-topic{
+      text-align:center;
+      font-size:17pt;
+      font-weight:700;
+      margin-bottom:14pt;
+      line-height:1.2;
+    }
+
+    .cover-divider{
+      width:80px;
+      height:2px;
+      background:#000;
+      margin:0 auto 16pt;
+    }
+
+    .cover-info-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:10.5pt;
+      margin-top:12pt;
+    }
+
+    .cover-info-table td{
+      padding:3pt 0;
+      border:none;
+      vertical-align:top;
+    }
+
+    .cover-info-table td:first-child{
+      width:150pt;
+      font-weight:700;
+    }
+
+    .cover-badge{
+      text-align:center;
+      margin-top:18pt;
+      font-size:11pt;
+      font-weight:700;
+    }
+
+    .section{
+      margin-bottom:10pt;
+      page-break-inside:auto;
+    }
+
+    .section h2{
+      font-size:13pt;
+      font-weight:700;
+      margin-bottom:6pt;
+      border-bottom:1.5px solid #000;
+      padding-bottom:2pt;
+    }
+
+    .section h3{
+      font-size:11.5pt;
+      font-weight:700;
+      margin:8pt 0 3pt;
+    }
+
+    .section h4{
+      font-size:10.5pt;
+      font-weight:700;
+      margin:5pt 0 2pt;
+    }
+
+    .section p{
+      margin:0 0 4pt;
+      text-align:justify;
+    }
+
+    .section ul,
+    .section ol{
+      margin:0 0 4pt 16pt;
+      padding-left:10pt;
+    }
+
+    .section li{
+      margin-bottom:2pt;
+      text-align:justify;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin:5pt 0;
+      font-size:9.7pt;
+    }
+
+    th, td{
+      border:1px solid var(--border);
+      padding:3pt 4pt;
+      vertical-align:top;
+      text-align:left;
+    }
+
+    th{
+      background:var(--blue);
+      color:var(--blue-text);
+      font-weight:700;
+    }
+
+    .note,
+    .info-box,
+    .success-box,
+    .warning-box,
+    .purple-box,
+    .orange-box{
+      border:1px solid #777;
+      padding:5pt 7pt;
+      margin:5pt 0;
+      font-size:9.8pt;
+      background:#fff;
+    }
+
+    .formula{
+      border:1px solid #777;
+      padding:5pt 6pt;
+      margin:5pt 0;
+      text-align:center;
+      background:#fafafa;
+      font-size:9.8pt;
+    }
+
+    .dl-tag{
+      display:inline-block;
+      padding:1pt 5pt;
+      border-radius:3pt;
+      font-size:8pt;
+      font-weight:700;
+      margin-left:3pt;
+      border:1px solid #999;
+    }
+
+    .dl-mindful{
+      background:var(--mindful-bg);
+      color:var(--mindful-text);
+      border-color:#93c5fd;
+    }
+
+    .dl-meaningful{
+      background:var(--meaningful-bg);
+      color:var(--meaningful-text);
+      border-color:#86efac;
+    }
+
+    .dl-joyful{
+      background:var(--joyful-bg);
+      color:var(--joyful-text);
+      border-color:#fcd34d;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:1pt 5pt;
+      border:1px solid #777;
+      border-radius:10pt;
+      font-size:8pt;
+      font-weight:700;
+    }
+
+    .badge.blue{background:#dbeafe;color:#1d4ed8;}
+    .badge.green{background:#dcfce7;color:#166534;}
+    .badge.yellow{background:#fef3c7;color:#92400e;}
+    .badge.purple{background:#ede9fe;color:#6d28d9;}
+    .badge.orange{background:#ffedd5;color:#9a3412;}
+
+    .small{ font-size:8.5pt; color:var(--muted); }
+
+    .page-break{ page-break-before:always; }
+
+    .pb-marker{
+      display:none;
+      border:2px dashed #ef4444;
+      padding:3px 8px;
+      margin:5px auto;
+      text-align:center;
+      color:#ef4444;
+      font-size:9px;
+      font-weight:700;
+      border-radius:4px;
+      cursor:pointer;
+      background:#fef2f2;
+      font-family:Arial, sans-serif;
+      width:fit-content;
+    }
+
+    .pb-marker.visible{ display:block; }
+
+    .force-break{
+      page-break-before:always;
+      break-before:page;
+      height:0; margin:0; padding:0; border:none;
+    }
+
+    @media(max-width:768px){
+      .page,.cover-page{
+        width:100%; min-height:auto; margin:0;
+        padding:14px; box-shadow:none;
+      }
+      .cover-page::before{ display:none; }
+      body{ font-size:10pt; }
+      table{ font-size:9pt; }
+      .cover-topic{ font-size:14pt; }
+      .cover-title{ font-size:18pt; }
+    }
+
+    @media print{
+      body{ background:#fff; }
+      .toolbar{ display:none; }
+      .page,.cover-page{
+        width:100%; min-height:auto; margin:0; box-shadow:none;
+      }
+      .pb-marker{ display:none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="btn-edit" id="btnEdit">Mode Edit</button>
+  <button class="btn-save" id="btnSave">Simpan Draft</button>
+  <button class="btn-download" id="btnDownload">Download HTML</button>
+  <button class="btn-print" id="btnPrint">Cetak / PDF</button>
+  <button class="btn-pb" id="btnPB">Atur Page Break</button>
+  <button class="btn-reset" id="btnReset">Reset</button>
+</div>
+
+<!-- COVER -->
+<div class="cover-page">
+  <div class="cover-school">SMKN 1 Salatiga</div>
+  <div class="cover-label">Kurikulum Merdeka | Fase E</div>
+  <div class="cover-title">MODUL AJAR</div>
+  <div class="cover-subtitle">Matematika Kelas X</div>
+  <div class="cover-topic">Varians dan Simpangan Baku<br/>Data Tunggal</div>
+  <div class="cover-divider"></div>
+  <table class="cover-info-table">
+    <tr><td>Mata Pelajaran</td><td>: Matematika</td></tr>
+    <tr><td>Kelas / Fase</td><td>: X / Fase E</td></tr>
+    <tr><td>Semester</td><td>: Genap</td></tr>
+    <tr><td>Tahun Pelajaran</td><td>: 2025/2026</td></tr>
+    <tr><td>Alokasi Waktu</td><td>: 1 pertemuan x 2 JP x 40 menit</td></tr>
+    <tr><td>Nama Guru</td><td>: Awang Haris Prasetyo Adhi, S.Pd.</td></tr>
+  </table>
+  <div class="cover-badge">Pertemuan 9</div>
+</div>
+
+<main id="editableContent">
+
+<!-- ===== HALAMAN 1 ===== -->
+<div class="page">
+<section class="section page-break" id="s1">
+  <h2>1. Informasi Umum</h2>
+
+  <h3>A. Identitas Modul</h3>
+  <table>
+    <tr><th style="width:32%">Komponen</th><th>Isi</th></tr>
+    <tr><td>Nama Sekolah</td><td>SMKN 1 Salatiga</td></tr>
+    <tr><td>Mata Pelajaran</td><td>Matematika</td></tr>
+    <tr><td>Kelas / Fase</td><td>X / Fase E</td></tr>
+    <tr><td>Semester</td><td>Genap</td></tr>
+    <tr><td>Tahun Pelajaran</td><td>2025/2026</td></tr>
+    <tr><td>Nama Guru</td><td>Awang Haris Prasetyo Adhi, S.Pd.</td></tr>
+    <tr><td>Kurikulum</td><td>Kurikulum Merdeka</td></tr>
+    <tr><td>Jumlah Peserta Didik</td><td>31 siswa</td></tr>
+    <tr><td>Topik</td><td>Varians dan Simpangan Baku</td></tr>
+    <tr><td>Sub Materi</td><td>Varians dan simpangan baku data tunggal</td></tr>
+    <tr><td>Alokasi Waktu</td><td>1 pertemuan x 2 JP x 40 menit = 80 menit</td></tr>
+    <tr><td>Nomor Pertemuan</td><td>9</td></tr>
+  </table>
+
+  <h3>B. Kondisi Khusus Kelas</h3>
+  <div class="orange-box">
+    Di kelas ini terdapat kegiatan magang yang berlangsung bersamaan dengan KBM. Setiap pertemuan sekitar 5 sampai 6 siswa tidak hadir karena magang di lingkungan sekolah. Siswa magang bergiliran setiap minggu dan tidak dapat mengikuti kegiatan kelas pada waktu yang sama.
+  </div>
+  <div class="info-box">
+    Untuk mengatasi kondisi tersebut, pembelajaran menggunakan Flipped Classroom berbantuan web interaktif. Materi, pre test, LKPD, latihan, post test, dan refleksi dapat diakses melalui HP sehingga siswa magang tetap dapat mengikuti alur belajar secara mandiri.
+  </div>
+  <div class="purple-box">
+    Sistem merekam jumlah percobaan siswa pada cek pemahaman setiap bagian materi. Data ini digunakan guru untuk melihat bagian mana yang paling sering diulang dan bagian mana yang paling sulit dipahami. Seluruh progres, nilai, dan catatan guru dapat dilihat oleh siswa melalui halaman utama Pertemuan9.html sejak awal pembelajaran.
+  </div>
+
+  <h3>C. Kompetensi Awal</h3>
+  <table>
+    <tr><th style="width:8%">No</th><th style="width:37%">Kompetensi Awal</th><th>Indikator</th></tr>
+    <tr><td>1</td><td>Mean (rata-rata) data tunggal</td><td>Siswa dapat menghitung mean dari data tunggal menggunakan rumus \(\bar{x} = \frac{\sum x_i}{n}\).</td></tr>
+    <tr><td>2</td><td>Kuartil dan jangkauan data tunggal</td><td>Siswa dapat menentukan Q1, Q2, Q3, Range, dan IQR dari pertemuan 8.</td></tr>
+    <tr><td>3</td><td>Operasi hitung dasar</td><td>Siswa dapat melakukan penjumlahan, pengurangan, perkalian, pembagian, dan pengakaran.</td></tr>
+    <tr><td>4</td><td>Substitusi ke dalam rumus</td><td>Siswa dapat memasukkan nilai ke dalam rumus dan menghitung hasilnya dengan benar.</td></tr>
+  </table>
+
+  <h3>D. Dimensi Profil Lulusan yang Dipilih</h3>
+  <table>
+    <tr>
+      <th style="width:14%">Dimensi</th>
+      <th style="width:26%">Alasan Dipilih</th>
+      <th style="width:12%">Kapan Diamati</th>
+      <th style="width:28%">Cara Guru Mengusahakan</th>
+      <th style="width:20%">Cara Menilai</th>
+    </tr>
+    <tr>
+      <td><span class="badge blue">Penalaran Kritis</span></td>
+      <td>Siswa menganalisis mengapa dua data dengan mean sama bisa memiliki penyebaran yang berbeda, serta menjelaskan makna simpangan baku dalam konteks nyata.</td>
+      <td>Fase 2, 3, dan 4</td>
+      <td>Guru bertanya: "Mengapa data harus dikuadratkan saat menghitung varians?" dan "Apa yang terjadi jika simpangan baku sangat kecil atau sangat besar?"</td>
+      <td>Observasi lisan, rubrik LKPD, dan hasil post test.</td>
+    </tr>
+    <tr>
+      <td><span class="badge green">Kemandirian</span></td>
+      <td>Siswa belajar mandiri melalui web materi sebelum kelas, kemudian mengerjakan pre test, LKPD, dan post test tanpa bantuan teman.</td>
+      <td>Sebelum Kelas, Fase 4, dan Fase 5</td>
+      <td>Guru menyediakan web materi terstruktur per bagian. Saat LKPD dan post test, guru menegaskan aturan kejujuran dan meminta siswa mengerjakan sendiri.</td>
+      <td>Data progres dashboard, hasil pre test, observasi saat LKPD, dan observasi saat post test.</td>
+    </tr>
+    <tr>
+      <td><span class="badge purple">Kolaborasi</span></td>
+      <td>Siswa berdiskusi saat mengerjakan LKPD sesuai level pada fase latihan.</td>
+      <td>Fase 3</td>
+      <td>Guru menginstruksikan: "Diskusikan dengan teman satu level terlebih dahulu. Cek apakah langkah mengisi tabel bantu sudah tepat."</td>
+      <td>Observasi langsung dan form penilaian sikap.</td>
+    </tr>
+    <tr>
+      <td><span class="badge yellow">Komunikasi</span></td>
+      <td>Siswa menuliskan langkah perhitungan dalam tabel bantu dengan runtut dan menyampaikan simpulan secara lisan.</td>
+      <td>Fase 3, 4, dan 5</td>
+      <td>Guru meminta siswa menulis tabel bantu dengan jelas pada LKPD dan meminta 2–3 siswa menyampaikan makna simpangan baku dari data yang digunakan.</td>
+      <td>Rubrik LKPD bagian tabel bantu dan interpretasi serta observasi lisan saat menyimpulkan.</td>
+    </tr>
+  </table>
+
+  <h3>E. Sarana dan Prasarana</h3>
+  <table>
+    <tr><th style="width:28%">Kebutuhan</th><th>Keterangan</th></tr>
+    <tr><td>Perangkat siswa</td><td>HP dengan akses internet</td></tr>
+    <tr><td>Perangkat guru</td><td>Laptop atau PC, proyektor atau LCD, internet</td></tr>
+    <tr><td>Halaman utama siswa</td><td>Pertemuan9.html sebagai pusat informasi alur pembelajaran, progres, nilai, dan catatan guru untuk siswa.</td></tr>
+    <tr><td>Media digital</td><td>MateriAjar9.html, WebInteraktif9.html, Assessment9.html, AssessmentPost9.html, LKPD9.html, LKPD9L1.html, LKPD9L2.html, LKPD9L3.html, dan Refleksi9.html</td></tr>
+    <tr><td>Dashboard guru</td><td>DashboardGuru9.html untuk memantau progres, nilai, dan memberikan catatan kepada siswa</td></tr>
+    <tr><td>Backend</td><td>Google Sheets dan Google Apps Script (baru, terpisah dari Pertemuan 8)</td></tr>
+    <tr><td>Hosting</td><td>GitHub Pages pada https://ppg-aw.github.io/SMKN1/</td></tr>
+    <tr><td>Buku catatan fisik</td><td>Digunakan untuk menyalin bagian Catatan Wajib dari materi. Catatan ini digunakan sebagai salah satu komponen penilaian.</td></tr>
+  </table>
+
+  <h3>F. Target Peserta Didik</h3>
+  <table>
+    <tr><th style="width:24%">Aspek</th><th style="width:28%">Kondisi</th><th>Strategi</th></tr>
+    <tr><td>Level Kognitif</td><td>Beragam</td><td>Diferensiasi proses melalui LKPD 3 level berdasarkan skor pre test.</td></tr>
+    <tr><td>Gaya Belajar</td><td>Campuran</td><td>Web interaktif untuk visual, diskusi untuk auditori, dan latihan bertahap dengan tabel bantu untuk kinestetik.</td></tr>
+    <tr><td>Akses Teknologi</td><td>HP saja</td><td>Web dibuat mobile responsive, ringan, dan dapat dibuka tanpa instalasi tambahan.</td></tr>
+    <tr><td>Minat dan Konteks</td><td>TikTok, Shopee, Konten Kreator, QRIS, dan Thrifting</td><td>Soal dan contoh menggunakan konteks yang dekat dengan kehidupan sehari hari siswa.</td></tr>
+    <tr><td>Siswa Magang</td><td>5–6 siswa per pertemuan</td><td>Penugasan mandiri dilakukan melalui web interaktif agar siswa tetap dapat mengikuti alur belajar.</td></tr>
+  </table>
+
+  <h3>G. Pembelajaran</h3>
+  <table>
+    <tr><th style="width:22%">Komponen</th><th>Isi</th></tr>
+    <tr><td>Moda</td><td>Tatap muka untuk kegiatan saat kelas dan luring mandiri untuk kegiatan sebelum kelas melalui web interaktif. Siswa magang menggunakan moda luring mandiri sebagai pengganti kegiatan tatap muka.</td></tr>
+    <tr><td>Model</td><td>Flipped Classroom yaitu materi dipelajari sebelum kelas melalui web. Explicit Instruction berbasis student center yaitu guru mendemonstrasikan langkah perhitungan secara eksplisit menggunakan tabel bantu, kemudian siswa aktif berlatih, berdiskusi, dan menyimpulkan.</td></tr>
+    <tr><td>Pendekatan</td><td>Deep Learning yang terdiri dari Mindful yaitu sadar akan proses berpikir, Meaningful yaitu bermakna dan terhubung dengan konteks nyata, serta Joyful yaitu menyenangkan dan interaktif.</td></tr>
+    <tr><td>Strategi</td><td>Diferensiasi proses melalui LKPD 3 level berdasarkan skor pre test.</td></tr>
+    <tr><td>Teknik</td><td>Scaffolding yaitu pembelajaran bertahap menggunakan tabel bantu perhitungan dari langkah menghitung mean, selisih, kuadrat selisih, jumlah kuadrat selisih, varians, hingga simpangan baku.</td></tr>
+  </table>
+</section>
+</div>
+
+<div class="pb-marker">Klik untuk toggle page break di sini</div>
+
+<!-- ===== HALAMAN 2 ===== -->
+<div class="page">
+<section class="section page-break" id="s2">
+  <h2>2. Komponen Inti</h2>
+
+  <h3>A. Capaian Pembelajaran</h3>
+  <div class="info-box">
+    <strong>Elemen: Analisis Data dan Peluang</strong><br/>
+    Peserta didik dapat merepresentasikan dan menginterpretasi data dengan cara menentukan jangkauan kuartil dan interkuartil. Mereka dapat membuat dan menginterpretasi diagram box plot dan menggunakannya untuk membandingkan himpunan data. Mereka dapat menentukan dan menggunakan box plot, histogram, dan dot plot sesuai karakteristik data dan kebutuhan. Mereka dapat menggunakan diagram pencar untuk menyelidiki dan menjelaskan hubungan antara dua variabel numerik atau kuantitatif. Mereka dapat mengevaluasi laporan statistika di media berdasarkan tampilan, statistika, dan representasi data. Peserta didik dapat menjelaskan peluang dan menentukan frekuensi harapan dari kejadian majemuk.
+  </div>
+
+  <h3>B. Tujuan Pembelajaran</h3>
+  <div class="success-box">
+    Setelah mengikuti pembelajaran, peserta didik dapat menghitung varians dan simpangan baku pada data tunggal dengan benar menggunakan tabel bantu perhitungan, kemudian menjelaskan makna simpangan baku dalam mengukur penyebaran data.
+  </div>
+
+  <h3>C. Kriteria Ketercapaian Tujuan Pembelajaran</h3>
+  <div class="note">KKTP minimum pada pertemuan ini adalah <strong>78</strong>.</div>
+  <table>
+    <tr><th style="width:10%">Kode</th><th style="width:42%">Kriteria</th><th style="width:14%">Level</th><th style="width:17%">Bukti</th><th style="width:17%">Penilaian</th></tr>
+    <tr><td>KKTP 1</td><td>Menghitung mean dari data tunggal sebagai langkah awal perhitungan varians.</td><td>C2 dan C3</td><td>Cek pemahaman dan pre test</td><td>Sebelum Kelas</td></tr>
+    <tr><td>KKTP 2</td><td>Menghitung selisih setiap data terhadap mean dan mengkuadratkannya secara lengkap menggunakan tabel bantu.</td><td>C3</td><td>LKPD dan pre test</td><td>Sebelum dan Saat Kelas</td></tr>
+    <tr><td>KKTP 3</td><td>Menghitung varians data tunggal menggunakan rumus \(\sigma^2 = \frac{\sum(x_i-\bar{x})^2}{n}\).</td><td>C3</td><td>LKPD dan post test</td><td>Saat Kelas</td></tr>
+    <tr><td>KKTP 4</td><td>Menghitung simpangan baku data tunggal dan menjelaskan maknanya dalam konteks data yang diberikan.</td><td>C3 dan C4</td><td>LKPD dan post test</td><td>Saat Kelas</td></tr>
+  </table>
+
+  <h3>D. Pemahaman Bermakna</h3>
+  <ul>
+    <li>Mean saja tidak cukup untuk menggambarkan data. Dua data dengan mean yang sama bisa memiliki penyebaran yang sangat berbeda.</li>
+    <li>Varians mengukur rata-rata kuadrat selisih setiap data terhadap mean.</li>
+    <li>Simpangan baku adalah akar dari varians dan mengukur rata-rata jarak setiap data terhadap mean.</li>
+    <li>Semakin kecil simpangan baku, semakin seragam atau stabil data tersebut. Semakin besar simpangan baku, semakin beragam atau bervariasi data tersebut.</li>
+    <li>Kuadrat selisih digunakan agar nilai negatif tidak saling meniadakan saat dijumlahkan.</li>
+    <li>Tabel bantu adalah alat bantu utama yang memudahkan perhitungan varians secara bertahap dan terstruktur.</li>
+  </ul>
+
+  <h3>E. Pertanyaan Pemantik</h3>
+  <div class="note"><strong>Panduan Guru:</strong> Sampaikan pertanyaan ini pada awal pembelajaran agar siswa dapat membayangkan apa yang akan dipelajari melalui situasi yang dekat dengan kehidupan sehari hari.</div>
+  <table>
+    <tr><th style="width:25%">Konteks</th><th style="width:50%">Pertanyaan Guru</th><th style="width:25%">Arah Pemahaman</th></tr>
+    <tr>
+      <td>Dua toko dengan rata-rata penjualan harian yang sama</td>
+      <td>"Dua toko mencatat penjualan harian selama seminggu. Rata-rata penjualan keduanya sama yaitu 50 ribu rupiah per hari. Toko A penjualannya sangat stabil sedangkan Toko B sangat naik-turun. Bagaimana cara kita mengukur perbedaan kestabilan penjualan kedua toko tersebut?"</td>
+      <td>Siswa mulai membayangkan perlunya ukuran penyebaran yang lebih rinci dari sekadar mean, yaitu varians dan simpangan baku.</td>
+    </tr>
+  </table>
+</section>
+
+<div class="pb-marker">Klik untuk toggle page break di sini</div>
+
+<section class="section page-break" id="s3">
+  <h2>3. Peta Konsep</h2>
+
+  <h3>A. Peta Alur Pembelajaran dan Penggunaan Media</h3>
+  <table>
+    <tr>
+      <th style="width:10%">Tahap</th>
+      <th style="width:44%">Aktivitas</th>
+      <th style="width:20%">Media</th>
+      <th style="width:6%">Siswa Hadir</th>
+      <th style="width:20%">Siswa Magang</th>
+    </tr>
+    <tr>
+      <td rowspan="6">Sebelum Kelas<br/><span class="small"></span></td>
+      <td>Membuka Pertemuan9.html.</td>
+      <td>Halaman utama siswa</td><td>Wajib</td><td>Wajib</td>
+    </tr>
+    <tr><td>Masuk ke web materi interaktif melalui tautan di halaman utama.</td><td>Web materi</td><td>Wajib</td><td>Wajib</td></tr>
+    <tr><td>Belajar materi 8 bagian disertai cek pemahaman tiap bagian. Jumlah percobaan tiap bagian direkam.</td><td>Web materi</td><td>Wajib</td><td>Wajib</td></tr>
+    <tr><td>Mencatat rumus, tabel bantu, dan langkah pada bagian Catatan Wajib ke buku catatan fisik.</td><td>Web materi dan buku catatan</td><td>Wajib</td><td>Wajib</td></tr>
+    <tr><td>Mengerjakan pre test digital berbentuk tabel bantu lengkap setelah materi selesai.</td><td>Web pre test</td><td>Wajib</td><td>Wajib</td></tr>
+    <tr><td>Berlatih di web latihan soal generator.</td><td>Web generator</td><td>Disarankan</td><td>Sangat disarankan</td></tr>
+    <tr>
+      <td rowspan="6">Saat Kelas<br/><span class="small">80 menit</span></td>
+      <td>Fase 1: Pembukaan dan apersepsi</td><td>Proyektor dan dashboard</td><td>Ikut</td><td>Tidak ikut</td>
+    </tr>
+    <tr><td>Fase 2: Pemodelan langkah perhitungan varians dan simpangan baku menggunakan tabel bantu</td><td>Proyektor</td><td>Ikut</td><td>Diganti materi web dan catatan wajib</td></tr>
+    <tr><td>Fase 3: Latihan sesuai level melalui LKPD digital</td><td>LKPD digital di HP</td><td>Ikut</td><td>Mengerjakan mandiri sesuai level</td></tr>
+    <tr><td>Fase 4: Menyimpulkan bersama</td><td>Diskusi kelas</td><td>Ikut</td><td>Tidak ikut</td></tr>
+    <tr><td>Fase 5: Post test mandiri berbentuk tabel bantu lengkap</td><td>Web post test di HP</td><td>Ikut</td><td>Mengerjakan mandiri setelah LKPD selesai</td></tr>
+    <tr><td>Fase 6: Penutup dan tindak lanjut</td><td>Dashboard dan HP siswa</td><td>Ikut</td><td>Wajib cek halaman utama</td></tr>
+    <tr>
+      <td rowspan="3">Sesudah Kelas</td>
+      <td>Mengisi refleksi digital</td><td>Web refleksi</td><td>Wajib</td><td>Wajib</td>
+    </tr>
+    <tr><td>Tindak lanjut otomatis: siswa yang nilai LKPD kurang dari 78 wajib mengerjakan latihan di web generator.</td><td>Web generator</td><td>Otomatis sesuai nilai</td><td>Otomatis sesuai nilai</td></tr>
+    <tr><td>Penyelesaian tugas siswa magang yang belum selesai</td><td>Semua web</td><td>Tidak ada</td><td>Wajib jika belum selesai</td></tr>
+  </table>
+
+  <h3>B. Peta Scaffolding Materi</h3>
+  <table>
+    <tr><th style="width:3%">Langkah</th><th style="width:26%">Fokus</th><th style="width:30%">Materi</th><th style="width:10%">KKTP</th><th style="width:29%">Hasil</th></tr>
+    <tr><td colspan="5"><strong>Persiapan dan Konsep Dasar</strong></td></tr>
+    <tr><td>1</td><td>Memahami keterbatasan mean</td><td>Contoh dua data dengan mean sama tetapi penyebaran berbeda</td><td>KKTP 1</td><td>Siswa sadar perlunya ukuran penyebaran</td></tr>
+    <tr><td>2</td><td>Menghitung mean data tunggal</td><td>Rumus mean, contoh, latihan</td><td>KKTP 1</td><td>Mean ditemukan sebagai dasar tabel bantu</td></tr>
+    <tr><td colspan="5"><strong>Tabel Bantu Perhitungan</strong></td></tr>
+    <tr><td>3</td><td>Menghitung selisih tiap data terhadap mean</td><td>Kolom \(x_i - \bar{x}\) pada tabel bantu</td><td>KKTP 2</td><td>Kolom selisih terisi lengkap</td></tr>
+    <tr><td>4</td><td>Mengkuadratkan selisih</td><td>Kolom \((x_i - \bar{x})^2\) pada tabel bantu</td><td>KKTP 2</td><td>Kolom kuadrat selisih terisi lengkap</td></tr>
+    <tr><td>5</td><td>Menjumlahkan kuadrat selisih</td><td>Baris jumlah: \(\sum(x_i - \bar{x})^2\)</td><td>KKTP 2</td><td>Jumlah kuadrat selisih ditemukan</td></tr>
+    <tr><td colspan="5"><strong>Varians dan Simpangan Baku</strong></td></tr>
+    <tr><td>6</td><td>Menghitung varians</td><td>\(\sigma^2 = \frac{\sum(x_i-\bar{x})^2}{n}\)</td><td>KKTP 3</td><td>Varians ditemukan</td></tr>
+    <tr><td>7</td><td>Menghitung simpangan baku dan menafsirkan</td><td>\(\sigma = \sqrt{\sigma^2}\), tafsiran hasil</td><td>KKTP 4</td><td>Simpangan baku ditemukan dan ditafsirkan</td></tr>
+    <tr><td colspan="5"><strong>Catatan Wajib</strong></td></tr>
+    <tr><td>8</td><td>Menyalin ringkasan</td><td>Rumus dan langkah</td><td>-</td><td>Catatan fisik selesai</td></tr>
+  </table>
+</section>
+</div>
+
+<div class="pb-marker">Klik untuk toggle page break di sini</div>
+
+<!-- ===== HALAMAN 3 ===== -->
+<div class="page">
+<section class="section page-break" id="s4">
+  <h2>4. Kegiatan Pembelajaran</h2>
+
+  <div class="info-box">
+    <strong>Keterangan label Deep Learning:</strong>
+    <span class="dl-tag dl-mindful">Mindful</span> sadar proses berpikir &nbsp;
+    <span class="dl-tag dl-meaningful">Meaningful</span> terhubung dengan konteks nyata &nbsp;
+    <span class="dl-tag dl-joyful">Joyful</span> menyenangkan dan memotivasi
+  </div>
+
+  <h3>A. Kegiatan Sebelum Kelas</h3>
+  <table>
+    <tr><th style="width:4%">No</th><th style="width:14%">Kegiatan</th><th style="width:32%">Deskripsi</th><th style="width:30%">Peran Guru</th><th style="width:20	%">Data Terekam</th></tr>
+    <tr><td>1</td><td>Membuka halaman utama siswa</td><td>Siswa membuka Pertemuan9.html, login dengan nama, membaca alur pembelajaran, dan melihat progres belajar serta catatan guru. <span class="dl-tag dl-mindful">Mindful</span></td><td>Guru membagikan tautan dan memastikan semua siswa dapat mengaksesnya melalui HP.</td><td>Nama, waktu login, dan waktu akses.</td></tr>
+    <tr><td>2</td><td>Masuk ke web materi</td><td>Siswa masuk ke web materi interaktif melalui tautan di halaman utama.</td><td>Guru memastikan tautan web materi berfungsi dengan baik.</td><td>Waktu mulai belajar materi.</td></tr>
+    <tr><td>3</td><td>Belajar 8 bagian materi</td><td>Siswa mempelajari materi bertahap dan mengerjakan cek pemahaman tiap bagian. Jumlah percobaan tiap bagian direkam. <span class="dl-tag dl-mindful">Mindful</span> <span class="dl-tag dl-meaningful">Meaningful</span></td><td>Guru memantau progres siswa melalui dashboard dan mengingatkan siswa yang belum menyelesaikan seluruh bagian.</td><td>Bagian yang selesai, jawaban cek pemahaman, jumlah percobaan tiap bagian.</td></tr>
+    <tr><td>4</td><td>Menyalin Catatan Wajib</td><td>Siswa menyalin rumus, tabel bantu, dan langkah ke buku catatan fisik.</td><td>Guru mengingatkan bahwa catatan wajib digunakan sebagai nilai dan akan diperiksa saat kelas.</td><td>Status Catatan Wajib.</td></tr>
+    <tr><td>5</td><td>Pre test berbentuk tabel bantu</td><td>Siswa mengerjakan pre test setelah seluruh materi selesai. Pre test berbentuk tabel bantu lengkap. Hasilnya dipakai untuk menentukan level LKPD. <span class="dl-tag dl-mindful">Mindful</span></td><td>Guru memeriksa hasil pre test dan menyiapkan pembagian level untuk pembelajaran di kelas.</td><td>Jawaban per sel tabel, skor pre test, dan level LKPD.</td></tr>
+    <tr><td>6</td><td>Latihan tambahan</td><td>Siswa dapat berlatih di web generator sebagai penguatan awal. <span class="dl-tag dl-joyful">Joyful</span></td><td>Guru menyarankan siswa yang masih lemah untuk mencoba mode terbimbing.</td><td>Riwayat latihan dan langkah yang sering salah.</td></tr>
+  </table>
+
+  <h3>B. Kegiatan Saat Kelas</h3>
+  <table>
+    <tr><th style="width:2%">Fase</th><th style="width:43%">Aktivitas Guru</th><th style="width:38%">Aktivitas Siswa</th><th style="width:17%">Dimensi dan Penilaian</th></tr>
+    <tr>
+      <td rowspan="4">Fase 1<br/>Pembukaan<br/>10 menit</td>
+      <td><strong>Menit 1–2:</strong> Guru membuka pembelajaran dengan salam, memimpin doa, dan mengecek kehadiran. Guru mencatat siswa yang sedang magang.</td>
+      <td>Siswa menjawab salam, berdoa, dan merespon presensi.</td>
+      <td rowspan="4"><span class="badge green">Kemandirian</span> Diamati dari kesiapan siswa yang sudah membawa buku catatan wajib dan sudah menyelesaikan pre test.<br/><br/><span class="badge yellow">Komunikasi</span> Diamati dari respon siswa saat menjawab pertanyaan pemantik.</td>
+    </tr>
+    <tr>
+      <td><strong>Menit 3–5:</strong> Guru membuka dashboard dan menampilkan ringkasan pre test di proyektor. <span class="dl-tag dl-mindful">Mindful</span></td>
+      <td>Siswa memperhatikan data dashboard dan menyadari posisi belajar masing-masing. <span class="dl-tag dl-mindful">Mindful</span></td>
+    </tr>
+    <tr>
+      <td><strong>Menit 6–8:</strong> Guru menyampaikan pertanyaan pemantik tentang dua toko dengan rata-rata penjualan sama tetapi berbeda kestabilannya. Guru menunjuk 2–3 siswa menanggapi. <span class="dl-tag dl-meaningful">Meaningful</span></td>
+      <td>Siswa menanggapi pertanyaan pemantik berdasarkan pengalaman belajar di web materi. <span class="dl-tag dl-meaningful">Meaningful</span></td>
+    </tr>
+    <tr>
+      <td><strong>Menit 9–10:</strong> Guru menyampaikan tujuan pembelajaran dan mengecek kesiapan buku catatan wajib.</td>
+      <td>Siswa menyiapkan HP dan buku catatan, memastikan pre test sudah dikerjakan, dan siap mengikuti pembelajaran inti.</td>
+    </tr>
+    <tr>
+      <td rowspan="3">Fase 2<br/>Pemodelan<br/>15 menit</td>
+      <td><strong>Menit 11–22:</strong> Guru mendemonstrasikan satu contoh data tunggal secara lengkap menggunakan tabel bantu di proyektor. Guru mengisi kolom per kolom: \(x_i\), mean, \(x_i - \bar{x}\), \((x_i - \bar{x})^2\), kemudian baris jumlah, varians, dan simpangan baku. <span class="dl-tag dl-mindful">Mindful</span></td>
+      <td>Siswa mengamati demonstrasi dan mencatat tabel bantu di buku catatan. <span class="dl-tag dl-mindful">Mindful</span></td>
+      <td rowspan="3"><span class="badge blue">Penalaran Kritis</span> Diamati dari kemampuan siswa memahami alasan pengkuadratan dan makna simpangan baku.<br/><br/><span class="badge yellow">Komunikasi</span> Diamati dari ketelitian siswa mencatat tabel bantu.</td>
+    </tr>
+    <tr>
+      <td><strong>Menit 23–24:</strong> Guru menegaskan mengapa selisih harus dikuadratkan. Guru bertanya: "Mengapa \(\sum(x_i - \bar{x})\) selalu nol?" <span class="dl-tag dl-meaningful">Meaningful</span></td>
+      <td>Siswa menanggapi pertanyaan guru dan memahami perlunya pengkuadratan. <span class="dl-tag dl-meaningful">Meaningful</span></td>
+    </tr>
+    <tr>
+      <td><strong>Menit 25:</strong> Guru mengumumkan pembagian level dan mengarahkan siswa berpindah tempat duduk.</td>
+      <td>Siswa berpindah sesuai level dan menyiapkan LKPD digital masing-masing.</td>
+    </tr>
+    <tr>
+      <td rowspan="4">Fase 3<br/>Latihan LKPD<br/>30 menit</td>
+      <td><strong>Menit 26–28:</strong> Guru membagikan tautan LKPD sesuai level. <span class="dl-tag dl-joyful">Joyful</span></td>
+      <td>Siswa membuka LKPD sesuai level masing-masing di HP. <span class="dl-tag dl-joyful">Joyful</span></td>
+      <td rowspan="4"><span class="badge purple">Kolaborasi</span> Diamati dari sikap siswa saat berdiskusi dengan teman satu level.<br/><br/><span class="badge blue">Penalaran Kritis</span> Dinilai melalui rubrik LKPD bagian tabel bantu dan interpretasi.</td>
+    </tr>
+    <tr>
+      <td><strong>Menit 29–45:</strong> Guru berkeliling mendampingi tiap level. Level 1 dipandu langkah demi langkah pada tabel bantu. Level 2 mengecek ketepatan tabel. Level 3 menantang siswa untuk menjelaskan makna simpangan baku. <span class="dl-tag dl-mindful">Mindful</span></td>
+      <td>Siswa mengerjakan LKPD sesuai level masing-masing. <span class="dl-tag dl-mindful">Mindful</span></td>
+    </tr>
+    <tr>
+      <td><strong>Menit 46–53:</strong> Guru menginstruksikan diskusi singkat antar teman satu level untuk mengecek ketepatan tabel bantu. <span class="dl-tag dl-meaningful">Meaningful</span></td>
+      <td>Siswa berdiskusi singkat, memperbaiki jawaban bila perlu, lalu mengirim LKPD. <span class="dl-tag dl-meaningful">Meaningful</span></td>
+    </tr>
+    <tr>
+      <td><strong>Menit 54–55:</strong> Guru memastikan semua siswa sudah mengirim LKPD dan mengecek data yang masuk di dashboard.</td>
+      <td>Siswa memastikan LKPD sudah terkirim dan menyiapkan diri untuk menyimpulkan.</td>
+    </tr>
+    <tr>
+      <td rowspan="2">Fase 4<br/>Menyimpulkan<br/>5 menit</td>
+      <td><strong>Menit 56–57:</strong> Guru meminta perwakilan dari tiap level untuk menyampaikan simpulan tentang makna simpangan baku dari data yang digunakan.</td>
+      <td>Siswa menyiapkan simpulan.</td>
+      <td rowspan="2"><span class="badge yellow">Komunikasi</span> Diamati dari cara siswa menyampaikan simpulan secara lisan.<br/><br/><span class="badge purple">Kolaborasi</span> Diamati dari sikap siswa saat mendengarkan dan menanggapi teman.</td>
+    </tr>
+    <tr>
+      <td><strong>Menit 58–60:</strong> Guru menegaskan perbedaan varians kecil dan besar dalam konteks kestabilan data. <span class="dl-tag dl-joyful">Joyful</span></td>
+      <td>Perwakilan tiap level menyampaikan simpulan. <span class="dl-tag dl-joyful">Joyful</span></td>
+    </tr>
+    <tr>
+      <td rowspan="3">Fase 5<br/>Post Test<br/>20 menit</td>
+      <td><strong>Menit 61–62:</strong> Guru membagikan tautan post test dan menegaskan aturan kejujuran.</td>
+      <td>Siswa membuka post test di HP dan bersiap mengerjakan secara individu.</td>
+      <td rowspan="3"><span class="badge green">Kemandirian</span> Diamati dari sikap jujur saat mengerjakan post test.<br/><br/><span class="badge blue">Penalaran Kritis</span> Dinilai dari skor post test dan kelengkapan tabel bantu.</td>
+    </tr>
+    <tr>
+      <td><strong>Menit 63–78:</strong> Guru memantau dashboard. Setelah siswa mengirim jawaban, sistem menampilkan skor dan feedback otomatis di HP siswa. <span class="dl-tag dl-mindful">Mindful</span></td>
+      <td>Siswa mengerjakan post test secara mandiri dengan mengisi tabel bantu lengkap. Setelah mengirim, siswa membaca feedback otomatis. <span class="dl-tag dl-mindful">Mindful</span></td>
+    </tr>
+    <tr>
+      <td><strong>Menit 79–80:</strong> Guru menyampaikan tindak lanjut dan menutup pembelajaran dengan doa dan salam.</td>
+      <td>Siswa mencatat tindak lanjut, membuka Pertemuan9.html untuk melihat progres terbaru, berdoa, dan menjawab salam.</td>
+    </tr>
+  </table>
+
+  <h3>C. Kegiatan Sesudah Kelas</h3>
+  <table>
+    <tr><th style="width:6%">No</th><th style="width:22%">Kegiatan</th><th style="width:42%">Deskripsi</th><th style="width:14%">Sasaran</th><th style="width:16%">Tindak Lanjut</th></tr>
+    <tr><td>1</td><td>Refleksi digital</td><td>Siswa mengisi refleksi tentang bagian yang mudah, bagian yang sulit, manfaat web materi, dan saran pembelajaran. <span class="dl-tag dl-mindful">Mindful</span></td><td>Semua siswa</td><td>Guru membaca hasil refleksi untuk perbaikan pembelajaran.</td></tr>
+    <tr><td>2</td><td>Tindak lanjut otomatis</td><td>Jika nilai LKPD kurang dari 78, siswa wajib mengerjakan latihan di web generator sampai menyelesaikan minimal 3 set soal dengan akurasi minimal 80 persen. <span class="dl-tag dl-mindful">Mindful</span> <span class="dl-tag dl-joyful">Joyful</span></td><td>Siswa dengan nilai LKPD &lt; 78</td><td>Sistem menampilkan kewajiban pada halaman utama siswa dan guru memantau melalui dashboard.</td></tr>
+    <tr><td>3</td><td>Penyelesaian tugas siswa magang</td><td>Siswa magang yang belum menuntaskan LKPD, post test, atau refleksi wajib menyelesaikan seluruh tahapan secara mandiri melalui web.</td><td>Siswa magang</td><td>Guru memantau penyelesaian melalui dashboard.</td></tr>
+  </table>
+</section>
+</div>
+
+<div class="pb-marker">Klik untuk toggle page break di sini</div>
+
+<!-- ===== HALAMAN 4 ===== -->
+<div class="page">
+<section class="section page-break" id="s5">
+  <h2>5. Materi Ajar</h2>
+
+  <h3>A. Apersepsi Kontekstual</h3>
+  <p>Dalam kehidupan sehari-hari, rata-rata saja tidak selalu cukup untuk menggambarkan data. Misalnya, dua toko bisa memiliki rata-rata penjualan yang sama tetapi salah satu toko penjualannya sangat stabil sedangkan yang lain sangat naik-turun. Untuk mengukur seberapa besar penyebaran data terhadap nilai rata-ratanya, kita menggunakan varians dan simpangan baku.</p>
+
+  <h3>B. Pengertian dan Istilah Penting</h3>
+  <table>
+    <tr><th style="width:22.5%">Istilah</th><th>Pengertian</th></tr>
+    <tr><td>Mean (\(\bar{x}\))</td><td>Rata-rata dari seluruh data. Dihitung dengan \(\bar{x} = \frac{\sum x_i}{n}\).</td></tr>
+    <tr><td>Selisih (\(x_i - \bar{x}\))</td><td>Jarak setiap data terhadap mean. Bisa bernilai positif, negatif, atau nol. Jumlah selisih selalu nol.</td></tr>
+    <tr><td>Kuadrat selisih (\((x_i - \bar{x})^2\))</td><td>Hasil kuadrat dari selisih. Selalu bernilai positif atau nol.</td></tr>
+    <tr><td>Jumlah kuadrat selisih</td><td>Penjumlahan semua nilai kuadrat selisih dari seluruh data. Merupakan baris jumlah pada tabel bantu: \(\sum(x_i-\bar{x})^2\).</td></tr>
+    <tr><td>Varians (\(\sigma^2\))</td><td>Rata-rata dari kuadrat selisih setiap data terhadap mean. Mengukur seberapa jauh data menyebar dari mean.</td></tr>
+    <tr><td>Simpangan baku (\(\sigma\))</td><td>Akar kuadrat dari varians. Memiliki satuan yang sama dengan data sehingga lebih mudah ditafsirkan.</td></tr>
+    <tr><td>Tabel bantu</td><td>Tabel yang digunakan untuk menghitung varians secara bertahap, memuat kolom \(x_i\), \(x_i - \bar{x}\), dan \((x_i - \bar{x})^2\).</td></tr>
+  </table>
+
+  <h3>C. Rumus Ringkasan</h3>
+  <table>
+    <tr><th style="width:15%">Ukuran</th><th style="width:18%">Rumus</th><th>Keterangan</th></tr>
+    <tr><td>Mean</td><td>\(\bar{x} = \dfrac{\sum x_i}{n}\)</td><td>Jumlah semua data dibagi banyak data.</td></tr>
+    <tr><td>Jumlah kuadrat selisih</td><td>\(\sum(x_i - \bar{x})^2\)</td><td>Jumlahkan semua nilai \((x_i - \bar{x})^2\) dari seluruh data.</td></tr>
+    <tr><td>Varians</td><td>\(\sigma^2 = \dfrac{\sum(x_i - \bar{x})^2}{n}\)</td><td>Rata-rata dari kuadrat selisih. Semakin besar varians, semakin besar penyebaran data.</td></tr>
+    <tr><td>Simpangan baku</td><td>\(\sigma = \sqrt{\sigma^2}\)</td><td>Akar dari varians. Memiliki satuan yang sama dengan data asli.</td></tr>
+  </table>
+
+  <h3>D. Scaffolding Materi</h3>
+
+  <h4>D.1. Mengapa Mean Saja Tidak Cukup?</h4>
+  <p>Perhatikan dua data penjualan harian dua toko selama 5 hari (ribu rupiah):</p>
+  <table>
+    <tr><th>Hari</th><th>Toko A</th><th>Toko B</th></tr>
+    <tr><td>1</td><td>48</td><td>10</td></tr>
+    <tr><td>2</td><td>50</td><td>30</td></tr>
+    <tr><td>3</td><td>52</td><td>50</td></tr>
+    <tr><td>4</td><td>48</td><td>70</td></tr>
+    <tr><td>5</td><td>52</td><td>90</td></tr>
+    <tr><th>Mean</th><th>50</th><th>50</th></tr>
+  </table>
+  <div class="info-box">Mean kedua toko sama yaitu 50 ribu rupiah. Namun Toko A sangat stabil sedangkan Toko B sangat bervariasi. Untuk mengukur perbedaan ini kita perlu varians dan simpangan baku.</div>
+<div class="force-break"></div>
+  <h4>D.2. Mengisi Tabel Bantu Perhitungan</h4>
+  <p>Langkah 1: Mean = \(\frac{3+5+6+7+9}{5} = 6\). Langkah 2: Isi tabel bantu kolom per kolom dari kiri ke kanan.</p>
+  <table>
+    <tr><th style="width:10%">Data ke-</th><th style="width:12%">\(x_i\)</th><th style="width:28%">\(x_i - \bar{x}\)</th><th style="width:28%">\((x_i - \bar{x})^2\)</th></tr>
+    <tr><td>1</td><td>3</td><td>3 − 6 = −3</td><td>(−3)² = 9</td></tr>
+    <tr><td>2</td><td>5</td><td>5 − 6 = −1</td><td>(−1)² = 1</td></tr>
+    <tr><td>3</td><td>6</td><td>6 − 6 = 0</td><td>0² = 0</td></tr>
+    <tr><td>4</td><td>7</td><td>7 − 6 = 1</td><td>1² = 1</td></tr>
+    <tr><td>5</td><td>9</td><td>9 − 6 = 3</td><td>3² = 9</td></tr>
+    <tr><th>Jumlah</th><th>30</th><th>0</th><th>20</th></tr>
+  </table>
+  <div class="note"><strong>Perhatikan:</strong> Jumlah kolom \(x_i - \bar{x}\) selalu nol. Ini adalah cara cek bahwa mean dan pengisian kolom selisih sudah benar. Jika jumlah kolom selisih tidak nol, periksa kembali nilai mean.</div>
+
+  <h4>D.3. Menghitung Varians dan Simpangan Baku</h4>
+  <div class="formula">\[ \sigma^2 = \frac{\sum(x_i - \bar{x})^2}{n} = \frac{20}{5} = 4 \qquad \sigma = \sqrt{\sigma^2} = \sqrt{4} = 2 \]</div>
+  <div class="success-box"><strong>Tafsiran:</strong> Simpangan baku = 2 ribu rupiah. Artinya rata-rata penjualan harian menyimpang sekitar 2 ribu rupiah dari mean (6 ribu rupiah). Semakin kecil simpangan baku, semakin stabil data tersebut.</div>
+
+  <h3>E. Contoh Soal Bertahap</h3>
+
+  <h4>Contoh 1: Data Pendapatan Harian (n = 5, hasil bulat)</h4>
+  <p>Data pendapatan harian pedagang kaki lima (ribu rupiah): 7, 9, 10, 11, 13. Mean = 10.</p>
+  <table>
+    <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\((x_i - \bar{x})^2\)</th></tr>
+    <tr><td>1</td><td>7</td><td>−3</td><td>9</td></tr>
+    <tr><td>2</td><td>9</td><td>−1</td><td>1</td></tr>
+    <tr><td>3</td><td>10</td><td>0</td><td>0</td></tr>
+    <tr><td>4</td><td>11</td><td>1</td><td>1</td></tr>
+    <tr><td>5</td><td>13</td><td>3</td><td>9</td></tr>
+    <tr><th>Jumlah</th><th>50</th><th>0</th><th>20</th></tr>
+  </table>
+  <p>Varians = 20/5 = <strong>4</strong>. Simpangan baku = √4 = <strong>2</strong> ribu rupiah.</p>
+
+  <h4>Contoh 2: Perbandingan Dua Toko (Analisis)</h4>
+  <p><strong>Toko A</strong> (5 hari, ribu rupiah): 48, 50, 52, 48, 52. Mean = 50.</p>
+  <table>
+    <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\((x_i - \bar{x})^2\)</th></tr>
+    <tr><td>1</td><td>48</td><td>−2</td><td>4</td></tr>
+    <tr><td>2</td><td>50</td><td>0</td><td>0</td></tr>
+    <tr><td>3</td><td>52</td><td>2</td><td>4</td></tr>
+    <tr><td>4</td><td>48</td><td>−2</td><td>4</td></tr>
+    <tr><td>5</td><td>52</td><td>2</td><td>4</td></tr>
+    <tr><th>Jumlah</th><th>250</th><th>0</th><th>16</th></tr>
+  </table>
+  <p>Varians A = 3,2. Simpangan baku A = 0,4 √2 ribu rupiah.</p>
+  <div class="force-break"></div>
+  <p><strong>Toko B</strong> (5 hari, ribu rupiah): 10, 30, 50, 70, 90. Mean = 50.</p>
+  <table>
+    <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\((x_i - \bar{x})^2\)</th></tr>
+    <tr><td>1</td><td>10</td><td>−40</td><td>1600</td></tr>
+    <tr><td>2</td><td>30</td><td>−20</td><td>400</td></tr>
+    <tr><td>3</td><td>50</td><td>0</td><td>0</td></tr>
+    <tr><td>4</td><td>70</td><td>20</td><td>400</td></tr>
+    <tr><td>5</td><td>90</td><td>40</td><td>1600</td></tr>
+    <tr><th>Jumlah</th><th>250</th><th>0</th><th>4000</th></tr>
+  </table>
+  <p>Varians B = 800. Simpangan baku B = 20√2 ribu rupiah.</p>
+  <div class="info-box">Meskipun mean kedua toko sama (50 ribu rupiah), simpangan baku Toko A (0,4 √2) jauh lebih kecil dari Toko B (20√2). Artinya penjualan Toko A sangat stabil sedangkan Toko B sangat bervariasi.</div>
+
+  <h3>F. Kesalahan Umum</h3>
+  <table>
+    <tr><th style="width:6%">No</th><th style="width:40%">Kesalahan</th><th>Penjelasan Benar</th></tr>
+    <tr><td>1</td><td>Menjumlahkan kolom selisih \((x_i - \bar{x})\) sebagai pembilang varians.</td><td>Jumlah kolom selisih selalu nol. Yang dijumlahkan adalah kolom <strong>kuadrat</strong> selisih \((x_i - \bar{x})^2\).</td></tr>
+    <tr><td>2</td><td>Salah menghitung mean sehingga seluruh kolom tabel bantu ikut salah.</td><td>Cek: jumlah kolom \(x_i - \bar{x}\) harus nol. Jika tidak nol, ada kesalahan pada mean atau pengisian kolom selisih.</td></tr>
+    <tr><td>3</td><td>Membagi dengan \(n - 1\) bukan \(n\).</td><td>Pada pertemuan ini kita menggunakan rumus dasar (populasi) dengan pembagi \(n\), bukan \(n - 1\).</td></tr>
+    <tr><td>4</td><td>Lupa mengakarkan varians untuk mendapatkan simpangan baku.</td><td>Simpangan baku \(\sigma = \sqrt{\sigma^2}\). Varians dan simpangan baku adalah dua ukuran yang berbeda.</td></tr>
+    <tr><td>5</td><td>Salah mengkuadratkan bilangan negatif menjadi negatif.</td><td>Kuadrat dari bilangan negatif selalu positif. Contoh: \((-3)^2 = 9\), bukan \(-9\).</td></tr>
+    <tr><td>6</td><td>Tidak mengisi baris jumlah pada tabel bantu sebelum menghitung varians.</td><td>Baris jumlah adalah \(\sum(x_i-\bar{x})^2\) yang langsung digunakan sebagai pembilang rumus varians.</td></tr>
+  </table>
+</section>
+</div>
+
+<div class="pb-marker">Klik untuk toggle page break di sini</div>
+
+<!-- ===== HALAMAN 5 ===== -->
+<div class="page">
+<section class="section page-break" id="s6">
+  <h2>6. Desain Web Interaktif</h2>
+
+  <h3>A. Tujuan</h3>
+  <p>Web interaktif digunakan sebagai media belajar mandiri sebelum kelas. Media ini mencakup 8 bagian materi bertahap dari konsep keterbatasan mean hingga simpangan baku beserta tafsirannya. Web ini juga menjadi media utama bagi siswa magang untuk mengejar ketertinggalan.</p>
+
+  <h3>B. Struktur Web Materi Interaktif</h3>
+  <table>
+    <tr><th style="width:5%">Bgn</th><th style="width:20%">Judul</th><th style="width:45%">Isi</th><th style="width:30%">Cek Pemahaman</th></tr>
+    <tr><td>1</td><td>Mengapa Mean Saja Tidak Cukup?</td><td>Contoh dua data dengan mean sama tetapi penyebaran berbeda. Pengantar perlunya varians dan simpangan baku.</td><td>Mengenali data yang lebih bervariasi dari dua pilihan.</td></tr>
+    <tr><td>2</td><td>Mengingat Kembali Mean</td><td>Rumus mean, contoh perhitungan, pentingnya mean sebagai langkah awal.</td><td>Menghitung mean dari data baru.</td></tr>
+    <tr><td>3</td><td>Menghitung Selisih terhadap Mean</td><td>Konsep \(x_i - \bar{x}\), contoh mengisi kolom selisih, penjelasan mengapa jumlahnya selalu nol.</td><td>Mengisi kolom selisih dari data dan mean yang diberikan.</td></tr>
+    <tr><td>4</td><td>Mengkuadratkan Selisih</td><td>Mengapa dikuadratkan, contoh mengisi kolom \((x_i - \bar{x})^2\), peringatan kuadrat negatif selalu positif.</td><td>Mengisi kolom kuadrat selisih.</td></tr>
+    <tr><td>5</td><td>Menjumlahkan Kuadrat Selisih</td><td>Menghitung \(\sum(x_i - \bar{x})^2\), contoh menjumlahkan kolom terakhir tabel bantu.</td><td>Menghitung jumlah kuadrat selisih dari tabel yang sudah diisi.</td></tr>
+    <tr><td>6</td><td>Menghitung Varians</td><td>Rumus varians, contoh lengkap, makna varians.</td><td>Menghitung varians dari data yang diberikan.</td></tr>
+    <tr><td>7</td><td>Menghitung Simpangan Baku dan Menafsirkan</td><td>Rumus simpangan baku, contoh, tafsiran simpangan baku dalam konteks data.</td><td>Menghitung simpangan baku dan menentukan tafsiran yang tepat.</td></tr>
+    <tr><td>8</td><td>Catatan Wajib</td><td>Ringkasan rumus, tabel bantu kosong, langkah, dan peringatan penting.</td><td>Tidak ada. Instruksi menyalin ke buku.</td></tr>
+  </table>
+
+  <h3>C. Web Latihan Soal Generator</h3>
+  <table>
+    <tr><th style="width:30%">Fitur</th><th>Deskripsi</th></tr>
+    <tr><td>Generator soal otomatis</td><td>Menghasilkan data tunggal acak dengan n bervariasi. Data dirancang agar mean bulat dan simpangan baku bulat untuk memudahkan siswa.</td></tr>
+    <tr><td>Pilihan jenis soal</td><td>Mean saja, tabel bantu lengkap, varians saja, simpangan baku saja, atau semua langkah sekaligus.</td></tr>
+    <tr><td>2 mode</td><td>Terbimbing (langkah per langkah dengan tabel bantu interaktif yang diisi siswa) dan Mandiri (langsung jawab mean, varians, simpangan baku).</td></tr>
+    <tr><td>Feedback per langkah</td><td>Jika salah, bagian yang salah ditandai dan siswa dapat minta petunjuk tanpa jawaban langsung.</td></tr>
+    <tr><td>Tanpa batas dan Rekap kesalahan</td><td>Bisa dikerjakan berulang kali. Kolom yang paling sering salah direkam untuk dashboard guru.</td></tr>
+  </table>
+
+  <h3>D. Integrasi Data</h3>
+  <table>
+    <tr><th style="width:20%">Komponen</th><th style="width:25%">Teknologi</th><th>Fungsi</th></tr>
+    <tr><td>Frontend</td><td>HTML, CSS, JavaScript, MathJax</td><td>Menampilkan materi, cek pemahaman, tabel bantu LKPD, dan feedback.</td></tr>
+    <tr><td>Database</td><td>Google Sheets (baru, khusus Pertemuan 9)</td><td>Menyimpan nama, jawaban per sel tabel, skor, progres, dan refleksi.</td></tr>
+    <tr><td>Backend</td><td>Google Apps Script (baru)</td><td>Menerima dan mengirim data melalui GET request.</td></tr>
+    <tr><td>Hosting</td><td>GitHub Pages</td><td>Menyimpan dan membagikan file web melalui https://ppg-aw.github.io/SMKN1/</td></tr>
+  </table>
+</section>
+
+<div class="pb-marker">Klik untuk toggle page break di sini</div>
+
+<section class="section page-break" id="s7">
+  <h2>7. LKPD Digital Diferensiasi</h2>
+
+  <h3>A. Prinsip Diferensiasi Proses</h3>
+  <div class="info-box">Semua level mengerjakan soal yang sama yaitu menghitung varians dan simpangan baku dari satu set data tunggal menggunakan tabel bantu. Yang dibedakan adalah tingkat panduan pada setiap langkah pengisian tabel bantu. Penentuan level berdasarkan skor pre test.</div>
+  <table>
+    <tr><th style="width:16%">Skor Pre Test</th><th style="width:10%">Level</th><th style="width:32%">Alasan</th><th style="width:22%">Scaffolding Tabel Bantu</th><th style="width:20%">Tambahan</th></tr>
+    <tr><td>0 sampai 59</td><td>Level 1</td><td>Siswa belum mampu mengisi tabel bantu secara mandiri. Perlu panduan lengkap per sel.</td><td>Tabel bantu disediakan dengan panduan di setiap sel. Rumus ditampilkan dengan angka yang sudah terisi sebagian.</td><td>Tidak ada soal interpretasi.</td></tr>
+    <tr><td>60 sampai 79</td><td>Level 2</td><td>Siswa sudah paham konsep tetapi perlu penguatan pada ketelitian perhitungan tabel bantu.</td><td>Tabel bantu disediakan kosong dengan rumus ditampilkan tanpa angka. Siswa mengisi seluruh kolom secara mandiri.</td><td>Tidak ada soal interpretasi.</td></tr>
+    <tr><td>80 sampai 100</td><td>Level 3</td><td>Siswa sudah mampu menghitung. Diberikan penekanan pada analisis dan interpretasi makna simpangan baku.</td><td>Tabel bantu kosong tanpa panduan rumus. Siswa mengisi dan menghitung sepenuhnya secara mandiri.</td><td>Ada soal interpretasi pilihan ganda tentang makna simpangan baku.</td></tr>
+  </table>
+
+  <h3>B. Soal LKPD (Sama untuk Semua Level)</h3>
+  <div class="note">LKPD terdiri dari 2 soal untuk Level 1 dan 2, serta 3 soal untuk Level 3. Soal 1 dan 2 sama untuk semua level. Soal 3 hanya untuk Level 3.</div>
+  <div class="info-box">Siswa mengerjakan soal ini dengan mengisi <strong>tabel bantu lengkap</strong> mulai dari mean, kolom selisih, kolom kuadrat selisih, jumlah kuadrat selisih, varians, hingga simpangan baku.</div>
+
+  <h4>Soal 1: Varians dan Simpangan Baku</h4>
+  <p>Data jumlah pelanggan harian toko selama 5 hari (orang): <strong>6, 8, 10, 12, 14</strong>. Lengkapi tabel bantu berikut, kemudian hitung varians dan simpangan baku.</p>
+  <table>
+    <tr><th style="width:12%">Data ke-</th><th style="width:12%">\(x_i\)</th><th style="width:30%">\(x_i - \bar{x}\)</th><th style="width:30%">\((x_i - \bar{x})^2\)</th></tr>
+    <tr><td>1</td><td>6</td><td></td><td></td></tr>
+    <tr><td>2</td><td>8</td><td></td><td></td></tr>
+    <tr><td>3</td><td>10</td><td></td><td></td></tr>
+    <tr><td>4</td><td>12</td><td></td><td></td></tr>
+    <tr><td>5</td><td>14</td><td></td><td></td></tr>
+    <tr><th>Jumlah</th><th></th><th></th><th></th></tr>
+  </table>
+  <div class="note"><strong>Kunci:</strong> Mean = 10. Selisih: −4, −2, 0, 2, 4. Kuadrat selisih: 16, 4, 0, 4, 16. Jumlah = 40. Varians = 8. Simpangan baku = \(\sqrt{8}\) = 2\(\sqrt{2}\).</div>
+<div class="force-break"></div>
+  <h4>Soal 2: Varians dan Simpangan Baku (Data Berbeda)</h4>
+  <p>Data penjualan harian sebuah toko selama 5 hari (ribu rupiah): <strong>3, 5, 6, 7, 9</strong>. Lengkapi tabel bantu berikut, kemudian hitung varians dan simpangan baku.</p>
+  <table>
+    <tr><th style="width:12%">Data ke-</th><th style="width:12%">\(x_i\)</th><th style="width:30%">\(x_i - \bar{x}\)</th><th style="width:30%">\((x_i - \bar{x})^2\)</th></tr>
+    <tr><td>1</td><td>3</td><td></td><td></td></tr>
+    <tr><td>2</td><td>5</td><td></td><td></td></tr>
+    <tr><td>3</td><td>6</td><td></td><td></td></tr>
+    <tr><td>4</td><td>7</td><td></td><td></td></tr>
+    <tr><td>5</td><td>9</td><td></td><td></td></tr>
+    <tr><th>Jumlah</th><th></th><th></th><th></th></tr>
+  </table>
+  <div class="note"><strong>Kunci:</strong> Mean = 6. Selisih: −3, −1, 0, 1, 3. Kuadrat selisih: 9, 1, 0, 1, 9. Jumlah = 20. Varians = 4. Simpangan baku = \(\sqrt{4} = 2\).</div>
+
+  <h4>Soal 3: Interpretasi (Khusus Level 3)</h4>
+  <p>Berdasarkan hasil perhitungan Soal 1, manakah pernyataan yang paling tepat?</p>
+  <ul>
+    <li>A. Data lebih seragam karena simpangan baku lebih besar dari mean.</li>
+    <li>B. Rata-rata jumlah pelanggan harian menyimpang sekitar 2,83 orang dari nilai mean. Data cukup bervariasi.</li>
+    <li>C. Simpangan baku yang besar menunjukkan data sangat stabil dan tidak bervariasi.</li>
+    <li>D. Simpangan baku selalu sama dengan varians untuk semua data.</li>
+  </ul>
+  <div class="success-box"><strong>Kunci: B.</strong> Simpangan baku menunjukkan rata-rata jarak setiap data terhadap mean. Semakin besar simpangan baku, semakin bervariasi data tersebut.</div>
+
+  <h3>C. Perbedaan Scaffolding per Level</h3>
+  <table>
+    <tr><th style="width:22%">Komponen</th><th style="width:26%">Level 1</th><th style="width:26%">Level 2</th><th style="width:26%">Level 3</th></tr>
+    <tr><td>Panduan di setiap sel</td><td>Ada. Contoh: "6 − 10 = ..." dengan petunjuk.</td><td>Tidak ada panduan per sel.</td><td>Tidak ada panduan per sel.</td></tr>
+    <tr><td>Rumus yang ditampilkan</td><td>Dengan angka terisi sebagian. Contoh: \(\sigma^2 = \frac{...}{5} = ...\)</td><td>Lengkap tanpa angka. Contoh: \(\sigma^2 = \frac{\sum(x_i-\bar{x})^2}{n}\)</td><td>Tidak ditampilkan. Siswa harus ingat sendiri.</td></tr>
+    <tr><td>Cek jumlah kolom selisih</td><td>Ada pengingat: "Pastikan jumlah kolom selisih = 0"</td><td>Ada pengingat singkat.</td><td>Tidak ada pengingat.</td></tr>
+    <tr><td>Soal interpretasi</td><td>Tidak ada.</td><td>Tidak ada.</td><td>Ada pilihan ganda makna simpangan baku.</td></tr>
+  </table>
+
+  <h3>D. Penskoran LKPD</h3>
+  <table>
+    <tr><th style="width:40%">Komponen</th><th style="width:15%">Skor</th><th>Keterangan</th></tr>
+    <tr><td>Mean</td><td>10</td><td>Benar.</td></tr>
+    <tr><td>Kolom \(x_i - \bar{x}\) (5 sel × 6)</td><td>30</td><td>Tiap sel benar mendapat 6 poin.</td></tr>
+    <tr><td>Kolom \((x_i-\bar{x})^2\) (5 sel × 6)</td><td>30</td><td>Tiap sel benar mendapat 6 poin.</td></tr>
+    <tr><td>Jumlah kuadrat selisih</td><td>10</td><td>Baris jumlah kolom terakhir benar.</td></tr>
+    <tr><td>Varians</td><td>10</td><td>Benar.</td></tr>
+    <tr><td>Simpangan baku</td><td>10</td><td>Benar.</td></tr>
+    <tr><th>Total per soal</th><th>100</th><td></td></tr>
+  </table>
+</section>
+</div>
+
+<div class="pb-marker">Klik untuk toggle page break di sini</div>
+
+<!-- ===== HALAMAN 6 ===== -->
+<div class="page">
+<section class="section page-break" id="s8">
+  <h2>8. Penilaian Digital</h2>
+
+  <h3>A. Jenis Penilaian</h3>
+  <table>
+    <tr><th style="width:22%">Jenis</th><th style="width:20%">Bentuk</th><th style="width:16%">Waktu</th><th>Tujuan</th></tr>
+    <tr><td>Diagnostik</td><td>Pre test digital berbasis tabel bantu lengkap</td><td>Sebelum Kelas</td><td>Memetakan kemampuan awal siswa secara utuh dalam menghitung mean, mengisi tabel bantu, menghitung varians, dan menghitung simpangan baku. Hasilnya menentukan level LKPD.</td></tr>
+    <tr><td>Formatif proses</td><td>LKPD digital dan observasi</td><td>Saat Kelas Fase 3</td><td>Memantau proses berpikir, ketelitian pengisian tabel bantu, dan keterampilan menghitung sesuai level.</td></tr>
+    <tr><td>Formatif hasil</td><td>Post test digital berbasis tabel bantu lengkap</td><td>Saat Kelas Fase 5</td><td>Menilai ketercapaian tujuan pembelajaran secara utuh melalui alur hitung lengkap dari mean sampai simpangan baku.</td></tr>
+    <tr><td>Sikap</td><td>Form penilaian sikap</td><td>Sepanjang Saat Kelas</td><td>Menilai dimensi profil lulusan.</td></tr>
+    <tr><td>Catatan</td><td>Buku catatan wajib</td><td>Sebelum Kelas dan Saat Kelas</td><td>Menilai kelengkapan catatan rumus, tabel bantu, dan langkah perhitungan.</td></tr>
+  </table>
+
+  <h3>B. Rancangan Pre Test</h3>
+  <div class="info-box">Pre test dirancang dalam bentuk <strong>tabel bantu lengkap</strong> agar guru dapat melihat kemampuan siswa secara utuh, bukan hanya potongan langkah. Melalui pre test ini guru dapat mengetahui apakah siswa sudah mampu menghitung mean, mengisi kolom selisih dan kuadrat selisih, menjumlahkan kuadrat selisih, menghitung varians, dan menghitung simpangan baku.</div>
+
+  <h4>Data Pre Test</h4>
+  <p>Konteks: Data harga jual produk di sebuah toko (ribu rupiah): <strong>3, 5, 6, 7, 9</strong> &nbsp; \(n = 5\)</p>
+  <p>Siswa diminta mengisi tabel bantu berikut secara lengkap tanpa panduan, kemudian menghitung mean, jumlah kuadrat selisih, varians, dan simpangan baku.</p>
+  <table>
+    <tr><th style="width:12%">Data ke-</th><th style="width:15%">\(x_i\)</th><th style="width:28%">\(x_i - \bar{x}\)</th><th style="width:28%">\((x_i - \bar{x})^2\)</th></tr>
+    <tr><td>1</td><td>3</td><td></td><td></td></tr>
+    <tr><td>2</td><td>5</td><td></td><td></td></tr>
+    <tr><td>3</td><td>6</td><td></td><td></td></tr>
+    <tr><td>4</td><td>7</td><td></td><td></td></tr>
+    <tr><td>5</td><td>9</td><td></td><td></td></tr>
+    <tr><th>Jumlah</th><th>30</th><th></th><th></th></tr>
+  </table>
+
+  <h4>Skema Penskoran Pre Test</h4>
+  <table>
+    <tr><th style="width:45%">Komponen</th><th style="width:15%">Skor</th><th>Keterangan</th></tr>
+    <tr><td>Mean</td><td>10</td><td>Mean dihitung benar.</td></tr>
+    <tr><td>Kolom \(x_i - \bar{x}\) (5 isian × 8)</td><td>40</td><td>Setiap isian benar mendapat 8 poin.</td></tr>
+    <tr><td>Kolom \((x_i - \bar{x})^2\) (5 isian × 6)</td><td>30</td><td>Setiap isian benar mendapat 6 poin.</td></tr>
+    <tr><td>Jumlah kuadrat selisih \(\sum(x_i-\bar{x})^2\)</td><td>10</td><td>Baris jumlah benar.</td></tr>
+    <tr><td>Varians \(\sigma^2\)</td><td>5</td><td>Benar.</td></tr>
+    <tr><td>Simpangan baku \(\sigma\)</td><td>5</td><td>Benar.</td></tr>
+    <tr><th>Total</th><th>100</th><td></td></tr>
+  </table>
+<div class="force-break"></div>
+  <h4>Kunci Pre Test</h4>
+  <table>
+    <tr><th style="width:12%">Data ke-</th><th style="width:15%">\(x_i\)</th><th style="width:28%">\(x_i - \bar{x}\)</th><th style="width:28%">\((x_i - \bar{x})^2\)</th></tr>
+    <tr><td>1</td><td>3</td><td>−3</td><td>9</td></tr>
+    <tr><td>2</td><td>5</td><td>−1</td><td>1</td></tr>
+    <tr><td>3</td><td>6</td><td>0</td><td>0</td></tr>
+    <tr><td>4</td><td>7</td><td>1</td><td>1</td></tr>
+    <tr><td>5</td><td>9</td><td>3</td><td>9</td></tr>
+    <tr><th>Jumlah</th><th>30</th><th>0</th><th>20</th></tr>
+  </table>
+  <p>Mean = <strong>6</strong> &nbsp; \(\sum(x_i-\bar{x})^2 = \mathbf{20}\) &nbsp; Varians \(= \frac{20}{5} = \mathbf{4}\) &nbsp; Simpangan baku \(= \sqrt{4} = \mathbf{2}\)</p>
+
+  <h3>C. Rancangan Post Test</h3>
+  <div class="info-box">Post test juga berbentuk <strong>tabel bantu lengkap</strong> agar hasil belajar siswa sesudah pembelajaran dapat dibandingkan secara langsung dengan pre test. Data berbeda dari pre test.</div>
+
+  <h4>Data Post Test</h4>
+  <p>Konteks: Data pendapatan harian pedagang (ribu rupiah): <strong>7, 9, 10, 11, 13</strong> &nbsp; \(n = 5\)</p>
+  <p>Siswa diminta mengisi tabel bantu berikut secara lengkap tanpa panduan, kemudian menghitung mean, jumlah kuadrat selisih, varians, dan simpangan baku.</p>
+  <table>
+    <tr><th style="width:12%">Data ke-</th><th style="width:15%">\(x_i\)</th><th style="width:28%">\(x_i - \bar{x}\)</th><th style="width:28%">\((x_i - \bar{x})^2\)</th></tr>
+    <tr><td>1</td><td>7</td><td></td><td></td></tr>
+    <tr><td>2</td><td>9</td><td></td><td></td></tr>
+    <tr><td>3</td><td>10</td><td></td><td></td></tr>
+    <tr><td>4</td><td>11</td><td></td><td></td></tr>
+    <tr><td>5</td><td>13</td><td></td><td></td></tr>
+    <tr><th>Jumlah</th><th>50</th><th></th><th></th></tr>
+  </table>
+
+  <h4>Skema Penskoran Post Test</h4>
+  <table>
+    <tr><th style="width:45%">Komponen</th><th style="width:15%">Skor</th><th>Keterangan</th></tr>
+    <tr><td>Mean</td><td>10</td><td>Mean dihitung benar.</td></tr>
+    <tr><td>Kolom \(x_i - \bar{x}\) (5 isian × 8)</td><td>40</td><td>Setiap isian benar mendapat 8 poin.</td></tr>
+    <tr><td>Kolom \((x_i - \bar{x})^2\) (5 isian × 6)</td><td>30</td><td>Setiap isian benar mendapat 6 poin.</td></tr>
+    <tr><td>Jumlah kuadrat selisih \(\sum(x_i-\bar{x})^2\)</td><td>10</td><td>Baris jumlah benar.</td></tr>
+    <tr><td>Varians \(\sigma^2\)</td><td>5</td><td>Benar.</td></tr>
+    <tr><td>Simpangan baku \(\sigma\)</td><td>5</td><td>Benar.</td></tr>
+    <tr><th>Total</th><th>100</th><td></td></tr>
+  </table>
+
+  <h4>Kunci Post Test</h4>
+  <table>
+    <tr><th style="width:12%">Data ke-</th><th style="width:15%">\(x_i\)</th><th style="width:28%">\(x_i - \bar{x}\)</th><th style="width:28%">\((x_i - \bar{x})^2\)</th></tr>
+    <tr><td>1</td><td>7</td><td>−3</td><td>9</td></tr>
+    <tr><td>2</td><td>9</td><td>−1</td><td>1</td></tr>
+    <tr><td>3</td><td>10</td><td>0</td><td>0</td></tr>
+    <tr><td>4</td><td>11</td><td>1</td><td>1</td></tr>
+    <tr><td>5</td><td>13</td><td>3</td><td>9</td></tr>
+    <tr><th>Jumlah</th><th>50</th><th>0</th><th>20</th></tr>
+  </table>
+  <p>Mean = <strong>10</strong> &nbsp; \(\sum(x_i-\bar{x})^2 = \mathbf{20}\) &nbsp; Varians \(= \frac{20}{5} = \mathbf{4}\) &nbsp; Simpangan baku \(= \sqrt{4} = \mathbf{2}\)</p>
+<div class="force-break"></div>
+  <h3>D. Skema Feedback Otomatis Post Test</h3>
+  <table>
+    <tr><th style="width:18%">Skor</th><th style="width:16%">Kategori</th><th style="width:38%">Feedback</th><th style="width:28%">Tindak Lanjut</th></tr>
+    <tr><td>90–100</td><td>Sangat Baik</td><td>Kamu sudah sangat memahami cara menghitung mean, mengisi tabel bantu, varians, dan simpangan baku secara lengkap dan benar.</td><td>Dapat mencoba soal tantangan di web generator.</td></tr>
+    <tr><td>78–89</td><td>Tuntas</td><td>Kamu sudah memahami konsep utama. Perkuat ketelitian pada pengisian kolom selisih dan kolom kuadrat selisih.</td><td>Latihan di web generator untuk penguatan.</td></tr>
+    <tr><td>60–77</td><td>Hampir Tuntas</td><td>Kamu sudah mulai memahami alur perhitungan, tetapi perlu mengulang langkah mengisi kolom selisih dan kolom kuadrat selisih dengan teliti.</td><td>Wajib latihan di web generator. Kewajiban tampil di halaman utama siswa.</td></tr>
+    <tr><td>0–59</td><td>Belum Tuntas</td><td>Pelajari kembali materi dari bagian mean dan tabel bantu. Pastikan kamu paham alur lengkap dari mean sampai simpangan baku sebelum mengerjakan latihan generator.</td><td>Wajib mengulang materi dan latihan di web generator. Kewajiban tampil di halaman utama siswa.</td></tr>
+  </table>
+</section>
+</div>
+
+<div class="pb-marker">Klik untuk toggle page break di sini</div>
+
+<!-- ===== HALAMAN 7 ===== -->
+<div class="page">
+<section class="section page-break" id="s9">
+  <h2>9. Form Penilaian Sikap</h2>
+
+  <h3>A. Petunjuk Pengisian</h3>
+  <div class="info-box">Guru mengisi form penilaian sikap melalui DashboardGuru9.html pada tab Penilaian Sikap. Skor menggunakan skala 1 sampai 4.</div>
+  <table>
+    <tr><th style="width:10%">Skor</th><th style="width:20%">Kategori</th><th>Deskripsi</th></tr>
+    <tr><td>4</td><td>Sangat Baik</td><td>Siswa menunjukkan sikap secara konsisten tanpa perlu diingatkan.</td></tr>
+    <tr><td>3</td><td>Baik</td><td>Siswa menunjukkan sikap dengan baik meskipun sesekali perlu diingatkan.</td></tr>
+    <tr><td>2</td><td>Cukup</td><td>Siswa menunjukkan sikap hanya setelah diingatkan oleh guru.</td></tr>
+    <tr><td>1</td><td>Kurang</td><td>Siswa belum menunjukkan sikap meskipun sudah diingatkan.</td></tr>
+  </table>
+
+  <h3>B. Form Penilaian Sikap (31 Siswa)</h3>
+  <table>
+    <tr>
+      <th style="width:5%">No</th><th style="width:32%">Nama Siswa</th>
+      <th style="width:17%">Penalaran Kritis</th><th style="width:12%">Kemandirian</th>
+      <th style="width:12%">Kolaborasi</th><th style="width:12%">Komunikasi</th>
+      <th style="width:10%">Catatan</th>
+    </tr>
+    <tr><td>1</td><td>AGUSTYA RAMADHANI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>2</td><td>ANINDYA AZZAHRA</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>3</td><td>ANJA ALZENA TANJUNG</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>4</td><td>AURELIA KEYSHA VERNANDYA</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>5</td><td>AYU WIDYASARI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>6</td><td>AZZAHRA ISMAYANTI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>7</td><td>CARISSA ARVITA PUTRI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>8</td><td>DAVINA ALYA PUTRI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>9</td><td>DITA NANDA PUTRI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>10</td><td>EKA WULANSARI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>11</td><td>FEBBY AULIA DAMAYANTI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>12</td><td>JENNYTA WULANDARI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>13</td><td>LAURA OKTAVIANI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>14</td><td>MAITSA KHALISTA PUTRI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>15</td><td>MARVA MAULIDA</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>16</td><td>MELYNDA ANANTA SARI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>17</td><td>NABILLA AYU EVANIA</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>18</td><td>NAMIRA SETARIANTI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>19</td><td>NANDITA FITRIA RAMADANI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>20</td><td>NAYLA AZKIYA HAFIZHAH</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>21</td><td>NOLA FEBI AYU DANITYA</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>22</td><td>NOVI MARTHALITA</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>23</td><td>OCTAVIA FITRIYANI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>24</td><td>REKA MUSTIKA FAHLUIZA</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>25</td><td>RORO ENDAH MUSTIKA NINGRUM</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>26</td><td>SALSABILA CHALISA RAHMA WIBOWO</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>27</td><td>SEFA FEBI SAPUTRI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>28</td><td>SUCI NAZILAH</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>29</td><td>TARA ARGYA NUR AGUSTIN</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>30</td><td>TIRTA ARUM KUMALA DEWI</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>31</td><td>WISNU BIMA NURIN PRATAMA</td><td></td><td></td><td></td><td></td><td></td></tr>
+  </table>
+
+  <h3>C. Rubrik per Dimensi</h3>
+  <table>
+    <tr><th style="width:12%">Dimensi</th><th style="width:24%">Skor 4</th><th style="width:24%">Skor 3</th><th style="width:22%">Skor 2</th><th style="width:18%">Skor 1</th></tr>
+    <tr><td><span class="badge blue">Penalaran Kritis</span></td><td>Siswa menjelaskan mengapa kuadrat selisih digunakan dan menafsirkan makna simpangan baku secara mandiri dari konteks data.</td><td>Siswa menjelaskan alasan dan tafsiran setelah ditanya guru.</td><td>Siswa hanya menjawab benar tanpa bisa menjelaskan alasan.</td><td>Siswa tidak dapat menjelaskan alasan dan jawaban tidak tepat.</td></tr>
+    <tr><td><span class="badge green">Kemandirian</span></td><td>Siswa menyelesaikan seluruh pre-class tepat waktu dan mengerjakan LKPD serta post test tanpa bertanya teman.</td><td>Siswa menyelesaikan pre-class tetapi sesekali bertanya teman saat LKPD.</td><td>Siswa menyelesaikan pre-class setelah diingatkan dan masih bertanya teman saat LKPD.</td><td>Siswa belum menyelesaikan pre-class dan mengandalkan teman.</td></tr>
+    <tr><td><span class="badge purple">Kolaborasi</span></td><td>Siswa aktif berdiskusi, mendengarkan pendapat teman, dan membantu teman satu level yang kesulitan mengisi tabel bantu.</td><td>Siswa berdiskusi dan mendengarkan pendapat teman dengan baik.</td><td>Siswa berdiskusi hanya setelah diingatkan guru.</td><td>Siswa tidak mau berdiskusi dan mengerjakan sendiri tanpa memperhatikan teman.</td></tr>
+    <tr><td><span class="badge yellow">Komunikasi</span></td><td>Siswa mengisi tabel bantu dengan runtut dan jelas, serta menyampaikan tafsiran simpangan baku secara lisan tanpa ditunjuk.</td><td>Siswa mengisi tabel bantu dengan runtut dan menyampaikan tafsiran setelah ditunjuk guru.</td><td>Siswa mengisi tabel bantu tetapi tidak runtut dan tidak menyampaikan tafsiran.</td><td>Siswa tidak mengisi tabel bantu dan tidak menyampaikan tafsiran.</td></tr>
+  </table>
+
+  <h3>D. Refleksi Siswa</h3>
+  <div class="info-box">Refleksi siswa dikerjakan secara digital melalui Refleksi9.html setelah pembelajaran selesai. Berikut 6 pertanyaan refleksi yang akan ditampilkan pada web.</div>
+  <table>
+    <tr><th style="width:6%">No</th><th style="width:50%">Pertanyaan</th><th style="width:22%">Bentuk Jawaban</th><th style="width:22%">Tujuan</th></tr>
+    <tr><td>1</td><td>Bagian mana yang paling mudah dipahami?</td><td>Pilihan dari 8 bagian materi</td><td>Mengetahui bagian materi yang sudah dikuasai siswa.</td></tr>
+    <tr><td>2</td><td>Bagian mana yang masih membingungkan?</td><td>Pilihan dari 8 bagian materi</td><td>Mengetahui bagian materi yang perlu diperkuat.</td></tr>
+    <tr><td>3</td><td>Apakah web materi membantu kamu belajar?</td><td>Skala bintang 1–5</td><td>Menilai efektivitas web materi interaktif.</td></tr>
+    <tr><td>4</td><td>Apakah LKPD sesuai level membantu kamu memahami langkah pengisian tabel bantu?</td><td>Ya atau Tidak, disertai alasan</td><td>Menilai efektivitas diferensiasi proses melalui LKPD.</td></tr>
+    <tr><td>5</td><td>Apa hal baru yang kamu pelajari hari ini?</td><td>Isian teks bebas</td><td>Mengetahui pemahaman baru yang diperoleh siswa.</td></tr>
+    <tr><td>6</td><td>Saran untuk guru agar pembelajaran berikutnya lebih baik?</td><td>Isian teks bebas</td><td>Mendapatkan umpan balik untuk perbaikan pembelajaran.</td></tr>
+  </table>
+
+  <h3>E. Refleksi Guru</h3>
+  <table>
+    <tr><th style="width:6%">No</th><th style="width:52%">Pertanyaan</th><th>Jawaban Guru</th></tr>
+    <tr><td>1</td><td>Apakah tujuan pembelajaran tercapai? Berapa persen siswa yang mencapai KKTP 78?</td><td></td></tr>
+    <tr><td>2</td><td>Apakah alokasi waktu 80 menit cukup untuk seluruh fase?</td><td></td></tr>
+    <tr><td>3</td><td>Bagian materi mana yang paling sering diulang siswa pada cek pemahaman web?</td><td></td></tr>
+    <tr><td>4</td><td>Apakah penggunaan tabel bantu membantu siswa memahami langkah perhitungan varians dan simpangan baku?</td><td></td></tr>
+    <tr><td>5</td><td>Kolom mana pada tabel bantu yang paling banyak salah diisi siswa?</td><td></td></tr>
+    <tr><td>6</td><td>Apakah siswa magang dapat menyelesaikan seluruh rangkaian mandiri tepat waktu?</td><td></td></tr>
+    <tr><td>7</td><td>Apa yang perlu diperbaiki pada pertemuan berikutnya?</td><td></td></tr>
+  </table>
+</section>
+</div>
+
+<div class="pb-marker">Klik untuk toggle page break di sini</div>
+
+<!-- ===== HALAMAN 8 ===== -->
+<div class="page">
+<section class="section page-break" id="s11">
+  <h2>10. Lampiran</h2>
+
+  <h3>Lampiran 1: Halaman Utama Siswa</h3>
+  <table>
+    <tr><th style="width:25%">Komponen</th><th>Keterangan</th></tr>
+    <tr><td>File</td><td>Pertemuan9.html</td></tr>
+    <tr><td>Link</td><td>https://ppg-aw.github.io/SMKN1/Pertemuan9.html</td></tr>
+    <tr><td>QR Code</td><td><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://ppg-aw.github.io/SMKN1/Pertemuan9.html" alt="QR Pertemuan9" width="120" height="120"/></td></tr>
+    <tr><td>Fungsi</td><td>Pusat informasi alur pembelajaran, progres, nilai, catatan guru, dan tindak lanjut otomatis.</td></tr>
+  </table>
+
+  <h3>Lampiran 2: Materi Ajar Interaktif</h3>
+  <table>
+    <tr><th style="width:25%">Komponen</th><th>Keterangan</th></tr>
+    <tr><td>File</td><td>MateriAjar9.html</td></tr>
+    <tr><td>Link</td><td>https://ppg-aw.github.io/SMKN1/MateriAjar9.html</td></tr>
+    <tr><td>QR Code</td><td><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://ppg-aw.github.io/SMKN1/MateriAjar9.html" alt="QR MateriAjar9" width="120" height="120"/></td></tr>
+    <tr><td>Isi</td><td>8 bagian materi bertahap dilengkapi cek pemahaman per bagian dan Catatan Wajib di akhir.</td></tr>
+  </table>
+
+  <h3>Lampiran 3: LKPD Digital</h3>
+  <table>
+    <tr><th style="width:25%">Komponen</th><th>Keterangan</th></tr>
+    <tr><td>Halaman utama LKPD</td><td>LKPD9.html (mendeteksi level dari pre test lalu mengarahkan ke file yang sesuai)</td></tr>
+    <tr><td>Level 1</td><td>LKPD9L1.html — Tabel bantu dengan panduan lengkap per sel dan rumus terisi sebagian.</td></tr>
+    <tr><td>Level 2</td><td>LKPD9L2.html — Tabel bantu kosong dengan rumus ditampilkan tanpa angka.</td></tr>
+    <tr><td>Level 3</td><td>LKPD9L3.html — Tabel bantu kosong tanpa panduan, ditambah soal interpretasi pilihan ganda.</td></tr>
+    <tr><td>QR Code</td><td><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://ppg-aw.github.io/SMKN1/LKPD9.html" alt="QR LKPD9" width="120" height="120"/></td></tr>
+  </table>
+<div class="force-break"></div>
+  <h3>Lampiran 4: Pre Test</h3>
+  <table>
+    <tr><th style="width:25%">Komponen</th><th>Keterangan</th></tr>
+    <tr><td>File</td><td>Assessment9.html</td></tr>
+    <tr><td>Link</td><td>https://ppg-aw.github.io/SMKN1/Assessment9.html</td></tr>
+    <tr><td>QR Code</td><td><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://ppg-aw.github.io/SMKN1/Assessment9.html" alt="QR Assessment9" width="120" height="120"/></td></tr>
+    <tr><td>Isi</td><td>Pre test berbentuk tabel bantu lengkap. Total 100 poin. Skor menentukan level LKPD.</td></tr>
+  </table>
+
+  <h3>Lampiran 5: Post Test</h3>
+  <table>
+    <tr><th style="width:25%">Komponen</th><th>Keterangan</th></tr>
+    <tr><td>File</td><td>AssessmentPost9.html</td></tr>
+    <tr><td>Link</td><td>https://ppg-aw.github.io/SMKN1/AssessmentPost9.html</td></tr>
+    <tr><td>QR Code</td><td><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://ppg-aw.github.io/SMKN1/AssessmentPost9.html" alt="QR AssessmentPost9" width="120" height="120"/></td></tr>
+    <tr><td>Isi</td><td>Post test berbentuk tabel bantu lengkap beserta feedback detail otomatis per komponen. Total 100 poin.</td></tr>
+  </table>
+
+  <h3>Lampiran 6: Form Penilaian Sikap</h3>
+  <table>
+    <tr><th style="width:25%">Komponen</th><th>Keterangan</th></tr>
+    <tr><td>Versi cetak</td><td>Seksi 9 modul ajar ini</td></tr>
+    <tr><td>Versi digital</td><td>Tab Penilaian Sikap pada DashboardGuru9.html</td></tr>
+    <tr><td>Isi</td><td>Form observasi 31 siswa dengan 4 dimensi profil lulusan. Skala 1–4. Data tersimpan otomatis di Google Sheets.</td></tr>
+  </table>
+
+  <h3>Lampiran 7: Refleksi</h3>
+  <table>
+    <tr><th style="width:25%">Komponen</th><th>Keterangan</th></tr>
+    <tr><td>File</td><td>Refleksi9.html</td></tr>
+    <tr><td>Link</td><td>https://ppg-aw.github.io/SMKN1/Refleksi9.html</td></tr>
+    <tr><td>QR Code</td><td><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://ppg-aw.github.io/SMKN1/Refleksi9.html" alt="QR Refleksi9" width="120" height="120"/></td></tr>
+    <tr><td>Isi</td><td>6 pertanyaan refleksi siswa tentang bagian materi yang mudah dan sulit, penilaian web materi, efektivitas LKPD, hal baru, dan saran.</td></tr>
+  </table>
+<div class="force-break"></div>
+  <h3>Lampiran 8: Web Latihan Generator</h3>
+  <table>
+    <tr><th style="width:25%">Komponen</th><th>Keterangan</th></tr>
+    <tr><td>File</td><td>WebInteraktif9.html</td></tr>
+    <tr><td>Link</td><td>https://ppg-aw.github.io/SMKN1/WebInteraktif9.html</td></tr>
+    <tr><td>QR Code</td><td><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://ppg-aw.github.io/SMKN1/WebInteraktif9.html" alt="QR WebInteraktif9" width="120" height="120"/></td></tr>
+    <tr><td>Isi</td><td>Generator soal acak varians dan simpangan baku data tunggal. Mode terbimbing dan mandiri.</td></tr>
+  </table>
+
+  <h3>Lampiran 9: Dashboard Guru</h3>
+  <table>
+    <tr><th style="width:25%">Komponen</th><th>Keterangan</th></tr>
+    <tr><td>File</td><td>DashboardGuru9.html</td></tr>
+    <tr><td>Link</td><td>https://ppg-aw.github.io/SMKN1/DashboardGuru9.html</td></tr>
+    <tr><td>QR Code</td><td><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://ppg-aw.github.io/SMKN1/DashboardGuru9.html" alt="QR DashboardGuru9" width="120" height="120"/></td></tr>
+    <tr><td>Fungsi</td><td>Memantau progres seluruh siswa, mengelola nilai, memberikan catatan kepada siswa, dan mengisi form penilaian sikap secara digital.</td></tr>
+    <tr><td>Tab yang tersedia</td><td>Progres Materi, Pre Test, LKPD, Post Test, Latihan Generator, Refleksi, Penilaian Sikap, Catatan Guru, dan Tindak Lanjut.</td></tr>
+  </table>
+
+  <h3>Lampiran 10: Catatan Revisi</h3>
+  <table>
+    <tr><th style="width:6%">No</th><th style="width:18%">Tanggal</th><th style="width:38%">Bagian yang Direvisi</th><th style="width:38%">Keterangan</th></tr>
+    <tr><td>1</td><td></td><td></td><td></td></tr>
+    <tr><td>2</td><td></td><td></td><td></td></tr>
+    <tr><td>3</td><td></td><td></td><td></td></tr>
+    <tr><td>4</td><td></td><td></td><td></td></tr>
+    <tr><td>5</td><td></td><td></td><td></td></tr>
+    <tr><td>6</td><td></td><td></td><td></td></tr>
+    <tr><td>7</td><td></td><td></td><td></td></tr>
+    <tr><td>8</td><td></td><td></td><td></td></tr>
+  </table>
+</section>
+</div>
+
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const editable = document.getElementById('editableContent');
+    const btnEdit = document.getElementById('btnEdit');
+    const btnSave = document.getElementById('btnSave');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnPrint = document.getElementById('btnPrint');
+    const btnPB = document.getElementById('btnPB');
+    const btnReset = document.getElementById('btnReset');
+    let editMode = false, pbVisible = false;
+
+    function downloadCurrentHTML(filename){
+      const blob = new Blob(['<!DOCTYPE html>\n' + document.documentElement.outerHTML], {type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 500);
+    }
+
+    btnEdit.addEventListener('click', () => {
+      editMode = !editMode;
+      editable.contentEditable = editMode ? 'true' : 'false';
+      alert(editMode ? 'Mode Edit aktif.' : 'Mode Edit nonaktif.');
+    });
+    btnSave.addEventListener('click', () => downloadCurrentHTML('modul-ajar-p9-hemat-draft.html'));
+    btnDownload.addEventListener('click', () => downloadCurrentHTML('modul-ajar-p9-hemat.html'));
+    btnPrint.addEventListener('click', () => window.print());
+    btnPB.addEventListener('click', () => {
+      pbVisible = !pbVisible;
+      document.querySelectorAll('.pb-marker').forEach(el => el.classList.toggle('visible', pbVisible));
+      alert(pbVisible ? 'Penanda page break ditampilkan.' : 'Penanda page break disembunyikan.');
+    });
+    btnReset.addEventListener('click', () => {
+      if(confirm('Muat ulang halaman dan batalkan perubahan yang belum diunduh?')) location.reload();
+    });
+    document.addEventListener('click', (e) => {
+      const marker = e.target.closest('.pb-marker');
+      if(marker) marker.classList.toggle('page-break');
+    });
+  });
+</script>
+</body>
+</html>

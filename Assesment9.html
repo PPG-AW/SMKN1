@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pre Test Pertemuan 9 | Varians dan Simpangan Baku</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}
+.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+
+/* LOGIN */
+.login-box{background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:400px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:12px;font-size:18px;}
+.login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:8px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box .name-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;text-align:left;}
+.login-box .name-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;}
+.login-box .name-item:hover{background:var(--soft-blue);}
+.login-box .name-item.selected{background:#dbeafe;font-weight:700;color:var(--primary);}
+.login-box button{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.login-box button:disabled{opacity:.5;cursor:not-allowed;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--muted);}
+
+/* USER */
+.user-info{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.user-info .name{font-weight:700;color:var(--primary-dark);}
+
+/* CARD */
+.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.card h3{color:var(--primary-dark);font-size:15px;margin-bottom:10px;}
+
+/* PROGRESS */
+.progress-bar-wrap{background:#e2e8f0;border-radius:999px;height:8px;margin:8px 0;}
+.progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--success));transition:width .4s;}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--border);padding:7px 8px;vertical-align:middle;text-align:center;}
+th{background:#dbeafe;color:#1e3a8a;font-weight:700;}
+tr.jumlah-row td,tr.jumlah-row th{background:#fef3c7;font-weight:700;}
+
+/* CEL */
+.cell-input{background:#f5f3ff;border:2px dashed var(--purple) !important;}
+.cell-filled{background:#ecfdf5 !important;border:2px solid #86efac !important;}
+
+/* INPUT DALAM TABEL */
+.tabel-input-wrap{display:flex;align-items:center;justify-content:center;gap:4px;}
+.tabel-input{
+  width:72px;padding:7px 4px;
+  border:2px solid var(--border);border-radius:6px;
+  font-size:14px;text-align:center;background:#fff;
+}
+.tabel-input:focus{outline:none;border-color:var(--primary);}
+.tabel-input.filled{border-color:var(--success);background:#f0fdf4;}
+
+/* INPUT BAWAH */
+.below-row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;justify-content:center;}
+.below-item{display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:8px 12px;min-width:140px;flex:0 0 auto;}
+.below-item label{font-weight:700;color:var(--primary-dark);font-size:13px;white-space:nowrap;}
+.below-input{
+  width:90px;padding:8px;
+  border:2px solid var(--border);border-radius:8px;
+  font-size:14px;text-align:center;background:#fff;
+}
+.below-input:focus{outline:none;border-color:var(--primary);}
+.below-input.filled{border-color:var(--success);background:#f0fdf4;}
+
+/* TOMBOL √ */
+.sqrt-btn{background:var(--purple);color:#fff;border:none;padding:7px 11px;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;flex-shrink:0;}
+.sqrt-btn:hover{background:#6d28d9;}
+
+/* BOXES */
+.note{background:var(--soft-yellow);border-left:4px solid var(--accent);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.info-box{background:var(--soft-blue);border-left:4px solid var(--primary);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.formula{background:var(--primary-dark);color:#fff;padding:10px;border-radius:8px;text-align:center;font-size:13px;margin:8px 0;overflow-x:auto;}
+.input-note{font-size:11px;color:var(--muted);margin:2px 0 4px;text-align:center;}
+
+/* BUTTON */
+.btn{border:none;padding:12px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin:4px;text-decoration:none;display:inline-block;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* RESULT */
+.result-card{background:#fff;border-radius:16px;padding:28px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.1);margin-top:16px;}
+.result-card .skor-besar{font-size:60px;font-weight:800;line-height:1;}
+.result-card .skor-label{font-size:13px;color:var(--muted);margin-top:4px;}
+.level-badge{display:inline-block;padding:7px 22px;border-radius:999px;font-size:15px;font-weight:700;margin:14px 0;}
+.level-1{background:#fef2f2;color:#991b1b;border:2px solid #fca5a5;}
+.level-2{background:#fef3c7;color:#92400e;border:2px solid #fcd34d;}
+.level-3{background:#dcfce7;color:#166534;border:2px solid #86efac;}
+.detail-skor{text-align:left;margin-top:14px;}
+.detail-skor table{font-size:12px;}
+
+#app{display:none;}
+#hasilArea{display:none;}
+
+@media(max-width:480px){
+  .container{padding:8px;}.card{padding:14px;}
+  table{font-size:11px;}th,td{padding:5px 3px;}
+  .tabel-input{width:56px;font-size:12px;}
+  .below-item{min-width:120px;}
+  .below-input{width:75px;}
+  .result-card{padding:18px;}
+  .result-card .skor-besar{font-size:44px;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="Pertemuan9.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>Pre Test Pertemuan 9</h1>
+  <p>Varians dan Simpangan Baku Data Tunggal</p>
+</div>
+
+<!-- LOGIN -->
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>Masuk ke Pre Test</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ketik nama lalu pilih dari daftar</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button id="btnLogin" disabled>Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="container" id="app">
+  <div class="user-info">
+    <span class="name" id="userName"></span>
+    <span id="userStatus" style="color:var(--muted);font-size:12px;"></span>
+  </div>
+
+  <div class="card" id="cardInstruksi">
+    <h3>Petunjuk Pre Test</h3>
+    <ul style="padding-left:18px;font-size:13px;">
+      <li>Kerjakan secara <strong>jujur dan mandiri</strong>.</li>
+      <li>Tidak ada pengecekan benar-salah di tengah pengerjaan.</li>
+      <li>Isi seluruh bagian sesuai kemampuanmu. Nilai pre test digunakan untuk menentukan level LKPD.</li>
+      <li>Pre test hanya bisa dikerjakan <strong>satu kali</strong>.</li>
+      <li>Simpangan baku ditulis dalam <strong>bentuk akar</strong>. Gunakan tombol <strong>√</strong> yang tersedia.</li>
+    </ul>
+  </div>
+
+  <div class="card" id="cardProgress" style="padding:14px;">
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;">
+      <span>Progres Pengisian</span>
+      <span id="progressText">0 / 4 bagian terisi</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="card" id="cardSoal">
+    <h3>Soal Pre Test</h3>
+    <p>Data harga jual produk di sebuah toko (ribu rupiah):</p>
+    <div style="background:#f8fafc;border:2px solid var(--border);border-radius:8px;padding:14px;text-align:center;font-weight:700;font-size:18px;color:var(--primary-dark);margin:12px 0;letter-spacing:4px;">
+      3 &nbsp;,&nbsp; 5 &nbsp;,&nbsp; 6 &nbsp;,&nbsp; 7 &nbsp;,&nbsp; 9
+    </div>
+    <p style="font-size:13px;color:var(--muted);text-align:center;">Hitung mean, isi tabel bantu, kemudian tentukan varians dan simpangan baku. Kerjakan seluruhnya secara mandiri.</p>
+  </div>
+
+  <!-- BAGIAN MEAN -->
+  <div class="card">
+    <h3 style="color:var(--primary);font-size:14px;">Bagian 1 — Mean</h3>
+    <div class="formula">\[ \bar{x} = \frac{\sum x_i}{n} \]</div>
+    <div class="below-row">
+      <div class="below-item">
+        <label>\(\bar{x} =\)</label>
+        <input type="number" id="inputMean" class="below-input" placeholder="..." step="any"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAGIAN TABEL -->
+  <div class="card">
+    <h3 style="color:var(--primary);font-size:14px;">Bagian 2 — Tabel Bantu</h3>
+    <table id="tabelBantu">
+      <tr>
+        <th style="width:14%">Data ke-</th>
+        <th style="width:14%">\(x_i\)</th>
+        <th style="width:33%">\(x_i - \bar{x}\)</th>
+        <th style="width:33%">\((x_i - \bar{x})^2\)</th>
+      </tr>
+      <tr>
+        <td>1</td><td>3</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="sel1" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="kuad1" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr>
+        <td>2</td><td>5</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="sel2" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="kuad2" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr>
+        <td>3</td><td>6</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="sel3" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="kuad3" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr>
+        <td>4</td><td>7</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="sel4" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="kuad4" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr>
+        <td>5</td><td>9</td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="sel5" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="kuad5" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+      <tr class="jumlah-row">
+        <th>Jumlah</th><th>30</th>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="jmlSel" class="tabel-input" placeholder="..." step="any"/></div></td>
+        <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="jmlKuad" class="tabel-input" placeholder="..." step="any"/></div></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- BAGIAN VARIANS -->
+  <div class="card">
+    <h3 style="color:var(--primary);font-size:14px;">Bagian 3 — Varians</h3>
+    <div class="formula">\[ \sigma^2 = \frac{\sum(x_i - \bar{x})^2}{n} \]</div>
+    <div class="below-row">
+      <div class="below-item">
+        <label>\(\sum(x_i-\bar{x})^2 =\)</label>
+        <input type="number" id="inputJmlKuad" class="below-input" placeholder="..." step="any"/>
+      </div>
+      <div class="below-item">
+        <label>\(\sigma^2 =\)</label>
+        <input type="number" id="inputVarians" class="below-input" placeholder="..." step="any"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAGIAN SD -->
+  <div class="card">
+    <h3 style="color:var(--primary);font-size:14px;">Bagian 4 — Simpangan Baku</h3>
+    <div class="formula">\[ \sigma = \sqrt{\sigma^2} \]</div>
+    <p class="input-note">Tulis dalam bentuk akar. Jika hasilnya bulat, ketik langsung angkanya.</p>
+    <div class="below-row">
+      <div class="below-item">
+        <label>\(\sigma =\)</label>
+        <input type="text" id="inputSD" class="below-input" placeholder="contoh: 2"/>
+        <button class="sqrt-btn" id="btnSqrtSD">√</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="card" id="cardSubmit">
+    <div class="warning-box" style="margin-bottom:12px;">
+      <strong>Perhatian:</strong> Jawaban tidak dicek di tengah pengerjaan. Nilai akan dihitung saat kamu menekan tombol <strong>Kirim Pre Test</strong>.
+    </div>
+    <div style="text-align:center;">
+      <button class="btn btn-success" id="btnSubmit" disabled>Kirim Pre Test</button>
+    </div>
+  </div>
+
+  <!-- HASIL -->
+  <div id="hasilArea"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const API = 'https://script.google.com/macros/s/AKfycbwCAdUtxlTHA1mT086VoXVw_Gkx7bAqR_3qdhSOVBN9B_cAKO9wg0xfOXy-FdjwP0Jb/exec';
+  const TOL = 0.05;
+
+  const FALLBACK_NAMES = [
+    'AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA',
+    'AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI',
+    'DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI',
+    'LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI',
+    'NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH',
+    'NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA',
+    'RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI',
+    'SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'
+  ];
+
+  const KUNCI = {
+    mean: 6,
+    sel:  [-3, -1, 0, 1, 3],
+    kuad: [9, 1, 0, 1, 9],
+    jmlSel: 0,
+    jmlKuad: 20,
+    varians: 4,
+    sd: { teks: '2', nilai: 2 }
+  };
+
+  const POIN = {
+    mean:    10,
+    sel:      8,
+    kuad:     6,
+    jmlKuad: 10,
+    varians:  5,
+    sd:       5
+  };
+
+  let currentUser = '', allNames = [], selectedName = '', sheetsOK = false, submitted = false;
+  let skorDetail = { mean: 0, sel: 0, kuad: 0, jmlKuad: 0, varians: 0, sd: 0 };
+
+  const loginSection = document.getElementById('loginSection');
+  const app          = document.getElementById('app');
+  const searchName   = document.getElementById('searchName');
+  const nameList     = document.getElementById('nameList');
+  const btnLogin     = document.getElementById('btnLogin');
+  const loginMsg     = document.getElementById('loginMsg');
+  const hasilArea    = document.getElementById('hasilArea');
+  const btnSubmit    = document.getElementById('btnSubmit');
+
+  /* ========================
+     TOMBOL √
+  ======================== */
+  document.getElementById('btnSqrtSD').addEventListener('click', () => {
+    const inp = document.getElementById('inputSD');
+    const pos = inp.selectionStart || inp.value.length;
+    const val = inp.value;
+    inp.value = val.slice(0, pos) + '√' + val.slice(pos);
+    inp.setSelectionRange(pos + 1, pos + 1);
+    inp.focus();
+    updateFilled();
+  });
+
+  /* ========================
+     PARSE AKAR
+  ======================== */
+  function parseAkar(str) {
+    str = String(str).trim().replace(/\s/g, '');
+    if (!str) return NaN;
+    const plain = parseFloat(str);
+    if (!isNaN(plain) && !str.includes('√')) return plain;
+    const match = str.match(/^(\d*\.?\d*)√(\d+\.?\d*)$/);
+    if (match) {
+      const a = match[1] === '' ? 1 : parseFloat(match[1]);
+      const b = parseFloat(match[2]);
+      return a * Math.sqrt(b);
+    }
+    return NaN;
+  }
+
+  function normalizeAkar(str) {
+    return String(str).trim().replace(/\s/g, '').toLowerCase();
+  }
+
+  function cekAkar(userInput, kunciTeks, kunciNilai) {
+    const userNorm = normalizeAkar(userInput);
+    const kunciNorm = normalizeAkar(kunciTeks);
+    if (userNorm === kunciNorm) return true;
+    if (kunciNorm.includes('√') && !userNorm.includes('√')) return false;
+    const userVal = parseAkar(userInput);
+    if (isNaN(userVal)) return false;
+    return Math.abs(userVal - kunciNilai) <= TOL;
+  }
+
+  /* ========================
+     API
+  ======================== */
+  function callAPI(params, callback) {
+    const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+    params.callback = cbName;
+    const url = API + '?' + Object.keys(params).map(k => k + '=' + encodeURIComponent(params[k])).join('&');
+    const script = document.createElement('script');
+    window[cbName] = function(data) {
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      if (callback) callback(data);
+    };
+    script.src = url;
+    script.onerror = function() {
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      if (callback) callback(null);
+    };
+    document.head.appendChild(script);
+  }
+
+  /* ========================
+     LOGIN
+  ======================== */
+  function loadNames() {
+    callAPI({ action: 'getNames' }, function(data) {
+      if (data && data.ok && data.names && data.names.length) { allNames = data.names; sheetsOK = true; }
+      else { allNames = FALLBACK_NAMES; }
+      renderNames('');
+    });
+    setTimeout(() => {
+      if (!allNames.length) { allNames = FALLBACK_NAMES; renderNames(''); }
+    }, 5000);
+  }
+
+  function renderNames(filter) {
+    const f = filter.trim().toUpperCase();
+    const filtered = f ? allNames.filter(n => n.toUpperCase().includes(f)) : allNames;
+    nameList.innerHTML = '';
+    filtered.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'name-item' + (name === selectedName ? ' selected' : '');
+      div.textContent = name;
+      div.addEventListener('click', () => {
+        selectedName = name;
+        searchName.value = name;
+        btnLogin.disabled = false;
+        renderNames(name);
+      });
+      nameList.appendChild(div);
+    });
+  }
+
+  searchName.addEventListener('input', () => {
+    selectedName = '';
+    btnLogin.disabled = true;
+    renderNames(searchName.value);
+  });
+
+  btnLogin.addEventListener('click', () => {
+    if (!selectedName) return;
+    currentUser = selectedName;
+    btnLogin.disabled = true;
+    loginMsg.textContent = 'Memeriksa data...';
+    callAPI({ action: 'login', nama: currentUser, sumber: 'PRETEST', device: 'HP' }, function() {
+      checkAlreadyDone();
+    });
+    setTimeout(() => {
+      if (loginSection.style.display !== 'none') checkAlreadyDone();
+    }, 4000);
+  });
+
+  function checkAlreadyDone() {
+    callAPI({ action: 'getPretest', nama: currentUser }, function(data) {
+      if (data && data.ok && data.data) showAlreadyDone(data.data);
+      else showApp();
+    });
+    setTimeout(() => {
+      if (loginSection.style.display !== 'none') showApp();
+    }, 4000);
+  }
+
+  function showAlreadyDone(data) {
+    loginSection.style.display = 'none';
+    app.style.display = 'block';
+    document.getElementById('userName').textContent = currentUser;
+    document.getElementById('userStatus').textContent = 'Pre test sudah dikerjakan';
+    ['cardInstruksi','cardProgress','cardSoal','cardSubmit'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    hasilArea.style.display = 'block';
+    hasilArea.innerHTML = buildHasilHTML(Number(data.SKOR) || 0, data.LEVEL_LKPD || '-', null, true);
+    if (window.MathJax) MathJax.typesetPromise();
+  }
+
+  function showApp() {
+    loginSection.style.display = 'none';
+    app.style.display = 'block';
+    document.getElementById('userName').textContent = currentUser;
+    document.getElementById('userStatus').textContent = 'Pre test belum dikerjakan';
+    bindFilledEvents();
+    updateFilled();
+    if (window.MathJax) MathJax.typesetPromise();
+  }
+
+  /* ========================
+     UPDATE FILLED ONLY
+  ======================== */
+  function toggleFilledInput(inp, filled) {
+    if (!inp) return;
+    inp.classList.toggle('filled', filled);
+  }
+
+  function toggleFilledCell(inp, filled) {
+    if (!inp) return;
+    const td = inp.closest('td');
+    if (td) {
+      td.classList.remove('cell-input','cell-filled');
+      td.classList.add(filled ? 'cell-filled' : 'cell-input');
+    }
+    inp.classList.toggle('filled', filled);
+  }
+
+  function updateFilled() {
+    const meanDone = document.getElementById('inputMean').value.trim() !== '';
+
+    const tabelFields = ['sel1','sel2','sel3','sel4','sel5','kuad1','kuad2','kuad3','kuad4','kuad5','jmlSel','jmlKuad'];
+    const tabelDone = tabelFields.every(id => document.getElementById(id).value.trim() !== '');
+
+    const variansDone = document.getElementById('inputJmlKuad').value.trim() !== '' &&
+                        document.getElementById('inputVarians').value.trim() !== '';
+
+    const sdDone = document.getElementById('inputSD').value.trim() !== '';
+
+    const done = [meanDone, tabelDone, variansDone, sdDone].filter(Boolean).length;
+    document.getElementById('progressText').textContent = done + ' / 4 bagian terisi';
+    document.getElementById('progressFill').style.width = (done / 4 * 100) + '%';
+
+    btnSubmit.disabled = !(meanDone && tabelDone && variansDone && sdDone);
+  }
+
+  function bindFilledEvents() {
+    const allIds = [
+      'inputMean','sel1','sel2','sel3','sel4','sel5',
+      'kuad1','kuad2','kuad3','kuad4','kuad5',
+      'jmlSel','jmlKuad','inputJmlKuad','inputVarians','inputSD'
+    ];
+
+    allIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        if (id.startsWith('sel') || id.startsWith('kuad') || id === 'jmlSel' || id === 'jmlKuad') {
+          toggleFilledCell(el, el.value.trim() !== '');
+        } else {
+          toggleFilledInput(el, el.value.trim() !== '');
+        }
+        updateFilled();
+      });
+    });
+  }
+
+  /* ========================
+     HITUNG SKOR
+  ======================== */
+  function hitungSkor() {
+    let skorSel = 0, skorKuad = 0;
+
+    // mean
+    const meanVal = parseFloat(document.getElementById('inputMean').value.trim());
+    skorDetail.mean = (!isNaN(meanVal) && Math.abs(meanVal - KUNCI.mean) <= TOL) ? POIN.mean : 0;
+
+    // selisih
+    KUNCI.sel.forEach((v, i) => {
+      const uv = parseFloat(document.getElementById('sel' + (i+1)).value.trim());
+      if (!isNaN(uv) && Math.abs(uv - v) <= TOL) skorSel += POIN.sel;
+    });
+    skorDetail.sel = skorSel;
+
+    // kuadrat
+    KUNCI.kuad.forEach((v, i) => {
+      const uv = parseFloat(document.getElementById('kuad' + (i+1)).value.trim());
+      if (!isNaN(uv) && Math.abs(uv - v) <= TOL) skorKuad += POIN.kuad;
+    });
+    skorDetail.kuad = skorKuad;
+
+    // jumlah kuadrat
+    const jmlKuadVal = parseFloat(document.getElementById('jmlKuad').value.trim());
+    skorDetail.jmlKuad = (!isNaN(jmlKuadVal) && Math.abs(jmlKuadVal - KUNCI.jmlKuad) <= TOL) ? POIN.jmlKuad : 0;
+
+    // varians
+    const varVal = parseFloat(document.getElementById('inputVarians').value.trim());
+    skorDetail.varians = (!isNaN(varVal) && Math.abs(varVal - KUNCI.varians) <= TOL) ? POIN.varians : 0;
+
+    // sd
+    const sdInput = document.getElementById('inputSD').value.trim();
+    skorDetail.sd = cekAkar(sdInput, KUNCI.sd.teks, KUNCI.sd.nilai) ? POIN.sd : 0;
+
+    return Object.values(skorDetail).reduce((a,b)=>a+b,0);
+  }
+
+  /* ========================
+     SUBMIT
+  ======================== */
+  btnSubmit.addEventListener('click', () => {
+    if (submitted) return;
+    if (!confirm('Apakah kamu yakin ingin mengirim pre test?\nPre test hanya bisa dikerjakan satu kali.')) return;
+    submitted = true;
+    btnSubmit.disabled = true;
+
+    const total = hitungSkor();
+    const level = getLevel(total);
+
+    ['cardInstruksi','cardProgress','cardSoal','cardSubmit'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    hasilArea.style.display = 'block';
+    hasilArea.innerHTML = buildHasilHTML(total, level, skorDetail, false);
+    hasilArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.MathJax) MathJax.typesetPromise();
+
+    if (sheetsOK) {
+      const detailStr = Object.entries(skorDetail).map(e => e[0] + ':' + e[1]).join('|');
+      callAPI({
+        action: 'pretest',
+        nama: currentUser,
+        s1: document.getElementById('inputMean').value,
+        s2: [
+          document.getElementById('sel1').value,
+          document.getElementById('sel2').value,
+          document.getElementById('sel3').value,
+          document.getElementById('sel4').value,
+          document.getElementById('sel5').value,
+          document.getElementById('jmlSel').value
+        ].join('|'),
+        s3: [
+          document.getElementById('kuad1').value,
+          document.getElementById('kuad2').value,
+          document.getElementById('kuad3').value,
+          document.getElementById('kuad4').value,
+          document.getElementById('kuad5').value,
+          document.getElementById('jmlKuad').value
+        ].join('|'),
+        s4: document.getElementById('inputVarians').value,
+        s5: document.getElementById('inputSD').value,
+        s6: '',
+        skor: total,
+        detail: detailStr
+      }, function(d) { if (d && d.ok) console.log('Pre test tersimpan. Level:', level); });
+
+      callAPI({
+        action: 'selesai',
+        nama: currentUser,
+        komponen: 'PRETEST',
+        status: 'SELESAI',
+        detail: 'skor=' + total + ' level=' + level
+      }, function() {});
+    }
+  });
+
+  /* ========================
+     LEVEL & HASIL
+  ======================== */
+  function getLevel(skor) {
+    if (skor <= 59) return 'LEVEL 1';
+    if (skor <= 79) return 'LEVEL 2';
+    return 'LEVEL 3';
+  }
+
+  function getLevelNum(level) {
+    if (String(level).includes('1')) return 1;
+    if (String(level).includes('2')) return 2;
+    return 3;
+  }
+
+  function getLevelInfo(skor) {
+    if (skor <= 59) return {
+      css: 'level-1', judul: 'Level 1',
+      pesan: 'Kamu akan mengerjakan LKPD Level 1 dengan panduan tabel bantu yang sangat lengkap per sel.'
+    };
+    if (skor <= 79) return {
+      css: 'level-2', judul: 'Level 2',
+      pesan: 'Kamu akan mengerjakan LKPD Level 2 dengan tabel bantu kosong dan rumus tersedia.'
+    };
+    return {
+      css: 'level-3', judul: 'Level 3',
+      pesan: 'Kamu akan mengerjakan LKPD Level 3 secara mandiri penuh dengan tambahan soal interpretasi.'
+    };
+  }
+
+  function buildHasilHTML(skor, level, detail, isReview) {
+    const ln = getLevelNum(level);
+    const li = getLevelInfo(skor);
+    const skorColor = skor >= 80 ? 'var(--success)' : skor >= 60 ? 'var(--accent)' : 'var(--danger)';
+
+    let h = '<div class="result-card">';
+    h += '<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">' + (isReview ? 'Hasil Pre Test Kamu' : 'Pre Test Selesai!') + '</div>';
+    h += '<div class="skor-besar" style="color:' + skorColor + ';">' + skor + '</div>';
+    h += '<div class="skor-label">dari 100 poin</div>';
+    h += '<div class="level-badge ' + li.css + '">' + li.judul + ' &bull; LKPD Level ' + ln + '</div>';
+    h += '<p style="font-size:13px;color:var(--muted);margin-bottom:14px;">' + li.pesan + '</p>';
+
+    if (detail && !isReview) {
+      h += '<div class="detail-skor">';
+      h += '<p style="font-weight:700;font-size:13px;color:var(--primary-dark);margin-bottom:8px;">Detail Penilaian</p>';
+      h += '<table>';
+      h += '<tr><th>Komponen</th><th>Maks</th><th>Skor</th></tr>';
+      h += '<tr><td>Mean</td><td>10</td><td>' + detail.mean + '</td></tr>';
+      h += '<tr><td>Kolom selisih \(x_i - \\bar{x}\) (5 × 8)</td><td>40</td><td>' + detail.sel + '</td></tr>';
+      h += '<tr><td>Kolom kuadrat selisih (5 × 6)</td><td>30</td><td>' + detail.kuad + '</td></tr>';
+      h += '<tr><td>Jumlah kuadrat selisih</td><td>10</td><td>' + detail.jmlKuad + '</td></tr>';
+      h += '<tr><td>Varians</td><td>5</td><td>' + detail.varians + '</td></tr>';
+      h += '<tr><td>Simpangan Baku</td><td>5</td><td>' + detail.sd + '</td></tr>';
+      h += '<tr style="font-weight:700;background:#dbeafe;"><td>Total</td><td>100</td><td>' + skor + '</td></tr>';
+      h += '</table>';
+      h += '</div>';
+    }
+
+    h += '<div style="margin-top:16px;">';
+    h += '<div class="note" style="text-align:left;"><strong>Catatan:</strong> Skor pre test ini digunakan untuk menentukan level LKPD yang paling sesuai dengan kebutuhan belajar kamu.</div>';
+    h += '<div style="margin-top:12px;">';
+    h += '<a href="Pertemuan9.html" style="display:inline-block;background:var(--primary);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;margin:4px;">Kembali ke Halaman Utama</a>';
+    h += '</div>';
+    h += '</div></div>';
+    return h;
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.id === 'searchName' && selectedName) btnLogin.click();
+  });
+
+  loadNames();
+});
+</script>
+</body>
+</html>

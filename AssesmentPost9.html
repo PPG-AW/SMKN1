@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Post Test Pertemuan 9 | Varians dan Simpangan Baku</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+--primary:#1d4ed8;--primary-dark:#1e3a8a;--primary-light:#3b82f6;
+--orange:#ea580c;--orange-soft:#fff7ed;
+--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+--purple:#7c3aed;
+--soft-blue:#eff6ff;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;
+--soft-red:#fef2f2;--soft-purple:#f5f3ff;
+--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}
+.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.top-bar .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:640px;margin:0 auto;padding:12px;}
+
+/* LOGIN */
+.login-box{background:#fff;border-radius:12px;padding:24px;margin:20px auto;max-width:400px;box-shadow:0 4px 16px rgba(0,0,0,.08);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:12px;font-size:18px;}
+.login-box input{width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:8px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.login-box .name-list{max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;text-align:left;}
+.login-box .name-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;}
+.login-box .name-item:hover{background:var(--soft-blue);}
+.login-box .name-item.selected{background:#dbeafe;font-weight:700;color:var(--primary);}
+.login-box button{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.login-box button:disabled{opacity:.5;cursor:not-allowed;}
+.login-box .login-msg{margin-top:8px;font-size:12px;color:var(--muted);}
+
+/* USER */
+.user-info{background:#fff;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.user-info .name{font-weight:700;color:var(--primary-dark);}
+
+/* CARD */
+.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.card h3{color:var(--primary-dark);font-size:15px;margin-bottom:10px;}
+
+/* PROGRESS */
+.progress-bar-wrap{background:#e2e8f0;border-radius:999px;height:8px;margin:8px 0;}
+.progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--success));transition:width .4s;}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px;}
+th,td{border:1px solid var(--border);padding:7px 8px;vertical-align:middle;text-align:center;}
+th{background:#dbeafe;color:#1e3a8a;font-weight:700;}
+tr.jumlah-row td,tr.jumlah-row th{background:#fef3c7;font-weight:700;}
+
+/* CEL */
+.cell-input{background:#f5f3ff;border:2px dashed var(--purple) !important;}
+.cell-filled{background:#ecfdf5 !important;border:2px solid #86efac !important;}
+
+/* INPUT DALAM TABEL */
+.tabel-input-wrap{display:flex;align-items:center;justify-content:center;gap:4px;}
+.tabel-input{
+  width:72px;padding:7px 4px;
+  border:2px solid var(--border);border-radius:6px;
+  font-size:14px;text-align:center;background:#fff;
+}
+.tabel-input:focus{outline:none;border-color:var(--primary);}
+.tabel-input.filled{border-color:var(--success);background:#f0fdf4;}
+
+/* INPUT BAWAH */
+.below-row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;justify-content:center;}
+.below-item{display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:8px 12px;min-width:140px;flex:0 0 auto;}
+.below-item label{font-weight:700;color:var(--primary-dark);font-size:13px;white-space:nowrap;}
+.below-input{
+  width:90px;padding:8px;
+  border:2px solid var(--border);border-radius:8px;
+  font-size:14px;text-align:center;background:#fff;
+}
+.below-input:focus{outline:none;border-color:var(--primary);}
+.below-input.filled{border-color:var(--success);background:#f0fdf4;}
+
+/* TOMBOL √ */
+.sqrt-btn{background:var(--purple);color:#fff;border:none;padding:7px 11px;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;flex-shrink:0;}
+.sqrt-btn:hover{background:#6d28d9;}
+
+/* BOXES */
+.note{background:var(--soft-yellow);border-left:4px solid var(--accent);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.info-box{background:var(--soft-blue);border-left:4px solid var(--primary);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:10px;border-radius:6px;margin:8px 0;font-size:13px;}
+.formula{background:var(--primary-dark);color:#fff;padding:10px;border-radius:8px;text-align:center;font-size:13px;margin:8px 0;overflow-x:auto;}
+.input-note{font-size:11px;color:var(--muted);margin:2px 0 4px;text-align:center;}
+
+/* BUTTON */
+.btn{border:none;padding:12px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin:4px;text-decoration:none;display:inline-block;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* RESULT */
+.result-card{background:#fff;border-radius:16px;padding:28px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.1);margin-top:16px;}
+.result-card .skor-besar{font-size:60px;font-weight:800;line-height:1;}
+.result-card .skor-label{font-size:13px;color:var(--muted);margin-top:4px;}
+.kategori-badge{display:inline-block;padding:7px 22px;border-radius:999px;font-size:15px;font-weight:700;margin:14px 0;}
+.kat-sb{background:#dcfce7;color:#166534;border:2px solid #86efac;}
+.kat-t{background:#dbeafe;color:#1d4ed8;border:2px solid #93c5fd;}
+.kat-ht{background:#fef3c7;color:#92400e;border:2px solid #fcd34d;}
+.kat-bt{background:#fef2f2;color:#991b1b;border:2px solid #fca5a5;}
+.detail-skor{text-align:left;margin-top:14px;}
+.detail-skor table{font-size:12px;}
+.rekom-list{margin-top:10px;text-align:left;}
+.rekom-list li{margin-left:18px;margin-bottom:4px;font-size:13px;}
+
+#app{display:none;}
+#hasilArea{display:none;}
+
+@media(max-width:480px){
+  .container{padding:8px;}.card{padding:14px;}
+  table{font-size:11px;}th,td{padding:5px 3px;}
+  .tabel-input{width:56px;font-size:12px;}
+  .below-item{min-width:120px;}
+  .below-input{width:75px;}
+  .result-card{padding:18px;}
+  .result-card .skor-besar{font-size:44px;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="Pertemuan9.html" class="back-link" title="Kembali">&#8592;</a>
+  <h1>Post Test Pertemuan 9</h1>
+  <p>Varians dan Simpangan Baku Data Tunggal</p>
+</div>
+
+<!-- LOGIN -->
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <h2>Masuk ke Post Test</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Ketik nama lalu pilih dari daftar</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button id="btnLogin" disabled>Masuk</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="container" id="app">
+  <div class="user-info">
+    <span class="name" id="userName"></span>
+    <span id="userStatus" style="color:var(--muted);font-size:12px;"></span>
+  </div>
+
+  <div id="contentArea"></div>
+  <div id="hasilArea"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const API = 'https://script.google.com/macros/s/AKfycbwCAdUtxlTHA1mT086VoXVw_Gkx7bAqR_3qdhSOVBN9B_cAKO9wg0xfOXy-FdjwP0Jb/exec';
+
+  const FALLBACK_NAMES = [
+    'AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA',
+    'AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI',
+    'DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI',
+    'LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI',
+    'NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH',
+    'NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA',
+    'RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI',
+    'SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'
+  ];
+
+  const TOL = 0.05;
+
+  /* DATA POST TEST:
+     4, 6, 8, 10, 12
+     mean = 8
+     sel = -4,-2,0,2,4
+     kuad = 16,4,0,4,16
+     jmlKuad = 40
+     varians = 8
+     simpangan baku = 2√2
+  */
+  const KUNCI = {
+    mean: 8,
+    sel:  [-4, -2, 0, 2, 4],
+    kuad: [16, 4, 0, 4, 16],
+    jmlSel: 0,
+    jmlKuad: 40,
+    varians: 8,
+    sd: { teks: '2√2', nilai: 2*Math.sqrt(2) }
+  };
+
+  const POIN = {
+    mean:    10,
+    sel:      8,
+    kuad:     6,
+    jmlKuad: 10,
+    varians:  5,
+    sd:       5
+  };
+
+  let currentUser = '', allNames = [], selectedName = '', sheetsOK = false, submitted = false;
+  let progressData = null;
+
+  const loginSection = document.getElementById('loginSection');
+  const app = document.getElementById('app');
+  const searchName = document.getElementById('searchName');
+  const nameList = document.getElementById('nameList');
+  const btnLogin = document.getElementById('btnLogin');
+  const loginMsg = document.getElementById('loginMsg');
+  const contentArea = document.getElementById('contentArea');
+  const hasilArea = document.getElementById('hasilArea');
+
+  function callAPI(p, cb) {
+    const c = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+    p.callback = c;
+    const u = API + '?' + Object.keys(p).map(k => k + '=' + encodeURIComponent(p[k])).join('&');
+    const sc = document.createElement('script');
+    window[c] = function(d) { delete window[c]; if(sc.parentNode) sc.parentNode.removeChild(sc); if(cb) cb(d); };
+    sc.src = u;
+    sc.onerror = function() { delete window[c]; if(sc.parentNode) sc.parentNode.removeChild(sc); if(cb) cb(null); };
+    document.head.appendChild(sc);
+  }
+
+  /* ========================
+     LOGIN
+  ======================== */
+  function loadNames() {
+    callAPI({ action: 'getNames' }, function(d) {
+      if (d && d.ok && d.names && d.names.length) { allNames = d.names; sheetsOK = true; }
+      else { allNames = FALLBACK_NAMES; }
+      renderNames('');
+    });
+    setTimeout(() => { if (!allNames.length) { allNames = FALLBACK_NAMES; renderNames(''); } }, 5000);
+  }
+
+  function renderNames(f) {
+    const fl = f.trim().toUpperCase();
+    const list = fl ? allNames.filter(n => n.toUpperCase().includes(fl)) : allNames;
+    nameList.innerHTML = '';
+    list.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'name-item' + (name === selectedName ? ' selected' : '');
+      div.textContent = name;
+      div.addEventListener('click', () => {
+        selectedName = name;
+        searchName.value = name;
+        btnLogin.disabled = false;
+        renderNames(name);
+      });
+      nameList.appendChild(div);
+    });
+  }
+
+  searchName.addEventListener('input', () => {
+    selectedName = '';
+    btnLogin.disabled = true;
+    renderNames(searchName.value);
+  });
+
+  btnLogin.addEventListener('click', () => {
+    if (!selectedName) return;
+    currentUser = selectedName;
+    btnLogin.disabled = true;
+    loginMsg.textContent = 'Memeriksa data...';
+    callAPI({ action: 'login', nama: currentUser, sumber: 'POSTTEST', device: 'HP' }, function(){});
+    loadProgress();
+  });
+
+  function loadProgress() {
+    callAPI({ action: 'getProgress', nama: currentUser }, function(d) {
+      progressData = (d && d.ok) ? d : null;
+      showApp();
+    });
+    setTimeout(() => {
+      if (loginSection.style.display !== 'none') {
+        progressData = null;
+        showApp();
+      }
+    }, 6000);
+  }
+
+  function showApp() {
+    loginSection.style.display = 'none';
+    app.style.display = 'block';
+    document.getElementById('userName').textContent = currentUser;
+
+    const posttest = progressData && progressData.posttest ? progressData.posttest : null;
+    const lkpd = progressData && progressData.lkpd ? progressData.lkpd : null;
+
+    if (posttest) {
+      document.getElementById('userStatus').textContent = 'Post test sudah dikerjakan';
+      renderExistingResult(posttest);
+      return;
+    }
+
+    if (!lkpd) {
+      document.getElementById('userStatus').textContent = 'LKPD belum selesai';
+      renderBlocked();
+      return;
+    }
+
+    document.getElementById('userStatus').textContent = 'Siap mengerjakan post test';
+    renderForm();
+  }
+
+  function renderBlocked() {
+    contentArea.innerHTML = `
+      <div class="card">
+        <h3>Post Test Belum Bisa Dibuka</h3>
+        <div class="warning-box">
+          <strong>Perhatian:</strong> Kamu perlu menyelesaikan <strong>LKPD</strong> terlebih dahulu sebelum membuka post test.
+        </div>
+        <div style="margin-top:12px;text-align:center;">
+          <a href="LKPD9.html" class="btn btn-orange">Buka LKPD</a>
+          <a href="Pertemuan9.html" class="btn btn-primary">Kembali</a>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ========================
+     RENDER FORM
+  ======================== */
+  function renderForm() {
+    contentArea.innerHTML = `
+      <div class="card">
+        <h3>Petunjuk Post Test</h3>
+        <ul style="padding-left:18px;font-size:13px;">
+          <li>Kerjakan secara <strong>jujur dan mandiri</strong>.</li>
+          <li>Boleh membuka <strong>catatan rumus di buku</strong>, tetapi tidak boleh bertanya teman.</li>
+          <li>Tidak ada pengecekan benar-salah di tengah pengerjaan.</li>
+          <li>Hasil akan dihitung saat kamu menekan tombol <strong>Kirim Post Test</strong>.</li>
+          <li>Simpangan baku ditulis dalam <strong>bentuk akar</strong>. Gunakan tombol <strong>√</strong> yang tersedia.</li>
+          <li>Post test hanya bisa dikerjakan <strong>satu kali</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="card" style="padding:14px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;">
+          <span>Progres Pengisian</span>
+          <span id="progressText">0 / 4 bagian terisi</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Soal Post Test</h3>
+        <p>Data penjualan harian sebuah toko (ribu rupiah):</p>
+        <div style="background:#f8fafc;border:2px solid var(--border);border-radius:8px;padding:14px;text-align:center;font-weight:700;font-size:18px;color:var(--primary-dark);margin:12px 0;letter-spacing:4px;">
+          4 &nbsp;,&nbsp; 6 &nbsp;,&nbsp; 8 &nbsp;,&nbsp; 10 &nbsp;,&nbsp; 12
+        </div>
+        <p style="font-size:13px;color:var(--muted);text-align:center;">Hitung mean, isi tabel bantu, kemudian tentukan varians dan simpangan baku. Kerjakan seluruhnya secara mandiri.</p>
+      </div>
+
+      <div class="card">
+        <h3 style="color:var(--primary);font-size:14px;">Bagian 1 — Mean</h3>
+        <div class="formula">\\[ \\bar{x} = \\frac{\\sum x_i}{n} \\]</div>
+        <div class="below-row">
+          <div class="below-item">
+            <label>\\(\\bar{x} =\\)</label>
+            <input type="number" id="inputMean" class="below-input" placeholder="..." step="any"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="color:var(--primary);font-size:14px;">Bagian 2 — Tabel Bantu</h3>
+        <table id="tabelBantu">
+          <tr>
+            <th style="width:14%">Data ke-</th>
+            <th style="width:14%">\\(x_i\\)</th>
+            <th style="width:33%">\\(x_i - \\bar{x}\\)</th>
+            <th style="width:33%">\\((x_i - \\bar{x})^2\\)</th>
+          </tr>
+          <tr>
+            <td>1</td><td>4</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="sel1" class="tabel-input" placeholder="..." step="any"/></div></td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="kuad1" class="tabel-input" placeholder="..." step="any"/></div></td>
+          </tr>
+          <tr>
+            <td>2</td><td>6</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="sel2" class="tabel-input" placeholder="..." step="any"/></div></td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="kuad2" class="tabel-input" placeholder="..." step="any"/></div></td>
+          </tr>
+          <tr>
+            <td>3</td><td>8</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="sel3" class="tabel-input" placeholder="..." step="any"/></div></td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="kuad3" class="tabel-input" placeholder="..." step="any"/></div></td>
+          </tr>
+          <tr>
+            <td>4</td><td>10</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="sel4" class="tabel-input" placeholder="..." step="any"/></div></td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="kuad4" class="tabel-input" placeholder="..." step="any"/></div></td>
+          </tr>
+          <tr>
+            <td>5</td><td>12</td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="sel5" class="tabel-input" placeholder="..." step="any"/></div></td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="kuad5" class="tabel-input" placeholder="..." step="any"/></div></td>
+          </tr>
+          <tr class="jumlah-row">
+            <th>Jumlah</th><th>40</th>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="jmlSel" class="tabel-input" placeholder="..." step="any"/></div></td>
+            <td class="cell-input"><div class="tabel-input-wrap"><input type="number" id="jmlKuad" class="tabel-input" placeholder="..." step="any"/></div></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3 style="color:var(--primary);font-size:14px;">Bagian 3 — Varians</h3>
+        <div class="formula">\\[ \\sigma^2 = \\frac{\\sum(x_i - \\bar{x})^2}{n} \\]</div>
+        <div class="below-row">
+          <div class="below-item">
+            <label>\\(\\sum(x_i-\\bar{x})^2 =\\)</label>
+            <input type="number" id="inputJmlKuad" class="below-input" placeholder="..." step="any"/>
+          </div>
+          <div class="below-item">
+            <label>\\(\\sigma^2 =\\)</label>
+            <input type="number" id="inputVarians" class="below-input" placeholder="..." step="any"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="color:var(--primary);font-size:14px;">Bagian 4 — Simpangan Baku</h3>
+        <div class="formula">\\[ \\sigma = \\sqrt{\\sigma^2} \\]</div>
+        <p class="input-note">Tulis dalam bentuk akar. Gunakan tombol <strong>√</strong> jika diperlukan.</p>
+        <div class="below-row">
+          <div class="below-item">
+            <label>\\(\\sigma =\\)</label>
+            <input type="text" id="inputSD" class="below-input" placeholder="contoh: 2√2"/>
+            <button class="sqrt-btn" id="btnSqrtSD">√</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="cardSubmit">
+        <div class="warning-box" style="margin-bottom:12px;">
+          <strong>Perhatian:</strong> Jawaban tidak dicek di tengah pengerjaan. Nilai akan dihitung saat kamu menekan tombol <strong>Kirim Post Test</strong>.
+        </div>
+        <div style="text-align:center;">
+          <button class="btn btn-success" id="btnSubmit" disabled>Kirim Post Test</button>
+        </div>
+      </div>
+    `;
+
+    bindFormEvents();
+    if (window.MathJax) MathJax.typesetPromise();
+  }
+
+  /* ========================
+     EVENT FORM
+  ======================== */
+  function bindFormEvents() {
+    document.getElementById('btnSqrtSD').addEventListener('click', () => {
+      const inp = document.getElementById('inputSD');
+      const pos = inp.selectionStart || inp.value.length;
+      const val = inp.value;
+      inp.value = val.slice(0, pos) + '√' + val.slice(pos);
+      inp.setSelectionRange(pos + 1, pos + 1);
+      inp.focus();
+      updateFilled();
+    });
+
+    const ids = [
+      'inputMean','sel1','sel2','sel3','sel4','sel5',
+      'kuad1','kuad2','kuad3','kuad4','kuad5',
+      'jmlSel','jmlKuad','inputJmlKuad','inputVarians','inputSD'
+    ];
+
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        if (id.startsWith('sel') || id.startsWith('kuad') || id === 'jmlSel' || id === 'jmlKuad') {
+          toggleFilledCell(el, el.value.trim() !== '');
+        } else {
+          el.classList.toggle('filled', el.value.trim() !== '');
+        }
+        updateFilled();
+      });
+    });
+
+    document.getElementById('btnSubmit').addEventListener('click', handleSubmit);
+  }
+
+  function toggleFilledCell(inp, filled) {
+    const td = inp.closest('td');
+    if (td) {
+      td.classList.remove('cell-input','cell-filled');
+      td.classList.add(filled ? 'cell-filled' : 'cell-input');
+    }
+    inp.classList.toggle('filled', filled);
+  }
+
+  function updateFilled() {
+    const meanDone = document.getElementById('inputMean').value.trim() !== '';
+    const tabelFields = ['sel1','sel2','sel3','sel4','sel5','kuad1','kuad2','kuad3','kuad4','kuad5','jmlSel','jmlKuad'];
+    const tabelDone = tabelFields.every(id => document.getElementById(id).value.trim() !== '');
+    const variansDone = document.getElementById('inputJmlKuad').value.trim() !== '' &&
+                        document.getElementById('inputVarians').value.trim() !== '';
+    const sdDone = document.getElementById('inputSD').value.trim() !== '';
+
+    const done = [meanDone, tabelDone, variansDone, sdDone].filter(Boolean).length;
+    document.getElementById('progressText').textContent = done + ' / 4 bagian terisi';
+    document.getElementById('progressFill').style.width = (done / 4 * 100) + '%';
+    document.getElementById('btnSubmit').disabled = !(meanDone && tabelDone && variansDone && sdDone);
+  }
+
+  /* ========================
+     PARSE AKAR
+  ======================== */
+  function parseAkar(str) {
+    str = String(str).trim().replace(/\s/g,'');
+    if (!str) return NaN;
+    const plain = parseFloat(str);
+    if (!isNaN(plain) && !str.includes('√')) return plain;
+    const match = str.match(/^(\d*\.?\d*)√(\d+\.?\d*)$/);
+    if (match) {
+      const a = match[1] === '' ? 1 : parseFloat(match[1]);
+      const b = parseFloat(match[2]);
+      return a * Math.sqrt(b);
+    }
+    return NaN;
+  }
+
+  function normalizeAkar(str) {
+    return String(str).trim().replace(/\s/g,'').toLowerCase();
+  }
+
+  function cekAkar(userInput, kunciTeks, kunciNilai) {
+    const userNorm = normalizeAkar(userInput);
+    const kunciNorm = normalizeAkar(kunciTeks);
+    if (userNorm === kunciNorm) return true;
+    if (kunciNorm.includes('√') && !userNorm.includes('√')) return false;
+    const userVal = parseAkar(userInput);
+    if (isNaN(userVal)) return false;
+    return Math.abs(userVal - kunciNilai) <= TOL;
+  }
+
+  /* ========================
+     HITUNG SKOR
+  ======================== */
+  function hitungSkor() {
+    const detail = { mean:0, sel:0, kuad:0, jmlKuad:0, varians:0, sd:0 };
+    const salah = [];
+
+    // mean
+    const meanVal = parseFloat(document.getElementById('inputMean').value.trim());
+    if (!isNaN(meanVal) && Math.abs(meanVal - KUNCI.mean) <= TOL) detail.mean = POIN.mean;
+    else salah.push('Mean data tunggal');
+
+    // selisih
+    let selScore = 0;
+    KUNCI.sel.forEach((v, i) => {
+      const uv = parseFloat(document.getElementById('sel' + (i+1)).value.trim());
+      if (!isNaN(uv) && Math.abs(uv - v) <= TOL) selScore += POIN.sel;
+    });
+    detail.sel = selScore;
+    if (selScore < 40) salah.push('Kolom selisih terhadap mean');
+
+    // kuadrat
+    let kuadScore = 0;
+    KUNCI.kuad.forEach((v, i) => {
+      const uv = parseFloat(document.getElementById('kuad' + (i+1)).value.trim());
+      if (!isNaN(uv) && Math.abs(uv - v) <= TOL) kuadScore += POIN.kuad;
+    });
+    detail.kuad = kuadScore;
+    if (kuadScore < 30) salah.push('Kolom kuadrat selisih');
+
+    // jumlah selisih tidak dinilai terpisah, tapi dipakai analisis
+    const jmlSelVal = parseFloat(document.getElementById('jmlSel').value.trim());
+    const jmlSelOk = !isNaN(jmlSelVal) && Math.abs(jmlSelVal - KUNCI.jmlSel) <= TOL;
+
+    // jumlah kuadrat
+    const jmlKuadVal = parseFloat(document.getElementById('jmlKuad').value.trim());
+    if (!isNaN(jmlKuadVal) && Math.abs(jmlKuadVal - KUNCI.jmlKuad) <= TOL) detail.jmlKuad = POIN.jmlKuad;
+    else salah.push('Jumlah kuadrat selisih');
+
+    // varians
+    const variansVal = parseFloat(document.getElementById('inputVarians').value.trim());
+    if (!isNaN(variansVal) && Math.abs(variansVal - KUNCI.varians) <= TOL) detail.varians = POIN.varians;
+    else salah.push('Varians');
+
+    // sd
+    const sdVal = document.getElementById('inputSD').value.trim();
+    if (cekAkar(sdVal, KUNCI.sd.teks, KUNCI.sd.nilai)) detail.sd = POIN.sd;
+    else salah.push('Simpangan baku');
+
+    const total = Object.values(detail).reduce((a,b)=>a+b,0);
+    return { total, detail, salah, jmlSelOk };
+  }
+
+  /* ========================
+     SUBMIT
+  ======================== */
+  function handleSubmit() {
+    if (submitted) return;
+    if (!confirm('Apakah kamu yakin ingin mengirim post test?\nPost test hanya bisa dikerjakan satu kali.')) return;
+    submitted = true;
+    document.getElementById('btnSubmit').disabled = true;
+
+    const hasil = hitungSkor();
+    const kategori = getKategori(hasil.total);
+
+    contentArea.innerHTML = '';
+    hasilArea.style.display = 'block';
+    hasilArea.innerHTML = buildResultHTML(hasil, kategori);
+    hasilArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    if (window.MathJax) MathJax.typesetPromise();
+
+    if (sheetsOK) {
+      const detailStr = Object.entries(hasil.detail).map(e => e[0] + ':' + e[1]).join('|');
+      callAPI({
+        action:'posttest',
+        nama:currentUser,
+        s1: document.getElementById('inputMean') ? document.getElementById('inputMean').value : '',
+        s2: [
+          document.getElementById('sel1')?.value || '',
+          document.getElementById('sel2')?.value || '',
+          document.getElementById('sel3')?.value || '',
+          document.getElementById('sel4')?.value || '',
+          document.getElementById('sel5')?.value || '',
+          document.getElementById('jmlSel')?.value || ''
+        ].join('|'),
+        s3: [
+          document.getElementById('kuad1')?.value || '',
+          document.getElementById('kuad2')?.value || '',
+          document.getElementById('kuad3')?.value || '',
+          document.getElementById('kuad4')?.value || '',
+          document.getElementById('kuad5')?.value || '',
+          document.getElementById('jmlKuad')?.value || ''
+        ].join('|'),
+        s4: document.getElementById('inputVarians') ? document.getElementById('inputVarians').value : '',
+        s5: document.getElementById('inputSD') ? document.getElementById('inputSD').value : '',
+        s6: '',
+        s7: '',
+        s8: '',
+        skor: hasil.total,
+        detail: detailStr
+      }, function(d){ if(d && d.ok) console.log('Post test tersimpan'); });
+
+      callAPI({
+        action:'selesai',
+        nama:currentUser,
+        komponen:'POSTTEST',
+        status:'SELESAI',
+        detail:'skor='+hasil.total+' kategori='+kategori.label
+      }, function(){});
+    }
+  }
+
+  /* ========================
+     HASIL & FEEDBACK
+  ======================== */
+  function getKategori(skor) {
+    if (skor >= 90) return { label:'Sangat Baik', css:'kat-sb' };
+    if (skor >= 78) return { label:'Tuntas', css:'kat-t' };
+    if (skor >= 60) return { label:'Hampir Tuntas', css:'kat-ht' };
+    return { label:'Belum Tuntas', css:'kat-bt' };
+  }
+
+  function buildRekomendasi(hasil) {
+    const list = [];
+    if (hasil.detail.mean === 0) list.push('Ulangi cara menghitung mean dengan benar sebelum mengisi tabel bantu.');
+    if (hasil.detail.sel < 40) list.push('Periksa kembali kolom selisih \(x_i - \\bar{x}\). Pastikan setiap data dikurangi mean yang benar.');
+    if (!hasil.jmlSelOk) list.push('Jumlah kolom selisih seharusnya nol. Gunakan ini sebagai cara cek ketelitianmu.');
+    if (hasil.detail.kuad < 30) list.push('Periksa kembali kolom kuadrat selisih. Ingat: kuadrat bilangan negatif selalu positif.');
+    if (hasil.detail.jmlKuad === 0) list.push('Jumlah kuadrat selisih masih salah. Pastikan semua nilai pada kolom terakhir dijumlahkan dengan benar.');
+    if (hasil.detail.varians === 0) list.push('Varians dihitung dengan membagi jumlah kuadrat selisih dengan banyak data \(n\).');
+    if (hasil.detail.sd === 0) list.push('Simpangan baku adalah akar dari varians dan harus ditulis dalam bentuk akar yang disederhanakan.');
+    if (!list.length) list.push('Semua komponen sudah sangat baik. Pertahankan ketelitianmu.');
+    return list;
+  }
+
+  function buildResultHTML(hasil, kategori) {
+    const rekom = buildRekomendasi(hasil);
+    const skor = hasil.total;
+
+    let h = '<div class="result-card">';
+    h += '<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">Post Test Selesai!</div>';
+    h += '<div class="skor-besar" style="color:' + (skor>=90?'var(--success)':skor>=78?'var(--primary)':skor>=60?'var(--accent)':'var(--danger)') + ';">' + skor + '</div>';
+    h += '<div class="skor-label">dari 100 poin</div>';
+    h += '<div class="kategori-badge ' + kategori.css + '">' + kategori.label + '</div>';
+
+    if (skor >= 90) {
+      h += '<div class="success-box" style="text-align:left;"><strong>Kamu sudah sangat memahami materi ini.</strong> Kamu mampu menghitung mean, mengisi tabel bantu, menghitung varians, dan menuliskan simpangan baku dalam bentuk akar dengan baik.</div>';
+    } else if (skor >= 78) {
+      h += '<div class="info-box" style="text-align:left;"><strong>Kamu sudah tuntas.</strong> Perkuat kembali ketelitian pada pengisian tabel bantu agar hasilmu semakin konsisten.</div>';
+    } else if (skor >= 60) {
+      h += '<div class="note" style="text-align:left;"><strong>Kamu hampir tuntas.</strong> Beberapa langkah sudah benar, tetapi masih perlu penguatan pada bagian tertentu.</div>';
+    } else {
+      h += '<div class="warning-box" style="text-align:left;"><strong>Kamu belum tuntas.</strong> Perlu mengulang kembali langkah-langkah perhitungan dari mean sampai simpangan baku.</div>';
+    }
+
+    h += '<div class="detail-skor">';
+    h += '<h4 style="margin:10px 0 6px;color:var(--primary-dark);">Rincian Skor</h4>';
+    h += '<table>';
+    h += '<tr><th>Komponen</th><th>Maks</th><th>Skor</th></tr>';
+    h += '<tr><td>Mean</td><td>10</td><td>' + hasil.detail.mean + '</td></tr>';
+    h += '<tr><td>Kolom selisih \(x_i - \\bar{x}\)</td><td>40</td><td>' + hasil.detail.sel + '</td></tr>';
+    h += '<tr><td>Kolom kuadrat selisih</td><td>30</td><td>' + hasil.detail.kuad + '</td></tr>';
+    h += '<tr><td>Jumlah kuadrat selisih</td><td>10</td><td>' + hasil.detail.jmlKuad + '</td></tr>';
+    h += '<tr><td>Varians</td><td>5</td><td>' + hasil.detail.varians + '</td></tr>';
+    h += '<tr><td>Simpangan baku</td><td>5</td><td>' + hasil.detail.sd + '</td></tr>';
+    h += '<tr style="font-weight:700;background:#dbeafe;"><td>Total</td><td>100</td><td>' + hasil.total + '</td></tr>';
+    h += '</table>';
+
+    h += '<h4 style="margin:14px 0 6px;color:var(--primary-dark);">Bagian yang Perlu Diperbaiki</h4>';
+    h += '<ul class="rekom-list">';
+    rekom.forEach(item => { h += '<li>' + item + '</li>'; });
+    h += '</ul>';
+
+    h += '<h4 style="margin:14px 0 6px;color:var(--primary-dark);">Tindak Lanjut</h4>';
+    if (skor >= 78) {
+      h += '<div class="success-box"><strong>Tindak lanjut:</strong> lanjutkan ke <a href="Refleksi9.html" style="color:#166534;font-weight:700;">Refleksi</a>.</div>';
+    } else {
+      h += '<div class="warning-box"><strong>Tindak lanjut:</strong> kerjakan latihan tambahan di <a href="WebInteraktif9.html" style="color:#991b1b;font-weight:700;">Web Generator</a> dan isi refleksi setelah itu.</div>';
+    }
+
+    h += '</div>';
+
+    h += '<div style="margin-top:16px;">';
+    h += '<a href="Pertemuan9.html" class="btn btn-primary">Kembali ke Halaman Utama</a>';
+    h += '<a href="Refleksi9.html" class="btn btn-success">Isi Refleksi</a>';
+    if (skor < 78) h += '<a href="WebInteraktif9.html" class="btn btn-orange">Latihan Generator</a>';
+    h += '</div>';
+
+    h += '</div>';
+    return h;
+  }
+
+  function renderExistingResult(posttest) {
+    const skor = Number(posttest.SKOR) || 0;
+    const kategori = getKategori(skor);
+    hasilArea.style.display = 'block';
+    hasilArea.innerHTML = buildResultHTML({
+      total: skor,
+      detail: { mean:'—', sel:'—', kuad:'—', jmlKuad:'—', varians:'—', sd:'—' },
+      salah: [],
+      jmlSelOk: true
+    }, kategori);
+  }
+
+  loadNames();
+});
+</script>
+</body>
+</html>
