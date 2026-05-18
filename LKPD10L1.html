@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LKPD Level 1 | Simpangan Rata-Rata | P10</title>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{--primary:#0f766e;--primary-dark:#134e4a;--primary-light:#14b8a6;--success:#16a34a;--danger:#dc2626;--soft-teal:#f0fdfa;--soft-green:#ecfdf5;--soft-red:#fef2f2;--text:#1e293b;--muted:#64748b;--border:#cbd5e1;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}.top-bar p{font-size:11px;opacity:.8;}
+.back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;}
+.container{max-width:600px;margin:0 auto;padding:14px;}
+.card{background:#fff;border-radius:14px;padding:20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.level-header{background:linear-gradient(135deg,#991b1b,#dc2626);color:#fff;border-radius:12px;padding:16px;margin-bottom:14px;text-align:center;}
+.level-header h2{font-size:20px;margin-bottom:4px;}.level-header p{font-size:13px;opacity:.9;}
+.info-box{background:var(--soft-teal);border-left:4px solid var(--primary);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;}
+.formula-box{background:var(--soft-teal);border:2px solid #2dd4bf;border-radius:10px;padding:12px;text-align:center;margin:10px 0;font-size:15px;}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;}
+th,td{border:1.5px solid var(--border);padding:8px;text-align:center;vertical-align:middle;}
+th{background:#ccfbf1;color:var(--primary-dark);font-weight:700;}
+.guide-cell{font-size:11px;color:var(--muted);display:block;margin-top:3px;}
+input[type=number]{width:100%;padding:7px;border:2px solid var(--border);border-radius:6px;font-size:14px;text-align:center;}
+input[type=number]:focus{outline:none;border-color:var(--primary);}
+input.ok{border-color:var(--success);background:#ecfdf5;}
+input.err{border-color:var(--danger);background:#fef2f2;}
+.label-row{display:flex;align-items:center;gap:10px;margin:10px 0;flex-wrap:wrap;}
+.label-row label{font-size:14px;font-weight:700;}
+.label-row input{width:120px;padding:9px;border:2px solid var(--border);border-radius:8px;font-size:15px;}
+.btn-submit{background:var(--primary);color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-top:10px;}
+.btn-submit:hover{background:var(--primary-light);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+.result-skor{font-size:60px;font-weight:800;color:var(--primary-dark);text-align:center;margin:10px 0;}
+.btn-go{background:var(--success);color:#fff;border:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin:5px;}
+.soal-title{font-size:17px;font-weight:700;color:var(--primary-dark);margin-bottom:10px;}
+.ingat-box{background:#fffbeb;border-left:3px solid #f59e0b;padding:8px 12px;border-radius:4px;font-size:12px;margin:6px 0;}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="LKPD10.html" class="back-link">&#8592;</a>
+  <h1>LKPD Level 1 — Pertemuan 10</h1>
+  <p>Simpangan Rata-Rata Data Tunggal</p>
+</div>
+<div class="container" id="mainContent">
+  <div class="level-header">
+    <h2>🔴 Level 1 — Panduan Lengkap</h2>
+    <p>Tabel bantu dengan panduan di setiap sel. Ikuti petunjuk pada setiap langkah.</p>
+  </div>
+
+  <div class="card">
+    <div class="formula-box">\(SR = \dfrac{\sum|x_i - \bar{x}|}{n}\) &nbsp; dan &nbsp; \(\bar{x} = \dfrac{\sum x_i}{n}\)</div>
+    <div class="warning-box">⚠️ <strong>Ingat:</strong> Nilai mutlak SELALU positif atau nol. Contoh: |−4| = 4, bukan −4!</div>
+    <div class="info-box">✅ <strong>Cek:</strong> Jumlah kolom selisih \((x_i-\bar{x})\) harus = 0. Jika tidak nol, periksa kembali mean kamu.</div>
+  </div>
+
+  <!-- SOAL 1 -->
+  <div class="card">
+    <div class="soal-title">Soal 1 — Data Penjualan Toko Online</div>
+    <p style="font-size:14px;margin-bottom:10px;">Data jumlah produk terjual per hari selama 5 hari (unit): <strong>3, 5, 7, 9, 11</strong>. Lengkapi tabel bantu berikut.</p>
+    <div class="label-row">
+      <label>Langkah 1 — Mean \(\bar{x}\) =</label>
+      <input type="number" id="s1mean" step="0.1">
+    </div>
+    <div class="ingat-box">💡 Mean = (3+5+7+9+11) ÷ 5 = ... ÷ 5 = ?</div>
+    <table>
+      <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)<br><span style="font-size:11px;font-weight:400">(Langkah 2)</span></th><th>\(|x_i - \bar{x}|\)<br><span style="font-size:11px;font-weight:400">(Langkah 3)</span></th></tr>
+      <tr><td>1</td><td>3</td>
+        <td><input type="number" id="s1_s1" step="1"><span class="guide-cell">3 − mean = ?</span></td>
+        <td><input type="number" id="s1_m1" min="0"><span class="guide-cell">|selisih baris 1| = ?</span></td>
+      </tr>
+      <tr><td>2</td><td>5</td>
+        <td><input type="number" id="s1_s2" step="1"><span class="guide-cell">5 − mean = ?</span></td>
+        <td><input type="number" id="s1_m2" min="0"><span class="guide-cell">|selisih baris 2| = ?</span></td>
+      </tr>
+      <tr><td>3</td><td>7</td>
+        <td><input type="number" id="s1_s3" step="1"><span class="guide-cell">7 − mean = ?</span></td>
+        <td><input type="number" id="s1_m3" min="0"><span class="guide-cell">|selisih baris 3| = ?</span></td>
+      </tr>
+      <tr><td>4</td><td>9</td>
+        <td><input type="number" id="s1_s4" step="1"><span class="guide-cell">9 − mean = ?</span></td>
+        <td><input type="number" id="s1_m4" min="0"><span class="guide-cell">|selisih baris 4| = ?</span></td>
+      </tr>
+      <tr><td>5</td><td>11</td>
+        <td><input type="number" id="s1_s5" step="1"><span class="guide-cell">11 − mean = ?</span></td>
+        <td><input type="number" id="s1_m5" min="0"><span class="guide-cell">|selisih baris 5| = ?</span></td>
+      </tr>
+      <tr><th>Jumlah</th><th>35</th>
+        <td><input type="number" id="s1_sjml" step="1"><span class="guide-cell">Harus = 0 ✓</span></td>
+        <td><input type="number" id="s1_mjml" min="0"><span class="guide-cell">Langkah 4: Σ|x−x̄|</span></td>
+      </tr>
+    </table>
+    <div class="label-row">
+      <label>SR = \(\dfrac{...}{5}\) =</label>
+      <input type="number" id="s1sr" step="0.1">
+      <span style="font-size:13px;color:var(--muted);">Langkah 5: bagi Σ dengan 5</span>
+    </div>
+    <div id="s1fb" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- SOAL 2 -->
+  <div class="card">
+    <div class="soal-title">Soal 2 — Data Nilai Ujian</div>
+    <p style="font-size:14px;margin-bottom:10px;">Data nilai ujian 5 siswa: <strong>60, 70, 75, 80, 90</strong>. Lengkapi tabel bantu berikut.</p>
+    <div class="label-row">
+      <label>Langkah 1 — Mean \(\bar{x}\) =</label>
+      <input type="number" id="s2mean" step="0.1">
+    </div>
+    <div class="ingat-box">💡 Mean = (60+70+75+80+90) ÷ 5 = 375 ÷ 5 = ?</div>
+    <table>
+      <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\(|x_i - \bar{x}|\)</th></tr>
+      <tr><td>1</td><td>60</td>
+        <td><input type="number" id="s2_s1" step="1"><span class="guide-cell">60 − mean = ?</span></td>
+        <td><input type="number" id="s2_m1" min="0"><span class="guide-cell">Ingat: selalu positif!</span></td>
+      </tr>
+      <tr><td>2</td><td>70</td>
+        <td><input type="number" id="s2_s2" step="1"></td>
+        <td><input type="number" id="s2_m2" min="0"><span class="guide-cell">Ingat: selalu positif!</span></td>
+      </tr>
+      <tr><td>3</td><td>75</td>
+        <td><input type="number" id="s2_s3" step="1"></td>
+        <td><input type="number" id="s2_m3" min="0"></td>
+      </tr>
+      <tr><td>4</td><td>80</td>
+        <td><input type="number" id="s2_s4" step="1"></td>
+        <td><input type="number" id="s2_m4" min="0"><span class="guide-cell">Ingat: selalu positif!</span></td>
+      </tr>
+      <tr><td>5</td><td>90</td>
+        <td><input type="number" id="s2_s5" step="1"></td>
+        <td><input type="number" id="s2_m5" min="0"></td>
+      </tr>
+      <tr><th>Jumlah</th><th>375</th>
+        <td><input type="number" id="s2_sjml" step="1"><span class="guide-cell">Harus = 0 ✓</span></td>
+        <td><input type="number" id="s2_mjml" min="0"></td>
+      </tr>
+    </table>
+    <div class="label-row">
+      <label>SR =</label>
+      <input type="number" id="s2sr" step="0.1">
+    </div>
+    <div id="s2fb" style="margin-top:8px;"></div>
+  </div>
+
+  <div id="globalFb" style="margin:10px 0;"></div>
+  <button class="btn-submit" id="btnSubmit" onclick="submitLKPD()">Kirim LKPD</button>
+</div>
+
+<script>
+const params=new URLSearchParams(location.search);
+const NAMA=params.get('nama')||'';
+const LEVEL=params.get('level')||'1';
+const API='https://script.google.com/macros/s/AKfycbz7RhLWJsZvBGHPKUy7J8vN8KpNJMNo1xOF2s-OKZYciE8zRRXLXOOGTEjefns8u3s9TQ/exec';
+
+// Jawaban soal 1: data={3,5,7,9,11} mean=7
+const J1={mean:7,s:[-4,-2,0,2,4],m:[4,2,0,2,4],jmt:12,sr:2.4};
+// Jawaban soal 2: data={60,70,75,80,90} mean=75
+const J2={mean:75,s:[-15,-5,0,5,15],m:[15,5,0,5,15],jmt:40,sr:8};
+
+function callAPI(p,cb){
+  const c='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
+  p.callback=c;
+  const u=API+'?'+Object.keys(p).map(k=>k+'='+encodeURIComponent(p[k])).join('&');
+  const sc=document.createElement('script');
+  window[c]=function(d){delete window[c];sc.parentNode&&sc.parentNode.removeChild(sc);cb&&cb(d);};
+  sc.onerror=function(){delete window[c];sc.parentNode&&sc.parentNode.removeChild(sc);cb&&cb(null);};
+  sc.src=u;document.head.appendChild(sc);
+}
+
+function getNum(id){return parseFloat(document.getElementById(id).value)||0;}
+
+function scoreSoal(prefix,J){
+  let s=0;
+  const mean=getNum(prefix+'mean');
+  const selisih=[1,2,3,4,5].map(i=>getNum(prefix+'_s'+i));
+  const mutlak=[1,2,3,4,5].map(i=>getNum(prefix+'_m'+i));
+  const jmt=getNum(prefix+'_mjml');
+  const sr=getNum(prefix+'sr');
+  if(Math.abs(mean-J.mean)<0.01)s+=10;
+  J.s.forEach((jv,i)=>{if(Math.abs(selisih[i]-jv)<0.01)s+=6;});
+  J.m.forEach((jv,i)=>{if(Math.abs(mutlak[i]-jv)<0.01)s+=6;});
+  if(Math.abs(jmt-J.jmt)<0.01)s+=10;
+  if(Math.abs(sr-J.sr)<0.01)s+=20;
+  return s;
+}
+
+function submitLKPD(){
+  const btn=document.getElementById('btnSubmit');
+  btn.disabled=true;btn.textContent='Mengirim...';
+  const s1=scoreSoal('s1',J1);
+  const s2=scoreSoal('s2',J2);
+  const total=Math.round((s1+s2)/2);
+
+  callAPI({action:'lkpd',nama:NAMA,level:LEVEL,soal1:s1,soal2:s2,skorTotal:total},function(){
+    showResult(s1,s2,total);
+  });
+  setTimeout(()=>showResult(s1,s2,total),8000);
+}
+
+function showResult(s1,s2,total){
+  const wajib=total<78;
+  document.getElementById('mainContent').innerHTML=`
+    <div class="card" style="text-align:center;">
+      <div style="font-size:14px;color:var(--muted);">Hasil LKPD Level 1 — ${NAMA}</div>
+      <div class="result-skor">${total}</div>
+      <div style="font-size:14px;color:var(--muted);">dari 100 poin (rata-rata 2 soal)</div>
+      <div style="margin:12px 0;font-size:14px;">Soal 1: <strong>${s1}</strong> &nbsp;|&nbsp; Soal 2: <strong>${s2}</strong></div>
+      ${wajib?`<div class="warning-box" style="text-align:left;">⚠️ Nilai di bawah 78. Kamu wajib latihan di Web Generator minimal 3 set dengan akurasi ≥80%.</div>`:`<div class="success-box" style="text-align:left;">✅ Nilai ≥ 78. LKPD tuntas!</div>`}
+      <div class="info-box" style="text-align:left;"><strong>Kunci Soal 1:</strong> Mean=7, SR=2,4<br><strong>Kunci Soal 2:</strong> Mean=75, SR=8</div>
+      <a href="AssesmentPost10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go">Lanjut Post Test →</a>
+      <a href="Pertemuan10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go" style="background:var(--primary);">Halaman Utama</a>
+    </div>`;
+}
+</script>
+</body>
+</html>

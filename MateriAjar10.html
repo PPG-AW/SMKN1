@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Materi Ajar 10 | Simpangan Rata-Rata | SMKN 1 Salatiga</title>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+  --primary:#0f766e;--primary-dark:#134e4a;--primary-light:#14b8a6;
+  --orange:#ea580c;--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+  --soft-teal:#f0fdfa;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;--soft-red:#fef2f2;
+  --text:#1e293b;--muted:#64748b;--border:#cbd5e1;--bg:#f1f5f9;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:680px;margin:0 auto;padding:14px;}
+
+/* ── LOADING OVERLAY ── */
+.loading-overlay{position:fixed;inset:0;background:rgba(15,118,110,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .4s;}
+.loading-overlay.hidden{opacity:0;pointer-events:none;}
+.loading-overlay p{color:#fff;font-size:15px;margin-top:14px;font-weight:500;}
+.spinner-lg{width:44px;height:44px;border:4px solid rgba(255,255,255,.3);border-top:4px solid #fff;border-radius:50%;animation:spin 1s linear infinite;}
+
+/* ── RESUME BANNER ── */
+.resume-banner{background:linear-gradient(135deg,#134e4a,#0f766e);color:#fff;border-radius:14px;padding:18px 20px;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.resume-banner .rb-icon{font-size:32px;flex-shrink:0;}
+.resume-banner .rb-info{flex:1;}
+.resume-banner .rb-title{font-size:15px;font-weight:700;margin-bottom:4px;}
+.resume-banner .rb-sub{font-size:12px;opacity:.85;line-height:1.5;}
+.resume-banner .rb-btn{background:#fff;color:var(--primary-dark);border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.resume-banner .rb-btn:hover{background:#ccfbf1;}
+
+/* ── SELESAI SEMUA BANNER ── */
+.done-banner{background:linear-gradient(135deg,#14532d,#16a34a);color:#fff;border-radius:14px;padding:20px;margin-bottom:14px;text-align:center;}
+.done-banner h2{font-size:20px;margin-bottom:8px;}
+.done-banner p{font-size:13px;opacity:.9;margin-bottom:14px;}
+.done-banner a{background:#fff;color:#14532d;border:none;padding:11px 24px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;display:inline-block;margin:4px;}
+.done-banner .review-btn{background:rgba(255,255,255,.2);color:#fff;cursor:pointer;border:none;padding:11px 24px;border-radius:10px;font-size:14px;font-weight:700;margin:4px;}
+
+/* ── PROGRESS BAR ── */
+.progress-bar-wrap{background:#e2e8f0;border-radius:999px;height:8px;margin:14px 0 4px;}
+.progress-bar-fill{height:8px;border-radius:999px;background:linear-gradient(90deg,var(--primary-light),var(--primary));transition:width .4s;}
+.progress-label{font-size:12px;color:var(--muted);text-align:right;margin-bottom:12px;}
+
+/* ── NAV DOTS ── */
+.nav-dots{display:flex;gap:6px;justify-content:center;margin-bottom:14px;flex-wrap:wrap;}
+.dot{width:34px;height:34px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer;transition:.2s;position:relative;}
+.dot.done{background:var(--primary);border-color:var(--primary);color:#fff;}
+.dot.done::after{content:'✓';position:absolute;font-size:10px;}
+.dot.done span{display:none;}
+.dot.active{background:var(--primary-dark);border-color:var(--primary-dark);color:#fff;transform:scale(1.1);}
+.dot.locked{opacity:.35;cursor:not-allowed;}
+
+/* ── SECTION CARDS ── */
+.section-card{background:#fff;border-radius:14px;padding:22px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);display:none;}
+.section-card.active{display:block;}
+.section-num{display:inline-block;background:var(--primary);color:#fff;padding:3px 12px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:8px;}
+.section-title{font-size:20px;font-weight:800;color:var(--primary-dark);margin-bottom:12px;}
+.section-body p{margin-bottom:12px;font-size:15px;line-height:1.8;}
+
+/* ── STATUS BADGE SUDAH SELESAI (per bagian) ── */
+.already-done-badge{display:flex;align-items:center;gap:10px;background:#ecfdf5;border:1.5px solid #86efac;border-radius:10px;padding:12px 16px;margin-top:18px;}
+.already-done-badge .adb-icon{font-size:22px;}
+.already-done-badge .adb-text{font-size:13px;color:#166534;font-weight:600;}
+.already-done-badge .adb-next{background:var(--success);color:#fff;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-left:auto;}
+
+/* ── CONTENT ELEMENTS ── */
+.formula-box{background:var(--soft-teal);border:2px solid #2dd4bf;border-radius:12px;padding:16px;text-align:center;margin:14px 0;font-size:16px;}
+.formula-box .formula-label{font-size:12px;color:var(--muted);margin-bottom:6px;}
+.info-box{background:var(--soft-teal);border-left:4px solid var(--primary);padding:12px 14px;border-radius:6px;margin:12px 0;font-size:14px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:12px 14px;border-radius:6px;margin:12px 0;font-size:14px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:12px 14px;border-radius:6px;margin:12px 0;font-size:14px;}
+.example-box{background:#f8fafc;border:1.5px solid var(--border);border-radius:10px;padding:14px;margin:12px 0;}
+.example-box h4{color:var(--primary-dark);font-size:14px;margin-bottom:8px;}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;}
+th,td{border:1.5px solid var(--border);padding:8px 10px;text-align:center;}
+th{background:#ccfbf1;color:var(--primary-dark);font-weight:700;}
+
+/* ── QUIZ ── */
+.quiz-section{background:linear-gradient(135deg,var(--soft-teal),#e0f2fe);border-radius:12px;padding:18px;margin-top:18px;border:1.5px solid #7dd3fc;}
+.quiz-section h4{color:var(--primary-dark);font-size:16px;margin-bottom:12px;}
+.quiz-q{font-size:14px;font-weight:600;margin-bottom:10px;color:var(--text);}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;cursor:pointer;font-size:14px;transition:.2s;text-align:left;}
+.quiz-opt:hover{border-color:var(--primary);background:var(--soft-teal);}
+.quiz-opt.correct{border-color:var(--success);background:var(--soft-green);color:#166534;font-weight:700;pointer-events:none;}
+.quiz-opt.wrong{border-color:var(--danger);background:var(--soft-red);color:#991b1b;pointer-events:none;}
+.quiz-opt.disabled{pointer-events:none;opacity:.6;}
+.quiz-input{width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:8px;text-align:center;}
+.quiz-input:focus{outline:none;border-color:var(--primary);}
+.quiz-input:disabled{background:#f1f5f9;color:var(--muted);}
+.quiz-feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:14px;display:none;}
+.quiz-feedback.show{display:block;}
+.quiz-feedback.ok{background:var(--soft-green);color:#166534;border:1px solid #86efac;}
+.quiz-feedback.err{background:var(--soft-red);color:#991b1b;border:1px solid #fca5a5;}
+.btn-check{background:var(--primary);color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;}
+.btn-check:hover{background:var(--primary-light);}
+.btn-check:disabled{opacity:.4;cursor:not-allowed;}
+.btn-next{background:var(--success);color:#fff;border:none;padding:12px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;width:100%;display:none;}
+.btn-next.show{display:block;}
+
+/* ── CATATAN WAJIB ── */
+.catatan-wajib{background:linear-gradient(135deg,#1e3a8a,#0f766e);color:#fff;border-radius:14px;padding:20px;}
+.catatan-wajib h3{font-size:18px;margin-bottom:14px;}
+.cw-box{background:rgba(255,255,255,.15);border-radius:10px;padding:14px;margin-bottom:10px;}
+.cw-box h4{font-size:14px;margin-bottom:8px;opacity:.9;}
+.cw-box p{font-size:13px;line-height:1.7;margin-bottom:4px;}
+.cw-table th{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;}
+.cw-table td{border-color:rgba(255,255,255,.3);color:#fff;}
+
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner-lg"></div>
+  <p id="loadingMsg">Memuat progress kamu...</p>
+</div>
+
+<div class="top-bar">
+  <a href="Pertemuan10.html" class="back-link">&#8592;</a>
+  <h1>Materi Ajar — Pertemuan 10</h1>
+  <p>Simpangan Rata-Rata Data Tunggal</p>
+</div>
+
+<div class="container" id="mainContainer" style="display:none;">
+  <!-- Banner Resume / Selesai Semua (diisi JS) -->
+  <div id="topBanner"></div>
+
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+  <div class="progress-label" id="progressLabel">0 / 7 bagian selesai</div>
+  <div class="nav-dots" id="navDots"></div>
+
+  <!-- ═══ BAGIAN 1 ═══ -->
+  <div class="section-card" id="sec1">
+    <span class="section-num">Bagian 1 dari 7</span>
+    <div class="section-title">Mengingat Kembali Mean dan Selisih</div>
+    <div class="section-body">
+      <p>Sebelum belajar simpangan rata-rata, kita perlu mengingat kembali dua hal penting: <strong>cara menghitung mean</strong> dan <strong>selisih setiap data terhadap mean</strong>.</p>
+      <div class="formula-box">
+        <div class="formula-label">Rumus Mean</div>
+        \[\bar{x} = \frac{\sum x_i}{n} = \frac{x_1 + x_2 + \cdots + x_n}{n}\]
+      </div>
+      <div class="example-box">
+        <h4>Contoh: Data nilai 5 siswa = {60, 70, 75, 80, 90}</h4>
+        <p>\(\bar{x} = \dfrac{60+70+75+80+90}{5} = \dfrac{375}{5} = 75\)</p>
+        <p>Setelah mean diketahui, hitung <strong>selisih</strong> tiap data terhadap mean:</p>
+        <table>
+          <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th></tr>
+          <tr><td>1</td><td>60</td><td>60 − 75 = <strong>−15</strong></td></tr>
+          <tr><td>2</td><td>70</td><td>70 − 75 = <strong>−5</strong></td></tr>
+          <tr><td>3</td><td>75</td><td>75 − 75 = <strong>0</strong></td></tr>
+          <tr><td>4</td><td>80</td><td>80 − 75 = <strong>5</strong></td></tr>
+          <tr><td>5</td><td>90</td><td>90 − 75 = <strong>15</strong></td></tr>
+          <tr><th>Jumlah</th><th>375</th><th><strong>0</strong></th></tr>
+        </table>
+      </div>
+      <div class="info-box">💡 <strong>Fakta penting:</strong> Jumlah kolom selisih <em>selalu nol</em> jika mean dihitung dengan benar.</div>
+    </div>
+    <div id="quizArea1">
+      <div class="quiz-section">
+        <h4>🧩 Cek Pemahaman</h4>
+        <div class="quiz-q">Data nilai = {4, 6, 8, 10, 12}. Berapa mean-nya?</div>
+        <input type="number" class="quiz-input" id="q1input" placeholder="Ketik jawabanmu..." step="0.1" inputmode="decimal"/>
+        <button class="btn-check" id="btn1" onclick="checkNum(1,8,'Mean = (4+6+8+10+12)/5 = 40/5 = 8')">Cek Jawaban</button>
+        <div class="quiz-feedback" id="q1fb"></div>
+        <button class="btn-next" id="next1" onclick="goTo(2)">Lanjut ke Bagian 2 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BAGIAN 2 ═══ -->
+  <div class="section-card" id="sec2">
+    <span class="section-num">Bagian 2 dari 7</span>
+    <div class="section-title">Mengenal Nilai Mutlak</div>
+    <div class="section-body">
+      <p>Nilai mutlak dari suatu bilangan adalah <strong>jarak bilangan itu dari nol</strong> pada garis bilangan, selalu bernilai positif atau nol.</p>
+      <div class="formula-box">
+        <div class="formula-label">Definisi Nilai Mutlak</div>
+        \[|a| = \begin{cases} a & \text{jika } a \geq 0 \\ -a & \text{jika } a < 0 \end{cases}\]
+      </div>
+      <div class="example-box">
+        <h4>Contoh-contoh:</h4>
+        <p>|5| = <strong>5</strong> &nbsp;|−5| = <strong>5</strong> &nbsp;|0| = <strong>0</strong> &nbsp;|−12| = <strong>12</strong> &nbsp;|7| = <strong>7</strong></p>
+      </div>
+      <div class="warning-box">⚠️ <strong>Ingat!</strong> Nilai mutlak <strong>TIDAK PERNAH negatif</strong>. |−8| = 8, bukan −8!</div>
+      <div class="info-box">💡 Nilai mutlak digunakan agar selisih yang negatif menjadi positif dan bisa dijumlahkan.</div>
+    </div>
+    <div id="quizArea2">
+      <div class="quiz-section">
+        <h4>🧩 Cek Pemahaman</h4>
+        <div class="quiz-q">Berapa nilai dari |−15|?</div>
+        <input type="number" class="quiz-input" id="q2input" placeholder="Ketik jawabanmu..." inputmode="decimal"/>
+        <button class="btn-check" id="btn2" onclick="checkNum(2,15,'|−15| = 15 karena nilai mutlak selalu positif.')">Cek Jawaban</button>
+        <div class="quiz-feedback" id="q2fb"></div>
+        <button class="btn-next" id="next2" onclick="goTo(3)">Lanjut ke Bagian 3 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BAGIAN 3 ═══ -->
+  <div class="section-card" id="sec3">
+    <span class="section-num">Bagian 3 dari 7</span>
+    <div class="section-title">Mengapa Nilai Mutlak Digunakan?</div>
+    <div class="section-body">
+      <p>Kita ingin tahu seberapa jauh rata-rata jarak setiap data dari mean. Jika selisih dijumlahkan langsung, hasilnya selalu <strong>nol</strong> dan tidak informatif.</p>
+      <div class="example-box">
+        <h4>Masalah penjumlahan selisih langsung:</h4>
+        <p>Selisih: −15, −5, 0, 5, 15 → Jumlah = <strong>0</strong></p>
+      </div>
+      <table>
+        <tr><th>Cara</th><th>Operasi</th><th>Hasil untuk −15</th><th>Digunakan di</th></tr>
+        <tr><td>Kuadratkan</td><td>\((x_i-\bar{x})^2\)</td><td>(−15)² = 225</td><td>Varians & Simpangan Baku</td></tr>
+        <tr><td>Nilai mutlak</td><td>\(|x_i-\bar{x}|\)</td><td>|−15| = 15</td><td><strong>Simpangan Rata-Rata</strong></td></tr>
+      </table>
+      <div class="info-box">✅ Simpangan rata-rata lebih mudah dihitung karena hanya mengambil nilai mutlak, tanpa kuadrat dan akar.</div>
+    </div>
+    <div id="quizArea3">
+      <div class="quiz-section">
+        <h4>🧩 Cek Pemahaman</h4>
+        <div class="quiz-q">Mengapa selisih \(x_i - \bar{x}\) diambil nilai mutlaknya?</div>
+        <div class="quiz-opts" id="q3opts">
+          <div class="quiz-opt" onclick="checkMC(3,this,'B')">A. Agar hasilnya selalu lebih besar dari mean</div>
+          <div class="quiz-opt" onclick="checkMC(3,this,'A')">B. Agar semua selisih menjadi positif sehingga bisa dijumlahkan tanpa saling meniadakan</div>
+          <div class="quiz-opt" onclick="checkMC(3,this,'B')">C. Karena nilai mutlak lebih mudah dari kuadrat</div>
+          <div class="quiz-opt" onclick="checkMC(3,this,'B')">D. Agar jumlah kolom selisih tidak nol</div>
+        </div>
+        <div class="quiz-feedback" id="q3fb"></div>
+        <button class="btn-next" id="next3" onclick="goTo(4)">Lanjut ke Bagian 4 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BAGIAN 4 ═══ -->
+  <div class="section-card" id="sec4">
+    <span class="section-num">Bagian 4 dari 7</span>
+    <div class="section-title">Mengisi Kolom Nilai Mutlak Selisih</div>
+    <div class="section-body">
+      <p>Setelah kolom selisih \(x_i - \bar{x}\) terisi, langkah berikutnya adalah mengisi kolom <strong>nilai mutlak selisih</strong> \(|x_i - \bar{x}|\).</p>
+      <div class="example-box">
+        <h4>Contoh: Data penjualan = {3, 5, 7, 9, 11}, Mean = 7</h4>
+        <table>
+          <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\(|x_i - \bar{x}|\)</th></tr>
+          <tr><td>1</td><td>3</td><td>−4</td><td>|−4| = <strong>4</strong></td></tr>
+          <tr><td>2</td><td>5</td><td>−2</td><td>|−2| = <strong>2</strong></td></tr>
+          <tr><td>3</td><td>7</td><td>0</td><td>|0| = <strong>0</strong></td></tr>
+          <tr><td>4</td><td>9</td><td>2</td><td>|2| = <strong>2</strong></td></tr>
+          <tr><td>5</td><td>11</td><td>4</td><td>|4| = <strong>4</strong></td></tr>
+        </table>
+      </div>
+      <div class="warning-box">⚠️ Kolom nilai mutlak selisih tidak boleh ada angka negatif!</div>
+    </div>
+    <div id="quizArea4">
+      <div class="quiz-section">
+        <h4>🧩 Cek Pemahaman</h4>
+        <div class="quiz-q">Diketahui \(x_i = 60\) dan \(\bar{x} = 75\). Berapa nilai \(|x_i - \bar{x}|\)?</div>
+        <input type="number" class="quiz-input" id="q4input" placeholder="Ketik jawabanmu..." inputmode="decimal"/>
+        <button class="btn-check" id="btn4" onclick="checkNum(4,15,'|60 − 75| = |−15| = 15')">Cek Jawaban</button>
+        <div class="quiz-feedback" id="q4fb"></div>
+        <button class="btn-next" id="next4" onclick="goTo(5)">Lanjut ke Bagian 5 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BAGIAN 5 ═══ -->
+  <div class="section-card" id="sec5">
+    <span class="section-num">Bagian 5 dari 7</span>
+    <div class="section-title">Menjumlahkan Nilai Mutlak Selisih</div>
+    <div class="section-body">
+      <p>Langkah kelima adalah menjumlahkan seluruh isi kolom nilai mutlak selisih: \(\sum|x_i - \bar{x}|\).</p>
+      <div class="example-box">
+        <h4>Melanjutkan contoh (Mean = 7):</h4>
+        <table>
+          <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\(|x_i - \bar{x}|\)</th></tr>
+          <tr><td>1</td><td>3</td><td>−4</td><td>4</td></tr>
+          <tr><td>2</td><td>5</td><td>−2</td><td>2</td></tr>
+          <tr><td>3</td><td>7</td><td>0</td><td>0</td></tr>
+          <tr><td>4</td><td>9</td><td>2</td><td>2</td></tr>
+          <tr><td>5</td><td>11</td><td>4</td><td>4</td></tr>
+          <tr><th>Jumlah</th><th>35</th><th>0</th><th style="background:#ccfbf1;"><strong>12</strong></th></tr>
+        </table>
+        <p>\(\sum|x_i - \bar{x}| = 4+2+0+2+4 = \mathbf{12}\)</p>
+      </div>
+      <div class="info-box">✅ Cek: jumlah kolom selisih harus = 0. Jika tidak nol, periksa kembali mean.</div>
+    </div>
+    <div id="quizArea5">
+      <div class="quiz-section">
+        <h4>🧩 Cek Pemahaman</h4>
+        <div class="quiz-q">Dari data {60,70,75,80,90} (mean=75), nilai mutlak selisihnya 15,5,0,5,15. Berapa \(\sum|x_i-\bar{x}|\)?</div>
+        <input type="number" class="quiz-input" id="q5input" placeholder="Ketik jawabanmu..." inputmode="decimal"/>
+        <button class="btn-check" id="btn5" onclick="checkNum(5,40,'15+5+0+5+15 = 40')">Cek Jawaban</button>
+        <div class="quiz-feedback" id="q5fb"></div>
+        <button class="btn-next" id="next5" onclick="goTo(6)">Lanjut ke Bagian 6 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BAGIAN 6 ═══ -->
+  <div class="section-card" id="sec6">
+    <span class="section-num">Bagian 6 dari 7</span>
+    <div class="section-title">Menghitung SR dan Menafsirkan</div>
+    <div class="section-body">
+      <p>Simpangan rata-rata (SR) dihitung dengan membagi jumlah nilai mutlak selisih dengan banyaknya data.</p>
+      <div class="formula-box">
+        <div class="formula-label">Rumus Simpangan Rata-Rata</div>
+        \[SR = \frac{\sum|x_i - \bar{x}|}{n}\]
+      </div>
+      <div class="example-box">
+        <h4>Contoh 1:</h4>
+        <p>\(SR = \dfrac{12}{5} = \mathbf{2{,}4}\) unit</p>
+        <p><strong>Tafsiran:</strong> Rata-rata, setiap data menyimpang 2,4 unit dari mean.</p>
+        <h4 style="margin-top:12px;">Contoh 2 — Membandingkan dua kelompok:</h4>
+        <p>Kelompok A: {69,70,70,71,70} → Mean=70, SR=<strong>0,4</strong> (seragam)</p>
+        <p>Kelompok B: {50,60,70,80,90} → Mean=70, SR=<strong>12</strong> (bervariasi)</p>
+      </div>
+      <div class="info-box">✅ SR kecil = data seragam. SR besar = data bervariasi.</div>
+      <div class="example-box">
+        <h4>Perbandingan SR dengan Simpangan Baku:</h4>
+        <table>
+          <tr><th>Aspek</th><th>Simpangan Rata-Rata</th><th>Simpangan Baku</th></tr>
+          <tr><td>Cara hilangkan negatif</td><td>Nilai mutlak |…|</td><td>Dikuadratkan lalu diakar</td></tr>
+          <tr><td>Rumus</td><td>\(SR=\frac{\sum|x_i-\bar{x}|}{n}\)</td><td>\(\sigma=\sqrt{\frac{\sum(x_i-\bar{x})^2}{n}}\)</td></tr>
+          <tr><td>Nilai relatif</td><td>Biasanya lebih kecil dari σ</td><td>Biasanya lebih besar dari SR</td></tr>
+        </table>
+      </div>
+    </div>
+    <div id="quizArea6">
+      <div class="quiz-section">
+        <h4>🧩 Cek Pemahaman</h4>
+        <div class="quiz-q">Data {60,70,75,80,90}: \(\sum|x_i-\bar{x}|=40\), n=5. Berapa SR?</div>
+        <input type="number" class="quiz-input" id="q6input" placeholder="Ketik jawabanmu..." step="0.1" inputmode="decimal"/>
+        <button class="btn-check" id="btn6" onclick="checkNum(6,8,'SR = 40/5 = 8')">Cek Jawaban</button>
+        <div class="quiz-feedback" id="q6fb"></div>
+        <button class="btn-next" id="next6" onclick="goTo(7)">Lanjut ke Bagian 7 (Catatan Wajib) →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BAGIAN 7 ═══ -->
+  <div class="section-card" id="sec7">
+    <span class="section-num">Bagian 7 dari 7</span>
+    <div class="section-title">📔 Catatan Wajib</div>
+    <div class="catatan-wajib">
+      <h3>Salin ke Buku Catatan Fisik Kamu!</h3>
+      <div class="cw-box">
+        <h4>1. Rumus Simpangan Rata-Rata</h4>
+        <p style="font-size:18px;text-align:center;">SR = Σ|xᵢ − x̄| / n</p>
+      </div>
+      <div class="cw-box">
+        <h4>2. Langkah Pengerjaan</h4>
+        <p>① Hitung mean: x̄ = Σxᵢ / n</p>
+        <p>② Hitung selisih: xᵢ − x̄ (cek: jumlah = 0)</p>
+        <p>③ Ambil nilai mutlak: |xᵢ − x̄| (selalu ≥ 0)</p>
+        <p>④ Jumlahkan: Σ|xᵢ − x̄|</p>
+        <p>⑤ Bagi dengan n: SR = Σ|xᵢ − x̄| / n</p>
+      </div>
+      <div class="cw-box">
+        <h4>3. Peringatan Penting</h4>
+        <p>• Nilai mutlak SELALU positif atau nol</p>
+        <p>• Jumlah kolom selisih SELALU nol</p>
+        <p>• Pembagi adalah n (bukan n−1)</p>
+        <p>• SR biasanya LEBIH KECIL dari simpangan baku (σ)</p>
+      </div>
+    </div>
+    <div class="success-box" style="margin-top:14px;">✅ Sudah menyalin catatan wajib ke buku fisik? Klik tombol di bawah!</div>
+    <div id="quizArea7">
+      <button class="btn-next show" id="next7" onclick="finishMateri()">✅ Materi Selesai — Lanjut ke Pre Test</button>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG & STATE
+// ═══════════════════════════════════════════════
+const params   = new URLSearchParams(location.search);
+const NAMA     = params.get('nama') || '';
+const API      = 'https://script.google.com/macros/s/AKfycbz7RhLWJsZvBGHPKUy7J8vN8KpNJMNo1xOF2s-OKZYciE8zRRXLXOOGTEjefns8u3s9TQ/exec';
+const TOTAL    = 7;
+
+// bagianSelesai[i] = true jika bagian (i+1) sudah selesai
+let bagianSelesai = Array(TOTAL).fill(false);
+let percobaan     = Array(TOTAL).fill(0);
+let currentSec    = 1;
+let progressLoaded = false;
+
+// ═══════════════════════════════════════════════
+// API HELPER
+// ═══════════════════════════════════════════════
+function callAPI(p, cb) {
+  const c = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+  p.callback = c;
+  const u = API + '?' + Object.keys(p).map(k => k + '=' + encodeURIComponent(p[k])).join('&');
+  const sc = document.createElement('script');
+  window[c] = function(d) { delete window[c]; sc.parentNode && sc.parentNode.removeChild(sc); cb && cb(d); };
+  sc.onerror  = function()  { delete window[c]; sc.parentNode && sc.parentNode.removeChild(sc); cb && cb(null); };
+  sc.src = u; document.head.appendChild(sc);
+}
+
+// ═══════════════════════════════════════════════
+// INIT — muat progress dari server
+// ═══════════════════════════════════════════════
+function init() {
+  // Jika tidak ada nama, langsung tampilkan dari awal
+  if (!NAMA) {
+    hideLoading();
+    applyProgress();
+    return;
+  }
+
+  document.getElementById('loadingMsg').textContent = 'Memuat progress kamu...';
+
+  // Guard: jangan double-render karena timeout
+  let rendered = false;
+
+  callAPI({ action: 'getProgress', nama: NAMA }, function(d) {
+    if (rendered) return;
+    rendered = true;
+    if (d && d.ok && d.materi && d.materi.data) {
+      loadProgressFromData(d.materi.data, d.materi.selesai);
+    }
+    hideLoading();
+    applyProgress();
+  });
+
+  // Fallback timeout 6 detik
+  setTimeout(function() {
+    if (rendered) return;
+    rendered = true;
+    hideLoading();
+    applyProgress();
+  }, 6000);
+}
+
+function hideLoading() {
+  const ol = document.getElementById('loadingOverlay');
+  ol.classList.add('hidden');
+  document.getElementById('mainContainer').style.display = 'block';
+  setTimeout(() => ol.style.display = 'none', 400);
+}
+
+// ═══════════════════════════════════════════════
+// TERAPKAN DATA PROGRESS KE STATE
+// ═══════════════════════════════════════════════
+function loadProgressFromData(data, selesaiMateri) {
+  // Baca BAGIAN_1 … BAGIAN_7 dari data server
+  for (let i = 1; i <= TOTAL; i++) {
+    const val = Number(data['BAGIAN_' + i] || 0);
+    if (val === 1) bagianSelesai[i - 1] = true;
+  }
+  // Jika sudah selesai semua
+  if (selesaiMateri === 'YA') {
+    bagianSelesai = Array(TOTAL).fill(true);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// TERAPKAN STATE KE UI
+// ═══════════════════════════════════════════════
+function applyProgress() {
+  const doneCnt = bagianSelesai.filter(Boolean).length;
+  const semuaSelesai = doneCnt === TOTAL;
+
+  // Tentukan bagian aktif:
+  // — jika semua selesai → bagian 7 (boleh review)
+  // — jika tidak → bagian pertama yang belum selesai
+  if (semuaSelesai) {
+    currentSec = TOTAL;
+    showDoneBanner();
+  } else {
+    // Cari bagian pertama yang belum selesai
+    const firstIncomplete = bagianSelesai.findIndex(v => !v);
+    currentSec = firstIncomplete + 1; // 1-indexed
+    if (firstIncomplete > 0) showResumeBanner(firstIncomplete + 1, doneCnt);
+  }
+
+  // Render quiz area per bagian sesuai status
+  for (let i = 1; i <= TOTAL; i++) {
+    renderQuizArea(i, bagianSelesai[i - 1]);
+  }
+
+  // Tampilkan bagian aktif
+  document.getElementById('sec' + currentSec).classList.add('active');
+
+  updateProgress();
+
+  // Typesetkan MathJax setelah DOM siap
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(() => {});
+  }
+}
+
+// ═══════════════════════════════════════════════
+// RENDER QUIZ AREA — selesai atau belum
+// ═══════════════════════════════════════════════
+function renderQuizArea(bagian, done) {
+  if (bagian === TOTAL) return; // Bagian 7 tidak punya quiz, hanya tombol finish
+
+  const area = document.getElementById('quizArea' + bagian);
+  if (!area) return;
+
+  if (done) {
+    // Ganti quiz dengan badge "sudah selesai"
+    const nextLabel = bagian < TOTAL ? 'Lanjut ke Bagian ' + (bagian + 1) + ' →' : '';
+    const nextAction = bagian < TOTAL ? 'goTo(' + (bagian + 1) + ')' : '';
+    area.innerHTML = `
+      <div class="already-done-badge">
+        <div class="adb-icon">✅</div>
+        <div class="adb-text">Bagian ${bagian} sudah selesai dikerjakan.</div>
+        ${bagian < TOTAL
+          ? `<button class="adb-next" onclick="${nextAction}">${nextLabel}</button>`
+          : ''}
+      </div>`;
+  }
+  // Jika belum selesai, biarkan quiz HTML asli tampil (sudah ada di HTML statis)
+}
+
+// ═══════════════════════════════════════════════
+// BANNER: RESUME
+// ═══════════════════════════════════════════════
+function showResumeBanner(lanjutDiBagian, doneCnt) {
+  document.getElementById('topBanner').innerHTML = `
+    <div class="resume-banner">
+      <div class="rb-icon">⏭️</div>
+      <div class="rb-info">
+        <div class="rb-title">Melanjutkan Progress Kamu</div>
+        <div class="rb-sub">
+          ${doneCnt} dari ${TOTAL} bagian sudah selesai.<br>
+          Kamu akan langsung masuk ke <strong>Bagian ${lanjutDiBagian}</strong> yang belum selesai.
+        </div>
+      </div>
+      <button class="rb-btn" onclick="goTo(${lanjutDiBagian})">Lanjutkan →</button>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// BANNER: SEMUA SELESAI
+// ═══════════════════════════════════════════════
+function showDoneBanner() {
+  document.getElementById('topBanner').innerHTML = `
+    <div class="done-banner">
+      <div style="font-size:44px;margin-bottom:8px;">🎉</div>
+      <h2>Materi Sudah Selesai!</h2>
+      <p>Kamu sudah menyelesaikan semua 7 bagian materi.<br>Silakan lanjut ke Pre Test atau review materi tertentu.</p>
+      <a href="Assesment10.html${NAMA ? '?nama=' + encodeURIComponent(NAMA) : ''}">Lanjut ke Pre Test →</a>
+      <button class="review-btn" onclick="startReview()">📖 Review Materi</button>
+    </div>`;
+}
+
+// Mode review: sembunyikan banner done, biarkan navigasi bebas
+function startReview() {
+  document.getElementById('topBanner').innerHTML = `
+    <div class="resume-banner" style="background:linear-gradient(135deg,#1e3a8a,#0f766e);">
+      <div class="rb-icon">📖</div>
+      <div class="rb-info">
+        <div class="rb-title">Mode Review</div>
+        <div class="rb-sub">Pilih bagian mana saja untuk dibaca ulang. Semua bagian bisa diakses bebas.</div>
+      </div>
+      <a href="Assesment10.html${NAMA ? '?nama=' + encodeURIComponent(NAMA) : ''}"
+         style="background:#fff;color:#134e4a;border:none;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;">
+        Pre Test →
+      </a>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGASI
+// ═══════════════════════════════════════════════
+function goTo(n) {
+  document.getElementById('sec' + currentSec).classList.remove('active');
+  currentSec = n;
+  document.getElementById('sec' + n).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateProgress();
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise().catch(() => {});
+  }
+}
+
+// ═══════════════════════════════════════════════
+// PROGRESS BAR & DOTS
+// ═══════════════════════════════════════════════
+function updateProgress() {
+  const done = bagianSelesai.filter(Boolean).length;
+  document.getElementById('progressBar').style.width = (done / TOTAL * 100) + '%';
+  document.getElementById('progressLabel').textContent = done + ' / ' + TOTAL + ' bagian selesai';
+  buildDots();
+}
+
+function buildDots() {
+  const wrap = document.getElementById('navDots');
+  wrap.innerHTML = '';
+  const allDone = bagianSelesai.every(Boolean);
+
+  for (let i = 1; i <= TOTAL; i++) {
+    const done  = bagianSelesai[i - 1];
+    const active = i === currentSec;
+    // Dot bisa diklik jika: (1) sudah selesai, (2) sedang aktif,
+    // (3) semua selesai (mode review), atau (4) i = bagian pertama yang belum selesai
+    const canClick = done || active || allDone || i === (bagianSelesai.findIndex(v => !v) + 1);
+
+    const d = document.createElement('div');
+    d.className = 'dot' + (active ? ' active' : done ? ' done' : !canClick ? ' locked' : '');
+    d.innerHTML = done && !active ? '' : '<span>' + i + '</span>';
+    d.title = 'Bagian ' + i + (done ? ' (selesai)' : active ? ' (sedang dibuka)' : !canClick ? ' (terkunci)' : '');
+    if (canClick) {
+      d.onclick = (idx => () => goTo(idx))(i);
+    }
+    wrap.appendChild(d);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// CEK JAWABAN — angka
+// ═══════════════════════════════════════════════
+function checkNum(bagian, correct, hint) {
+  const inp = document.getElementById('q' + bagian + 'input');
+  const fb  = document.getElementById('q' + bagian + 'fb');
+  const btn = document.getElementById('btn' + bagian);
+  if (!inp || !fb) return;
+
+  // Normalisasi: ganti koma dengan titik
+  const rawVal = (inp.value || '').replace(',', '.');
+  const val = parseFloat(rawVal);
+  percobaan[bagian - 1]++;
+
+  if (!isNaN(val) && Math.abs(val - correct) < 0.05) {
+    fb.className = 'quiz-feedback show ok';
+    fb.innerHTML = '✅ <strong>Benar!</strong> ' + hint;
+    const nextBtn = document.getElementById('next' + bagian);
+    if (nextBtn) nextBtn.classList.add('show');
+    inp.disabled = true;
+    if (btn) btn.disabled = true;
+    markDone(bagian);
+  } else {
+    fb.className = 'quiz-feedback show err';
+    if (percobaan[bagian - 1] >= 2) {
+      fb.innerHTML = '❌ Kurang tepat. <strong>Petunjuk:</strong> ' + hint;
+    } else {
+      fb.innerHTML = '❌ Kurang tepat. Coba lagi! (Gunakan titik untuk desimal, bukan koma)';
+    }
+    if (NAMA) callAPI({
+      action: 'quiz', nama: NAMA, bagian: bagian,
+      percobaan: percobaan[bagian - 1], status: 'SALAH',
+      petunjuk: percobaan[bagian - 1] >= 2 ? 'YA' : 'TIDAK', detail: val
+    }, () => {});
+  }
+}
+
+// ═══════════════════════════════════════════════
+// CEK JAWABAN — pilihan ganda
+// ═══════════════════════════════════════════════
+function checkMC(bagian, el, isCorrect) {
+  const fb   = document.getElementById('q' + bagian + 'fb');
+  percobaan[bagian - 1]++;
+
+  // Nonaktifkan semua opsi
+  document.querySelectorAll('#q' + bagian + 'opts .quiz-opt')
+    .forEach(o => o.classList.add('disabled'));
+
+  if (isCorrect === 'A') {
+    el.classList.add('correct');
+    fb.className = 'quiz-feedback show ok';
+    fb.innerHTML = '✅ <strong>Benar!</strong> Nilai mutlak digunakan agar semua selisih menjadi positif sehingga dapat dijumlahkan.';
+    const nextBtn = document.getElementById('next' + bagian);
+    if (nextBtn) nextBtn.classList.add('show');
+    markDone(bagian);
+  } else {
+    el.classList.add('wrong');
+    fb.className = 'quiz-feedback show err';
+    fb.innerHTML = '❌ Kurang tepat. Jawaban yang benar adalah <strong>B</strong>.';
+    if (NAMA) callAPI({
+      action: 'quiz', nama: NAMA, bagian: bagian,
+      percobaan: percobaan[bagian - 1], status: 'SALAH', petunjuk: '', detail: 'MC salah'
+    }, () => {});
+  }
+}
+
+// ═══════════════════════════════════════════════
+// TANDAI BAGIAN SELESAI
+// ═══════════════════════════════════════════════
+function markDone(bagian) {
+  bagianSelesai[bagian - 1] = true;
+  updateProgress();
+  if (NAMA) {
+    callAPI({
+      action: 'quiz', nama: NAMA, bagian: bagian,
+      percobaan: percobaan[bagian - 1], status: 'BENAR', petunjuk: '', detail: ''
+    }, () => {});
+  }
+}
+
+// ═══════════════════════════════════════════════
+// SELESAI SEMUA MATERI
+// ═══════════════════════════════════════════════
+function finishMateri() {
+  bagianSelesai[TOTAL - 1] = true;
+  updateProgress();
+  showDoneBanner();
+  if (NAMA) {
+    callAPI({ action: 'selesai', nama: NAMA, komponen: 'MATERI', detail: '7 bagian selesai' }, () => {});
+  }
+  // Navigasi ke Pre Test setelah 1.5 detik
+  setTimeout(() => {
+    window.location.href = 'Assesment10.html' + (NAMA ? '?nama=' + encodeURIComponent(NAMA) : '');
+  }, 1500);
+}
+
+// ═══════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>

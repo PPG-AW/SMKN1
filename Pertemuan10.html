@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pertemuan 10 | Simpangan Rata-Rata | SMKN 1 Salatiga</title>
+<style>
+:root{
+  --primary:#0f766e;--primary-dark:#134e4a;--primary-light:#14b8a6;
+  --orange:#ea580c;--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;
+  --soft-teal:#f0fdfa;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;--soft-red:#fef2f2;
+  --text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;--bg:#f1f5f9;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:14px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+.top-bar h1{font-size:17px;margin:0 0 2px;font-weight:700;}
+.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.container{max-width:600px;margin:0 auto;padding:14px;}
+.login-box{background:#fff;border-radius:14px;padding:28px;margin:24px auto;max-width:400px;box-shadow:0 4px 20px rgba(0,0,0,.1);text-align:center;}
+.login-box h2{color:var(--primary-dark);margin-bottom:8px;font-size:20px;}
+.login-box p{font-size:13px;color:var(--muted);margin-bottom:14px;}
+.login-box input{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:15px;margin-bottom:8px;}
+.login-box input:focus{outline:none;border-color:var(--primary);}
+.name-list{max-height:220px;overflow-y:auto;border:1.5px solid var(--border);border-radius:10px;margin-bottom:14px;text-align:left;}
+.name-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;transition:background .15s;}
+.name-item:hover{background:var(--soft-teal);}
+.name-item.selected{background:#ccfbf1;font-weight:700;color:var(--primary);}
+.btn-login{background:var(--primary);color:#fff;border:none;padding:13px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;width:100%;transition:background .2s;}
+.btn-login:hover{background:var(--primary-light);}
+.btn-login:disabled{opacity:.5;cursor:not-allowed;}
+.card{background:#fff;border-radius:14px;padding:20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.card h3{color:var(--primary-dark);font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.progress-steps{display:flex;flex-direction:column;gap:8px;}
+.step{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border);transition:.2s;}
+.step.done{border-color:#2dd4bf;background:#f0fdfa;}
+.step.active{border-color:var(--primary);background:#f0fdfa;box-shadow:0 0 0 3px rgba(20,184,166,.15);}
+.step.locked{opacity:.55;}
+.step-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.step.done .step-icon{background:#2dd4bf;color:#fff;}
+.step.active .step-icon{background:var(--primary);color:#fff;}
+.step.locked .step-icon{background:#e2e8f0;color:#94a3b8;}
+.step-info{flex:1;}
+.step-title{font-size:14px;font-weight:700;color:var(--text);}
+.step-sub{font-size:12px;color:var(--muted);}
+.step-action a,.step-action button{background:var(--primary);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;display:inline-block;transition:background .2s;}
+.step-action a:hover,.step-action button:hover{background:var(--primary-light);}
+.btn-orange{background:var(--orange)!important;}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+.score-box{background:var(--soft-teal);border-radius:10px;padding:12px;text-align:center;}
+.score-box .snum{font-size:26px;font-weight:800;color:var(--primary-dark);}
+.score-box .slabel{font-size:11px;color:var(--muted);margin-top:2px;}
+.catatan-box{background:#fffbeb;border-left:4px solid var(--accent);padding:12px;border-radius:6px;font-size:13px;margin-top:8px;}
+.info-box{background:var(--soft-teal);border-left:4px solid var(--primary);padding:12px;border-radius:6px;font-size:13px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:12px;border-radius:6px;font-size:13px;}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;}
+.badge-green{background:#dcfce7;color:#166534;}
+.badge-red{background:#fef2f2;color:#991b1b;}
+.badge-yellow{background:#fef3c7;color:#92400e;}
+.badge-teal{background:#ccfbf1;color:#0f766e;}
+.spinner{display:inline-block;width:20px;height:20px;border:3px solid #e2e8f0;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;margin:20px auto;display:block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.pertemuan-badge{display:inline-block;background:#ccfbf1;color:var(--primary-dark);padding:5px 16px;border-radius:999px;font-size:13px;font-weight:700;margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <h1>Pertemuan 10 — Simpangan Rata-Rata</h1>
+  <p>Data Tunggal | SMKN 1 Salatiga | Matematika</p>
+</div>
+
+<div class="container" id="loginSection">
+  <div class="login-box">
+    <div class="pertemuan-badge">Pertemuan 10</div>
+    <h2>Masuk ke Halaman Belajar</h2>
+    <p>Ketik nama, pilih dari daftar, lalu klik Masuk</p>
+    <input type="text" id="searchName" placeholder="Ketik nama kamu..." autocomplete="off"/>
+    <div class="name-list" id="nameList"></div>
+    <button class="btn-login" id="btnLogin" disabled>Masuk</button>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;" id="loginMsg"></p>
+  </div>
+</div>
+
+<div class="container" id="mainSection" style="display:none;"></div>
+
+<script>
+const API='https://script.google.com/macros/s/AKfycbz7RhLWJsZvBGHPKUy7J8vN8KpNJMNo1xOF2s-OKZYciE8zRRXLXOOGTEjefns8u3s9TQ/exec';
+const FALLBACK=['AGUSTYA RAMADHANI','ANINDYA AZZAHRA','ANJA ALZENA TANJUNG','AURELIA KEYSHA VERNANDYA',
+'AYU WIDYASARI','AZZAHRA ISMAYANTI','CARISSA ARVITA PUTRI','DAVINA ALYA PUTRI',
+'DITA NANDA PUTRI','EKA WULANSARI','FEBBY AULIA DAMAYANTI','JENNYTA WULANDARI',
+'LAURA OKTAVIANI','MAITSA KHALISTA PUTRI','MARVA MAULIDA','MELYNDA ANANTA SARI',
+'NABILLA AYU EVANIA','NAMIRA SETARIANTI','NANDITA FITRIA RAMADANI','NAYLA AZKIYA HAFIZHAH',
+'NOLA FEBI AYU DANITYA','NOVI MARTHALITA','OCTAVIA FITRIYANI','REKA MUSTIKA FAHLUIZA',
+'RORO ENDAH MUSTIKA NINGRUM','SALSABILA CHALISA RAHMA WIBOWO','SEFA FEBI SAPUTRI',
+'SUCI NAZILAH','TARA ARGYA NUR AGUSTIN','TIRTA ARUM KUMALA DEWI','WISNU BIMA NURIN PRATAMA'];
+
+let allNames=[],selectedName='';
+const loginSection=document.getElementById('loginSection');
+const mainSection=document.getElementById('mainSection');
+const searchName=document.getElementById('searchName');
+const nameList=document.getElementById('nameList');
+const btnLogin=document.getElementById('btnLogin');
+const loginMsg=document.getElementById('loginMsg');
+
+function callAPI(p,cb){
+  const c='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
+  p.callback=c;
+  const u=API+'?'+Object.keys(p).map(k=>k+'='+encodeURIComponent(p[k])).join('&');
+  const sc=document.createElement('script');
+  window[c]=function(d){delete window[c];if(sc.parentNode)sc.parentNode.removeChild(sc);if(cb)cb(d);};
+  sc.onerror=function(){delete window[c];if(sc.parentNode)sc.parentNode.removeChild(sc);if(cb)cb(null);};
+  sc.src=u;document.head.appendChild(sc);
+}
+
+function loadNames(){
+  callAPI({action:'getNames'},function(d){
+    allNames=(d&&d.ok&&d.names&&d.names.length)?d.names:FALLBACK;
+    renderNames('');
+  });
+  setTimeout(()=>{if(!allNames.length){allNames=FALLBACK;renderNames('');}},5000);
+}
+
+function renderNames(f){
+  const fl=f.trim().toUpperCase();
+  const list=fl?allNames.filter(n=>n.toUpperCase().includes(fl)):allNames;
+  nameList.innerHTML='';
+  list.forEach(name=>{
+    const div=document.createElement('div');
+    div.className='name-item'+(name===selectedName?' selected':'');
+    div.textContent=name;
+    div.onclick=()=>{selectedName=name;searchName.value=name;btnLogin.disabled=false;renderNames(name);};
+    nameList.appendChild(div);
+  });
+}
+
+searchName.addEventListener('input',()=>{selectedName='';btnLogin.disabled=true;renderNames(searchName.value);});
+searchName.addEventListener('keydown',e=>{if(e.key==='Enter'&&selectedName)btnLogin.click();});
+
+btnLogin.addEventListener('click',()=>{
+  if(!selectedName)return;
+  btnLogin.disabled=true;
+  loginMsg.textContent='Memuat data...';
+  callAPI({action:'login',nama:selectedName,sumber:'Pertemuan10',device:navigator.userAgent.includes('Mobile')?'HP':'PC'},()=>{});
+  callAPI({action:'getProgress',nama:selectedName},function(d){
+    loginSection.style.display='none';
+    mainSection.style.display='block';
+    if(d&&d.ok) renderDashboard(selectedName,d);
+    else renderDashboard(selectedName,null);
+  });
+  setTimeout(()=>{if(loginSection.style.display!=='none'){loginSection.style.display='none';mainSection.style.display='block';renderDashboard(selectedName,null);}},6000);
+});
+
+function renderDashboard(nama,d){
+  const pre=d&&d.pretest?d.pretest:null;
+  const lkpd=d&&d.lkpd?d.lkpd:null;
+  const post=d&&d.posttest?d.posttest:null;
+  const ref=d&&d.refleksi?d.refleksi:null;
+  const materi=d&&d.materi?d.materi:null;
+  const cat=d&&d.catatanGuru?d.catatanGuru:null;
+  const tl=d&&d.tindakLanjut?d.tindakLanjut:null;
+  const bagianSelesai=materi?materi.bagianSelesai:0;
+  const materiOK=materi&&materi.selesai==='YA';
+  const pretestOK=!!pre;
+  const lkpdOK=!!lkpd;
+  const postOK=!!post;
+  const refOK=!!ref;
+  const lkpdSkor=lkpd?Number(lkpd.SKOR_TOTAL||0):0;
+  const pretestSkor=pre?Number(pre.SKOR||0):0;
+  const postSkor=post?Number(post.SKOR||0):0;
+  const lvl=pre?pre.LEVEL_LKPD:'—';
+  const lvlNum=lvl.includes('3')?3:lvl.includes('2')?2:lvl.includes('1')?1:0;
+  const wajib=tl&&tl.WAJIB_GENERATOR==='YA';
+
+  let h=`<div class="card" style="background:linear-gradient(135deg,#134e4a,#0f766e);color:#fff;padding:20px;">
+    <div style="font-size:13px;opacity:.8;margin-bottom:4px;">Selamat datang</div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:12px;">${nama}</div>
+    <div class="score-grid">
+      <div class="score-box" style="background:rgba(255,255,255,.15);color:#fff;">
+        <div class="snum" style="color:#fff;">${pretestOK?pretestSkor:'—'}</div>
+        <div class="slabel" style="color:rgba(255,255,255,.8);">Skor Pre Test</div>
+      </div>
+      <div class="score-box" style="background:rgba(255,255,255,.15);color:#fff;">
+        <div class="snum" style="color:#fff;">${postOK?postSkor:'—'}</div>
+        <div class="slabel" style="color:rgba(255,255,255,.8);">Skor Post Test</div>
+      </div>
+    </div>
+    ${lvl!=='—'?`<div style="margin-top:12px;font-size:13px;">Level LKPD: <strong>${lvl}</strong></div>`:''}
+  </div>`;
+
+  if(cat&&cat.CATATAN){
+    h+=`<div class="card"><h3>📌 Catatan dari Guru</h3>
+    <div class="catatan-box">${cat.CATATAN}</div></div>`;
+  }
+
+  if(wajib){
+    const setSelesai=Number(tl.SET_SELESAI||0);
+    const status=tl.STATUS||'BELUM';
+    h+=`<div class="card"><h3>⚠️ Tindak Lanjut Wajib</h3>
+    <div class="warning-box">Nilai LKPD kamu <strong>${lkpdSkor}</strong> (di bawah 78). Kamu wajib menyelesaikan <strong>3 set latihan</strong> di Web Generator dengan akurasi ≥80%.<br>
+    Set selesai: <strong>${setSelesai}/3</strong> &nbsp; Status: <span class="badge ${status==='TUNTAS'?'badge-green':'badge-red'}">${status}</span></div>
+    <div style="margin-top:10px;"><a href="WebInteraktif10.html?nama=${encodeURIComponent(nama)}" style="background:var(--orange);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">Buka Web Latihan Generator</a></div>
+    </div>`;
+  }
+
+  h+=`<div class="card"><h3>📋 Alur Pembelajaran</h3><div class="progress-steps">`;
+
+  // Step 1 Materi
+  const s1=materiOK?'done':bagianSelesai>0?'active':'active';
+  h+=`<div class="step ${s1}">
+    <div class="step-icon">${materiOK?'✓':'📖'}</div>
+    <div class="step-info">
+      <div class="step-title">1. Belajar Materi Interaktif</div>
+      <div class="step-sub">${materiOK?'Selesai — 7/7 bagian':'Bagian selesai: '+bagianSelesai+'/7'}</div>
+    </div>
+    <div class="step-action"><a href="MateriAjar10.html?nama=${encodeURIComponent(nama)}">Buka</a></div>
+  </div>`;
+
+  // Step 2 Pre Test
+  const s2=pretestOK?'done':materiOK?'active':'locked';
+  h+=`<div class="step ${s2}">
+    <div class="step-icon">${pretestOK?'✓':'📝'}</div>
+    <div class="step-info">
+      <div class="step-title">2. Pre Test</div>
+      <div class="step-sub">${pretestOK?'Selesai — Skor: '+pretestSkor+' | Level: '+lvl:'Kerjakan setelah materi selesai'}</div>
+    </div>
+    <div class="step-action">${s2!=='locked'?`<a href="Assesment10.html?nama=${encodeURIComponent(nama)}" ${pretestOK?'style="background:#64748b;"':''}>Buka</a>`:''}</div>
+  </div>`;
+
+  // Step 3 LKPD
+  const s3=lkpdOK?'done':pretestOK?'active':'locked';
+  h+=`<div class="step ${s3}">
+    <div class="step-icon">${lkpdOK?'✓':'📋'}</div>
+    <div class="step-info">
+      <div class="step-title">3. LKPD — ${lvlNum>0?'Level '+lvlNum:'Level ditentukan dari Pre Test'}</div>
+      <div class="step-sub">${lkpdOK?'Selesai — Skor: '+lkpdSkor:'Tersedia setelah Pre Test'}</div>
+    </div>
+    <div class="step-action">${s3!=='locked'?`<a href="LKPD10.html?nama=${encodeURIComponent(nama)}">Buka</a>`:''}</div>
+  </div>`;
+
+  // Step 4 Post Test
+  const s4=postOK?'done':lkpdOK?'active':'locked';
+  h+=`<div class="step ${s4}">
+    <div class="step-icon">${postOK?'✓':'✅'}</div>
+    <div class="step-info">
+      <div class="step-title">4. Post Test</div>
+      <div class="step-sub">${postOK?'Selesai — Skor: '+postSkor+' ('+katLabel(postSkor)+')':'Kerjakan setelah LKPD selesai'}</div>
+    </div>
+    <div class="step-action">${s4!=='locked'?`<a href="AssesmentPost10.html?nama=${encodeURIComponent(nama)}" ${postOK?'style="background:#64748b;"':''}>Buka</a>`:''}</div>
+  </div>`;
+
+  // Step 5 Latihan
+  h+=`<div class="step ${wajib&&tl&&tl.STATUS==='TUNTAS'?'done':'active'}">
+    <div class="step-icon">🔄</div>
+    <div class="step-info">
+      <div class="step-title">5. Latihan Generator ${wajib?'(Wajib)':'(Opsional)'}</div>
+      <div class="step-sub">${wajib?'Set selesai: '+(tl?tl.SET_SELESAI:0)+'/3':'Latihan mandiri tanpa batas'}</div>
+    </div>
+    <div class="step-action"><a href="WebInteraktif10.html?nama=${encodeURIComponent(nama)}" class="${wajib?'btn-orange':''}">Buka</a></div>
+  </div>`;
+
+  // Step 6 Refleksi
+  const s6=refOK?'done':postOK?'active':'locked';
+  h+=`<div class="step ${s6}">
+    <div class="step-icon">${refOK?'✓':'💭'}</div>
+    <div class="step-info">
+      <div class="step-title">6. Refleksi</div>
+      <div class="step-sub">${refOK?'Sudah diisi':'Isi setelah pembelajaran selesai'}</div>
+    </div>
+    <div class="step-action">${s6!=='locked'?`<a href="Refleksi10.html?nama=${encodeURIComponent(nama)}" ${refOK?'style="background:#64748b;"':''}>Buka</a>`:''}</div>
+  </div>`;
+
+  h+=`</div></div>`;
+
+  h+=`<div class="card"><h3>ℹ️ Tentang Pertemuan 10</h3>
+  <div class="info-box">
+    <strong>Topik:</strong> Simpangan Rata-Rata Data Tunggal<br>
+    <strong>Rumus:</strong> SR = Σ|xᵢ − x̄| / n<br>
+    <strong>KKTP:</strong> 78 poin<br>
+    <strong>Kelas:</strong> X SMKN 1 Salatiga
+  </div></div>`;
+
+  mainSection.innerHTML=h;
+}
+
+function katLabel(s){
+  if(s>=90)return'Sangat Baik';if(s>=78)return'Tuntas';if(s>=60)return'Hampir Tuntas';return'Belum Tuntas';
+}
+
+loadNames();
+</script>
+</body>
+</html>

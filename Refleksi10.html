@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Refleksi 10 | Simpangan Rata-Rata | SMKN 1 Salatiga</title>
+<style>
+:root{--primary:#0f766e;--primary-dark:#134e4a;--primary-light:#14b8a6;--success:#16a34a;--danger:#dc2626;--soft-teal:#f0fdfa;--soft-green:#ecfdf5;--text:#1e293b;--muted:#64748b;--border:#cbd5e1;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}.top-bar p{font-size:11px;opacity:.8;}
+.back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:600px;margin:0 auto;padding:14px;}
+.card{background:#fff;border-radius:14px;padding:22px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.q-label{font-size:14px;font-weight:700;color:var(--primary-dark);margin-bottom:8px;display:block;}
+.q-sub{font-size:12px;color:var(--muted);margin-bottom:8px;display:block;}
+textarea{width:100%;padding:10px;border:2px solid var(--border);border-radius:8px;font-size:14px;resize:vertical;min-height:80px;font-family:inherit;}
+textarea:focus{outline:none;border-color:var(--primary);}
+.radio-group{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.radio-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:.15s;}
+.radio-opt:hover{border-color:var(--primary);background:var(--soft-teal);}
+.radio-opt input{accent-color:var(--primary);}
+.star-group{display:flex;gap:10px;margin-bottom:10px;}
+.star{font-size:30px;cursor:pointer;transition:transform .15s;color:#d1d5db;}
+.star.active{color:#f59e0b;}
+.star:hover{transform:scale(1.2);}
+.btn-submit{background:var(--primary);color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;}
+.btn-submit:hover{background:var(--primary-light);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:14px;border-radius:8px;margin:10px 0;font-size:14px;}
+.info-box{background:var(--soft-teal);border-left:4px solid var(--primary);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;}
+.btn-go{background:var(--success);color:#fff;border:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin:5px;}
+.spinner{display:block;width:22px;height:22px;border:3px solid #e2e8f0;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;margin:30px auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.divider{height:1px;background:var(--border);margin:18px 0;}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="Pertemuan10.html" class="back-link">&#8592;</a>
+  <h1>Refleksi — Pertemuan 10</h1>
+  <p>Simpangan Rata-Rata Data Tunggal</p>
+</div>
+<div class="container" id="mainContent">
+  <div style="text-align:center;padding:40px;"><div class="spinner"></div></div>
+</div>
+<script>
+const params=new URLSearchParams(location.search);
+const NAMA=params.get('nama')||'';
+const API='https://script.google.com/macros/s/AKfycbz7RhLWJsZvBGHPKUy7J8vN8KpNJMNo1xOF2s-OKZYciE8zRRXLXOOGTEjefns8u3s9TQ/exec';
+let starVal=0;
+
+function callAPI(p,cb){
+  const c='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
+  p.callback=c;
+  const u=API+'?'+Object.keys(p).map(k=>k+'='+encodeURIComponent(p[k])).join('&');
+  const sc=document.createElement('script');
+  window[c]=function(d){delete window[c];sc.parentNode&&sc.parentNode.removeChild(sc);cb&&cb(d);};
+  sc.onerror=function(){delete window[c];sc.parentNode&&sc.parentNode.removeChild(sc);cb&&cb(null);};
+  sc.src=u;document.head.appendChild(sc);
+}
+
+function init(){
+  if(!NAMA){document.getElementById('mainContent').innerHTML='<div class="card" style="text-align:center;"><p>Silakan login dulu.</p><a href="Pertemuan10.html" class="btn-go">Kembali</a></div>';return;}
+  callAPI({action:'getProgress',nama:NAMA},function(d){
+    if(d&&d.ok&&d.refleksi)showDone();
+    else showForm();
+  });
+  setTimeout(()=>{if(document.querySelector('.spinner'))showForm();},5000);
+}
+
+function showDone(){
+  document.getElementById('mainContent').innerHTML=`
+    <div class="card" style="text-align:center;padding:30px;">
+      <div style="font-size:48px;margin-bottom:14px;">🎉</div>
+      <h2 style="color:var(--primary-dark);margin-bottom:10px;">Refleksi Sudah Diisi!</h2>
+      <div class="success-box">Terima kasih sudah menyelesaikan seluruh rangkaian Pertemuan 10, ${NAMA}!</div>
+      <a href="Pertemuan10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go">Lihat Progress Saya</a>
+    </div>`;
+}
+
+function showForm(){
+  document.getElementById('mainContent').innerHTML=`
+    <div class="card">
+      <div style="background:linear-gradient(135deg,#134e4a,#0f766e);color:#fff;border-radius:10px;padding:16px;margin-bottom:18px;">
+        <div style="font-size:13px;opacity:.8;">Pertemuan 10 — Refleksi Belajar</div>
+        <div style="font-size:18px;font-weight:700;margin-top:4px;">${NAMA}</div>
+      </div>
+
+      <div class="divider"></div>
+      <label class="q-label">1. Apa yang paling mudah kamu pahami dari materi simpangan rata-rata hari ini?</label>
+      <textarea id="q1" placeholder="Misalnya: cara mengisi kolom nilai mutlak selisih, menghitung mean, dll..."></textarea>
+
+      <div class="divider"></div>
+      <label class="q-label">2. Apa yang masih terasa sulit atau membingungkan?</label>
+      <span class="q-sub">Jujur ya, jawaban ini membantu guru untuk menyiapkan penjelasan yang lebih baik.</span>
+      <textarea id="q2" placeholder="Misalnya: membedakan kolom selisih dan nilai mutlak selisih, dll..."></textarea>
+
+      <div class="divider"></div>
+      <label class="q-label">3. Seberapa membantu web materi dan LKPD digital hari ini?</label>
+      <div class="star-group" id="starGroup">
+        ${[1,2,3,4,5].map(i=>`<span class="star" data-v="${i}" onclick="setStar(${i})">★</span>`).join('')}
+      </div>
+      <div id="starLabel" style="font-size:13px;color:var(--muted);">Pilih bintang di atas</div>
+
+      <div class="divider"></div>
+      <label class="q-label">4. Apakah tabel bantu di LKPD membantu kamu mengerjakan soal?</label>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="radio" name="q4" value="Sangat membantu"> Sangat membantu — saya bisa mengerjakan semua langkah karena ada tabel bantu</label>
+        <label class="radio-opt"><input type="radio" name="q4" value="Cukup membantu"> Cukup membantu — ada beberapa langkah yang masih bingung</label>
+        <label class="radio-opt"><input type="radio" name="q4" value="Tidak terlalu membantu"> Tidak terlalu membantu — saya masih bingung meskipun ada panduan</label>
+        <label class="radio-opt"><input type="radio" name="q4" value="Tidak membantu"> Tidak membantu — saya lebih suka tanpa panduan tabel</label>
+      </div>
+      <textarea id="q4alasan" placeholder="Alasannya (opsional)..." style="min-height:60px;"></textarea>
+
+      <div class="divider"></div>
+      <label class="q-label">5. Hal baru apa yang kamu pelajari hari ini tentang simpangan rata-rata?</label>
+      <textarea id="q5" placeholder="Misalnya: saya baru tahu bahwa SR biasanya lebih kecil dari simpangan baku, dll..."></textarea>
+
+      <div class="divider"></div>
+      <label class="q-label">6. Ada saran atau pertanyaan untuk guru? (Opsional)</label>
+      <span class="q-sub">Pertanyaan kamu akan dijawab melalui catatan di halaman utama.</span>
+      <textarea id="q6" placeholder="Saran, pertanyaan, atau hal lain yang ingin kamu sampaikan..."></textarea>
+
+      <div id="refFb" style="margin-top:10px;"></div>
+      <button class="btn-submit" id="btnRef" onclick="submitRefleksi()">Kirim Refleksi</button>
+    </div>`;
+}
+
+function setStar(v){
+  starVal=v;
+  document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('active',i<v));
+  const labels=['','Kurang membantu','Cukup membantu','Membantu','Sangat membantu','Luar biasa membantu!'];
+  document.getElementById('starLabel').textContent=labels[v];
+}
+
+function submitRefleksi(){
+  const q1=document.getElementById('q1').value.trim();
+  const q2=document.getElementById('q2').value.trim();
+  const q4rad=document.querySelector('input[name="q4"]:checked');
+  const q5=document.getElementById('q5').value.trim();
+  if(!q1||!q2||!q5||starVal===0){
+    document.getElementById('refFb').innerHTML='<div class="info-box">⚠️ Mohon isi semua pertanyaan wajib (1,2,3,5).</div>';
+    return;
+  }
+  const btn=document.getElementById('btnRef');
+  btn.disabled=true;btn.textContent='Mengirim...';
+  const data={action:'refleksi',nama:NAMA,
+    mudah:q1,sulit:q2,webSkor:starVal,
+    lkpdBantu:q4rad?q4rad.value:'',
+    lkpdAlasan:document.getElementById('q4alasan').value.trim(),
+    halBaru:q5,saran:document.getElementById('q6').value.trim()};
+  callAPI(data,function(){showDone();});
+  setTimeout(()=>showDone(),8000);
+}
+
+init();
+</script>
+</body>
+</html>

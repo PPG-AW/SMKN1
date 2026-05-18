@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pre Test 10 | Simpangan Rata-Rata | SMKN 1 Salatiga</title>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{--primary:#0f766e;--primary-dark:#134e4a;--primary-light:#14b8a6;--orange:#ea580c;--success:#16a34a;--danger:#dc2626;--accent:#f59e0b;--soft-teal:#f0fdfa;--soft-green:#ecfdf5;--soft-yellow:#fffbeb;--soft-red:#fef2f2;--text:#1e293b;--muted:#64748b;--border:#cbd5e1;--white:#fff;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
+.top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.top-bar h1{font-size:16px;margin:0 0 2px;}.top-bar p{font-size:11px;opacity:.8;margin:0;}
+.back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
+.container{max-width:600px;margin:0 auto;padding:14px;}
+.card{background:#fff;border-radius:14px;padding:22px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.info-box{background:var(--soft-teal);border-left:4px solid var(--primary);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;}
+.formula-box{background:var(--soft-teal);border:2px solid #2dd4bf;border-radius:10px;padding:12px;text-align:center;margin:10px 0;font-size:15px;}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;}
+th,td{border:1.5px solid var(--border);padding:9px;text-align:center;}
+th{background:#ccfbf1;color:var(--primary-dark);font-weight:700;}
+input[type=number]{width:100%;padding:8px;border:2px solid var(--border);border-radius:6px;font-size:15px;text-align:center;}
+input[type=number]:focus{outline:none;border-color:var(--primary);}
+input.correct{border-color:var(--success);background:#ecfdf5;}
+input.wrong{border-color:var(--danger);background:#fef2f2;}
+.btn-submit{background:var(--primary);color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-top:10px;}
+.btn-submit:hover{background:var(--primary-light);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+.result-card{text-align:center;padding:28px;}
+.result-card .skor-big{font-size:60px;font-weight:800;color:var(--primary-dark);}
+.level-badge{display:inline-block;padding:10px 28px;border-radius:999px;font-size:20px;font-weight:700;margin:16px 0;}
+.lv1{background:#fef2f2;color:#991b1b;border:2px solid #fca5a5;}
+.lv2{background:#fef3c7;color:#92400e;border:2px solid #fcd34d;}
+.lv3{background:#dcfce7;color:#166534;border:2px solid #86efac;}
+.btn-go{background:var(--success);color:#fff;border:none;padding:13px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin:6px;}
+.spinner{display:block;width:22px;height:22px;border:3px solid #e2e8f0;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;margin:30px auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="Pertemuan10.html" class="back-link">&#8592;</a>
+  <h1>Pre Test — Pertemuan 10</h1>
+  <p>Simpangan Rata-Rata Data Tunggal</p>
+</div>
+
+<div class="container" id="mainContent">
+  <div style="text-align:center;padding:40px;"><div class="spinner"></div></div>
+</div>
+
+<script>
+const params=new URLSearchParams(location.search);
+const NAMA=params.get('nama')||'';
+const API='https://script.google.com/macros/s/AKfycbz7RhLWJsZvBGHPKUy7J8vN8KpNJMNo1xOF2s-OKZYciE8zRRXLXOOGTEjefns8u3s9TQ/exec';
+// Data pre test: {20,30,40,50,60} → mean=40, SR=12
+const JAWABAN={mean:40,s:['-20','-10','0','10','20'],m:['20','10','0','10','20'],jumlah:60,sr:12};
+
+function callAPI(p,cb){
+  const c='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
+  p.callback=c;
+  const u=API+'?'+Object.keys(p).map(k=>k+'='+encodeURIComponent(p[k])).join('&');
+  const sc=document.createElement('script');
+  window[c]=function(d){delete window[c];sc.parentNode&&sc.parentNode.removeChild(sc);cb&&cb(d);};
+  sc.onerror=function(){delete window[c];sc.parentNode&&sc.parentNode.removeChild(sc);cb&&cb(null);};
+  sc.src=u;document.head.appendChild(sc);
+}
+
+function init(){
+  if(!NAMA){
+    document.getElementById('mainContent').innerHTML=`<div class="card" style="text-align:center;">
+      <p style="margin-bottom:14px;">Kamu harus login dulu.</p>
+      <a href="Pertemuan10.html" class="btn-go">Kembali ke Halaman Utama</a></div>`;
+    return;
+  }
+  callAPI({action:'getPretest',nama:NAMA},function(d){
+    if(d&&d.ok&&d.data){
+      showAlreadyDone(d.data);
+    } else {
+      showForm();
+    }
+  });
+  setTimeout(()=>{if(document.querySelector('.spinner'))showForm();},5000);
+}
+
+function showAlreadyDone(data){
+  const skor=Number(data.SKOR||0);
+  const lvl=data.LEVEL_LKPD||'LEVEL 1';
+  const lnum=lvl.includes('3')?3:lvl.includes('2')?2:1;
+  document.getElementById('mainContent').innerHTML=`
+    <div class="card result-card">
+      <div style="font-size:15px;color:var(--muted);">Pre test sudah dikerjakan</div>
+      <div class="skor-big">${skor}</div>
+      <div style="font-size:14px;color:var(--muted);">dari 100 poin</div>
+      <div class="level-badge lv${lnum}">${lvl}</div>
+      <div class="info-box">Level LKPD kamu sudah ditentukan. Silakan lanjut ke LKPD.</div>
+      <a href="LKPD10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go">Buka LKPD</a>
+      <a href="Pertemuan10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go" style="background:var(--primary);">Halaman Utama</a>
+    </div>`;
+}
+
+function showForm(){
+  document.getElementById('mainContent').innerHTML=`
+    <div class="card">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Pre Test | ${NAMA}</div>
+      <h2 style="font-size:18px;color:var(--primary-dark);margin-bottom:10px;">Isi Tabel Bantu Lengkap</h2>
+      <div class="info-box">Konteks: Data durasi menonton TikTok oleh 5 siswa dalam satu hari (menit).<br>
+      <strong>Data: 20, 30, 40, 50, 60</strong> &nbsp; n = 5</div>
+      <p style="font-size:13px;color:var(--muted);margin:8px 0;">Isi semua kolom yang kosong, lalu klik Submit.</p>
+      <table id="tabelBantu">
+        <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\(|x_i - \bar{x}|\)</th></tr>
+        <tr><td>1</td><td>20</td><td><input type="number" id="s1" step="1"></td><td><input type="number" id="m1" min="0"></td></tr>
+        <tr><td>2</td><td>30</td><td><input type="number" id="s2" step="1"></td><td><input type="number" id="m2" min="0"></td></tr>
+        <tr><td>3</td><td>40</td><td><input type="number" id="s3" step="1"></td><td><input type="number" id="m3" min="0"></td></tr>
+        <tr><td>4</td><td>50</td><td><input type="number" id="s4" step="1"></td><td><input type="number" id="m4" min="0"></td></tr>
+        <tr><td>5</td><td>60</td><td><input type="number" id="s5" step="1"></td><td><input type="number" id="m5" min="0"></td></tr>
+        <tr><th>Jumlah</th><th>200</th><td><input type="number" id="sjml" step="1"></td><td><input type="number" id="mjml" min="0"></td></tr>
+      </table>
+      <div style="margin:12px 0;">
+        <label style="font-size:14px;font-weight:700;">Mean \(\bar{x}\) = </label>
+        <input type="number" id="meanInput" style="width:120px;padding:8px;border:2px solid var(--border);border-radius:6px;font-size:15px;" step="0.1"/>
+      </div>
+      <div style="margin:8px 0;">
+        <label style="font-size:14px;font-weight:700;">Jumlah \(\sum|x_i-\bar{x}|\) = </label>
+        <input type="number" id="jmtInput" style="width:120px;padding:8px;border:2px solid var(--border);border-radius:6px;font-size:15px;" step="0.1"/>
+      </div>
+      <div style="margin:8px 0;">
+        <label style="font-size:14px;font-weight:700;">Simpangan Rata-Rata SR = </label>
+        <input type="number" id="srInput" style="width:120px;padding:8px;border:2px solid var(--border);border-radius:6px;font-size:15px;" step="0.1"/>
+      </div>
+      <div id="formFeedback" style="margin:10px 0;"></div>
+      <button class="btn-submit" id="btnSubmit" onclick="submitPretest()">Kirim Pre Test</button>
+    </div>`;
+  if(window.MathJax)MathJax.typesetPromise&&MathJax.typesetPromise();
+}
+
+function submitPretest(){
+  const btn=document.getElementById('btnSubmit');
+  btn.disabled=true;btn.textContent='Mengirim...';
+  const vals={
+    mean:parseFloat(document.getElementById('meanInput').value)||0,
+    s:[1,2,3,4,5].map(i=>parseFloat(document.getElementById('s'+i).value)||0),
+    m:[1,2,3,4,5].map(i=>parseFloat(document.getElementById('m'+i).value)||0),
+    jmt:parseFloat(document.getElementById('jmtInput').value)||0,
+    sr:parseFloat(document.getElementById('srInput').value)||0
+  };
+  let skor=0;
+  const J=JAWABAN;
+  // Skor: mean=10, tiap s=8 (5×8=40), tiap m=6 (5×6=30), jumlah=10, SR=10
+  if(Math.abs(vals.mean-J.mean)<0.01) skor+=10;
+  J.s.forEach((js,i)=>{if(Math.abs(vals.s[i]-parseFloat(js))<0.01)skor+=8;});
+  J.m.forEach((jm,i)=>{if(Math.abs(vals.m[i]-parseFloat(jm))<0.01)skor+=6;});
+  if(Math.abs(vals.jmt-J.jumlah)<0.01)skor+=10;
+  if(Math.abs(vals.sr-J.sr)<0.01)skor+=10;
+
+  const lnum=skor>=80?3:skor>=60?2:1;
+  const lvl='LEVEL '+lnum;
+  callAPI({action:'pretest',nama:NAMA,
+    mean:vals.mean,
+    s1:vals.s[0],s2:vals.s[1],s3:vals.s[2],s4:vals.s[3],s5:vals.s[4],
+    m1:vals.m[0],m2:vals.m[1],m3:vals.m[2],m4:vals.m[3],m5:vals.m[4],
+    jumlahMutlak:vals.jmt,sr:vals.sr,skor:skor,detail:JSON.stringify(vals)
+  },function(d){
+    showResult(skor,lvl,lnum);
+  });
+  setTimeout(()=>showResult(skor,lvl,lnum),8000);
+}
+
+function showResult(skor,lvl,lnum){
+  const lvlDesc=['','Panduan tabel bantu sangat lengkap per langkah.','Tabel bantu kosong dengan rumus tersedia.','Tabel bantu kosong tanpa panduan, ditambah soal interpretasi.'];
+  document.getElementById('mainContent').innerHTML=`
+    <div class="card result-card">
+      <div style="font-size:15px;color:var(--muted);">Hasil Pre Test — ${NAMA}</div>
+      <div class="skor-big">${skor}</div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:8px;">dari 100 poin</div>
+      <div class="level-badge lv${lnum}">${lvl}</div>
+      <div class="info-box" style="text-align:left;"><strong>${lvl}:</strong> ${lvlDesc[lnum]}</div>
+      <div class="info-box" style="text-align:left;">
+        <strong>Kunci Jawaban:</strong><br>
+        Mean = 40 &nbsp; Selisih: −20, −10, 0, 10, 20 &nbsp; Mutlak: 20, 10, 0, 10, 20<br>
+        Σ|xᵢ−x̄| = 60 &nbsp; SR = 60/5 = <strong>12</strong>
+      </div>
+      <a href="LKPD10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go">Buka LKPD ${lvl} →</a>
+      <a href="Pertemuan10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go" style="background:var(--primary);">Halaman Utama</a>
+    </div>`;
+}
+
+init();
+</script>
+</body>
+</html>
