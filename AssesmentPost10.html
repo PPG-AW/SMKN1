@@ -4,167 +4,353 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Post Test 10 | Simpangan Rata-Rata | SMKN 1 Salatiga</title>
-<script>window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]']] },
+  svg: { fontCache: 'global' },
+  startup: { ready() { MathJax.startup.defaultReady(); } }
+};
+</script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <style>
-:root{--primary:#0f766e;--primary-dark:#134e4a;--primary-light:#14b8a6;--orange:#ea580c;--success:#16a34a;--danger:#dc2626;--soft-teal:#f0fdfa;--soft-green:#ecfdf5;--soft-red:#fef2f2;--text:#1e293b;--muted:#64748b;--border:#cbd5e1;}
+:root{
+  --primary:#0f766e;--primary-dark:#134e4a;--primary-light:#14b8a6;
+  --orange:#ea580c;--success:#16a34a;--danger:#dc2626;
+  --soft-teal:#f0fdfa;--soft-green:#ecfdf5;--soft-red:#fef2f2;
+  --text:#1e293b;--muted:#64748b;--border:#cbd5e1;
+}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:var(--text);line-height:1.6;font-size:15px;}
 .top-bar{background:var(--primary-dark);color:#fff;padding:12px 16px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
-.top-bar h1{font-size:16px;margin:0 0 2px;}.top-bar p{font-size:11px;opacity:.8;}
+.top-bar h1{font-size:16px;margin:0 0 2px;} .top-bar p{font-size:11px;opacity:.8;}
 .back-link{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;text-decoration:none;font-size:20px;font-weight:700;}
 .container{max-width:600px;margin:0 auto;padding:14px;}
+.panel{display:none;} .panel.active{display:block;}
 .card{background:#fff;border-radius:14px;padding:22px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
-.info-box{background:var(--soft-teal);border-left:4px solid var(--primary);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;}
-.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;}
-.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;}
-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;}
-th,td{border:1.5px solid var(--border);padding:9px;text-align:center;}
+.card-title{font-size:18px;font-weight:700;color:var(--primary-dark);margin-bottom:10px;}
+.card-meta{font-size:13px;color:var(--muted);margin-bottom:14px;}
+.info-box{background:var(--soft-teal);border-left:4px solid var(--primary);padding:12px;border-radius:6px;margin:10px 0;font-size:13px;line-height:1.6;}
+.success-box{background:var(--soft-green);border-left:4px solid var(--success);padding:12px;border-radius:6px;margin:10px 0;font-size:14px;line-height:1.6;}
+.warning-box{background:var(--soft-red);border-left:4px solid var(--danger);padding:12px;border-radius:6px;margin:10px 0;font-size:14px;line-height:1.6;}
+.petunjuk-box{background:#fffbeb;border-left:4px solid #f59e0b;padding:12px;border-radius:6px;margin:10px 0;font-size:13px;line-height:1.6;}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;}
+th,td{border:1.5px solid var(--border);padding:9px 8px;text-align:center;vertical-align:middle;}
 th{background:#ccfbf1;color:var(--primary-dark);font-weight:700;}
-input[type=number]{width:100%;padding:8px;border:2px solid var(--border);border-radius:6px;font-size:15px;text-align:center;}
-input[type=number]:focus{outline:none;border-color:var(--primary);}
-.label-row{display:flex;align-items:center;gap:10px;margin:10px 0;flex-wrap:wrap;}
-.label-row label{font-size:14px;font-weight:700;white-space:nowrap;}
-.label-row input{width:130px;padding:9px;border:2px solid var(--border);border-radius:8px;font-size:15px;}
+th.col-formula{font-size:13px;font-weight:700;white-space:nowrap;}
+.tbl-input{width:100%;padding:7px 6px;border:2px solid var(--border);border-radius:6px;font-size:14px;text-align:center;background:#fff;}
+.tbl-input:focus{outline:none;border-color:var(--primary);}
+.tbl-input:disabled{background:#f0fdfa;color:var(--primary-dark);font-weight:700;border-color:#2dd4bf;}
+.label-row{display:flex;align-items:center;gap:10px;margin:12px 0;flex-wrap:wrap;}
+.label-row .lbl{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;}
+.label-row input{width:120px;padding:9px;border:2px solid var(--border);border-radius:8px;font-size:15px;text-align:center;}
 .label-row input:focus{outline:none;border-color:var(--primary);}
-.btn-submit{background:var(--primary);color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-top:12px;}
+.label-row input:disabled{background:#f0fdfa;color:var(--primary-dark);font-weight:700;border-color:#2dd4bf;}
+.btn-submit{background:var(--primary);color:#fff;border:none;padding:14px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-top:14px;transition:background .2s;}
 .btn-submit:hover{background:var(--primary-light);}
 .btn-submit:disabled{opacity:.5;cursor:not-allowed;}
-.result-skor{font-size:64px;font-weight:800;color:var(--primary-dark);text-align:center;margin:10px 0;}
-.kategori-badge{display:inline-block;padding:8px 24px;border-radius:999px;font-size:18px;font-weight:700;margin:10px 0;}
-.kat-sangat{background:#dcfce7;color:#166534;border:2px solid #86efac;}
-.kat-tuntas{background:#ccfbf1;color:#0f766e;border:2px solid #2dd4bf;}
-.kat-hampir{background:#fef3c7;color:#92400e;border:2px solid #fcd34d;}
-.kat-belum{background:#fef2f2;color:#991b1b;border:2px solid #fca5a5;}
-.btn-go{background:var(--success);color:#fff;border:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin:5px;}
+.btn-go{display:inline-block;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;border:none;margin:5px;}
+.btn-go-green{background:var(--success);color:#fff;}
+.btn-go-teal{background:var(--primary);color:#fff;}
+.btn-go-orange{background:var(--orange);color:#fff;}
+.result-skor{font-size:64px;font-weight:800;color:var(--primary-dark);text-align:center;margin:10px 0;line-height:1;}
+.kategori-badge{display:inline-block;padding:9px 24px;border-radius:999px;font-size:17px;font-weight:700;margin:10px 0;}
+.kat-sb{background:#dcfce7;color:#166534;border:2px solid #86efac;}
+.kat-t{background:#ccfbf1;color:#0f766e;border:2px solid #2dd4bf;}
+.kat-h{background:#fef3c7;color:#92400e;border:2px solid #fcd34d;}
+.kat-b{background:#fef2f2;color:#991b1b;border:2px solid #fca5a5;}
 .spinner{display:block;width:22px;height:22px;border:3px solid #e2e8f0;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;margin:30px auto;}
 @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
+
 <div class="top-bar">
   <a href="Pertemuan10.html" class="back-link">&#8592;</a>
   <h1>Post Test — Pertemuan 10</h1>
   <p>Simpangan Rata-Rata Data Tunggal</p>
 </div>
-<div class="container" id="mainContent">
-  <div style="text-align:center;padding:40px;"><div class="spinner"></div></div>
-</div>
-<script>
-const params=new URLSearchParams(location.search);
-const NAMA=params.get('nama')||'';
-const API='https://script.google.com/macros/s/AKfycbz7RhLWJsZvBGHPKUy7J8vN8KpNJMNo1xOF2s-OKZYciE8zRRXLXOOGTEjefns8u3s9TQ/exec';
-// Post test: {4,6,8,10,12} → mean=8, SR=2.4
-const JWB={mean:8,s:['-4','-2','0','2','4'],m:['4','2','0','2','4'],jmt:12,sr:2.4};
 
-function callAPI(p,cb){
-  const c='cb_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);
-  p.callback=c;
-  const u=API+'?'+Object.keys(p).map(k=>k+'='+encodeURIComponent(p[k])).join('&');
-  const sc=document.createElement('script');
-  window[c]=function(d){delete window[c];sc.parentNode&&sc.parentNode.removeChild(sc);cb&&cb(d);};
-  sc.onerror=function(){delete window[c];sc.parentNode&&sc.parentNode.removeChild(sc);cb&&cb(null);};
-  sc.src=u;document.head.appendChild(sc);
-}
+<div class="container">
 
-function init(){
-  if(!NAMA){document.getElementById('mainContent').innerHTML='<div class="card" style="text-align:center;"><p>Silakan login dulu.</p><a href="Pertemuan10.html" class="btn-go">Kembali</a></div>';return;}
-  callAPI({action:'getPosttest',nama:NAMA},function(d){
-    if(d&&d.ok&&d.data) showAlreadyDone(d.data);
-    else showForm();
-  });
-  setTimeout(()=>{if(document.querySelector('.spinner'))showForm();},5000);
-}
+  <!-- PANEL: LOADING -->
+  <div class="panel active" id="panelLoading">
+    <div class="card" style="text-align:center;padding:40px;">
+      <div class="spinner"></div>
+      <p style="color:var(--muted);margin-top:10px;">Memeriksa data post test...</p>
+    </div>
+  </div>
 
-function showAlreadyDone(data){
-  const skor=Number(data.SKOR||0);
-  const kat=data.KATEGORI||katLabel(skor);
-  document.getElementById('mainContent').innerHTML=`
+  <!-- PANEL: SUDAH DIKERJAKAN -->
+  <div class="panel" id="panelDone">
     <div class="card" style="text-align:center;">
-      <div style="font-size:14px;color:var(--muted);margin-bottom:4px;">Post test sudah dikerjakan</div>
-      <div class="result-skor">${skor}</div>
-      <div class="kategori-badge ${katClass(skor)}">${kat}</div>
-      <div class="info-box" style="text-align:left;">Post test sudah selesai. Silakan isi refleksi atau kembali ke halaman utama.</div>
-      <a href="Refleksi10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go">Isi Refleksi →</a>
-      <a href="Pertemuan10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go" style="background:var(--primary);">Halaman Utama</a>
-    </div>`;
-}
+      <div class="card-title">Post Test Sudah Dikerjakan</div>
+      <div class="result-skor" id="doneScore">—</div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:8px;">dari 100 poin</div>
+      <div id="doneKatBadge"></div>
+      <div class="info-box" style="text-align:left;margin-top:10px;">Post test sudah selesai. Silakan isi refleksi atau kembali ke halaman utama.</div>
+      <br>
+      <a href="#" id="doneLinkRef" class="btn-go btn-go-green">Isi Refleksi →</a>
+      <a href="Pertemuan10.html" class="btn-go btn-go-teal">Halaman Utama</a>
+    </div>
+  </div>
 
-function showForm(){
-  document.getElementById('mainContent').innerHTML=`
+  <!-- PANEL: FORM POST TEST -->
+  <div class="panel" id="panelForm">
     <div class="card">
-      <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">Post Test | ${NAMA}</div>
-      <h2 style="font-size:18px;color:var(--primary-dark);margin-bottom:10px;">Isi Tabel Bantu Lengkap</h2>
-      <div class="info-box">Konteks: Data jumlah like postingan 5 konten kreator dalam satu hari (ribu like).<br>
-      <strong>Data: 4, 6, 8, 10, 12</strong> &nbsp; n = 5</div>
-      <p style="font-size:13px;color:var(--muted);margin:8px 0;">Kerjakan secara mandiri tanpa membuka materi.</p>
+      <div class="card-title">Isi Tabel Bantu Simpangan Rata-Rata</div>
+      <div class="card-meta" id="formMeta">Post Test | Pertemuan 10</div>
+
+      <div class="info-box">
+        <strong>Konteks:</strong> Data jumlah <em>like</em> postingan 5 konten kreator dalam satu hari (ribu like).<br>
+        <strong>Data:</strong> 4, 6, 8, 10, 12 &nbsp;|&nbsp; <strong>n = 5</strong>
+      </div>
+
+      <div class="petunjuk-box">
+        💡 Kerjakan secara mandiri. Isi kolom \(x_i - \bar{x}\) lalu \(|x_i - \bar{x}|\). Cek: jumlah kolom selisih harus = 0.
+      </div>
+
+      <!-- Mean -->
+      <div class="label-row">
+        <span class="lbl">Langkah 1 — Mean \(\bar{x}\) =</span>
+        <input type="number" id="meanInput" step="0.1" inputmode="decimal" placeholder="...">
+      </div>
+
+      <!-- Tabel bantu -->
+      <p style="font-size:13px;font-weight:700;color:var(--primary-dark);margin:10px 0 6px;">Tabel Bantu:</p>
       <table>
-        <tr><th>Data ke-</th><th>\(x_i\)</th><th>\(x_i - \bar{x}\)</th><th>\(|x_i - \bar{x}|\)</th></tr>
-        <tr><td>1</td><td>4</td><td><input type="number" id="s1" step="1"></td><td><input type="number" id="m1" min="0"></td></tr>
-        <tr><td>2</td><td>6</td><td><input type="number" id="s2" step="1"></td><td><input type="number" id="m2" min="0"></td></tr>
-        <tr><td>3</td><td>8</td><td><input type="number" id="s3" step="1"></td><td><input type="number" id="m3" min="0"></td></tr>
-        <tr><td>4</td><td>10</td><td><input type="number" id="s4" step="1"></td><td><input type="number" id="m4" min="0"></td></tr>
-        <tr><td>5</td><td>12</td><td><input type="number" id="s5" step="1"></td><td><input type="number" id="m5" min="0"></td></tr>
-        <tr><th>Jumlah</th><th>40</th><td><input type="number" id="sjml" step="1"></td><td><input type="number" id="mjml" min="0"></td></tr>
+        <thead>
+          <tr>
+            <th>Data ke-</th>
+            <th>\(x_i\)</th>
+            <th class="col-formula">\(x_i - \bar{x}\)</th>
+            <th class="col-formula">\(|x_i - \bar{x}|\)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td><td>4</td>
+            <td><input class="tbl-input" type="number" id="s1" step="1" inputmode="decimal" placeholder="..."></td>
+            <td><input class="tbl-input" type="number" id="m1" min="0" inputmode="decimal" placeholder="..."></td>
+          </tr>
+          <tr>
+            <td>2</td><td>6</td>
+            <td><input class="tbl-input" type="number" id="s2" step="1" inputmode="decimal" placeholder="..."></td>
+            <td><input class="tbl-input" type="number" id="m2" min="0" inputmode="decimal" placeholder="..."></td>
+          </tr>
+          <tr>
+            <td>3</td><td>8</td>
+            <td><input class="tbl-input" type="number" id="s3" step="1" inputmode="decimal" placeholder="..."></td>
+            <td><input class="tbl-input" type="number" id="m3" min="0" inputmode="decimal" placeholder="..."></td>
+          </tr>
+          <tr>
+            <td>4</td><td>10</td>
+            <td><input class="tbl-input" type="number" id="s4" step="1" inputmode="decimal" placeholder="..."></td>
+            <td><input class="tbl-input" type="number" id="m4" min="0" inputmode="decimal" placeholder="..."></td>
+          </tr>
+          <tr>
+            <td>5</td><td>12</td>
+            <td><input class="tbl-input" type="number" id="s5" step="1" inputmode="decimal" placeholder="..."></td>
+            <td><input class="tbl-input" type="number" id="m5" min="0" inputmode="decimal" placeholder="..."></td>
+          </tr>
+          <tr style="background:#f8fafc;">
+            <th>Jumlah</th><th>40</th>
+            <td><input class="tbl-input" type="number" id="sjml" step="1" inputmode="decimal" placeholder="cek: = 0"></td>
+            <td><input class="tbl-input" type="number" id="mjml" min="0" inputmode="decimal" placeholder="\u03a3|x\u2212x\u0305|"></td>
+          </tr>
+        </tbody>
       </table>
-      <div class="label-row"><label>Mean \(\bar{x}\) =</label><input type="number" id="meanInp" step="0.1"></div>
-      <div class="label-row"><label>\(\sum|x_i-\bar{x}|\) =</label><input type="number" id="jmtInp" step="0.1"></div>
-      <div class="label-row"><label>SR =</label><input type="number" id="srInp" step="0.1"></div>
-      <div id="fb" style="margin-top:10px;"></div>
-      <button class="btn-submit" id="btnSub" onclick="submitPost()">Kirim Post Test</button>
-    </div>`;
-  if(window.MathJax)MathJax.typesetPromise&&MathJax.typesetPromise();
-}
 
-function submitPost(){
-  const btn=document.getElementById('btnSub');
-  btn.disabled=true;btn.textContent='Mengirim...';
-  const v={
-    mean:parseFloat(document.getElementById('meanInp').value)||0,
-    s:[1,2,3,4,5].map(i=>parseFloat(document.getElementById('s'+i).value)||0),
-    m:[1,2,3,4,5].map(i=>parseFloat(document.getElementById('m'+i).value)||0),
-    jmt:parseFloat(document.getElementById('jmtInp').value)||0,
-    sr:parseFloat(document.getElementById('srInp').value)||0
-  };
-  let skor=0;
-  if(Math.abs(v.mean-JWB.mean)<0.01)skor+=10;
-  JWB.s.forEach((js,i)=>{if(Math.abs(v.s[i]-parseFloat(js))<0.01)skor+=8;});
-  JWB.m.forEach((jm,i)=>{if(Math.abs(v.m[i]-parseFloat(jm))<0.01)skor+=6;});
-  if(Math.abs(v.jmt-JWB.jmt)<0.01)skor+=10;
-  if(Math.abs(v.sr-JWB.sr)<0.01)skor+=10;
+      <!-- SR -->
+      <div class="label-row">
+        <span class="lbl">Simpangan Rata-Rata \(\displaystyle SR = \frac{\Sigma|x_i - \bar{x}|}{n}\) =</span>
+        <input type="number" id="srInput" step="0.1" inputmode="decimal" placeholder="...">
+      </div>
 
-  callAPI({action:'posttest',nama:NAMA,
-    mean:v.mean,s1:v.s[0],s2:v.s[1],s3:v.s[2],s4:v.s[3],s5:v.s[4],
-    m1:v.m[0],m2:v.m[1],m3:v.m[2],m4:v.m[3],m5:v.m[4],
-    jumlahMutlak:v.jmt,sr:v.sr,skor:skor,detail:JSON.stringify(v)
-  },function(){showResult(skor);});
-  setTimeout(()=>showResult(skor),8000);
-}
+      <div id="formFeedback" style="margin:8px 0;"></div>
+      <button class="btn-submit" id="btnSubmit" onclick="submitPost()">Kirim Post Test</button>
+    </div>
+  </div>
 
-function katLabel(s){if(s>=90)return'Sangat Baik';if(s>=78)return'Tuntas';if(s>=60)return'Hampir Tuntas';return'Belum Tuntas';}
-function katClass(s){if(s>=90)return'kat-sangat';if(s>=78)return'kat-tuntas';if(s>=60)return'kat-hampir';return'kat-belum';}
-
-function showResult(skor){
-  const kat=katLabel(skor);
-  const wajib=skor<78;
-  const feedbackMap={
-    'Sangat Baik':'Kamu sudah sangat memahami cara menghitung mean, mengisi kolom selisih, kolom nilai mutlak selisih, dan simpangan rata-rata secara lengkap dan benar.',
-    'Tuntas':'Kamu sudah memahami konsep utama. Perkuat ketelitian pada pengisian kolom nilai mutlak selisih.',
-    'Hampir Tuntas':'Kamu sudah mulai memahami alur perhitungan, tetapi perlu mengulang langkah mengisi kolom nilai mutlak selisih dengan teliti.',
-    'Belum Tuntas':'Pelajari kembali materi dari bagian nilai mutlak dan tabel bantu. Pastikan kamu paham bahwa |−5| = 5, bukan −5.'
-  };
-  document.getElementById('mainContent').innerHTML=`
+  <!-- PANEL: HASIL -->
+  <div class="panel" id="panelResult">
     <div class="card" style="text-align:center;">
-      <div style="font-size:14px;color:var(--muted);">Hasil Post Test — ${NAMA}</div>
-      <div class="result-skor">${skor}</div>
-      <div class="kategori-badge ${katClass(skor)}">${kat}</div>
-      <p style="font-size:14px;color:var(--muted);margin:10px 20px;">${feedbackMap[kat]}</p>
-      ${wajib?`<div class="warning-box" style="text-align:left;">⚠️ Nilai di bawah 78. Kamu wajib latihan di Web Generator minimal 3 set dengan akurasi ≥80%.</div>`:''}
-      <div class="info-box" style="text-align:left;"><strong>Kunci:</strong> Mean=8, Selisih:−4,−2,0,2,4, Mutlak:4,2,0,2,4, Σ=12, SR=<strong>2,4</strong></div>
-      ${wajib?`<a href="WebInteraktif10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go" style="background:var(--orange);">Buka Latihan Generator</a>`:''}
-      <a href="Refleksi10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go">Isi Refleksi →</a>
-      <a href="Pertemuan10.html?nama=${encodeURIComponent(NAMA)}" class="btn-go" style="background:var(--primary);">Halaman Utama</a>
-    </div>`;
+      <div class="card-title">Hasil Post Test</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:6px;" id="resultNama"></div>
+      <div class="result-skor" id="resultScore">—</div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:8px;">dari 100 poin</div>
+      <div id="resultKatBadge"></div>
+      <p id="resultFeedbackText" style="font-size:14px;color:var(--muted);margin:12px 20px;line-height:1.6;"></p>
+      <div id="resultWajibBox"></div>
+      <div class="success-box" style="text-align:left;margin-top:8px;" id="resultKunci"></div>
+      <br>
+      <a href="#" id="resultLinkRef" class="btn-go btn-go-green">Isi Refleksi →</a>
+      <a href="#" id="resultLinkGen" class="btn-go btn-go-orange" style="display:none;">Buka Latihan Generator</a>
+      <a href="Pertemuan10.html" class="btn-go btn-go-teal">Halaman Utama</a>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+const params = new URLSearchParams(location.search);
+const NAMA   = params.get('nama') || '';
+const API    = 'https://script.google.com/macros/s/AKfycbz7RhLWJsZvBGHPKUy7J8vN8KpNJMNo1xOF2s-OKZYciE8zRRXLXOOGTEjefns8u3s9TQ/exec';
+
+// Kunci: data {4,6,8,10,12}, mean=8, SR=2.4
+const KUNCI = {
+  mean: 8,
+  selisih: [-4, -2, 0, 2, 4],
+  mutlak:  [ 4,  2, 0, 2, 4],
+  jumlahMutlak: 12,
+  sr: 2.4
+};
+
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function callAPI(p, cb) {
+  const c = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+  p.callback = c;
+  const u = API + '?' + Object.keys(p).map(k => k + '=' + encodeURIComponent(p[k])).join('&');
+  const sc = document.createElement('script');
+  window[c] = function(d) { delete window[c]; sc.parentNode && sc.parentNode.removeChild(sc); cb && cb(d); };
+  sc.onerror  = function()  { delete window[c]; sc.parentNode && sc.parentNode.removeChild(sc); cb && cb(null); };
+  sc.src = u; document.head.appendChild(sc);
+}
+
+function typesetPage() {
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([ document.body ]).catch(function(){});
+  } else {
+    document.addEventListener('MathJaxReady', function() {
+      MathJax.typesetPromise([ document.body ]).catch(function(){});
+    }, { once: true });
+  }
+}
+window.MathJax.startup.ready = function() {
+  MathJax.startup.defaultReady();
+  document.dispatchEvent(new Event('MathJaxReady'));
+};
+
+function init() {
+  if (!NAMA) { showPanel('panelForm'); typesetPage(); return; }
+  document.getElementById('formMeta').textContent = 'Post Test | ' + NAMA;
+  document.getElementById('doneLinkRef').href   = 'Refleksi10.html?nama=' + encodeURIComponent(NAMA);
+
+  let done = false;
+  callAPI({ action: 'getPosttest', nama: NAMA }, function(d) {
+    if (done) return; done = true;
+    if (d && d.ok && d.data) showPanelDone(d.data);
+    else                     showPanel('panelForm');
+    typesetPage();
+  });
+  setTimeout(function() {
+    if (done) return; done = true;
+    showPanel('panelForm');
+    typesetPage();
+  }, 6000);
+}
+
+function showPanelDone(data) {
+  const skor = Number(data.SKOR || 0);
+  document.getElementById('doneScore').textContent  = skor;
+  document.getElementById('doneKatBadge').innerHTML =
+    '<div class="kategori-badge ' + katClass(skor) + '">' + katLabel(skor) + '</div>';
+  showPanel('panelDone');
+}
+
+function getNum(id) {
+  const v = (document.getElementById(id).value || '').replace(',', '.');
+  return parseFloat(v);
+}
+
+function submitPost() {
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true; btn.textContent = 'Mengirim...';
+
+  const v = {
+    mean: getNum('meanInput'),
+    s:    [1,2,3,4,5].map(i => getNum('s' + i)),
+    m:    [1,2,3,4,5].map(i => getNum('m' + i)),
+    jmt:  getNum('mjml'),
+    sr:   getNum('srInput')
+  };
+
+  let skor = 0;
+  const tol = 0.05;
+  if (!isNaN(v.mean) && Math.abs(v.mean - KUNCI.mean) < tol)          skor += 10;
+  KUNCI.selisih.forEach((jv, i) => { if (!isNaN(v.s[i]) && Math.abs(v.s[i] - jv) < tol) skor += 8; });
+  KUNCI.mutlak.forEach( (jv, i) => { if (!isNaN(v.m[i]) && Math.abs(v.m[i] - jv) < tol) skor += 6; });
+  if (!isNaN(v.jmt) && Math.abs(v.jmt - KUNCI.jumlahMutlak) < tol)    skor += 10;
+  if (!isNaN(v.sr)  && Math.abs(v.sr  - KUNCI.sr)           < tol)    skor += 10;
+
+  // Disable semua input
+  ['meanInput','s1','s2','s3','s4','s5','m1','m2','m3','m4','m5','sjml','mjml','srInput']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.disabled = true; });
+
+  callAPI({
+    action: 'posttest', nama: NAMA,
+    mean: v.mean,
+    s1: v.s[0], s2: v.s[1], s3: v.s[2], s4: v.s[3], s5: v.s[4],
+    m1: v.m[0], m2: v.m[1], m3: v.m[2], m4: v.m[3], m5: v.m[4],
+    jumlahMutlak: v.jmt, sr: v.sr, skor: skor,
+    detail: JSON.stringify(v)
+  }, function() { showPanelResult(skor); });
+
+  setTimeout(function() { showPanelResult(skor); }, 8000);
+}
+
+const FEEDBACK_MAP = {
+  'Sangat Baik':    'Kamu menguasai seluruh langkah dengan sempurna — mean, selisih, nilai mutlak, jumlah, dan SR semuanya benar.',
+  'Tuntas':         'Kamu sudah memahami konsep utama. Perkuat ketelitian pada pengisian kolom nilai mutlak selisih.',
+  'Hampir Tuntas':  'Kamu sudah paham alur, tetapi perlu lebih teliti saat mengisi kolom nilai mutlak. Ingat: selalu positif!',
+  'Belum Tuntas':   'Pelajari kembali langkah nilai mutlak di materi. Pastikan |−x| = x, bukan −x.'
+};
+
+function showPanelResult(skor) {
+  const kat   = katLabel(skor);
+  const wajib = skor < 78;
+
+  document.getElementById('resultNama').textContent  = NAMA ? 'Nama: ' + NAMA : '';
+  document.getElementById('resultScore').textContent = skor;
+  document.getElementById('resultKatBadge').innerHTML =
+    '<div class="kategori-badge ' + katClass(skor) + '">' + kat + '</div>';
+  document.getElementById('resultFeedbackText').textContent = FEEDBACK_MAP[kat] || '';
+
+  if (wajib) {
+    document.getElementById('resultWajibBox').innerHTML =
+      '<div class="warning-box">⚠️ Nilai di bawah 78. Kamu wajib mengerjakan latihan di Web Generator minimal 3 set dengan akurasi ≥ 80%.</div>';
+    const genLink = document.getElementById('resultLinkGen');
+    genLink.style.display = 'inline-block';
+    genLink.href = 'WebInteraktif10.html?nama=' + encodeURIComponent(NAMA);
+  }
+
+  document.getElementById('resultKunci').innerHTML =
+    '<strong>Kunci jawaban:</strong><br>' +
+    'Mean \u0078\u0304 = 8<br>' +
+    'Selisih: \u22124, \u22122, 0, 2, 4<br>' +
+    'Mutlak: 4, 2, 0, 2, 4<br>' +
+    '\u03a3|x\u2212\u0078\u0304| = 12 &nbsp;\u2192&nbsp; SR = 12 \u00f7 5 = <strong>2,4</strong>';
+
+  document.getElementById('resultLinkRef').href =
+    'Refleksi10.html?nama=' + encodeURIComponent(NAMA);
+
+  showPanel('panelResult');
+}
+
+function katLabel(s) {
+  if (s >= 90) return 'Sangat Baik';
+  if (s >= 78) return 'Tuntas';
+  if (s >= 60) return 'Hampir Tuntas';
+  return 'Belum Tuntas';
+}
+function katClass(s) {
+  if (s >= 90) return 'kat-sb';
+  if (s >= 78) return 'kat-t';
+  if (s >= 60) return 'kat-h';
+  return 'kat-b';
 }
 
 init();
